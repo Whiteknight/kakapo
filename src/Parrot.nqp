@@ -8,23 +8,22 @@ sub _ONLOAD() {
 	if our $onload_done { return 0; }
 	$onload_done := 1;
 
-	# Nothing.
-}
-
-sub _get_parrot() {
-	unless our $parrot_compiler {
-		$parrot_compiler := Q:PIR {
-			load_language 'parrot'
-			%r = compreg 'parrot'
-		};
-	}
-	
-	return $parrot_compiler;
+	Q:PIR {
+		.include 'iglobals.pasm'
+		.include 'interpinfo.pasm'
+		.include 'sysinfo.pasm'
+	};
 }
 
 sub IMPORT($namespace, $names?) {
 	my $caller_nsp := caller_namespace(2);
 	my $from_nsp := get_namespace($namespace);
+
+	unless $from_nsp {
+		say("Namespace: ", $namespace);
+		Dumper::DUMP_($namespace);
+		Dumper::DUMP_($from_nsp);
+	}
 	
 	# Make sure the target namespace is finished loading
 	call_onload($from_nsp);
@@ -109,6 +108,7 @@ sub caller_namespace($index?) {
 }
 
 sub compile($string) {
+	
 	my $result := Q:PIR {
 		.local pmc comp
 		comp = compreg 'PIR'
@@ -120,27 +120,13 @@ sub compile($string) {
 	return $result;
 }
 
-our $do_note;
-IMPORT('Dumper');
-$do_note := 0;
-sub do_note() {
-	$do_note := 1;
-}
-
 sub defined(*@what) {
-	if $do_note && Registry<CONFIG> {
-	say("do note is true");
-		NOTE("Checking if something is defined");
-		DUMP(@what);
-	}
-	
-	my $result := Q:PIR {{
+	my $result := Q:PIR {
 		$P0 = find_lex '@what'
 		$I0 = defined $P0[0]
 		%r = box $I0
-	}};
+	};
 	
-	#NOTE("Returning ", $result);
 	return $result;
 }
 
@@ -183,6 +169,27 @@ sub get_class($pmc) {
 		%r = get_class $P0
 	};
 	return $result;
+}
+
+sub get_compiler() {
+	unless our $Parrot_compiler {
+		$Parrot_compiler := Q:PIR {
+			load_language 'parrot'
+			%r = compreg 'parrot'
+		};
+	}
+	
+	return $Parrot_compiler;
+}
+
+sub get_interpreter() {
+	unless our $Parrot_interpreter {
+		$Parrot_interpreter := Q:PIR {
+			%r = getinterp
+		};
+	}
+	
+	return $Parrot_interpreter;
 }
 
 sub get_namespace($name) {
@@ -281,4 +288,66 @@ sub typeof($pmc) {
 		%r = typeof $P0
 	};
 	return $result;
+}
+
+module Parrot::Globals {
+
+	our %_Global_index;
+	
+	_ONLOAD();
+
+	sub _ONLOAD() {
+		if our $onload_done { return 0; }
+		$onload_done := 1;
+
+		Q:PIR {
+			.include 'iglobals.pasm' 
+			
+			$P0 = new 'Hash'
+			
+			$P1 = box .IGLOBALS_CLASSNAME_HASH
+			say $P1
+			$P0['IGLOBALS_CLASSNAME_HASH'] = $P1
+			
+			$P1 = box .IGLOBALS_COMPREG_HASH
+			$P0['IGLOBALS_COMPREG_HASH'] = $P1
+			
+			$P1 = box .IGLOBALS_ARGV_LIST
+			$P0['IGLOBALS_ARGV_LIST'] = $P1
+			
+			$P1 = box .IGLOBALS_NCI_FUNCS
+			$P0['IGLOBALS_NCI_FUNCS'] = $P1
+			
+			$P1 = box .IGLOBALS_INTERPRETER
+			$P0['IGLOBALS_INTERPRETER'] = $P1
+			
+			$P1 = box .IGLOBALS_DYN_LIBS
+			$P0['IGLOBALS_DYN_LIBS'] = $P1
+			
+			$P1 = box .IGLOBALS_CONFIG_HASH
+			$P0['IGLOBALS_CONFIG_HASH'] = $P1
+			
+			$P1 = box .IGLOBALS_LIB_PATHS
+			$P0['IGLOBALS_LIB_PATHS'] = $P1
+			
+			$P1 = box .IGLOBALS_PBC_LIBS
+			$P0['IGLOBALS_PBC_LIBS'] = $P1
+			
+			$P1 = box .IGLOBALS_EXECUTABLE
+			$P0['IGLOBALS_EXECUTABLE'] = $P1
+			
+			$P1 = box .IGLOBALS_SIZE
+			$P0['IGLOBALS_SIZE'] = $P1
+			
+			set_global '%_Global_index', $P0
+		};
+	}
+
+	sub _fetch($key) {
+		return Parrot::_get_interpreter()[$key];
+	}
+	
+	sub get_global($key) {
+		return _fetch(%_Global_index{$key});
+	}		
 }

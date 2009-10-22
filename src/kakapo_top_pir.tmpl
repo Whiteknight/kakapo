@@ -1,0 +1,11 @@
+.namespace []
+
+.include 'iglobals.pasm'
+.include 'interpinfo.pasm'
+.include 'sysinfo.pasm'
+
+.sub '' :anon :load :init 
+	$P0 = get_hll_global ['Miscellaneous'], '_ONLOAD'
+	$P0()
+	.return (0)
+.end

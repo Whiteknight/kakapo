@@ -34,7 +34,7 @@ STRIP_PIRA		:= grep -v '^.annotate'
 
 ALL_LIB_PIRS =		\
 	$(BASE_LIB_PIRS)	\
-	$(TEST_LIB_DIRS)
+	$(TEST_LIB_PIRS)
 
 BASE_LIB_PIRS = 		\
 	src/Array.pir		\
@@ -43,6 +43,7 @@ BASE_LIB_PIRS = 		\
 	src/Dumper.pir	\
 	src/File.pir		\
 	src/Hash.pir		\
+	src/Miscellaneous.pir \
 	src/OS.pir		\
 	src/Parrot.pir 	\
 	src/Registry.pir 	\
@@ -61,17 +62,22 @@ LIBRARY_PBCS =			\
 	library/kakapo_base.pbc	\
 	library/kakapo_test.pbc
 	
-TEST_LIB_PIRS =		\
+TEST_LIB_PIRS =			\
 	src/Test/Testcase.pir	\
 	src/Matchers/Defined.pir	\
 	src/Matchers/DescribedAs.pir	\
 	src/Matchers/Equals.pir	\
 	src/Matchers/EqualsFloat.pir	\
+	src/Matchers/False.pir	\
 	src/Matchers/Factory.pir	\
 	src/Matchers/Matcher.pir	\
 	src/Matchers/Not.pir	\
 	src/Matchers/Null.pir	\
+	src/Matchers/True.pir	\
 	src/Matchers/TypeSafe.pir	\
+
+TEST_PIRS :=			\
+	t/Parrot.pir
 
 #######################################################################
 ##### Implicit rules here 
@@ -141,14 +147,14 @@ kakapo.cfg:
 #IF(win32):	IF NOT EXIST kakapo.cfg $(CP) kakapo_cfg.tmpl kakapo.cfg
 #IF(not(win32)):	if [ ! -f kakapo.cfg ]; then $(CP) kakapo_cfg.tmpl kakapo.cfg ; fi
 
-library/kakapo.pir: $(ALL_LIB_PIRS)
-	cat $(ALL_LIB_PIRS) > $@
+library/kakapo.pir: $(ALL_LIB_PIRS) src/kakapo_top.pir src/kakapo_bottom.pir Makefile
+	cat src/kakapo_top.pir $(ALL_LIB_PIRS) src/kakapo_bottom.pir > $@
 
-library/kakapo_base.pir: $(BASE_LIB_PIRS)
-	cat $(BASE_LIB_PIRS) > $@
+library/kakapo_base.pir: $(BASE_LIB_PIRS) src/kakapo_top.pir src/kakapo_bottom.pir Makefile
+	cat src/kakapo_top.pir $(BASE_LIB_PIRS) src/kakapo_bottom.pir > $@
 
-library/kakapo_test.pir: $(TEST_LIB_PIRS)
-	cat $(TEST_LIB_PIRS) > $@
+library/kakapo_test.pir: $(TEST_LIB_PIRS) src/kakapo_top.pir src/kakapo_bottom.pir Makefile
+	cat src/kakapo_top.pir $(TEST_LIB_PIRS) src/kakapo_bottom.pir > $@
 
 install:
 	# install kakapo main
@@ -166,6 +172,15 @@ install:
 
 realclean: clean
 	$(RM_F) Makefile
+
+src/kakapo_bottom.pir: src/kakapo_bottom_pir.tmpl
+	$(CP) $< $@
+	
+src/kakapo_top.pir: src/kakapo_top_pir.tmpl
+	$(CP) $< $@
+
+test: build $(TEST_PIRS)
+	$(PARROT) $(PARROT_FLAGS) t/Parrot.pir
 
 testclean:
 	$(RM_F) $(TEST_CLEANUPS)

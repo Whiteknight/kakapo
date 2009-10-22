@@ -1,6 +1,6 @@
 # $Id: Config.nqp 185 2009-10-19 02:14:23Z austin_hastings@yahoo.com $
 
-module Slam::Config;
+module ConfigFile;
 
 _ONLOAD();
 
@@ -10,25 +10,25 @@ sub _ONLOAD() {
 
 	Parrot::IMPORT('Dumper');
 	
-	Class::SUBCLASS('Slam::Config',
+	Class::SUBCLASS('ConfigFile',
 		'Class::HashBased');	
 	
 	# Store an instance in the Registry
-	my $config := Slam::Config.new();
+	my $config := ConfigFile.new();
 	Registry<CONFIG> := $config;
 	
 	#$config.store('Dump::File::slurp', 1);
 	
-	$config.store('Dump::Slam::Config::_onload', 0);
-	#$config.store('Dump::Slam::Config::file', 1);
-	$config.store('Dump::Slam::Config::parse_config', 0);
-	$config.store('Dump::Slam::Config::query', 0);
-	#$config.store('Dump::Slam::Config::store', 1);
+	$config.store('Dump::ConfigFile::_onload', 0);
+	#$config.store('Dump::ConfigFile::file', 1);
+	$config.store('Dump::ConfigFile::parse_config', 0);
+	$config.store('Dump::ConfigFile::query', 0);
+	#$config.store('Dump::ConfigFile::store', 1);
 	$config.store('Dump::Parrot::defined', 7);
 	
 	$config.store('Dump::Stack::Root', 'parrot::close::Compiler::main');
 	
-	NOTE("Slam::Config::_onload: done");
+	NOTE("ConfigFile::_onload: done");
 }
 		
 ################################################################
@@ -61,7 +61,7 @@ method parse_config($data) {
 	my $line_number := 0;
 	for @lines {
 		$line_number++;
-		NOTE(substr("    " ~ $line_number, -4), ": ", $_);
+		NOTE(("    " ~ $line_number).substr(-4), ": ", $_);
 		
 		my $line := String::trim($_);
 		
@@ -101,6 +101,6 @@ method query(*@keys) {
 }
 
 method store($key, $value) {
-	NOTE("Slam::Config: Storing key '", $key, "' value: ", $value);
+	NOTE("ConfigFile: Storing key '", $key, "' value: ", $value);
 	return self<_data>{$key} := $value;
 }

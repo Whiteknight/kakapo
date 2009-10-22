@@ -20,8 +20,7 @@ module Matcher {
 	
 	method describe_failure($item, $description) {
 		return $description
-			~ "was "
-			~ $item;
+			~ "was '" ~ $item ~ "'";
 	}
 	
 	method describe_self($description)	{ self._ABSTRACT_METHOD; }

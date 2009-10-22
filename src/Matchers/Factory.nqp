@@ -1,4 +1,4 @@
-module Factory {
+module Matcher::Factory {
 	
 	_ONLOAD();
 	
@@ -39,9 +39,10 @@ module Factory {
 	sub _equals_Integer($value)	{ return Matcher::Equals.new($value, :match_type('Integer')); }
 	sub _equals_String($value)		{ return Matcher::Equals.new($value, :match_type('String')); }
 
+	sub false()				{ return Matcher::False.new(); }
 	sub _is_Float($value)		{ return Matcher::IsCloseTo.new($value); }
 	sub _is_Integer($value)		{ return Matcher::Equals.new($value, :match_type('Integer')); }
-	sub _is_Matcher($matcher)	{ return $matcher; }
+	sub _is_Matcher($matcher)	{ return Matcher::DescribedAs.new('is', $matcher); }
 	sub _is_String($value)		{ return Matcher::Equals.new($value, :match_type('String')); }
 	
 	sub _not_Float($value)		{ return not(is($value)); }
@@ -52,7 +53,7 @@ module Factory {
 	sub null()				{ return Matcher::Null.new(); }
 	
 	sub returns($value)			{ return Matcher::DescribedAs.new('returns', $value); }
-	
+	sub true()				{ return Matcher::True.new(); }
 	sub type($type)			{ return Matcher::ObjectOfType.new($type); }
 }
 

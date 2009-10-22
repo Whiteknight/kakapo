@@ -8,13 +8,11 @@ module Testcase {
 		if our $onload_done { return 0; }
 		$onload_done := 1;
 		
-		Q:PIR { load_bytecode 'src/gen_builtins.pbc' };
-		load_bytecode('src/gen_util_lib.pbc');
-		load_bytecode('src/Matcher.pbc');
+		Q:PIR { load_bytecode 'library/kakapo.pbc' };
 		Registry<CONFIG>.file('test.cfg');
 		
 		Parrot::IMPORT('Dumper');
-		Parrot::IMPORT('MatcherAssert');
+		Parrot::IMPORT('Matcher::Factory');
 		
 		my $class_name := 'Testcase';
 		
@@ -96,7 +94,8 @@ module Testcase {
 		}
 		
 		@output.push('ok');
-		@output.push(self.test_counter++);
+		self.test_counter++;
+		@output.push(self.test_counter);
 		
 		if $note {
 			@output.push('-');
