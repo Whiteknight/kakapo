@@ -10,82 +10,82 @@
 	.return (0)
 .end
 .namespace []
-.sub "_block11"  :anon :subid("10_1256217009.36755")
+.sub "_block11"  :anon :subid("10_1256249531.52681")
     get_hll_global $P14, ["Testcase"], "_block13" 
     .return ($P14)
 .end
 
 
 .namespace ["Testcase"]
-.sub "_block13" :init :load :subid("11_1256217009.36755")
-    .const 'Sub' $P401 = "50_1256217009.36755" 
+.sub "_block13" :init :load :subid("11_1256249531.52681")
+    .const 'Sub' $P401 = "50_1256249531.52681" 
     capture_lex $P401
-    .const 'Sub' $P395 = "49_1256217009.36755" 
+    .const 'Sub' $P395 = "49_1256249531.52681" 
     capture_lex $P395
-    .const 'Sub' $P387 = "48_1256217009.36755" 
+    .const 'Sub' $P387 = "48_1256249531.52681" 
     capture_lex $P387
-    .const 'Sub' $P348 = "45_1256217009.36755" 
+    .const 'Sub' $P348 = "45_1256249531.52681" 
     capture_lex $P348
-    .const 'Sub' $P320 = "43_1256217009.36755" 
+    .const 'Sub' $P320 = "43_1256249531.52681" 
     capture_lex $P320
-    .const 'Sub' $P312 = "42_1256217009.36755" 
+    .const 'Sub' $P312 = "42_1256249531.52681" 
     capture_lex $P312
-    .const 'Sub' $P304 = "41_1256217009.36755" 
+    .const 'Sub' $P304 = "41_1256249531.52681" 
     capture_lex $P304
-    .const 'Sub' $P296 = "40_1256217009.36755" 
+    .const 'Sub' $P296 = "40_1256249531.52681" 
     capture_lex $P296
-    .const 'Sub' $P288 = "39_1256217009.36755" 
+    .const 'Sub' $P288 = "39_1256249531.52681" 
     capture_lex $P288
-    .const 'Sub' $P282 = "38_1256217009.36755" 
+    .const 'Sub' $P282 = "38_1256249531.52681" 
     capture_lex $P282
-    .const 'Sub' $P267 = "37_1256217009.36755" 
+    .const 'Sub' $P267 = "37_1256249531.52681" 
     capture_lex $P267
-    .const 'Sub' $P235 = "34_1256217009.36755" 
+    .const 'Sub' $P235 = "34_1256249531.52681" 
     capture_lex $P235
-    .const 'Sub' $P223 = "33_1256217009.36755" 
+    .const 'Sub' $P223 = "33_1256249531.52681" 
     capture_lex $P223
-    .const 'Sub' $P215 = "32_1256217009.36755" 
+    .const 'Sub' $P215 = "32_1256249531.52681" 
     capture_lex $P215
-    .const 'Sub' $P207 = "31_1256217009.36755" 
+    .const 'Sub' $P207 = "31_1256249531.52681" 
     capture_lex $P207
-    .const 'Sub' $P199 = "30_1256217009.36755" 
+    .const 'Sub' $P199 = "30_1256249531.52681" 
     capture_lex $P199
-    .const 'Sub' $P191 = "29_1256217009.36755" 
+    .const 'Sub' $P191 = "29_1256249531.52681" 
     capture_lex $P191
-    .const 'Sub' $P183 = "28_1256217009.36755" 
+    .const 'Sub' $P183 = "28_1256249531.52681" 
     capture_lex $P183
-    .const 'Sub' $P130 = "24_1256217009.36755" 
+    .const 'Sub' $P130 = "24_1256249531.52681" 
     capture_lex $P130
-    .const 'Sub' $P122 = "23_1256217009.36755" 
+    .const 'Sub' $P122 = "23_1256249531.52681" 
     capture_lex $P122
-    .const 'Sub' $P115 = "22_1256217009.36755" 
+    .const 'Sub' $P115 = "22_1256249531.52681" 
     capture_lex $P115
-    .const 'Sub' $P107 = "21_1256217009.36755" 
+    .const 'Sub' $P107 = "21_1256249531.52681" 
     capture_lex $P107
-    .const 'Sub' $P100 = "20_1256217009.36755" 
+    .const 'Sub' $P100 = "20_1256249531.52681" 
     capture_lex $P100
-    .const 'Sub' $P65 = "18_1256217009.36755" 
+    .const 'Sub' $P65 = "18_1256249531.52681" 
     capture_lex $P65
-    .const 'Sub' $P57 = "17_1256217009.36755" 
+    .const 'Sub' $P57 = "17_1256249531.52681" 
     capture_lex $P57
-    .const 'Sub' $P50 = "16_1256217009.36755" 
+    .const 'Sub' $P50 = "16_1256249531.52681" 
     capture_lex $P50
-    .const 'Sub' $P42 = "15_1256217009.36755" 
+    .const 'Sub' $P42 = "15_1256249531.52681" 
     capture_lex $P42
-    .const 'Sub' $P35 = "14_1256217009.36755" 
+    .const 'Sub' $P35 = "14_1256249531.52681" 
     capture_lex $P35
-    .const 'Sub' $P15 = "12_1256217009.36755" 
+    .const 'Sub' $P15 = "12_1256249531.52681" 
     capture_lex $P15
     "_ONLOAD"()
-    .const 'Sub' $P401 = "50_1256217009.36755" 
+    .const 'Sub' $P401 = "50_1256249531.52681" 
     capture_lex $P401
     .return ($P401)
 .end
 
 
 .namespace ["Testcase"]
-.sub "_ONLOAD"  :subid("12_1256217009.36755") :outer("11_1256217009.36755")
-    .const 'Sub' $P21 = "13_1256217009.36755" 
+.sub "_ONLOAD"  :subid("12_1256249531.52681") :outer("11_1256249531.52681")
+    .const 'Sub' $P21 = "13_1256249531.52681" 
     capture_lex $P21
     new $P17, 'ExceptionHandler'
     set_addr $P17, control_16
@@ -96,7 +96,7 @@
     new $P19, "Undef"
   vivify_51:
     unless $P19, if_18_end
-    .const 'Sub' $P21 = "13_1256217009.36755" 
+    .const 'Sub' $P21 = "13_1256249531.52681" 
     capture_lex $P21
     $P21()
   if_18_end:
@@ -112,7 +112,7 @@
     unless_null $P26, vivify_53
     new $P26, "Undef"
   vivify_53:
-    $P26."file"("test.cfg")
+    $P26."file"("kakapo.cfg")
     get_hll_global $P27, ["Parrot"], "IMPORT"
     $P27("Dumper")
     get_hll_global $P28, ["Parrot"], "IMPORT"
@@ -143,7 +143,7 @@
 
 
 .namespace ["Testcase"]
-.sub "_block20"  :anon :subid("13_1256217009.36755") :outer("12_1256217009.36755")
+.sub "_block20"  :anon :subid("13_1256249531.52681") :outer("12_1256249531.52681")
     new $P22, "Exception"
     set $P22['type'], 58
     new $P23, "Integer"
@@ -155,7 +155,7 @@
 
 
 .namespace ["Testcase"]
-.sub "after_methods"  :subid("14_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "after_methods"  :subid("14_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_38 :slurpy
     new $P37, 'ExceptionHandler'
     set_addr $P37, control_36
@@ -176,7 +176,7 @@
 
 
 .namespace ["Testcase"]
-.sub "after_prefix"  :subid("15_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "after_prefix"  :subid("15_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_45 :slurpy
     new $P44, 'ExceptionHandler'
     set_addr $P44, control_43
@@ -201,7 +201,7 @@
 
 
 .namespace ["Testcase"]
-.sub "afterall_methods"  :subid("16_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "afterall_methods"  :subid("16_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_53 :slurpy
     new $P52, 'ExceptionHandler'
     set_addr $P52, control_51
@@ -222,7 +222,7 @@
 
 
 .namespace ["Testcase"]
-.sub "afterall_prefix"  :subid("17_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "afterall_prefix"  :subid("17_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_60 :slurpy
     new $P59, 'ExceptionHandler'
     set_addr $P59, control_58
@@ -247,11 +247,11 @@
 
 
 .namespace ["Testcase"]
-.sub "assert_that"  :subid("18_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "assert_that"  :subid("18_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_68
     .param pmc param_69
     .param pmc param_70
-    .const 'Sub' $P84 = "19_1256217009.36755" 
+    .const 'Sub' $P84 = "19_1256249531.52681" 
     capture_lex $P84
     new $P67, 'ExceptionHandler'
     set_addr $P67, control_66
@@ -297,7 +297,7 @@
     new $P82, "Undef"
   vivify_64:
     if $P82, unless_81_end
-    .const 'Sub' $P84 = "19_1256217009.36755" 
+    .const 'Sub' $P84 = "19_1256249531.52681" 
     capture_lex $P84
     $P84()
   unless_81_end:
@@ -320,7 +320,7 @@
 
 
 .namespace ["Testcase"]
-.sub "_block83"  :anon :subid("19_1256217009.36755") :outer("18_1256217009.36755")
+.sub "_block83"  :anon :subid("19_1256249531.52681") :outer("18_1256249531.52681")
     find_lex $P85, "$matcher"
     unless_null $P85, vivify_65
     new $P85, "Undef"
@@ -355,7 +355,7 @@
 
 
 .namespace ["Testcase"]
-.sub "before_methods"  :subid("20_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "before_methods"  :subid("20_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_103 :slurpy
     new $P102, 'ExceptionHandler'
     set_addr $P102, control_101
@@ -376,7 +376,7 @@
 
 
 .namespace ["Testcase"]
-.sub "before_prefix"  :subid("21_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "before_prefix"  :subid("21_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_110 :slurpy
     new $P109, 'ExceptionHandler'
     set_addr $P109, control_108
@@ -401,7 +401,7 @@
 
 
 .namespace ["Testcase"]
-.sub "beforeall_methods"  :subid("22_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "beforeall_methods"  :subid("22_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_118 :slurpy
     new $P117, 'ExceptionHandler'
     set_addr $P117, control_116
@@ -422,7 +422,7 @@
 
 
 .namespace ["Testcase"]
-.sub "beforeall_prefix"  :subid("23_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "beforeall_prefix"  :subid("23_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_125 :slurpy
     new $P124, 'ExceptionHandler'
     set_addr $P124, control_123
@@ -447,10 +447,10 @@
 
 
 .namespace ["Testcase"]
-.sub "fetch_methods"  :subid("24_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "fetch_methods"  :subid("24_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_133 :optional :named("starting_with")
     .param int has_param_133 :opt_flag
-    .const 'Sub' $P142 = "25_1256217009.36755" 
+    .const 'Sub' $P142 = "25_1256249531.52681" 
     capture_lex $P142
     new $P132, 'ExceptionHandler'
     set_addr $P132, control_131
@@ -476,7 +476,7 @@
     new $P140, "Undef"
   vivify_75:
     unless $P140, if_139_end
-    .const 'Sub' $P142 = "25_1256217009.36755" 
+    .const 'Sub' $P142 = "25_1256249531.52681" 
     capture_lex $P142
     $P142()
   if_139_end:
@@ -515,8 +515,8 @@
 
 
 .namespace ["Testcase"]
-.sub "_block141"  :anon :subid("25_1256217009.36755") :outer("24_1256217009.36755")
-    .const 'Sub' $P152 = "26_1256217009.36755" 
+.sub "_block141"  :anon :subid("25_1256249531.52681") :outer("24_1256249531.52681")
+    .const 'Sub' $P152 = "26_1256249531.52681" 
     capture_lex $P152
     new $P143, "ResizablePMCArray"
     .lex "@matches", $P143
@@ -542,7 +542,7 @@
     unless $P147, loop171_done
     shift $P150, $P147
   loop171_redo:
-    .const 'Sub' $P152 = "26_1256217009.36755" 
+    .const 'Sub' $P152 = "26_1256249531.52681" 
     capture_lex $P152
     $P152($P150)
   loop171_next:
@@ -566,9 +566,9 @@
 
 
 .namespace ["Testcase"]
-.sub "_block151"  :anon :subid("26_1256217009.36755") :outer("25_1256217009.36755")
+.sub "_block151"  :anon :subid("26_1256249531.52681") :outer("25_1256249531.52681")
     .param pmc param_153
-    .const 'Sub' $P166 = "27_1256217009.36755" 
+    .const 'Sub' $P166 = "27_1256249531.52681" 
     capture_lex $P166
     .lex "$_", param_153
     find_lex $P154, "$_"
@@ -599,7 +599,7 @@
     set $P157, $I164
     goto if_158_end
   if_158:
-    .const 'Sub' $P166 = "27_1256217009.36755" 
+    .const 'Sub' $P166 = "27_1256249531.52681" 
     capture_lex $P166
     $P170 = $P166()
     set $P157, $P170
@@ -609,7 +609,7 @@
 
 
 .namespace ["Testcase"]
-.sub "_block165"  :anon :subid("27_1256217009.36755") :outer("26_1256217009.36755")
+.sub "_block165"  :anon :subid("27_1256249531.52681") :outer("26_1256249531.52681")
     find_lex $P167, "@matches"
     unless_null $P167, vivify_83
     new $P167, "ResizablePMCArray"
@@ -624,7 +624,7 @@
 
 
 .namespace ["Testcase"]
-.sub "fetch_after_methods"  :subid("28_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "fetch_after_methods"  :subid("28_1256249531.52681") :method :outer("11_1256249531.52681")
     new $P185, 'ExceptionHandler'
     set_addr $P185, control_184
     $P185."handle_types"(58)
@@ -645,7 +645,7 @@
 
 
 .namespace ["Testcase"]
-.sub "fetch_afterall_methods"  :subid("29_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "fetch_afterall_methods"  :subid("29_1256249531.52681") :method :outer("11_1256249531.52681")
     new $P193, 'ExceptionHandler'
     set_addr $P193, control_192
     $P193."handle_types"(58)
@@ -666,7 +666,7 @@
 
 
 .namespace ["Testcase"]
-.sub "fetch_before_methods"  :subid("30_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "fetch_before_methods"  :subid("30_1256249531.52681") :method :outer("11_1256249531.52681")
     new $P201, 'ExceptionHandler'
     set_addr $P201, control_200
     $P201."handle_types"(58)
@@ -687,7 +687,7 @@
 
 
 .namespace ["Testcase"]
-.sub "fetch_beforeall_methods"  :subid("31_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "fetch_beforeall_methods"  :subid("31_1256249531.52681") :method :outer("11_1256249531.52681")
     new $P209, 'ExceptionHandler'
     set_addr $P209, control_208
     $P209."handle_types"(58)
@@ -708,7 +708,7 @@
 
 
 .namespace ["Testcase"]
-.sub "fetch_test_methods"  :subid("32_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "fetch_test_methods"  :subid("32_1256249531.52681") :method :outer("11_1256249531.52681")
     new $P217, 'ExceptionHandler'
     set_addr $P217, control_216
     $P217."handle_types"(58)
@@ -729,7 +729,7 @@
 
 
 .namespace ["Testcase"]
-.sub "init"  :subid("33_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "init"  :subid("33_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_226
     .param pmc param_227
     new $P225, 'ExceptionHandler'
@@ -763,13 +763,13 @@
 
 
 .namespace ["Testcase"]
-.sub "ok"  :subid("34_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "ok"  :subid("34_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_238
     .param pmc param_239 :optional
     .param int has_param_239 :opt_flag
-    .const 'Sub' $P258 = "36_1256217009.36755" 
+    .const 'Sub' $P258 = "36_1256249531.52681" 
     capture_lex $P258
-    .const 'Sub' $P245 = "35_1256217009.36755" 
+    .const 'Sub' $P245 = "35_1256249531.52681" 
     capture_lex $P245
     new $P237, 'ExceptionHandler'
     set_addr $P237, control_236
@@ -789,7 +789,7 @@
     new $P243, "Undef"
   vivify_93:
     if $P243, unless_242_end
-    .const 'Sub' $P245 = "35_1256217009.36755" 
+    .const 'Sub' $P245 = "35_1256249531.52681" 
     capture_lex $P245
     $P245()
   unless_242_end:
@@ -815,7 +815,7 @@
     new $P256, "Undef"
   vivify_97:
     unless $P256, if_255_end
-    .const 'Sub' $P258 = "36_1256217009.36755" 
+    .const 'Sub' $P258 = "36_1256249531.52681" 
     capture_lex $P258
     $P258()
   if_255_end:
@@ -836,7 +836,7 @@
 
 
 .namespace ["Testcase"]
-.sub "_block244"  :anon :subid("35_1256217009.36755") :outer("34_1256217009.36755")
+.sub "_block244"  :anon :subid("35_1256249531.52681") :outer("34_1256249531.52681")
     find_lex $P246, "@output"
     unless_null $P246, vivify_94
     new $P246, "ResizablePMCArray"
@@ -847,7 +847,7 @@
 
 
 .namespace ["Testcase"]
-.sub "_block257"  :anon :subid("36_1256217009.36755") :outer("34_1256217009.36755")
+.sub "_block257"  :anon :subid("36_1256249531.52681") :outer("34_1256249531.52681")
     find_lex $P259, "@output"
     unless_null $P259, vivify_98
     new $P259, "ResizablePMCArray"
@@ -867,7 +867,7 @@
 
 
 .namespace ["Testcase"]
-.sub "run_test"  :subid("37_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "run_test"  :subid("37_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_270
     .param pmc param_271 :optional :named("after_prefix")
     .param int has_param_271 :opt_flag
@@ -911,7 +911,7 @@
 
 
 .namespace ["Testcase"]
-.sub "run_all_tests"  :subid("38_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "run_all_tests"  :subid("38_1256249531.52681") :method :outer("11_1256249531.52681")
     new $P284, 'ExceptionHandler'
     set_addr $P284, control_283
     $P284."handle_types"(58)
@@ -930,7 +930,7 @@
 
 
 .namespace ["Testcase"]
-.sub "run_after_methods"  :subid("39_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "run_after_methods"  :subid("39_1256249531.52681") :method :outer("11_1256249531.52681")
     new $P290, 'ExceptionHandler'
     set_addr $P290, control_289
     $P290."handle_types"(58)
@@ -951,7 +951,7 @@
 
 
 .namespace ["Testcase"]
-.sub "run_afterall_methods"  :subid("40_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "run_afterall_methods"  :subid("40_1256249531.52681") :method :outer("11_1256249531.52681")
     new $P298, 'ExceptionHandler'
     set_addr $P298, control_297
     $P298."handle_types"(58)
@@ -972,7 +972,7 @@
 
 
 .namespace ["Testcase"]
-.sub "run_before_methods"  :subid("41_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "run_before_methods"  :subid("41_1256249531.52681") :method :outer("11_1256249531.52681")
     new $P306, 'ExceptionHandler'
     set_addr $P306, control_305
     $P306."handle_types"(58)
@@ -993,7 +993,7 @@
 
 
 .namespace ["Testcase"]
-.sub "run_beforeall_methods"  :subid("42_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "run_beforeall_methods"  :subid("42_1256249531.52681") :method :outer("11_1256249531.52681")
     new $P314, 'ExceptionHandler'
     set_addr $P314, control_313
     $P314."handle_types"(58)
@@ -1014,11 +1014,11 @@
 
 
 .namespace ["Testcase"]
-.sub "run_methods"  :subid("43_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "run_methods"  :subid("43_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_323
     .param pmc param_324 :slurpy
     .param pmc param_325 :slurpy :named
-    .const 'Sub' $P333 = "44_1256217009.36755" 
+    .const 'Sub' $P333 = "44_1256249531.52681" 
     capture_lex $P333
     new $P322, 'ExceptionHandler'
     set_addr $P322, control_321
@@ -1049,7 +1049,7 @@
     unless $P328, loop343_done
     shift $P331, $P328
   loop343_redo:
-    .const 'Sub' $P333 = "44_1256217009.36755" 
+    .const 'Sub' $P333 = "44_1256249531.52681" 
     capture_lex $P333
     $P333($P331)
   loop343_next:
@@ -1075,7 +1075,7 @@
 
 
 .namespace ["Testcase"]
-.sub "_block332"  :anon :subid("44_1256217009.36755") :outer("43_1256217009.36755")
+.sub "_block332"  :anon :subid("44_1256249531.52681") :outer("43_1256249531.52681")
     .param pmc param_334
     .lex "$_", param_334
     find_lex $P335, "$_"
@@ -1104,11 +1104,11 @@
 
 
 .namespace ["Testcase"]
-.sub "run_tests"  :subid("45_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "run_tests"  :subid("45_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_351 :slurpy
-    .const 'Sub' $P366 = "47_1256217009.36755" 
+    .const 'Sub' $P366 = "47_1256249531.52681" 
     capture_lex $P366
-    .const 'Sub' $P356 = "46_1256217009.36755" 
+    .const 'Sub' $P356 = "46_1256249531.52681" 
     capture_lex $P356
     new $P350, 'ExceptionHandler'
     set_addr $P350, control_349
@@ -1124,7 +1124,7 @@
     new $P354, "ResizablePMCArray"
   vivify_112:
     if $P354, unless_353_end
-    .const 'Sub' $P356 = "46_1256217009.36755" 
+    .const 'Sub' $P356 = "46_1256249531.52681" 
     capture_lex $P356
     $P356()
   unless_353_end:
@@ -1149,7 +1149,7 @@
     unless $P361, loop381_done
     shift $P364, $P361
   loop381_redo:
-    .const 'Sub' $P366 = "47_1256217009.36755" 
+    .const 'Sub' $P366 = "47_1256249531.52681" 
     capture_lex $P366
     $P366($P364)
   loop381_next:
@@ -1177,7 +1177,7 @@
 
 
 .namespace ["Testcase"]
-.sub "_block355"  :anon :subid("46_1256217009.36755") :outer("45_1256217009.36755")
+.sub "_block355"  :anon :subid("46_1256249531.52681") :outer("45_1256249531.52681")
     "NOTE"("No test list specified. Running all tests.")
     find_lex $P357, "self"
     $P358 = $P357."fetch_test_methods"()
@@ -1187,7 +1187,7 @@
 
 
 .namespace ["Testcase"]
-.sub "_block365"  :anon :subid("47_1256217009.36755") :outer("45_1256217009.36755")
+.sub "_block365"  :anon :subid("47_1256249531.52681") :outer("45_1256249531.52681")
     .param pmc param_367
     .lex "$_", param_367
     find_lex $P368, "$_"
@@ -1238,7 +1238,7 @@
 
 
 .namespace ["Testcase"]
-.sub "test_counter"  :subid("48_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "test_counter"  :subid("48_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_390 :slurpy
     new $P389, 'ExceptionHandler'
     set_addr $P389, control_388
@@ -1263,7 +1263,7 @@
 
 
 .namespace ["Testcase"]
-.sub "test_methods"  :subid("49_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "test_methods"  :subid("49_1256249531.52681") :method :outer("11_1256249531.52681")
     new $P397, 'ExceptionHandler'
     set_addr $P397, control_396
     $P397."handle_types"(58)
@@ -1282,7 +1282,7 @@
 
 
 .namespace ["Testcase"]
-.sub "test_prefix"  :subid("50_1256217009.36755") :method :outer("11_1256217009.36755")
+.sub "test_prefix"  :subid("50_1256249531.52681") :method :outer("11_1256249531.52681")
     .param pmc param_404 :slurpy
     new $P403, 'ExceptionHandler'
     set_addr $P403, control_402

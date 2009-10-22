@@ -1,15 +1,16 @@
 module Kakapo::Test::Parrot;
 
+Q:PIR { load_bytecode 'library/kakapo.pbc' };
+
 _ONLOAD();
 
-say("Onload done");
+#Parrot::load_bytecode('src/Parrot.pbc');
+
 Kakapo::Test::Parrot.run_all_tests;
 
 sub _ONLOAD() {
 	if our $onload_done { return 0; }
-	$onload_done := 1;
-	
-	Q:PIR { load_bytecode 'library/kakapo.pbc' };
+	$onload_done := 1;	
 	
 	Parrot::IMPORT('Dumper');
 	Parrot::IMPORT('Matcher::Factory');
@@ -19,9 +20,7 @@ sub _ONLOAD() {
 	NOTE("Creating class ", $class_name);
 	Class::SUBCLASS($class_name,
 		'Testcase',
-	);
-	
-	#Parrot::load_bytecode('src/Parrot.pbc');
+	);	
 }
 
 method test_defined() {

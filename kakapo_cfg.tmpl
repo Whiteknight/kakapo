@@ -1,0 +1,20 @@
+## test.cfg -- Config settings for test cases.
+
+## Dump::Slam / NOTE settings
+
+Dump::Stack::Root					= parrot::Testcase::run_all_tests
+Dump::Stack::Root_offset				= 0
+
+Dump::Bits::NOTE					= 1
+Dump::Bits::DUMP					= 2
+Dump::Bits::ASSERT				= 4
+## Setting ASSERT causes "assert passed" messages to print
+
+## :: Array
+
+#Dump::Array::reverse				= 0
+
+## Testcase settings
+
+#Dump::Testcase::fetch_methods			= 7
+#Dump::Testcase::run_tests			= 1

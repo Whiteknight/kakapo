@@ -29,7 +29,7 @@
             "type" : "repository"
         },
         "configure": {
-            "type" : "perl_configure"
+            "type" : "perl5_configure"
         },
         "build" : {
             "type" : "make"

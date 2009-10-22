@@ -2,18 +2,24 @@
 
 module Array;
 
-Parrot::IMPORT('Dumper');
+our %Bsearch_compare_func;
+
+_ONLOAD(); 
+
+sub _ONLOAD() {
+	Parrot::IMPORT('Dumper');
+
+	%Bsearch_compare_func{'<=>'}	:= Array::cmp_numeric;
+	%Bsearch_compare_func{'R<=>'}	:= Array::cmp_numeric_R;
+	%Bsearch_compare_func{'cmp'}	:= Array::cmp_string;
+	%Bsearch_compare_func{'Rcmp'}	:= Array::cmp_string_R;
+
+}
 
 sub cmp_numeric($a, $b) { return $b - $a; }
 sub cmp_numeric_R($a, $b) { return $a - $b; }
 sub cmp_string($a, $b) { if $a lt $b { return -1; } else { return 1; } }
 sub cmp_string_R($a, $b) { if $b lt $a { return -1; } else { return 1; } }
-
-our %Bsearch_compare_func;
-%Bsearch_compare_func{'<=>'}	:= Array::cmp_numeric;
-%Bsearch_compare_func{'R<=>'}	:= Array::cmp_numeric_R;
-%Bsearch_compare_func{'cmp'}	:= Array::cmp_string;
-%Bsearch_compare_func{'Rcmp'}	:= Array::cmp_string_R;
 
 =sub bsearch(@array, $value, ...)
 
