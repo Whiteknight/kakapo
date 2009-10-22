@@ -38,11 +38,14 @@ module Matcher::Equals {
 	}
 	
 	method init(@children, %attributes) {
+		Matcher::init(self, @children, %attributes);
+		
 		unless +@children {
 			DIE("You must provide a comparison value for 'equals' matcher.");
 		}
 		
-		self.value(@children.shift);		
+		self.value(@children.shift);
+		self.find_match_type(self.value);
 	}
 
 	method _match_Float($item)		{ self.match_scalar($item); }

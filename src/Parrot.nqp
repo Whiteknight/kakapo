@@ -198,6 +198,20 @@ sub get_namespace($name) {
 	return $namespace;
 }
 
+sub get_hll_global($path) {
+	my @parts := $path.split('::');
+	my $name := @parts.pop;
+	
+	my $result := Q:PIR {
+		$P0 = find_lex '@parts'
+		$P1 = find_lex '$name'
+		$S1 = $P1
+		%r = get_hll_global [$P0], $S1
+	};
+	
+	return $result;
+}
+	
 sub get_hll_namespace(@parts) {
 	my $namespace := Q:PIR {
 		$P0 = find_lex '@parts'

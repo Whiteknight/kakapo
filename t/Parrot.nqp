@@ -43,6 +43,33 @@ method test_defined() {
 	self.assert_that('defined(%())', Parrot::defined(%empty), returns(true()));
 }
 
+method test_get_hll_global() {
+	self.assert_that("get_hll_global(foo)", Parrot::get_hll_global('Xyzzy::foo'), is(same_as(Xyzzy::foo)));
+	
+	our $Test;
+	$Test := 'gee';
+	self.assert_that("Global $Test", $Test, is('gee'));
+	self.assert_that("get_hll_global($Test)", Parrot::get_hll_global('Kakapo::Test::Parrot::$Test'),
+		returns('gee'));
+	$Test := 'piow';
+	self.assert_that("get_hll_global($Test)", Parrot::get_hll_global('Kakapo::Test::Parrot::$Test'),
+		returns('piow'));
+}
+
+method test_get_sub() {
+	self.assert_that("get_sub(foo)", Parrot::get_sub('Xyzzy::foo'), is(same_as(Xyzzy::foo)));
+}
+
+method test_import() {
+	self.assert_that("Remote symbol 'foo'", Xyzzy::foo, is(defined()));
+	self.assert_that("Local symbol 'foo'", Kakapo::Test::Parrot::foo, is(not(defined())));
+	
+	Parrot::IMPORT('Xyzzy');
+	
+	self.assert_that("Local symbol 'foo'", Kakapo::Test::Parrot::foo, is(defined()));
+	self.assert_that("Symbol 'foo'", Kakapo::Test::Parrot::foo, is(same_as(Xyzzy::foo)));
+}
+
 method test_is_null() {
 	my $one := 1;
 	my $zero := 0;
@@ -60,3 +87,10 @@ method test_is_null() {
 	self.assert_that('is_null(@())', Parrot::is_null(@empty), returns(false()));
 	self.assert_that('is_null(%())', Parrot::is_null(%empty), returns(false()));
 }
+
+module Xyzzy {
+	sub foo() {
+		return 'foo';
+	}
+}
+		
