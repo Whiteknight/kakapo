@@ -36,6 +36,12 @@ ALL_LIB_PIRS =		\
 	$(BASE_LIB_PIRS)	\
 	$(TEST_LIB_PIRS)
 
+ALL_TESTS =		\
+	test-array		\
+	test-parrot		\
+	test-rpa		\
+	test-rsa
+
 BASE_LIB_PIRS = 		\
 	src/Array.pir		\
 	src/Class.pir		\
@@ -66,6 +72,8 @@ LIBRARY_PBCS =			\
 	
 TEST_LIB_PIRS =			\
 	src/Test/Testcase.pir	\
+	src/Matchers/AllOf.pir	\
+	src/Matchers/AnyOne.pir	\
 	src/Matchers/Defined.pir	\
 	src/Matchers/DescribedAs.pir	\
 	src/Matchers/Elements.pir	\
@@ -82,11 +90,6 @@ TEST_LIB_PIRS =			\
 	src/Matchers/Null.pir	\
 	src/Matchers/True.pir	\
 	src/Matchers/TypeSafe.pir	\
-
-TEST_PIRS :=			\
-	t/Array.pir			\
-	t/Parrot.pir			\
-	t/ResizableStringArray.pir
 
 #######################################################################
 ##### Implicit rules here 
@@ -182,13 +185,19 @@ install:
 realclean: clean
 	$(RM_F) Makefile
 
+release: build
+	-$(MKPATH) released
+	$(CP) library/kakapo.pir released/kakapo.pir
+	$(CP) library/kakapo_base.pir released/kakapo_base.pir
+	$(CP) library/kakapo_test.pir released/kakapo_test.pir
+	
 src/kakapo_bottom.pir: src/kakapo_bottom_pir.tmpl
 	$(CP) $< $@
 	
 src/kakapo_top.pir: src/kakapo_top_pir.tmpl
 	$(CP) $< $@
 
-test: build $(TEST_PIRS)
+test: build $(ALL_TESTS)
 	$(PARROT) $(PARROT_FLAGS) t/Parrot.pir
 
 #----------------------------------------------------------------------
