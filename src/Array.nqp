@@ -16,8 +16,8 @@ sub _ONLOAD() {
 
 }
 
-sub cmp_numeric($a, $b) { return $b - $a; }
-sub cmp_numeric_R($a, $b) { return $a - $b; }
+sub cmp_numeric($a, $b) { return $a - $b; }
+sub cmp_numeric_R($a, $b) { return $b - $a; }
 sub cmp_string($a, $b) { if $a lt $b { return -1; } else { return 1; } }
 sub cmp_string_R($a, $b) { if $b lt $a { return -1; } else { return 1; } }
 
@@ -53,41 +53,23 @@ at the start of the array.
 
 =cut
 
-sub bsearch(@array, $value, *%adverbs) {
-	DUMP(:array(@array));
-	NOTE("bsearch: for value ", $value);
-	my $low := 0 + %adverbs<low>;
+sub bsearch(@array, $value, *%opts) {
+	my $cmp	:= %opts<cmp> ?? %opts<cmp> !! '<=>';
+	my $high	:= %opts<high> > 0 ?? %opts<high> !! @array.elements;
+	my $low	:= 0 + %opts<low>;
+	my $top	:= $high;
+	
+	if $high > @array.elements { $high := @array.elements; }
+	if $low < 0 { $low := $low + @array; }
 
-	if $low < 0 {
-		$low := $low + @array;
-	}
-	
-	NOTE("low end: ", $low);
-	
-	my $high := +@array + %adverbs<high>;
-	
-	if $high > +@array {
-		$high := %adverbs<high>;
-	}
-
-	NOTE("high end: ", $high);
-	
-	my $top := $high;
-	
-	my $cmp := '==';
-	
-	if %adverbs<cmp> {
-		$cmp := %adverbs<cmp>;
-	}
-	
 	my &compare := %Bsearch_compare_func{$cmp};
-	unless &compare {
-		&compare := %adverbs<cmp>;
+
+	if Parrot::isa($cmp, 'Sub') || Parrot::isa($cmp, 'MultiSub') {
+		&compare := $cmp;
 	}
-	
-	NOTE("Compare function is: ", &compare);
 	
 	my $mid;
+	
 	while $low < $high {
 		# NQP gets this wrong -- floating point math
 		#$mid := $low + ($high - $low) / 2;
@@ -103,7 +85,7 @@ sub bsearch(@array, $value, *%adverbs) {
 			%r = box $I0
 		};	
 		
-		if &compare($value, @array[$mid]) < 0 {
+		if &compare(@array[$mid], $value) < 0 {
 			$low := $mid + 1;
 		}
 		else {
@@ -114,14 +96,14 @@ sub bsearch(@array, $value, *%adverbs) {
 	my $result := - ($low + 1);
 	
 	if $low < $top
-		&& &compare(@array[$mid], $value) == 0 {
+		&& &compare(@array[$low], $value) == 0 {
 		$result := $low;
 	}
 	
-	NOTE("Returning ", $result);
 	return $result;
 }
 
+# FIXME: Legacy implementation that permits undef/null original. This must die.
 sub clone(@original) {
 	my @clone := Array::empty();
 	
@@ -134,21 +116,31 @@ sub clone(@original) {
 	return @clone;
 }
 
+=sub concat(@a1, @a2, ...)
+
+Concatenates a list of zero or more arrays into one long array. Returns the 
+resulting array. Returns an empty array if no arrays are given, or if the given
+arrays have no elements.
+
+=cut 
+
 sub concat(*@sources) {
-	my @result := empty();
-	
-	for @sources {
-		for $_ {
-			@result.push($_);
-		}
+	if +@sources == 0 {
+		return Array::empty();
 	}
 	
+	my @result := @sources.shift.clone;
+
+	while @sources {
+		@result.append(@sources.shift);
+	}
+
 	return @result;
 }
 	
 method contains($item) {
 	for self {
-		if $_ =:= $item {
+		if Parrot::iseq($item, $_) {
 			return 1;
 		}
 	}
@@ -156,22 +148,22 @@ method contains($item) {
 	return 0;
 }
 
-sub delete(@array, $index) {
-	Q:PIR {
-		$P0 = find_lex '@array'
-		$P1 = find_lex '$index'
-		$I0 = $P1
-		delete $P0[$I0]
-	};
+method elements(*@value)			{ elements_(self, @value); }
+
+method elements_(@value) {
+	if +@value {
+		Parrot::set_integer(self, @value.shift);
+	}
+
+	return Parrot::elements(self);
 }
 
 sub empty() {
-	my @empty := Q:PIR { %r = new 'ResizablePMCArray' };
-	return @empty;
+	return Parrot::new_pmc('ResizablePMCArray');
 }
 
+# NOTE: Deprecated. This permits null array, but should be replaced by @a.join method.
 sub join($_delim, @parts) {
-	BACKTRACE();
 	my $result := '';
 	my $delim := '';
 
@@ -205,9 +197,16 @@ sub unique(@original) {
 		my $found := 0;
 		
 		for @result {
-			if  $o =:= $_ {
-				$found := 1;
-			}
+			my $match := Q:PIR {
+				
+				$P0 = find_lex '$_'
+				$P1 = find_lex '$o'
+				$I0 = cmp $P0, $P1
+				not $I0
+				%r = box $I0
+			};
+			
+			$found := $found || $match;
 		}
 		
 		unless $found {
@@ -216,177 +215,4 @@ sub unique(@original) {
 	}
 	
 	return @result;
-}
-
-################################################################
-
-module ResizablePMCArray {
-	# method append(@other) - built in
-	
-	method clone() {
-		my @clone := Q:PIR {
-			$P0 = find_lex 'self'
-			%r = clone $P0
-		};
-		
-		return @clone;
-	}
-
-	method contains($what) {
-		my $result := Q:PIR {
-			.local pmc it, what
-			$P0	= find_lex 'self'
-			it	= iter $P0
-			%r	= box 0
-			what	= find_lex '$what'
-			
-		foreach:
-			unless it goto done
-			
-			$P0	= shift it
-			ne_addr $P0, what, foreach
-			
-			%r	= box 1
-		
-		done:
-		};
-		
-		return $result;
-	}
-
-	method elements(*@value) {
-		my $elements;
-		
-		if +@value {
-			$elements := @value.shift;
-			
-			Q:PIR {
-				$P0 = find_lex '$elements'
-				$I0 = $P0
-				$P0 = find_lex 'self'
-				$P0 = $I0
-			};
-		}
-		else {
-			$elements := Q:PIR {
-				$P0 = find_lex 'self'
-				$I0 = elements $P0
-				%r = box $I0
-			};
-		}
-		
-		return $elements;
-	}			
-			
-	method join(*@delim) {
-		@delim.push('');
-		my $delim := @delim.shift;
-		
-		my $result := Q:PIR {
-			.local pmc array
-			array = find_lex 'self'
-			.local string delim
-			$P0 = find_lex '$delim'
-			delim = $P0
-			$S0 = join delim, array
-			%r = box $S0
-		};
-		
-		return $result;
-	}
-}
-
-################################################################
-
-module ResizableStringArray {
-	method append(@other) {
-		for @other {
-			self.push(~ $_);
-		}
-	}
-
-	method clone() {
-		my @clone := Q:PIR {
-			$P0 = find_lex 'self'
-			%r = clone $P0
-		};
-		
-		return @clone;
-	}
-
-	method contains($what) {
-		my $result := Q:PIR {
-			.local pmc it
-			$P0	= find_lex 'self'
-			it	= iter $P0
-			
-			%r	= box 0
-			
-			.local string what
-			$P0	= find_lex '$what'
-			what	= $P0
-			
-		foreach:
-			unless it goto done
-			$S0	= shift it
-			unless $S0 == what goto foreach
-			%r	= box 1
-		
-		done:
-		};
-		
-		return $result;
-	}
-
-	method elements(*@value) {
-		my $elements;
-		
-		if +@value {
-			$elements := @value.shift;
-			
-			Q:PIR {
-				$P0 = find_lex '$elements'
-				$I0 = $P0
-				$P0 = find_lex 'self'
-				$P0 = $I0
-			};
-		}
-		else {
-			$elements := Q:PIR {
-				$P0 = find_lex 'self'
-				$I0 = elements $P0
-				%r = box $I0
-			};
-		}
-		
-		return $elements;
-	}
-			
-			
-	method join(*@delim) {
-		@delim.push('');
-		my $delim := @delim.shift;
-		
-		my $result := Q:PIR {
-			.local pmc array
-			array = find_lex 'self'
-			.local string delim
-			$P0 = find_lex '$delim'
-			delim = $P0
-			$S0 = join delim, array
-			%r = box $S0
-		};
-		
-		return $result;
-	}
-	
-	sub new(*@contents) {
-		my @array := Q:PIR { %r = new 'ResizableStringArray' };
-		
-		for @contents {
-			@array.push( ~ $_);
-		}
-		
-		return @array;
-	}
 }

@@ -110,6 +110,16 @@ sub can($object, $method_name) {
 	
 	return $result;
 }
+
+sub clone($pmc) {
+	my $clone := Q:PIR {
+		$P0 = find_lex '$pmc'
+		%r = clone $P0
+	};
+		
+	return $clone;
+}
+
 sub compile($string) {
 	
 	my $result := Q:PIR {
@@ -131,6 +141,17 @@ sub defined(*@what) {
 	};
 	
 	return $result;
+}
+
+sub delete($pmc, $key) {
+	Q:PIR {
+		$P0 = find_lex '$pmc'
+		$P1 = find_lex '$key'
+		$I0 = $P1
+		delete $P0[$I0]
+	};
+	
+	return $pmc;
 }
 
 sub die($message) {
@@ -205,6 +226,16 @@ sub get_compiler() {
 	}
 	
 	return $Parrot_compiler;
+}
+
+sub get_integer($pmc) {
+	my $result := Q:PIR {
+		$P0 = find_lex '$pmc'
+		$I0 = $P0
+		%r = box $I0
+	};
+	
+	return $result;
 }
 
 sub get_interpreter() {
@@ -296,6 +327,33 @@ sub isa($pmc, $class) {
 	return $result;
 }
 
+sub iseq($a, $b) {
+	my $result := Q:PIR {
+		$P0 = find_lex '$a'
+		$P1 = find_lex '$b'
+		$I0 = iseq $P0, $P1
+		%r = box $I0
+	};
+	
+	return $result;
+}
+
+sub join($pmc, $delim) {
+	my $result := Q:PIR {
+		.local pmc aggregate
+		aggregate = find_lex '$pmc'
+		
+		.local string delim
+		$P0 = find_lex '$delim'
+		delim = $P0
+		
+		$S0 = join delim, aggregate
+		%r = box $S0
+	};
+	
+	return $result;
+}
+
 sub load_bytecode($file) {
 	Q:PIR {
 		$P0 = find_lex '$file'
@@ -311,6 +369,17 @@ sub new_pmc($type) {
 	};
 	
 	return $result;
+}
+
+sub set_integer($pmc, $int) {
+	Q:PIR {
+		$P0 = find_lex '$pmc'
+		$P1 = find_lex '$int'
+		$I1 = $P1
+		$P0 = $I1
+	};
+	
+	return $pmc;
 }
 
 sub trace($value) {
@@ -346,7 +415,6 @@ module Parrot::Globals {
 			$P0 = new 'Hash'
 			
 			$P1 = box .IGLOBALS_CLASSNAME_HASH
-			say $P1
 			$P0['IGLOBALS_CLASSNAME_HASH'] = $P1
 			
 			$P1 = box .IGLOBALS_COMPREG_HASH

@@ -48,8 +48,9 @@ method init(@args, %opts) {
 	}
 }
 
-method matches($item) {
-	my $result := self.predicate.matches($item);
+method matches(*@item) {
+	my %opts;
+	my $result := Class::call_method_(self.predicate, 'matches', @item, %opts);
 	return $result;
 }
 

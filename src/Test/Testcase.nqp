@@ -6,7 +6,7 @@ sub _ONLOAD() {
 	if our $onload_done { return 0; }
 	$onload_done := 1;
 	
-	Q:PIR { load_bytecode 'library/kakapo.pbc' };
+	ConfigFile::_ONLOAD();
 	Registry<CONFIG>.file('kakapo.cfg');
 	
 	Parrot::IMPORT('Dumper');
@@ -27,15 +27,20 @@ method after_prefix(*@value)		{ self._ATTR_DEFAULT('after_prefix', @value, 'afte
 method afterall_methods(*@value)	{ self._ATTR_SETBY('afterall_methods', 'fetch_afterall_methods'); }	
 method afterall_prefix(*@value)		{ self._ATTR_DEFAULT('afterall_prefix', @value, 'afterall_'); }	
 
-method assert_that($item_desc, $item, $matcher) {
+method assert_that($item_desc, *@item) {
+	unless +@item == 2 {
+		Parrot::die("You must provide 3 args: $item_desc, $item, $matcher");
+	}
+	
+	my $matcher := @item[1];
 	my $description := $matcher.describe_self($item_desc ~ ' ');
-	my $result := $matcher.matches($item);
+	my $result := $matcher.matches(@item[0]);
 	
 	self.ok($result, $description);
 	
 	unless $result {
 		my $explain := $matcher.describe_self("Expected: " ~ $item_desc ~ ' ')
-			~ $matcher.describe_failure($item, "\n     but: ");
+			~ $matcher.describe_failure(@item[0], "\n     but: ");
 		self.emit($explain);			
 	}		
 	

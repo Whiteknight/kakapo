@@ -119,17 +119,10 @@ module Kakapo::Test::ResizableStringArray {
 		my @strings := ResizableStringArray::new();
 		self.assert_that("A new RSA", @strings, is(instance_of('ResizableStringArray')));
 		self.assert_that("A new RSA", @strings, is(empty()));
-	
-		@strings.push("foo");
-		self.assert_that("The ResizableStringArray", @strings, is(not(empty())));
-		self.assert_that("The elements count", @strings.elements, is(1));
-	
-		@strings.push(1);
-		self.assert_that("The elements count", @strings.elements, is(2));
-		
-		@strings := ResizableStringArray::new('foo', 'bar', 'baz');
+
+		@strings := ResizableStringArray::new("foo");
 		self.assert_that("A new RSA", @strings, is(instance_of('ResizableStringArray')));
-		self.assert_that("The elements count", @strings.elements, is(3));
-		self.assert_that("The 2nd element", @strings[1], is("bar"));
+		self.assert_that("The ResizableStringArray", @strings, is(not(empty())));
+		self.assert_that("The elements count", @strings.elements, is(1));	
 	}
 }

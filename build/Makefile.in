@@ -40,6 +40,7 @@ BASE_LIB_PIRS = 		\
 	src/Array.pir		\
 	src/Class.pir		\
 	src/Config.pir	\
+	src/ConfigFile.pir	\
 	src/Dumper.pir	\
 	src/File.pir		\
 	src/Hash.pir		\
@@ -47,7 +48,8 @@ BASE_LIB_PIRS = 		\
 	src/OS.pir		\
 	src/Parrot.pir 	\
 	src/Registry.pir 	\
-	src/ConfigFile.pir	\
+	src/ResizablePMCArray.pir \
+	src/ResizableStringArray.pir \
 	src/String.pir
 
 GENERATED_FILES =		\
@@ -66,8 +68,10 @@ TEST_LIB_PIRS =			\
 	src/Test/Testcase.pir	\
 	src/Matchers/Defined.pir	\
 	src/Matchers/DescribedAs.pir	\
+	src/Matchers/Elements.pir	\
 	src/Matchers/Empty.pir	\
 	src/Matchers/Equals.pir	\
+	src/Matchers/EqualsArray.pir	\
 	src/Matchers/EqualsFloat.pir	\
 	src/Matchers/False.pir	\
 	src/Matchers/Factory.pir	\
@@ -187,11 +191,18 @@ src/kakapo_top.pir: src/kakapo_top_pir.tmpl
 test: build $(TEST_PIRS)
 	$(PARROT) $(PARROT_FLAGS) t/Parrot.pir
 
+#----------------------------------------------------------------------
+# Individual test-foo targets 
+#----------------------------------------------------------------------
+
 test-array: build t/Array.pir
 	$(PARROT) $(PARROT_FLAGS) t/Array.pir
 
 test-parrot: build t/Parrot.pir
 	$(PARROT) $(PARROT_FLAGS) t/Parrot.pir
+
+test-rpa: build t/ResizablePMCArray.pir
+	$(PARROT) $(PARROT_FLAGS) t/ResizablePMCArray.pir
 
 test-rsa: build t/ResizableStringArray.pir
 	$(PARROT) $(PARROT_FLAGS) t/ResizableStringArray.pir

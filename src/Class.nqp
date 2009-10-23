@@ -1,17 +1,19 @@
 # $Id:  $
 
 module Class {
+	our %Class_info;
+	
 	_ONLOAD();
 	
 	sub _ONLOAD() {
-		if our $onload_done { return 0; }
-		$onload_done := 1;
+		if our $Onload_done { return 0; }
+		$Onload_done := 1;
 
 		Parrot::load_bytecode('P6object.pir');
 		Dumper::_ONLOAD();
 		Parrot::IMPORT('Dumper');
 		
-		our %Class_info := Hash::empty();
+		%Class_info := Hash::empty();
 	}
 		
 	################################################################
@@ -158,7 +160,7 @@ module Class {
 	}
 
 	sub _class_info($class_name) {
-		our %Class_info;
+		unless our $Onload_done { Class::_ONLOAD(); }
 		
 		unless %Class_info{$class_name} {
 			%Class_info{$class_name} := Hash::new();
@@ -489,8 +491,8 @@ module Class::ArrayBased {
 	_ONLOAD();
 	
 	sub _ONLOAD() {
-		if our $onload_done { return 0; }
-		$onload_done := 1;
+		if our $Onload_done { return 0; }
+		$Onload_done := 1;
 
 		Parrot::IMPORT('Dumper');
 		#Class::SUBCLASS('Class::ArrayBased', 'Array', 'Class::BaseBehavior');
@@ -511,8 +513,8 @@ module Class::BaseBehavior {
 	_ONLOAD();
 	
 	sub _ONLOAD() {
-		if our $onload_done { return 0; }
-		$onload_done := 1;
+		if our $Onload_done { return 0; }
+		$Onload_done := 1;
 
 		my $get_bool := "
 .namespace [ 'Class' ; 'BaseBehavior' ]
@@ -633,8 +635,8 @@ module Class::HashBased {
 	_ONLOAD();
 	
 	sub _ONLOAD() {
-		if our $onload_done { return 0; }
-		$onload_done := 1;
+		if our $Onload_done { return 0; }
+		$Onload_done := 1;
 
 		Parrot::IMPORT('Dumper');
 		Class::SUBCLASS('Class::HashBased',

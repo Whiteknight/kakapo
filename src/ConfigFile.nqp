@@ -8,11 +8,13 @@ sub _ONLOAD() {
 	if our $onload_done { return 0; }
 	$onload_done := 1;
 
+	Registry::_ONLOAD();
+
 	Parrot::IMPORT('Dumper');
-	
+
 	Class::SUBCLASS('ConfigFile',
 		'Class::HashBased');	
-	
+		
 	# Store an instance in the Registry
 	my $config := ConfigFile.new();
 	Registry<CONFIG> := $config;
@@ -31,8 +33,6 @@ sub _ONLOAD() {
 	NOTE("ConfigFile::_onload: done");
 }
 		
-################################################################
-
 method file($filename?) {
 	
 	if $filename && self<_filename> ne $filename {
