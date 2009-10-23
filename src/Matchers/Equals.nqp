@@ -21,8 +21,9 @@ module Matcher::Equals {
 
 	method describe_self($description) {
 		return $description 
-			~ "a " ~ self.match_type
-			~ " equal to " ~ self.value;
+			~ (self.match_type[0] eq 'I' ?? "an " !! "a ")
+			~ self.match_type
+			~ " equal to '" ~ self.value ~ "'";
 	}
 	
 	method find_match_type($item) {

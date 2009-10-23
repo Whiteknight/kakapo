@@ -25,7 +25,7 @@ module Matcher::TypeSafe {
 			$failure := 'was null';
 		}
 		elsif self.wrong_type {
-			$failure := 'was the wrong type';
+			$failure := "was the wrong type ('" ~ Parrot::typeof($item) ~ "')";
 		}
 		else {
 			return self.describe_failure_typesafe($item, $description);

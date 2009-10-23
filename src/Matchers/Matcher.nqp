@@ -39,8 +39,6 @@ module Matcher {
 	lt_num
 	lt_str
 	
-	defined
-	same_as
 	all_of
 	any_of
 	has_key

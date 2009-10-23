@@ -6,7 +6,7 @@ module Matcher::Factory {
 		if our $onload_done { return 0; }
 		$onload_done := 1;
 				
-		Parrot::IMPORT('Dumper');
+		Parrot::IMPORT('Dumper', q<ASSERT DUMP DUMP_ NOTE>);
 		
 		my $class_name := 'Matcher::Factory';
 		
@@ -25,7 +25,6 @@ module Matcher::Factory {
 
 	sub assert_that($item, $matcher) {
 		if ! $matcher.matches($item) {
-		say("MATCH FAILED");
 			my $explain := $matcher.describe_self("Expected: ")
 				~ $matcher.describe_failure($item, "\n     but: ");
 			say($explain);			
@@ -36,16 +35,19 @@ module Matcher::Factory {
 	}
 
 	sub defined()				{ return Matcher::Defined.new(); }
+	sub empty()				{ return Matcher::Empty.new(); }
+	
 	sub _equals_Float($value)		{ return Matcher::IsCloseTo.new($value); }
 	sub _equals_Integer($value)	{ return Matcher::Equals.new($value, :match_type('Integer')); }
 	sub _equals_String($value)		{ return Matcher::Equals.new($value, :match_type('String')); }
 
 	sub false()				{ return Matcher::False.new(); }
+	sub instance_of($type)		{ return Matcher::InstanceOf.new($type); }
 	
-	sub _is_Float($value)		{ return Matcher::IsCloseTo.new($value); }
-	sub _is_Integer($value)		{ return Matcher::Equals.new($value, :match_type('Integer')); }
+	sub _is_Float($value)		{ return is(Matcher::EqualsFloat.new($value)); }
+	sub _is_Integer($value)		{ return is(Matcher::Equals.new($value, :match_type('Integer'))); }
 	sub _is_Matcher($matcher)	{ return Matcher::DescribedAs.new('is', $matcher); }
-	sub _is_String($value)		{ return Matcher::Equals.new($value, :match_type('String')); }
+	sub _is_String($value)		{ return is(Matcher::Equals.new($value, :match_type('String'))); }
 	
 	sub _not_Float($value)		{ return not(is($value)); }
 	sub _not_Integer($value)		{ return not(is($value)); }
@@ -61,6 +63,4 @@ module Matcher::Factory {
 	
 	sub same_as($value)		{ return Matcher::IdenticalTo.new($value); }
 	sub true()				{ return Matcher::True.new(); }
-	sub type($type)			{ return Matcher::ObjectOfType.new($type); }
 }
-

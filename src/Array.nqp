@@ -299,8 +299,10 @@ module ResizablePMCArray {
 ################################################################
 
 module ResizableStringArray {
-	method append() {
-		Dumper::DIE("Didn't think this would be needed.");
+	method append(@other) {
+		for @other {
+			self.push(~ $_);
+		}
 	}
 
 	method clone() {
@@ -376,5 +378,15 @@ module ResizableStringArray {
 		};
 		
 		return $result;
+	}
+	
+	sub new(*@contents) {
+		my @array := Q:PIR { %r = new 'ResizableStringArray' };
+		
+		for @contents {
+			@array.push( ~ $_);
+		}
+		
+		return @array;
 	}
 }

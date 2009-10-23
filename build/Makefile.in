@@ -66,11 +66,13 @@ TEST_LIB_PIRS =			\
 	src/Test/Testcase.pir	\
 	src/Matchers/Defined.pir	\
 	src/Matchers/DescribedAs.pir	\
+	src/Matchers/Empty.pir	\
 	src/Matchers/Equals.pir	\
 	src/Matchers/EqualsFloat.pir	\
 	src/Matchers/False.pir	\
 	src/Matchers/Factory.pir	\
 	src/Matchers/IdenticalTo.pir	\
+	src/Matchers/InstanceOf.pir	\
 	src/Matchers/Matcher.pir	\
 	src/Matchers/Not.pir	\
 	src/Matchers/Null.pir	\
@@ -78,7 +80,9 @@ TEST_LIB_PIRS =			\
 	src/Matchers/TypeSafe.pir	\
 
 TEST_PIRS :=			\
-	t/Parrot.pir
+	t/Array.pir			\
+	t/Parrot.pir			\
+	t/ResizableStringArray.pir
 
 #######################################################################
 ##### Implicit rules here 
@@ -182,6 +186,15 @@ src/kakapo_top.pir: src/kakapo_top_pir.tmpl
 
 test: build $(TEST_PIRS)
 	$(PARROT) $(PARROT_FLAGS) t/Parrot.pir
+
+test-array: build t/Array.pir
+	$(PARROT) $(PARROT_FLAGS) t/Array.pir
+
+test-parrot: build t/Parrot.pir
+	$(PARROT) $(PARROT_FLAGS) t/Parrot.pir
+
+test-rsa: build t/ResizableStringArray.pir
+	$(PARROT) $(PARROT_FLAGS) t/ResizableStringArray.pir
 
 testclean:
 	$(RM_F) $(TEST_CLEANUPS)

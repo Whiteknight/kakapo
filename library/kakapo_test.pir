@@ -10,93 +10,97 @@
 	.return (0)
 .end
 .namespace []
-.sub "_block11"  :anon :subid("10_1256249531.52681")
+.sub "_block11"  :anon :subid("10_1256259143.31774")
     get_hll_global $P14, ["Testcase"], "_block13" 
     .return ($P14)
 .end
 
 
 .namespace ["Testcase"]
-.sub "_block13" :init :load :subid("11_1256249531.52681")
-    .const 'Sub' $P401 = "50_1256249531.52681" 
-    capture_lex $P401
-    .const 'Sub' $P395 = "49_1256249531.52681" 
-    capture_lex $P395
-    .const 'Sub' $P387 = "48_1256249531.52681" 
-    capture_lex $P387
-    .const 'Sub' $P348 = "45_1256249531.52681" 
-    capture_lex $P348
-    .const 'Sub' $P320 = "43_1256249531.52681" 
-    capture_lex $P320
-    .const 'Sub' $P312 = "42_1256249531.52681" 
-    capture_lex $P312
-    .const 'Sub' $P304 = "41_1256249531.52681" 
-    capture_lex $P304
-    .const 'Sub' $P296 = "40_1256249531.52681" 
-    capture_lex $P296
-    .const 'Sub' $P288 = "39_1256249531.52681" 
-    capture_lex $P288
-    .const 'Sub' $P282 = "38_1256249531.52681" 
-    capture_lex $P282
-    .const 'Sub' $P267 = "37_1256249531.52681" 
-    capture_lex $P267
-    .const 'Sub' $P235 = "34_1256249531.52681" 
-    capture_lex $P235
-    .const 'Sub' $P223 = "33_1256249531.52681" 
-    capture_lex $P223
-    .const 'Sub' $P215 = "32_1256249531.52681" 
-    capture_lex $P215
-    .const 'Sub' $P207 = "31_1256249531.52681" 
-    capture_lex $P207
-    .const 'Sub' $P199 = "30_1256249531.52681" 
-    capture_lex $P199
-    .const 'Sub' $P191 = "29_1256249531.52681" 
-    capture_lex $P191
-    .const 'Sub' $P183 = "28_1256249531.52681" 
-    capture_lex $P183
-    .const 'Sub' $P130 = "24_1256249531.52681" 
-    capture_lex $P130
-    .const 'Sub' $P122 = "23_1256249531.52681" 
-    capture_lex $P122
-    .const 'Sub' $P115 = "22_1256249531.52681" 
-    capture_lex $P115
-    .const 'Sub' $P107 = "21_1256249531.52681" 
-    capture_lex $P107
-    .const 'Sub' $P100 = "20_1256249531.52681" 
-    capture_lex $P100
-    .const 'Sub' $P65 = "18_1256249531.52681" 
+.sub "_block13" :init :load :subid("11_1256259143.31774")
+    .const 'Sub' $P419 = "52_1256259143.31774" 
+    capture_lex $P419
+    .const 'Sub' $P413 = "51_1256259143.31774" 
+    capture_lex $P413
+    .const 'Sub' $P405 = "50_1256259143.31774" 
+    capture_lex $P405
+    .const 'Sub' $P367 = "47_1256259143.31774" 
+    capture_lex $P367
+    .const 'Sub' $P352 = "46_1256259143.31774" 
+    capture_lex $P352
+    .const 'Sub' $P324 = "44_1256259143.31774" 
+    capture_lex $P324
+    .const 'Sub' $P316 = "43_1256259143.31774" 
+    capture_lex $P316
+    .const 'Sub' $P308 = "42_1256259143.31774" 
+    capture_lex $P308
+    .const 'Sub' $P300 = "41_1256259143.31774" 
+    capture_lex $P300
+    .const 'Sub' $P292 = "40_1256259143.31774" 
+    capture_lex $P292
+    .const 'Sub' $P286 = "39_1256259143.31774" 
+    capture_lex $P286
+    .const 'Sub' $P253 = "36_1256259143.31774" 
+    capture_lex $P253
+    .const 'Sub' $P241 = "35_1256259143.31774" 
+    capture_lex $P241
+    .const 'Sub' $P233 = "34_1256259143.31774" 
+    capture_lex $P233
+    .const 'Sub' $P225 = "33_1256259143.31774" 
+    capture_lex $P225
+    .const 'Sub' $P217 = "32_1256259143.31774" 
+    capture_lex $P217
+    .const 'Sub' $P209 = "31_1256259143.31774" 
+    capture_lex $P209
+    .const 'Sub' $P201 = "30_1256259143.31774" 
+    capture_lex $P201
+    .const 'Sub' $P148 = "26_1256259143.31774" 
+    capture_lex $P148
+    .const 'Sub' $P139 = "25_1256259143.31774" 
+    capture_lex $P139
+    .const 'Sub' $P131 = "24_1256259143.31774" 
+    capture_lex $P131
+    .const 'Sub' $P123 = "23_1256259143.31774" 
+    capture_lex $P123
+    .const 'Sub' $P116 = "22_1256259143.31774" 
+    capture_lex $P116
+    .const 'Sub' $P108 = "21_1256259143.31774" 
+    capture_lex $P108
+    .const 'Sub' $P101 = "20_1256259143.31774" 
+    capture_lex $P101
+    .const 'Sub' $P65 = "18_1256259143.31774" 
     capture_lex $P65
-    .const 'Sub' $P57 = "17_1256249531.52681" 
+    .const 'Sub' $P57 = "17_1256259143.31774" 
     capture_lex $P57
-    .const 'Sub' $P50 = "16_1256249531.52681" 
+    .const 'Sub' $P50 = "16_1256259143.31774" 
     capture_lex $P50
-    .const 'Sub' $P42 = "15_1256249531.52681" 
+    .const 'Sub' $P42 = "15_1256259143.31774" 
     capture_lex $P42
-    .const 'Sub' $P35 = "14_1256249531.52681" 
+    .const 'Sub' $P35 = "14_1256259143.31774" 
     capture_lex $P35
-    .const 'Sub' $P15 = "12_1256249531.52681" 
+    .const 'Sub' $P15 = "12_1256259143.31774" 
     capture_lex $P15
     "_ONLOAD"()
-    .const 'Sub' $P401 = "50_1256249531.52681" 
-    capture_lex $P401
-    .return ($P401)
+    .const 'Sub' $P419 = "52_1256259143.31774" 
+    capture_lex $P419
+    .return ($P419)
 .end
 
 
 .namespace ["Testcase"]
-.sub "_ONLOAD"  :subid("12_1256249531.52681") :outer("11_1256249531.52681")
-    .const 'Sub' $P21 = "13_1256249531.52681" 
+.sub "_ONLOAD"  :subid("12_1256259143.31774") :outer("11_1256259143.31774")
+    .const 'Sub' $P21 = "13_1256259143.31774" 
     capture_lex $P21
     new $P17, 'ExceptionHandler'
     set_addr $P17, control_16
     $P17."handle_types"(58)
     push_eh $P17
     get_global $P19, "$onload_done"
-    unless_null $P19, vivify_51
+    unless_null $P19, vivify_53
     new $P19, "Undef"
-  vivify_51:
+  vivify_53:
     unless $P19, if_18_end
-    .const 'Sub' $P21 = "13_1256249531.52681" 
+    .const 'Sub' $P21 = "13_1256259143.31774" 
     capture_lex $P21
     $P21()
   if_18_end:
@@ -105,13 +109,13 @@
     set_global "$onload_done", $P24
  load_bytecode 'library/kakapo.pbc' 
     get_hll_global $P25, "Registry"
-    unless_null $P25, vivify_52
+    unless_null $P25, vivify_54
     new $P25, "Hash"
-  vivify_52:
+  vivify_54:
     set $P26, $P25["CONFIG"]
-    unless_null $P26, vivify_53
+    unless_null $P26, vivify_55
     new $P26, "Undef"
-  vivify_53:
+  vivify_55:
     $P26."file"("kakapo.cfg")
     get_hll_global $P27, ["Parrot"], "IMPORT"
     $P27("Dumper")
@@ -121,15 +125,15 @@
     assign $P29, "Testcase"
     .lex "$class_name", $P29
     find_lex $P30, "$class_name"
-    unless_null $P30, vivify_54
+    unless_null $P30, vivify_56
     new $P30, "Undef"
-  vivify_54:
+  vivify_56:
     "NOTE"("Creating class ", $P30)
     get_hll_global $P31, ["Class"], "SUBCLASS"
     find_lex $P32, "$class_name"
-    unless_null $P32, vivify_55
+    unless_null $P32, vivify_57
     new $P32, "Undef"
-  vivify_55:
+  vivify_57:
     $P31($P32, "Class::HashBased")
     $P33 = "NOTE"("done")
     .return ($P33)
@@ -143,7 +147,7 @@
 
 
 .namespace ["Testcase"]
-.sub "_block20"  :anon :subid("13_1256249531.52681") :outer("12_1256249531.52681")
+.sub "_block20"  :anon :subid("13_1256259143.31774") :outer("12_1256259143.31774")
     new $P22, "Exception"
     set $P22['type'], 58
     new $P23, "Integer"
@@ -155,7 +159,7 @@
 
 
 .namespace ["Testcase"]
-.sub "after_methods"  :subid("14_1256249531.52681") :method :outer("11_1256249531.52681")
+.sub "after_methods"  :subid("14_1256259143.31774") :method :outer("11_1256259143.31774")
     .param pmc param_38 :slurpy
     new $P37, 'ExceptionHandler'
     set_addr $P37, control_36
@@ -176,7 +180,7 @@
 
 
 .namespace ["Testcase"]
-.sub "after_prefix"  :subid("15_1256249531.52681") :method :outer("11_1256249531.52681")
+.sub "after_prefix"  :subid("15_1256259143.31774") :method :outer("11_1256259143.31774")
     .param pmc param_45 :slurpy
     new $P44, 'ExceptionHandler'
     set_addr $P44, control_43
@@ -186,9 +190,9 @@
     .lex "@value", param_45
     find_lex $P46, "self"
     find_lex $P47, "@value"
-    unless_null $P47, vivify_56
+    unless_null $P47, vivify_58
     new $P47, "ResizablePMCArray"
-  vivify_56:
+  vivify_58:
     $P48 = $P46."_ATTR_DEFAULT"("after_prefix", $P47, "after_")
     .return ($P48)
   control_43:
@@ -201,7 +205,7 @@
 
 
 .namespace ["Testcase"]
-.sub "afterall_methods"  :subid("16_1256249531.52681") :method :outer("11_1256249531.52681")
+.sub "afterall_methods"  :subid("16_1256259143.31774") :method :outer("11_1256259143.31774")
     .param pmc param_53 :slurpy
     new $P52, 'ExceptionHandler'
     set_addr $P52, control_51
@@ -222,7 +226,7 @@
 
 
 .namespace ["Testcase"]
-.sub "afterall_prefix"  :subid("17_1256249531.52681") :method :outer("11_1256249531.52681")
+.sub "afterall_prefix"  :subid("17_1256259143.31774") :method :outer("11_1256259143.31774")
     .param pmc param_60 :slurpy
     new $P59, 'ExceptionHandler'
     set_addr $P59, control_58
@@ -232,9 +236,9 @@
     .lex "@value", param_60
     find_lex $P61, "self"
     find_lex $P62, "@value"
-    unless_null $P62, vivify_57
+    unless_null $P62, vivify_59
     new $P62, "ResizablePMCArray"
-  vivify_57:
+  vivify_59:
     $P63 = $P61."_ATTR_DEFAULT"("afterall_prefix", $P62, "afterall_")
     .return ($P63)
   control_58:
@@ -247,11 +251,11 @@
 
 
 .namespace ["Testcase"]
-.sub "assert_that"  :subid("18_1256249531.52681") :method :outer("11_1256249531.52681")
+.sub "assert_that"  :subid("18_1256259143.31774") :method :outer("11_1256259143.31774")
     .param pmc param_68
     .param pmc param_69
     .param pmc param_70
-    .const 'Sub' $P84 = "19_1256249531.52681" 
+    .const 'Sub' $P84 = "19_1256259143.31774" 
     capture_lex $P84
     new $P67, 'ExceptionHandler'
     set_addr $P67, control_66
@@ -262,1046 +266,1104 @@
     .lex "$item", param_69
     .lex "$matcher", param_70
     find_lex $P71, "$matcher"
-    unless_null $P71, vivify_58
+    unless_null $P71, vivify_60
     new $P71, "Undef"
-  vivify_58:
+  vivify_60:
     find_lex $P72, "$item_desc"
-    unless_null $P72, vivify_59
+    unless_null $P72, vivify_61
     new $P72, "Undef"
-  vivify_59:
+  vivify_61:
     concat $P73, $P72, " "
     $P74 = $P71."describe_self"($P73)
     .lex "$description", $P74
     find_lex $P75, "$matcher"
-    unless_null $P75, vivify_60
+    unless_null $P75, vivify_62
     new $P75, "Undef"
-  vivify_60:
+  vivify_62:
     find_lex $P76, "$item"
-    unless_null $P76, vivify_61
+    unless_null $P76, vivify_63
     new $P76, "Undef"
-  vivify_61:
+  vivify_63:
     $P77 = $P75."matches"($P76)
     .lex "$result", $P77
     find_lex $P78, "self"
     find_lex $P79, "$result"
-    unless_null $P79, vivify_62
+    unless_null $P79, vivify_64
     new $P79, "Undef"
-  vivify_62:
+  vivify_64:
     find_lex $P80, "$description"
-    unless_null $P80, vivify_63
+    unless_null $P80, vivify_65
     new $P80, "Undef"
-  vivify_63:
+  vivify_65:
     $P78."ok"($P79, $P80)
     find_lex $P82, "$result"
-    unless_null $P82, vivify_64
+    unless_null $P82, vivify_66
     new $P82, "Undef"
-  vivify_64:
+  vivify_66:
     if $P82, unless_81_end
-    .const 'Sub' $P84 = "19_1256249531.52681" 
+    .const 'Sub' $P84 = "19_1256259143.31774" 
     capture_lex $P84
     $P84()
   unless_81_end:
-    new $P97, "Exception"
-    set $P97['type'], 58
-    find_lex $P98, "$result"
-    unless_null $P98, vivify_70
-    new $P98, "Undef"
-  vivify_70:
-    setattribute $P97, 'payload', $P98
-    throw $P97
+    new $P98, "Exception"
+    set $P98['type'], 58
+    find_lex $P99, "$result"
+    unless_null $P99, vivify_72
+    new $P99, "Undef"
+  vivify_72:
+    setattribute $P98, 'payload', $P99
+    throw $P98
     .return ()
   control_66:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P99, exception, "payload"
-    .return ($P99)
+    getattribute $P100, exception, "payload"
+    .return ($P100)
     rethrow exception
 .end
 
 
 .namespace ["Testcase"]
-.sub "_block83"  :anon :subid("19_1256249531.52681") :outer("18_1256249531.52681")
+.sub "_block83"  :anon :subid("19_1256259143.31774") :outer("18_1256259143.31774")
     find_lex $P85, "$matcher"
-    unless_null $P85, vivify_65
+    unless_null $P85, vivify_67
     new $P85, "Undef"
-  vivify_65:
+  vivify_67:
     new $P86, "String"
     assign $P86, "Expected: "
     find_lex $P87, "$item_desc"
-    unless_null $P87, vivify_66
+    unless_null $P87, vivify_68
     new $P87, "Undef"
-  vivify_66:
+  vivify_68:
     concat $P88, $P86, $P87
     concat $P89, $P88, " "
     $P90 = $P85."describe_self"($P89)
     find_lex $P91, "$matcher"
-    unless_null $P91, vivify_67
+    unless_null $P91, vivify_69
     new $P91, "Undef"
-  vivify_67:
+  vivify_69:
     find_lex $P92, "$item"
-    unless_null $P92, vivify_68
+    unless_null $P92, vivify_70
     new $P92, "Undef"
-  vivify_68:
+  vivify_70:
     $S93 = $P91."describe_failure"($P92, "\n     but: ")
     concat $P94, $P90, $S93
     .lex "$explain", $P94
-    find_lex $P95, "$explain"
-    unless_null $P95, vivify_69
-    new $P95, "Undef"
-  vivify_69:
-    $P96 = "say"($P95)
-    .return ($P96)
-.end
-
-
-.namespace ["Testcase"]
-.sub "before_methods"  :subid("20_1256249531.52681") :method :outer("11_1256249531.52681")
-    .param pmc param_103 :slurpy
-    new $P102, 'ExceptionHandler'
-    set_addr $P102, control_101
-    $P102."handle_types"(58)
-    push_eh $P102
-    .lex "self", self
-    .lex "@value", param_103
-    find_lex $P104, "self"
-    $P105 = $P104."_ATTR_SETBY"("before_methods", "fetch_before_methods")
-    .return ($P105)
-  control_101:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P106, exception, "payload"
-    .return ($P106)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "before_prefix"  :subid("21_1256249531.52681") :method :outer("11_1256249531.52681")
-    .param pmc param_110 :slurpy
-    new $P109, 'ExceptionHandler'
-    set_addr $P109, control_108
-    $P109."handle_types"(58)
-    push_eh $P109
-    .lex "self", self
-    .lex "@value", param_110
-    find_lex $P111, "self"
-    find_lex $P112, "@value"
-    unless_null $P112, vivify_71
-    new $P112, "ResizablePMCArray"
+    find_lex $P95, "self"
+    find_lex $P96, "$explain"
+    unless_null $P96, vivify_71
+    new $P96, "Undef"
   vivify_71:
-    $P113 = $P111."_ATTR_DEFAULT"("before_prefix", $P112, "before_")
-    .return ($P113)
-  control_108:
+    $P97 = $P95."emit"($P96)
+    .return ($P97)
+.end
+
+
+.namespace ["Testcase"]
+.sub "before_methods"  :subid("20_1256259143.31774") :method :outer("11_1256259143.31774")
+    .param pmc param_104 :slurpy
+    new $P103, 'ExceptionHandler'
+    set_addr $P103, control_102
+    $P103."handle_types"(58)
+    push_eh $P103
+    .lex "self", self
+    .lex "@value", param_104
+    find_lex $P105, "self"
+    $P106 = $P105."_ATTR_SETBY"("before_methods", "fetch_before_methods")
+    .return ($P106)
+  control_102:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P114, exception, "payload"
+    getattribute $P107, exception, "payload"
+    .return ($P107)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "before_prefix"  :subid("21_1256259143.31774") :method :outer("11_1256259143.31774")
+    .param pmc param_111 :slurpy
+    new $P110, 'ExceptionHandler'
+    set_addr $P110, control_109
+    $P110."handle_types"(58)
+    push_eh $P110
+    .lex "self", self
+    .lex "@value", param_111
+    find_lex $P112, "self"
+    find_lex $P113, "@value"
+    unless_null $P113, vivify_73
+    new $P113, "ResizablePMCArray"
+  vivify_73:
+    $P114 = $P112."_ATTR_DEFAULT"("before_prefix", $P113, "before_")
     .return ($P114)
+  control_109:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P115, exception, "payload"
+    .return ($P115)
     rethrow exception
 .end
 
 
 .namespace ["Testcase"]
-.sub "beforeall_methods"  :subid("22_1256249531.52681") :method :outer("11_1256249531.52681")
-    .param pmc param_118 :slurpy
-    new $P117, 'ExceptionHandler'
-    set_addr $P117, control_116
-    $P117."handle_types"(58)
-    push_eh $P117
+.sub "beforeall_methods"  :subid("22_1256259143.31774") :method :outer("11_1256259143.31774")
+    .param pmc param_119 :slurpy
+    new $P118, 'ExceptionHandler'
+    set_addr $P118, control_117
+    $P118."handle_types"(58)
+    push_eh $P118
     .lex "self", self
-    .lex "@value", param_118
-    find_lex $P119, "self"
-    $P120 = $P119."_ATTR_SETBY"("beforeall_methods", "fetch_beforeall_methods")
-    .return ($P120)
-  control_116:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P121, exception, "payload"
+    .lex "@value", param_119
+    find_lex $P120, "self"
+    $P121 = $P120."_ATTR_SETBY"("beforeall_methods", "fetch_beforeall_methods")
     .return ($P121)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "beforeall_prefix"  :subid("23_1256249531.52681") :method :outer("11_1256249531.52681")
-    .param pmc param_125 :slurpy
-    new $P124, 'ExceptionHandler'
-    set_addr $P124, control_123
-    $P124."handle_types"(58)
-    push_eh $P124
-    .lex "self", self
-    .lex "@value", param_125
-    find_lex $P126, "self"
-    find_lex $P127, "@value"
-    unless_null $P127, vivify_72
-    new $P127, "ResizablePMCArray"
-  vivify_72:
-    $P128 = $P126."_ATTR_DEFAULT"("beforeall_prefix", $P127, "beforeall_")
-    .return ($P128)
-  control_123:
+  control_117:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P129, exception, "payload"
-    .return ($P129)
+    getattribute $P122, exception, "payload"
+    .return ($P122)
     rethrow exception
 .end
 
 
 .namespace ["Testcase"]
-.sub "fetch_methods"  :subid("24_1256249531.52681") :method :outer("11_1256249531.52681")
-    .param pmc param_133 :optional :named("starting_with")
-    .param int has_param_133 :opt_flag
-    .const 'Sub' $P142 = "25_1256249531.52681" 
-    capture_lex $P142
-    new $P132, 'ExceptionHandler'
-    set_addr $P132, control_131
-    $P132."handle_types"(58)
-    push_eh $P132
+.sub "beforeall_prefix"  :subid("23_1256259143.31774") :method :outer("11_1256259143.31774")
+    .param pmc param_126 :slurpy
+    new $P125, 'ExceptionHandler'
+    set_addr $P125, control_124
+    $P125."handle_types"(58)
+    push_eh $P125
     .lex "self", self
-    if has_param_133, optparam_73
-    new $P134, "Undef"
-    set param_133, $P134
-  optparam_73:
-    .lex "$starting_with", param_133
-    find_lex $P135, "$starting_with"
-    unless_null $P135, vivify_74
-    new $P135, "Undef"
+    .lex "@value", param_126
+    find_lex $P127, "self"
+    find_lex $P128, "@value"
+    unless_null $P128, vivify_74
+    new $P128, "ResizablePMCArray"
   vivify_74:
-    "NOTE"("Fetching methods starting with: ", $P135)
-    get_hll_global $P136, ["Class"], "get_method_list"
-    find_lex $P137, "self"
-    $P138 = $P136($P137)
-    .lex "@list", $P138
-    find_lex $P140, "$starting_with"
-    unless_null $P140, vivify_75
-    new $P140, "Undef"
+    $P129 = $P127."_ATTR_DEFAULT"("beforeall_prefix", $P128, "beforeall_")
+    .return ($P129)
+  control_124:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P130, exception, "payload"
+    .return ($P130)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "emit"  :subid("24_1256259143.31774") :method :outer("11_1256259143.31774")
+    .param pmc param_134 :slurpy
+    new $P133, 'ExceptionHandler'
+    set_addr $P133, control_132
+    $P133."handle_types"(58)
+    push_eh $P133
+    .lex "self", self
+    .lex "@parts", param_134
+    find_lex $P135, "@parts"
+    unless_null $P135, vivify_75
+    new $P135, "ResizablePMCArray"
   vivify_75:
-    unless $P140, if_139_end
-    .const 'Sub' $P142 = "25_1256249531.52681" 
-    capture_lex $P142
-    $P142()
-  if_139_end:
-    find_lex $P175, "@list"
-    unless_null $P175, vivify_86
-    new $P175, "ResizablePMCArray"
-  vivify_86:
-    set $N176, $P175
-    find_lex $P177, "@list"
-    unless_null $P177, vivify_87
-    new $P177, "ResizablePMCArray"
-  vivify_87:
-    $P178 = $P177."join"(", ")
-    "NOTE"("Got ", $N176, " methods: ", $P178)
-    find_lex $P179, "@list"
-    unless_null $P179, vivify_88
-    new $P179, "ResizablePMCArray"
-  vivify_88:
-    "DUMP"($P179)
-    new $P180, "Exception"
-    set $P180['type'], 58
-    find_lex $P181, "@list"
-    unless_null $P181, vivify_89
-    new $P181, "ResizablePMCArray"
-  vivify_89:
-    setattribute $P180, 'payload', $P181
-    throw $P180
-    .return ()
-  control_131:
+    $P136 = $P135."join"()
+    $P137 = "say"($P136)
+    .return ($P137)
+  control_132:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P182, exception, "payload"
-    .return ($P182)
+    getattribute $P138, exception, "payload"
+    .return ($P138)
     rethrow exception
 .end
 
 
 .namespace ["Testcase"]
-.sub "_block141"  :anon :subid("25_1256249531.52681") :outer("24_1256249531.52681")
-    .const 'Sub' $P152 = "26_1256249531.52681" 
-    capture_lex $P152
-    new $P143, "ResizablePMCArray"
-    .lex "@matches", $P143
-    get_hll_global $P144, ["String"], "length"
-    find_lex $P145, "$starting_with"
-    unless_null $P145, vivify_76
-    new $P145, "Undef"
+.sub "note"  :subid("25_1256259143.31774") :method :outer("11_1256259143.31774")
+    .param pmc param_142 :slurpy
+    new $P141, 'ExceptionHandler'
+    set_addr $P141, control_140
+    $P141."handle_types"(58)
+    push_eh $P141
+    .lex "self", self
+    .lex "@message", param_142
+    find_lex $P143, "self"
+    find_lex $P144, "@message"
+    unless_null $P144, vivify_76
+    new $P144, "ResizablePMCArray"
   vivify_76:
-    $P146 = $P144($P145)
-    .lex "$length", $P146
-    find_lex $P148, "@list"
-    unless_null $P148, vivify_77
-    new $P148, "ResizablePMCArray"
-  vivify_77:
-    defined $I149, $P148
-    unless $I149, for_undef_78
-    iter $P147, $P148
-    new $P172, 'ExceptionHandler'
-    set_addr $P172, loop171_handler
-    $P172."handle_types"(65, 67, 66)
-    push_eh $P172
-  loop171_test:
-    unless $P147, loop171_done
-    shift $P150, $P147
-  loop171_redo:
-    .const 'Sub' $P152 = "26_1256249531.52681" 
-    capture_lex $P152
-    $P152($P150)
-  loop171_next:
-    goto loop171_test
-  loop171_handler:
+    $P145 = $P144."join"()
+    $P146 = $P143."emit"("#\n", "# NOTE: ", $P145, "\n", "#")
+    .return ($P146)
+  control_140:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P173, exception, 'type'
-    eq $P173, 65, loop171_next
-    eq $P173, 67, loop171_redo
-  loop171_done:
-    pop_eh 
-  for_undef_78:
-    find_lex $P174, "@matches"
-    unless_null $P174, vivify_85
-    new $P174, "ResizablePMCArray"
-  vivify_85:
-    store_lex "@list", $P174
-    .return ($P174)
+    getattribute $P147, exception, "payload"
+    .return ($P147)
+    rethrow exception
 .end
 
 
 .namespace ["Testcase"]
-.sub "_block151"  :anon :subid("26_1256249531.52681") :outer("25_1256249531.52681")
-    .param pmc param_153
-    .const 'Sub' $P166 = "27_1256249531.52681" 
-    capture_lex $P166
-    .lex "$_", param_153
-    find_lex $P154, "$_"
-    unless_null $P154, vivify_79
-    new $P154, "Undef"
+.sub "fetch_methods"  :subid("26_1256259143.31774") :method :outer("11_1256259143.31774")
+    .param pmc param_151 :optional :named("starting_with")
+    .param int has_param_151 :opt_flag
+    .const 'Sub' $P160 = "27_1256259143.31774" 
+    capture_lex $P160
+    new $P150, 'ExceptionHandler'
+    set_addr $P150, control_149
+    $P150."handle_types"(58)
+    push_eh $P150
+    .lex "self", self
+    if has_param_151, optparam_77
+    new $P152, "Undef"
+    set param_151, $P152
+  optparam_77:
+    .lex "$starting_with", param_151
+    find_lex $P153, "$starting_with"
+    unless_null $P153, vivify_78
+    new $P153, "Undef"
+  vivify_78:
+    "NOTE"("Fetching methods starting with: ", $P153)
+    get_hll_global $P154, ["Class"], "get_method_list"
+    find_lex $P155, "self"
+    $P156 = $P154($P155)
+    .lex "@list", $P156
+    find_lex $P158, "$starting_with"
+    unless_null $P158, vivify_79
+    new $P158, "Undef"
   vivify_79:
-    set $S155, $P154
-    new $P156, 'String'
-    set $P156, $S155
-    .lex "$method", $P156
-    find_lex $P159, "$method"
-    unless_null $P159, vivify_80
-    new $P159, "Undef"
-  vivify_80:
-    find_lex $P160, "$length"
-    unless_null $P160, vivify_81
-    new $P160, "Undef"
-  vivify_81:
-    $S161 = $P159."substr"(0, $P160)
-    find_lex $P162, "$starting_with"
-    unless_null $P162, vivify_82
-    new $P162, "Undef"
-  vivify_82:
-    set $S163, $P162
-    iseq $I164, $S161, $S163
-    if $I164, if_158
-    new $P157, 'Integer'
-    set $P157, $I164
-    goto if_158_end
-  if_158:
-    .const 'Sub' $P166 = "27_1256249531.52681" 
-    capture_lex $P166
-    $P170 = $P166()
-    set $P157, $P170
-  if_158_end:
-    .return ($P157)
-.end
-
-
-.namespace ["Testcase"]
-.sub "_block165"  :anon :subid("27_1256249531.52681") :outer("26_1256249531.52681")
-    find_lex $P167, "@matches"
-    unless_null $P167, vivify_83
-    new $P167, "ResizablePMCArray"
-  vivify_83:
-    find_lex $P168, "$method"
-    unless_null $P168, vivify_84
-    new $P168, "Undef"
-  vivify_84:
-    $P169 = $P167."push"($P168)
-    .return ($P169)
-.end
-
-
-.namespace ["Testcase"]
-.sub "fetch_after_methods"  :subid("28_1256249531.52681") :method :outer("11_1256249531.52681")
-    new $P185, 'ExceptionHandler'
-    set_addr $P185, control_184
-    $P185."handle_types"(58)
-    push_eh $P185
-    .lex "self", self
-    find_lex $P186, "self"
-    find_lex $P187, "self"
-    $P188 = $P187."after_prefix"()
-    $P189 = $P186."fetch_methods"($P188 :named("starting_with"))
-    .return ($P189)
-  control_184:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P190, exception, "payload"
-    .return ($P190)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "fetch_afterall_methods"  :subid("29_1256249531.52681") :method :outer("11_1256249531.52681")
-    new $P193, 'ExceptionHandler'
-    set_addr $P193, control_192
-    $P193."handle_types"(58)
-    push_eh $P193
-    .lex "self", self
-    find_lex $P194, "self"
-    find_lex $P195, "self"
-    $P196 = $P195."afterall_prefix"()
-    $P197 = $P194."fetch_methods"($P196 :named("starting_with"))
-    .return ($P197)
-  control_192:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P198, exception, "payload"
-    .return ($P198)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "fetch_before_methods"  :subid("30_1256249531.52681") :method :outer("11_1256249531.52681")
-    new $P201, 'ExceptionHandler'
-    set_addr $P201, control_200
-    $P201."handle_types"(58)
-    push_eh $P201
-    .lex "self", self
-    find_lex $P202, "self"
-    find_lex $P203, "self"
-    $P204 = $P203."before_prefix"()
-    $P205 = $P202."fetch_methods"($P204 :named("starting_with"))
-    .return ($P205)
-  control_200:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P206, exception, "payload"
-    .return ($P206)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "fetch_beforeall_methods"  :subid("31_1256249531.52681") :method :outer("11_1256249531.52681")
-    new $P209, 'ExceptionHandler'
-    set_addr $P209, control_208
-    $P209."handle_types"(58)
-    push_eh $P209
-    .lex "self", self
-    find_lex $P210, "self"
-    find_lex $P211, "self"
-    $P212 = $P211."beforeall_prefix"()
-    $P213 = $P210."fetch_methods"($P212 :named("starting_with"))
-    .return ($P213)
-  control_208:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P214, exception, "payload"
-    .return ($P214)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "fetch_test_methods"  :subid("32_1256249531.52681") :method :outer("11_1256249531.52681")
-    new $P217, 'ExceptionHandler'
-    set_addr $P217, control_216
-    $P217."handle_types"(58)
-    push_eh $P217
-    .lex "self", self
-    find_lex $P218, "self"
-    find_lex $P219, "self"
-    $P220 = $P219."test_prefix"()
-    $P221 = $P218."fetch_methods"($P220 :named("starting_with"))
-    .return ($P221)
-  control_216:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P222, exception, "payload"
-    .return ($P222)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "init"  :subid("33_1256249531.52681") :method :outer("11_1256249531.52681")
-    .param pmc param_226
-    .param pmc param_227
-    new $P225, 'ExceptionHandler'
-    set_addr $P225, control_224
-    $P225."handle_types"(58)
-    push_eh $P225
-    .lex "self", self
-    .lex "@children", param_226
-    .lex "%attributes", param_227
-    get_hll_global $P228, ["Class";"BaseBehavior"], "init"
-    find_lex $P229, "self"
-    find_lex $P230, "@children"
-    unless_null $P230, vivify_90
-    new $P230, "ResizablePMCArray"
+    unless $P158, if_157_end
+    .const 'Sub' $P160 = "27_1256259143.31774" 
+    capture_lex $P160
+    $P160()
+  if_157_end:
+    find_lex $P193, "@list"
+    unless_null $P193, vivify_90
+    new $P193, "ResizablePMCArray"
   vivify_90:
-    find_lex $P231, "%attributes"
-    unless_null $P231, vivify_91
-    new $P231, "Hash"
+    set $N194, $P193
+    find_lex $P195, "@list"
+    unless_null $P195, vivify_91
+    new $P195, "ResizablePMCArray"
   vivify_91:
-    $P228($P229, $P230, $P231)
-    find_lex $P232, "self"
-    $P233 = $P232."test_counter"(0)
-    .return ($P233)
-  control_224:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P234, exception, "payload"
-    .return ($P234)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "ok"  :subid("34_1256249531.52681") :method :outer("11_1256249531.52681")
-    .param pmc param_238
-    .param pmc param_239 :optional
-    .param int has_param_239 :opt_flag
-    .const 'Sub' $P258 = "36_1256249531.52681" 
-    capture_lex $P258
-    .const 'Sub' $P245 = "35_1256249531.52681" 
-    capture_lex $P245
-    new $P237, 'ExceptionHandler'
-    set_addr $P237, control_236
-    $P237."handle_types"(58)
-    push_eh $P237
-    .lex "self", self
-    .lex "$result", param_238
-    if has_param_239, optparam_92
-    new $P240, "Undef"
-    set param_239, $P240
-  optparam_92:
-    .lex "$note", param_239
-    new $P241, "ResizablePMCArray"
-    .lex "@output", $P241
-    find_lex $P243, "$result"
-    unless_null $P243, vivify_93
-    new $P243, "Undef"
+    $P196 = $P195."join"(", ")
+    "NOTE"("Got ", $N194, " methods: ", $P196)
+    find_lex $P197, "@list"
+    unless_null $P197, vivify_92
+    new $P197, "ResizablePMCArray"
+  vivify_92:
+    "DUMP"($P197)
+    new $P198, "Exception"
+    set $P198['type'], 58
+    find_lex $P199, "@list"
+    unless_null $P199, vivify_93
+    new $P199, "ResizablePMCArray"
   vivify_93:
-    if $P243, unless_242_end
-    .const 'Sub' $P245 = "35_1256249531.52681" 
-    capture_lex $P245
-    $P245()
-  unless_242_end:
-    find_lex $P248, "@output"
-    unless_null $P248, vivify_95
+    setattribute $P198, 'payload', $P199
+    throw $P198
+    .return ()
+  control_149:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P200, exception, "payload"
+    .return ($P200)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "_block159"  :anon :subid("27_1256259143.31774") :outer("26_1256259143.31774")
+    .const 'Sub' $P170 = "28_1256259143.31774" 
+    capture_lex $P170
+    new $P161, "ResizablePMCArray"
+    .lex "@matches", $P161
+    get_hll_global $P162, ["String"], "length"
+    find_lex $P163, "$starting_with"
+    unless_null $P163, vivify_80
+    new $P163, "Undef"
+  vivify_80:
+    $P164 = $P162($P163)
+    .lex "$length", $P164
+    find_lex $P166, "@list"
+    unless_null $P166, vivify_81
+    new $P166, "ResizablePMCArray"
+  vivify_81:
+    defined $I167, $P166
+    unless $I167, for_undef_82
+    iter $P165, $P166
+    new $P190, 'ExceptionHandler'
+    set_addr $P190, loop189_handler
+    $P190."handle_types"(65, 67, 66)
+    push_eh $P190
+  loop189_test:
+    unless $P165, loop189_done
+    shift $P168, $P165
+  loop189_redo:
+    .const 'Sub' $P170 = "28_1256259143.31774" 
+    capture_lex $P170
+    $P170($P168)
+  loop189_next:
+    goto loop189_test
+  loop189_handler:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P191, exception, 'type'
+    eq $P191, 65, loop189_next
+    eq $P191, 67, loop189_redo
+  loop189_done:
+    pop_eh 
+  for_undef_82:
+    find_lex $P192, "@matches"
+    unless_null $P192, vivify_89
+    new $P192, "ResizablePMCArray"
+  vivify_89:
+    store_lex "@list", $P192
+    .return ($P192)
+.end
+
+
+.namespace ["Testcase"]
+.sub "_block169"  :anon :subid("28_1256259143.31774") :outer("27_1256259143.31774")
+    .param pmc param_171
+    .const 'Sub' $P184 = "29_1256259143.31774" 
+    capture_lex $P184
+    .lex "$_", param_171
+    find_lex $P172, "$_"
+    unless_null $P172, vivify_83
+    new $P172, "Undef"
+  vivify_83:
+    set $S173, $P172
+    new $P174, 'String'
+    set $P174, $S173
+    .lex "$method", $P174
+    find_lex $P177, "$method"
+    unless_null $P177, vivify_84
+    new $P177, "Undef"
+  vivify_84:
+    find_lex $P178, "$length"
+    unless_null $P178, vivify_85
+    new $P178, "Undef"
+  vivify_85:
+    $S179 = $P177."substr"(0, $P178)
+    find_lex $P180, "$starting_with"
+    unless_null $P180, vivify_86
+    new $P180, "Undef"
+  vivify_86:
+    set $S181, $P180
+    iseq $I182, $S179, $S181
+    if $I182, if_176
+    new $P175, 'Integer'
+    set $P175, $I182
+    goto if_176_end
+  if_176:
+    .const 'Sub' $P184 = "29_1256259143.31774" 
+    capture_lex $P184
+    $P188 = $P184()
+    set $P175, $P188
+  if_176_end:
+    .return ($P175)
+.end
+
+
+.namespace ["Testcase"]
+.sub "_block183"  :anon :subid("29_1256259143.31774") :outer("28_1256259143.31774")
+    find_lex $P185, "@matches"
+    unless_null $P185, vivify_87
+    new $P185, "ResizablePMCArray"
+  vivify_87:
+    find_lex $P186, "$method"
+    unless_null $P186, vivify_88
+    new $P186, "Undef"
+  vivify_88:
+    $P187 = $P185."push"($P186)
+    .return ($P187)
+.end
+
+
+.namespace ["Testcase"]
+.sub "fetch_after_methods"  :subid("30_1256259143.31774") :method :outer("11_1256259143.31774")
+    new $P203, 'ExceptionHandler'
+    set_addr $P203, control_202
+    $P203."handle_types"(58)
+    push_eh $P203
+    .lex "self", self
+    find_lex $P204, "self"
+    find_lex $P205, "self"
+    $P206 = $P205."after_prefix"()
+    $P207 = $P204."fetch_methods"($P206 :named("starting_with"))
+    .return ($P207)
+  control_202:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P208, exception, "payload"
+    .return ($P208)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "fetch_afterall_methods"  :subid("31_1256259143.31774") :method :outer("11_1256259143.31774")
+    new $P211, 'ExceptionHandler'
+    set_addr $P211, control_210
+    $P211."handle_types"(58)
+    push_eh $P211
+    .lex "self", self
+    find_lex $P212, "self"
+    find_lex $P213, "self"
+    $P214 = $P213."afterall_prefix"()
+    $P215 = $P212."fetch_methods"($P214 :named("starting_with"))
+    .return ($P215)
+  control_210:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P216, exception, "payload"
+    .return ($P216)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "fetch_before_methods"  :subid("32_1256259143.31774") :method :outer("11_1256259143.31774")
+    new $P219, 'ExceptionHandler'
+    set_addr $P219, control_218
+    $P219."handle_types"(58)
+    push_eh $P219
+    .lex "self", self
+    find_lex $P220, "self"
+    find_lex $P221, "self"
+    $P222 = $P221."before_prefix"()
+    $P223 = $P220."fetch_methods"($P222 :named("starting_with"))
+    .return ($P223)
+  control_218:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P224, exception, "payload"
+    .return ($P224)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "fetch_beforeall_methods"  :subid("33_1256259143.31774") :method :outer("11_1256259143.31774")
+    new $P227, 'ExceptionHandler'
+    set_addr $P227, control_226
+    $P227."handle_types"(58)
+    push_eh $P227
+    .lex "self", self
+    find_lex $P228, "self"
+    find_lex $P229, "self"
+    $P230 = $P229."beforeall_prefix"()
+    $P231 = $P228."fetch_methods"($P230 :named("starting_with"))
+    .return ($P231)
+  control_226:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P232, exception, "payload"
+    .return ($P232)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "fetch_test_methods"  :subid("34_1256259143.31774") :method :outer("11_1256259143.31774")
+    new $P235, 'ExceptionHandler'
+    set_addr $P235, control_234
+    $P235."handle_types"(58)
+    push_eh $P235
+    .lex "self", self
+    find_lex $P236, "self"
+    find_lex $P237, "self"
+    $P238 = $P237."test_prefix"()
+    $P239 = $P236."fetch_methods"($P238 :named("starting_with"))
+    .return ($P239)
+  control_234:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P240, exception, "payload"
+    .return ($P240)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "init"  :subid("35_1256259143.31774") :method :outer("11_1256259143.31774")
+    .param pmc param_244
+    .param pmc param_245
+    new $P243, 'ExceptionHandler'
+    set_addr $P243, control_242
+    $P243."handle_types"(58)
+    push_eh $P243
+    .lex "self", self
+    .lex "@children", param_244
+    .lex "%attributes", param_245
+    get_hll_global $P246, ["Class";"BaseBehavior"], "init"
+    find_lex $P247, "self"
+    find_lex $P248, "@children"
+    unless_null $P248, vivify_94
     new $P248, "ResizablePMCArray"
-  vivify_95:
-    $P248."push"("ok")
-    find_lex $P249, "self"
-    $P250 = $P249."test_counter"()
-        ##  inline postfix:++
-        clone $P251, $P250
-        inc $P250
-    find_lex $P252, "@output"
-    unless_null $P252, vivify_96
-    new $P252, "ResizablePMCArray"
-  vivify_96:
-    find_lex $P253, "self"
-    $P254 = $P253."test_counter"()
-    $P252."push"($P254)
-    find_lex $P256, "$note"
-    unless_null $P256, vivify_97
-    new $P256, "Undef"
-  vivify_97:
-    unless $P256, if_255_end
-    .const 'Sub' $P258 = "36_1256249531.52681" 
-    capture_lex $P258
-    $P258()
-  if_255_end:
-    find_lex $P263, "@output"
-    unless_null $P263, vivify_101
-    new $P263, "ResizablePMCArray"
-  vivify_101:
-    $P264 = $P263."join"(" ")
-    $P265 = "say"($P264)
-    .return ($P265)
-  control_236:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P266, exception, "payload"
-    .return ($P266)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "_block244"  :anon :subid("35_1256249531.52681") :outer("34_1256249531.52681")
-    find_lex $P246, "@output"
-    unless_null $P246, vivify_94
-    new $P246, "ResizablePMCArray"
   vivify_94:
-    $P247 = $P246."push"("not")
-    .return ($P247)
+    find_lex $P249, "%attributes"
+    unless_null $P249, vivify_95
+    new $P249, "Hash"
+  vivify_95:
+    $P246($P247, $P248, $P249)
+    find_lex $P250, "self"
+    $P251 = $P250."test_counter"(0)
+    .return ($P251)
+  control_242:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P252, exception, "payload"
+    .return ($P252)
+    rethrow exception
 .end
 
 
 .namespace ["Testcase"]
-.sub "_block257"  :anon :subid("36_1256249531.52681") :outer("34_1256249531.52681")
-    find_lex $P259, "@output"
-    unless_null $P259, vivify_98
+.sub "ok"  :subid("36_1256259143.31774") :method :outer("11_1256259143.31774")
+    .param pmc param_256
+    .param pmc param_257 :optional
+    .param int has_param_257 :opt_flag
+    .const 'Sub' $P276 = "38_1256259143.31774" 
+    capture_lex $P276
+    .const 'Sub' $P263 = "37_1256259143.31774" 
+    capture_lex $P263
+    new $P255, 'ExceptionHandler'
+    set_addr $P255, control_254
+    $P255."handle_types"(58)
+    push_eh $P255
+    .lex "self", self
+    .lex "$result", param_256
+    if has_param_257, optparam_96
+    new $P258, "Undef"
+    set param_257, $P258
+  optparam_96:
+    .lex "$note", param_257
     new $P259, "ResizablePMCArray"
-  vivify_98:
-    $P259."push"("-")
-    find_lex $P260, "@output"
-    unless_null $P260, vivify_99
-    new $P260, "ResizablePMCArray"
-  vivify_99:
-    find_lex $P261, "$note"
-    unless_null $P261, vivify_100
+    .lex "@output", $P259
+    find_lex $P261, "$result"
+    unless_null $P261, vivify_97
     new $P261, "Undef"
+  vivify_97:
+    if $P261, unless_260_end
+    .const 'Sub' $P263 = "37_1256259143.31774" 
+    capture_lex $P263
+    $P263()
+  unless_260_end:
+    find_lex $P266, "@output"
+    unless_null $P266, vivify_99
+    new $P266, "ResizablePMCArray"
+  vivify_99:
+    $P266."push"("ok")
+    find_lex $P267, "self"
+    $P268 = $P267."test_counter"()
+        ##  inline postfix:++
+        clone $P269, $P268
+        inc $P268
+    find_lex $P270, "@output"
+    unless_null $P270, vivify_100
+    new $P270, "ResizablePMCArray"
   vivify_100:
-    $P262 = $P260."push"($P261)
-    .return ($P262)
-.end
-
-
-.namespace ["Testcase"]
-.sub "run_test"  :subid("37_1256249531.52681") :method :outer("11_1256249531.52681")
-    .param pmc param_270
-    .param pmc param_271 :optional :named("after_prefix")
-    .param int has_param_271 :opt_flag
-    .param pmc param_273 :optional :named("before_prefix")
-    .param int has_param_273 :opt_flag
-    new $P269, 'ExceptionHandler'
-    set_addr $P269, control_268
-    $P269."handle_types"(58)
-    push_eh $P269
-    .lex "self", self
-    .lex "$method_name", param_270
-    if has_param_271, optparam_102
-    new $P272, "Undef"
-    set param_271, $P272
-  optparam_102:
-    .lex "$after_prefix", param_271
-    if has_param_273, optparam_103
+    find_lex $P271, "self"
+    $P272 = $P271."test_counter"()
+    $P270."push"($P272)
+    find_lex $P274, "$note"
+    unless_null $P274, vivify_101
     new $P274, "Undef"
-    set param_273, $P274
-  optparam_103:
-    .lex "$before_prefix", param_273
-    find_lex $P275, "self"
-    $P275."run_before_methods"()
-    get_hll_global $P276, ["Class"], "call_method"
-    find_lex $P277, "self"
-    find_lex $P278, "$method_name"
-    unless_null $P278, vivify_104
-    new $P278, "Undef"
-  vivify_104:
-    $P276($P277, $P278)
-    find_lex $P279, "self"
-    $P280 = $P279."run_after_methods"()
-    .return ($P280)
-  control_268:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P281, exception, "payload"
-    .return ($P281)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "run_all_tests"  :subid("38_1256249531.52681") :method :outer("11_1256249531.52681")
-    new $P284, 'ExceptionHandler'
-    set_addr $P284, control_283
-    $P284."handle_types"(58)
-    push_eh $P284
-    .lex "self", self
-    find_lex $P285, "self"
-    $P286 = $P285."run_tests"()
-    .return ($P286)
-  control_283:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P287, exception, "payload"
-    .return ($P287)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "run_after_methods"  :subid("39_1256249531.52681") :method :outer("11_1256249531.52681")
-    new $P290, 'ExceptionHandler'
-    set_addr $P290, control_289
-    $P290."handle_types"(58)
-    push_eh $P290
-    .lex "self", self
-    find_lex $P291, "self"
-    find_lex $P292, "self"
-    $P293 = $P292."after_methods"()
-    $P294 = $P291."run_methods"($P293)
-    .return ($P294)
-  control_289:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P295, exception, "payload"
-    .return ($P295)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "run_afterall_methods"  :subid("40_1256249531.52681") :method :outer("11_1256249531.52681")
-    new $P298, 'ExceptionHandler'
-    set_addr $P298, control_297
-    $P298."handle_types"(58)
-    push_eh $P298
-    .lex "self", self
-    find_lex $P299, "self"
-    find_lex $P300, "self"
-    $P301 = $P300."afterall_methods"()
-    $P302 = $P299."run_methods"($P301)
-    .return ($P302)
-  control_297:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P303, exception, "payload"
-    .return ($P303)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "run_before_methods"  :subid("41_1256249531.52681") :method :outer("11_1256249531.52681")
-    new $P306, 'ExceptionHandler'
-    set_addr $P306, control_305
-    $P306."handle_types"(58)
-    push_eh $P306
-    .lex "self", self
-    find_lex $P307, "self"
-    find_lex $P308, "self"
-    $P309 = $P308."before_methods"()
-    $P310 = $P307."run_methods"($P309)
-    .return ($P310)
-  control_305:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P311, exception, "payload"
-    .return ($P311)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "run_beforeall_methods"  :subid("42_1256249531.52681") :method :outer("11_1256249531.52681")
-    new $P314, 'ExceptionHandler'
-    set_addr $P314, control_313
-    $P314."handle_types"(58)
-    push_eh $P314
-    .lex "self", self
-    find_lex $P315, "self"
-    find_lex $P316, "self"
-    $P317 = $P316."beforeall_methods"()
-    $P318 = $P315."run_methods"($P317)
-    .return ($P318)
-  control_313:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P319, exception, "payload"
-    .return ($P319)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "run_methods"  :subid("43_1256249531.52681") :method :outer("11_1256249531.52681")
-    .param pmc param_323
-    .param pmc param_324 :slurpy
-    .param pmc param_325 :slurpy :named
-    .const 'Sub' $P333 = "44_1256249531.52681" 
-    capture_lex $P333
-    new $P322, 'ExceptionHandler'
-    set_addr $P322, control_321
-    $P322."handle_types"(58)
-    push_eh $P322
-    .lex "self", self
-    .lex "@methods", param_323
-    .lex "@args", param_324
-    .lex "%opts", param_325
-    find_lex $P326, "@methods"
-    unless_null $P326, vivify_105
-    new $P326, "ResizablePMCArray"
+  vivify_101:
+    unless $P274, if_273_end
+    .const 'Sub' $P276 = "38_1256259143.31774" 
+    capture_lex $P276
+    $P276()
+  if_273_end:
+    find_lex $P281, "self"
+    find_lex $P282, "@output"
+    unless_null $P282, vivify_105
+    new $P282, "ResizablePMCArray"
   vivify_105:
-    set $N327, $P326
-    "NOTE"("Running ", $N327, " methods")
-    find_lex $P329, "@methods"
-    unless_null $P329, vivify_106
-    new $P329, "ResizablePMCArray"
+    $P283 = $P282."join"(" ")
+    $P284 = $P281."emit"($P283)
+    .return ($P284)
+  control_254:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P285, exception, "payload"
+    .return ($P285)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "_block262"  :anon :subid("37_1256259143.31774") :outer("36_1256259143.31774")
+    find_lex $P264, "@output"
+    unless_null $P264, vivify_98
+    new $P264, "ResizablePMCArray"
+  vivify_98:
+    $P265 = $P264."push"("not")
+    .return ($P265)
+.end
+
+
+.namespace ["Testcase"]
+.sub "_block275"  :anon :subid("38_1256259143.31774") :outer("36_1256259143.31774")
+    find_lex $P277, "@output"
+    unless_null $P277, vivify_102
+    new $P277, "ResizablePMCArray"
+  vivify_102:
+    $P277."push"("-")
+    find_lex $P278, "@output"
+    unless_null $P278, vivify_103
+    new $P278, "ResizablePMCArray"
+  vivify_103:
+    find_lex $P279, "$note"
+    unless_null $P279, vivify_104
+    new $P279, "Undef"
+  vivify_104:
+    $P280 = $P278."push"($P279)
+    .return ($P280)
+.end
+
+
+.namespace ["Testcase"]
+.sub "run_all_tests"  :subid("39_1256259143.31774") :method :outer("11_1256259143.31774")
+    new $P288, 'ExceptionHandler'
+    set_addr $P288, control_287
+    $P288."handle_types"(58)
+    push_eh $P288
+    .lex "self", self
+    find_lex $P289, "self"
+    $P290 = $P289."run_tests"()
+    .return ($P290)
+  control_287:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P291, exception, "payload"
+    .return ($P291)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "run_after_methods"  :subid("40_1256259143.31774") :method :outer("11_1256259143.31774")
+    new $P294, 'ExceptionHandler'
+    set_addr $P294, control_293
+    $P294."handle_types"(58)
+    push_eh $P294
+    .lex "self", self
+    find_lex $P295, "self"
+    find_lex $P296, "self"
+    $P297 = $P296."after_methods"()
+    $P298 = $P295."run_methods"($P297)
+    .return ($P298)
+  control_293:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P299, exception, "payload"
+    .return ($P299)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "run_afterall_methods"  :subid("41_1256259143.31774") :method :outer("11_1256259143.31774")
+    new $P302, 'ExceptionHandler'
+    set_addr $P302, control_301
+    $P302."handle_types"(58)
+    push_eh $P302
+    .lex "self", self
+    find_lex $P303, "self"
+    find_lex $P304, "self"
+    $P305 = $P304."afterall_methods"()
+    $P306 = $P303."run_methods"($P305)
+    .return ($P306)
+  control_301:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P307, exception, "payload"
+    .return ($P307)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "run_before_methods"  :subid("42_1256259143.31774") :method :outer("11_1256259143.31774")
+    new $P310, 'ExceptionHandler'
+    set_addr $P310, control_309
+    $P310."handle_types"(58)
+    push_eh $P310
+    .lex "self", self
+    find_lex $P311, "self"
+    find_lex $P312, "self"
+    $P313 = $P312."before_methods"()
+    $P314 = $P311."run_methods"($P313)
+    .return ($P314)
+  control_309:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P315, exception, "payload"
+    .return ($P315)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "run_beforeall_methods"  :subid("43_1256259143.31774") :method :outer("11_1256259143.31774")
+    new $P318, 'ExceptionHandler'
+    set_addr $P318, control_317
+    $P318."handle_types"(58)
+    push_eh $P318
+    .lex "self", self
+    find_lex $P319, "self"
+    find_lex $P320, "self"
+    $P321 = $P320."beforeall_methods"()
+    $P322 = $P319."run_methods"($P321)
+    .return ($P322)
+  control_317:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P323, exception, "payload"
+    .return ($P323)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "run_methods"  :subid("44_1256259143.31774") :method :outer("11_1256259143.31774")
+    .param pmc param_327
+    .param pmc param_328 :slurpy
+    .param pmc param_329 :slurpy :named
+    .const 'Sub' $P337 = "45_1256259143.31774" 
+    capture_lex $P337
+    new $P326, 'ExceptionHandler'
+    set_addr $P326, control_325
+    $P326."handle_types"(58)
+    push_eh $P326
+    .lex "self", self
+    .lex "@methods", param_327
+    .lex "@args", param_328
+    .lex "%opts", param_329
+    find_lex $P330, "@methods"
+    unless_null $P330, vivify_106
+    new $P330, "ResizablePMCArray"
   vivify_106:
-    defined $I330, $P329
-    unless $I330, for_undef_107
-    iter $P328, $P329
-    new $P344, 'ExceptionHandler'
-    set_addr $P344, loop343_handler
-    $P344."handle_types"(65, 67, 66)
-    push_eh $P344
-  loop343_test:
-    unless $P328, loop343_done
-    shift $P331, $P328
-  loop343_redo:
-    .const 'Sub' $P333 = "44_1256249531.52681" 
-    capture_lex $P333
-    $P333($P331)
-  loop343_next:
-    goto loop343_test
-  loop343_handler:
+    set $N331, $P330
+    "NOTE"("Running ", $N331, " methods")
+    find_lex $P333, "@methods"
+    unless_null $P333, vivify_107
+    new $P333, "ResizablePMCArray"
+  vivify_107:
+    defined $I334, $P333
+    unless $I334, for_undef_108
+    iter $P332, $P333
+    new $P348, 'ExceptionHandler'
+    set_addr $P348, loop347_handler
+    $P348."handle_types"(65, 67, 66)
+    push_eh $P348
+  loop347_test:
+    unless $P332, loop347_done
+    shift $P335, $P332
+  loop347_redo:
+    .const 'Sub' $P337 = "45_1256259143.31774" 
+    capture_lex $P337
+    $P337($P335)
+  loop347_next:
+    goto loop347_test
+  loop347_handler:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P345, exception, 'type'
-    eq $P345, 65, loop343_next
-    eq $P345, 67, loop343_redo
-  loop343_done:
+    getattribute $P349, exception, 'type'
+    eq $P349, 65, loop347_next
+    eq $P349, 67, loop347_redo
+  loop347_done:
     pop_eh 
-  for_undef_107:
-    $P346 = "NOTE"("done")
-    .return ($P346)
-  control_321:
+  for_undef_108:
+    $P350 = "NOTE"("done")
+    .return ($P350)
+  control_325:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P347, exception, "payload"
-    .return ($P347)
+    getattribute $P351, exception, "payload"
+    .return ($P351)
     rethrow exception
 .end
 
 
 .namespace ["Testcase"]
-.sub "_block332"  :anon :subid("44_1256249531.52681") :outer("43_1256249531.52681")
-    .param pmc param_334
-    .lex "$_", param_334
-    find_lex $P335, "$_"
-    unless_null $P335, vivify_108
-    new $P335, "Undef"
-  vivify_108:
-    "NOTE"("Running method: ", $P335)
-    get_hll_global $P336, ["Class"], "call_method_"
-    find_lex $P337, "self"
-    find_lex $P338, "$_"
-    unless_null $P338, vivify_109
-    new $P338, "Undef"
+.sub "_block336"  :anon :subid("45_1256259143.31774") :outer("44_1256259143.31774")
+    .param pmc param_338
+    .lex "$_", param_338
+    find_lex $P339, "$_"
+    unless_null $P339, vivify_109
+    new $P339, "Undef"
   vivify_109:
-    set $S339, $P338
-    find_lex $P340, "@args"
-    unless_null $P340, vivify_110
-    new $P340, "ResizablePMCArray"
+    "NOTE"("Running method: ", $P339)
+    get_hll_global $P340, ["Class"], "call_method_"
+    find_lex $P341, "self"
+    find_lex $P342, "$_"
+    unless_null $P342, vivify_110
+    new $P342, "Undef"
   vivify_110:
-    find_lex $P341, "%opts"
-    unless_null $P341, vivify_111
-    new $P341, "Hash"
+    set $S343, $P342
+    find_lex $P344, "@args"
+    unless_null $P344, vivify_111
+    new $P344, "ResizablePMCArray"
   vivify_111:
-    $P342 = $P336($P337, $S339, $P340, $P341)
-    .return ($P342)
-.end
-
-
-.namespace ["Testcase"]
-.sub "run_tests"  :subid("45_1256249531.52681") :method :outer("11_1256249531.52681")
-    .param pmc param_351 :slurpy
-    .const 'Sub' $P366 = "47_1256249531.52681" 
-    capture_lex $P366
-    .const 'Sub' $P356 = "46_1256249531.52681" 
-    capture_lex $P356
-    new $P350, 'ExceptionHandler'
-    set_addr $P350, control_349
-    $P350."handle_types"(58)
-    push_eh $P350
-    .lex "self", self
-    .lex "@names", param_351
-    "NOTE"("Running 'beforeall' methods")
-    find_lex $P352, "self"
-    $P352."run_beforeall_methods"()
-    find_lex $P354, "@names"
-    unless_null $P354, vivify_112
-    new $P354, "ResizablePMCArray"
+    find_lex $P345, "%opts"
+    unless_null $P345, vivify_112
+    new $P345, "Hash"
   vivify_112:
-    if $P354, unless_353_end
-    .const 'Sub' $P356 = "46_1256249531.52681" 
-    capture_lex $P356
-    $P356()
-  unless_353_end:
-    find_lex $P359, "@names"
-    unless_null $P359, vivify_113
-    new $P359, "ResizablePMCArray"
-  vivify_113:
-    set $N360, $P359
-    "NOTE"("Got ", $N360, " tests to run.")
-    find_lex $P362, "@names"
-    unless_null $P362, vivify_114
-    new $P362, "ResizablePMCArray"
-  vivify_114:
-    defined $I363, $P362
-    unless $I363, for_undef_115
-    iter $P361, $P362
-    new $P382, 'ExceptionHandler'
-    set_addr $P382, loop381_handler
-    $P382."handle_types"(65, 67, 66)
-    push_eh $P382
-  loop381_test:
-    unless $P361, loop381_done
-    shift $P364, $P361
-  loop381_redo:
-    .const 'Sub' $P366 = "47_1256249531.52681" 
-    capture_lex $P366
-    $P366($P364)
-  loop381_next:
-    goto loop381_test
-  loop381_handler:
+    $P346 = $P340($P341, $S343, $P344, $P345)
+    .return ($P346)
+.end
+
+
+.namespace ["Testcase"]
+.sub "run_test"  :subid("46_1256259143.31774") :method :outer("11_1256259143.31774")
+    .param pmc param_355
+    .param pmc param_356 :optional :named("after_prefix")
+    .param int has_param_356 :opt_flag
+    .param pmc param_358 :optional :named("before_prefix")
+    .param int has_param_358 :opt_flag
+    new $P354, 'ExceptionHandler'
+    set_addr $P354, control_353
+    $P354."handle_types"(58)
+    push_eh $P354
+    .lex "self", self
+    .lex "$method_name", param_355
+    if has_param_356, optparam_113
+    new $P357, "Undef"
+    set param_356, $P357
+  optparam_113:
+    .lex "$after_prefix", param_356
+    if has_param_358, optparam_114
+    new $P359, "Undef"
+    set param_358, $P359
+  optparam_114:
+    .lex "$before_prefix", param_358
+    find_lex $P360, "self"
+    $P360."run_before_methods"()
+    get_hll_global $P361, ["Class"], "call_method"
+    find_lex $P362, "self"
+    find_lex $P363, "$method_name"
+    unless_null $P363, vivify_115
+    new $P363, "Undef"
+  vivify_115:
+    $P361($P362, $P363)
+    find_lex $P364, "self"
+    $P365 = $P364."run_after_methods"()
+    .return ($P365)
+  control_353:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P383, exception, 'type'
-    eq $P383, 65, loop381_next
-    eq $P383, 67, loop381_redo
-  loop381_done:
-    pop_eh 
-  for_undef_115:
-    "NOTE"("Done with tests. Running 'afterall' methods")
-    find_lex $P384, "self"
-    $P385 = $P384."run_afterall_methods"()
-    .return ($P385)
-  control_349:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P386, exception, "payload"
-    .return ($P386)
+    getattribute $P366, exception, "payload"
+    .return ($P366)
     rethrow exception
 .end
 
 
 .namespace ["Testcase"]
-.sub "_block355"  :anon :subid("46_1256249531.52681") :outer("45_1256249531.52681")
-    "NOTE"("No test list specified. Running all tests.")
-    find_lex $P357, "self"
-    $P358 = $P357."fetch_test_methods"()
-    store_lex "@names", $P358
-    .return ($P358)
-.end
-
-
-.namespace ["Testcase"]
-.sub "_block365"  :anon :subid("47_1256249531.52681") :outer("45_1256249531.52681")
-    .param pmc param_367
-    .lex "$_", param_367
-    find_lex $P368, "$_"
-    unless_null $P368, vivify_116
-    new $P368, "Undef"
+.sub "run_tests"  :subid("47_1256259143.31774") :method :outer("11_1256259143.31774")
+    .param pmc param_370 :slurpy
+    .const 'Sub' $P387 = "49_1256259143.31774" 
+    capture_lex $P387
+    .const 'Sub' $P377 = "48_1256259143.31774" 
+    capture_lex $P377
+    new $P369, 'ExceptionHandler'
+    set_addr $P369, control_368
+    $P369."handle_types"(58)
+    push_eh $P369
+    .lex "self", self
+    .lex "@names", param_370
+    "NOTE"("Creating new testcase")
+    find_lex $P371, "self"
+    $P372 = $P371."new"()
+    .lex "$testcase", $P372
+    "NOTE"("Running 'beforeall' methods")
+    find_lex $P373, "$testcase"
+    unless_null $P373, vivify_116
+    new $P373, "Undef"
   vivify_116:
-    set $S369, $P368
-    new $P370, 'String'
-    set $P370, $S369
-    .lex "$method", $P370
-    find_lex $P371, "$method"
-    unless_null $P371, vivify_117
-    new $P371, "Undef"
+    $P373."run_beforeall_methods"()
+    find_lex $P375, "@names"
+    unless_null $P375, vivify_117
+    new $P375, "ResizablePMCArray"
   vivify_117:
-    "NOTE"("Creating new testcase for test: ", $P371)
-    find_lex $P372, "self"
-    $P373 = $P372."new"()
-    .lex "$testcase", $P373
-    "NOTE"("Running 'before' methods")
-    find_lex $P374, "$testcase"
-    unless_null $P374, vivify_118
-    new $P374, "Undef"
-  vivify_118:
-    $P374."run_before_methods"()
-    find_lex $P375, "$method"
-    unless_null $P375, vivify_119
-    new $P375, "Undef"
+    if $P375, unless_374_end
+    .const 'Sub' $P377 = "48_1256259143.31774" 
+    capture_lex $P377
+    $P377()
+  unless_374_end:
+    find_lex $P380, "@names"
+    unless_null $P380, vivify_119
+    new $P380, "ResizablePMCArray"
   vivify_119:
-    "NOTE"("Running test: ", $P375)
-    get_hll_global $P376, ["Class"], "call_method"
-    find_lex $P377, "$testcase"
-    unless_null $P377, vivify_120
-    new $P377, "Undef"
+    set $N381, $P380
+    "NOTE"("Got ", $N381, " tests to run.")
+    find_lex $P383, "@names"
+    unless_null $P383, vivify_120
+    new $P383, "ResizablePMCArray"
   vivify_120:
-    find_lex $P378, "$method"
-    unless_null $P378, vivify_121
+    defined $I384, $P383
+    unless $I384, for_undef_121
+    iter $P382, $P383
+    new $P400, 'ExceptionHandler'
+    set_addr $P400, loop399_handler
+    $P400."handle_types"(65, 67, 66)
+    push_eh $P400
+  loop399_test:
+    unless $P382, loop399_done
+    shift $P385, $P382
+  loop399_redo:
+    .const 'Sub' $P387 = "49_1256259143.31774" 
+    capture_lex $P387
+    $P387($P385)
+  loop399_next:
+    goto loop399_test
+  loop399_handler:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P401, exception, 'type'
+    eq $P401, 65, loop399_next
+    eq $P401, 67, loop399_redo
+  loop399_done:
+    pop_eh 
+  for_undef_121:
+    "NOTE"("Done with tests. Running 'afterall' methods")
+    find_lex $P402, "$testcase"
+    unless_null $P402, vivify_128
+    new $P402, "Undef"
+  vivify_128:
+    $P403 = $P402."run_afterall_methods"()
+    .return ($P403)
+  control_368:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P404, exception, "payload"
+    .return ($P404)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "_block376"  :anon :subid("48_1256259143.31774") :outer("47_1256259143.31774")
+    "NOTE"("No test list specified. Running all tests.")
+    find_lex $P378, "$testcase"
+    unless_null $P378, vivify_118
     new $P378, "Undef"
-  vivify_121:
-    $P376($P377, $P378)
-    "NOTE"("Running 'after' methods")
-    find_lex $P379, "$testcase"
-    unless_null $P379, vivify_122
-    new $P379, "Undef"
+  vivify_118:
+    $P379 = $P378."fetch_test_methods"()
+    store_lex "@names", $P379
+    .return ($P379)
+.end
+
+
+.namespace ["Testcase"]
+.sub "_block386"  :anon :subid("49_1256259143.31774") :outer("47_1256259143.31774")
+    .param pmc param_388
+    .lex "$_", param_388
+    find_lex $P389, "$_"
+    unless_null $P389, vivify_122
+    new $P389, "Undef"
   vivify_122:
-    $P380 = $P379."run_after_methods"()
-    .return ($P380)
-.end
-
-
-.namespace ["Testcase"]
-.sub "test_counter"  :subid("48_1256249531.52681") :method :outer("11_1256249531.52681")
-    .param pmc param_390 :slurpy
-    new $P389, 'ExceptionHandler'
-    set_addr $P389, control_388
-    $P389."handle_types"(58)
-    push_eh $P389
-    .lex "self", self
-    .lex "@value", param_390
-    find_lex $P391, "self"
-    find_lex $P392, "@value"
+    set $S390, $P389
+    new $P391, 'String'
+    set $P391, $S390
+    .lex "$method", $P391
+    "NOTE"("Running 'before' methods")
+    find_lex $P392, "$testcase"
     unless_null $P392, vivify_123
-    new $P392, "ResizablePMCArray"
+    new $P392, "Undef"
   vivify_123:
-    $P393 = $P391."_ATTR_CONST"("test_counter", $P392)
-    .return ($P393)
-  control_388:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P394, exception, "payload"
-    .return ($P394)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "test_methods"  :subid("49_1256249531.52681") :method :outer("11_1256249531.52681")
-    new $P397, 'ExceptionHandler'
-    set_addr $P397, control_396
-    $P397."handle_types"(58)
-    push_eh $P397
-    .lex "self", self
-    find_lex $P398, "self"
-    $P399 = $P398."_ATTR_SETBY"("test_methods", "fetch_test_methods")
-    .return ($P399)
-  control_396:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P400, exception, "payload"
-    .return ($P400)
-    rethrow exception
-.end
-
-
-.namespace ["Testcase"]
-.sub "test_prefix"  :subid("50_1256249531.52681") :method :outer("11_1256249531.52681")
-    .param pmc param_404 :slurpy
-    new $P403, 'ExceptionHandler'
-    set_addr $P403, control_402
-    $P403."handle_types"(58)
-    push_eh $P403
-    .lex "self", self
-    .lex "@value", param_404
-    find_lex $P405, "self"
-    find_lex $P406, "@value"
-    unless_null $P406, vivify_124
-    new $P406, "ResizablePMCArray"
+    $P392."run_before_methods"()
+    find_lex $P393, "$method"
+    unless_null $P393, vivify_124
+    new $P393, "Undef"
   vivify_124:
-    $P407 = $P405."_ATTR_DEFAULT"("test_prefix", $P406, "test_")
-    .return ($P407)
-  control_402:
+    "NOTE"("Running test: ", $P393)
+    get_hll_global $P394, ["Class"], "call_method"
+    find_lex $P395, "$testcase"
+    unless_null $P395, vivify_125
+    new $P395, "Undef"
+  vivify_125:
+    find_lex $P396, "$method"
+    unless_null $P396, vivify_126
+    new $P396, "Undef"
+  vivify_126:
+    $P394($P395, $P396)
+    "NOTE"("Running 'after' methods")
+    find_lex $P397, "$testcase"
+    unless_null $P397, vivify_127
+    new $P397, "Undef"
+  vivify_127:
+    $P398 = $P397."run_after_methods"()
+    .return ($P398)
+.end
+
+
+.namespace ["Testcase"]
+.sub "test_counter"  :subid("50_1256259143.31774") :method :outer("11_1256259143.31774")
+    .param pmc param_408 :slurpy
+    new $P407, 'ExceptionHandler'
+    set_addr $P407, control_406
+    $P407."handle_types"(58)
+    push_eh $P407
+    .lex "self", self
+    .lex "@value", param_408
+    find_lex $P409, "self"
+    find_lex $P410, "@value"
+    unless_null $P410, vivify_129
+    new $P410, "ResizablePMCArray"
+  vivify_129:
+    $P411 = $P409."_ATTR_CONST"("test_counter", $P410)
+    .return ($P411)
+  control_406:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P408, exception, "payload"
-    .return ($P408)
+    getattribute $P412, exception, "payload"
+    .return ($P412)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "test_methods"  :subid("51_1256259143.31774") :method :outer("11_1256259143.31774")
+    new $P415, 'ExceptionHandler'
+    set_addr $P415, control_414
+    $P415."handle_types"(58)
+    push_eh $P415
+    .lex "self", self
+    find_lex $P416, "self"
+    $P417 = $P416."_ATTR_SETBY"("test_methods", "fetch_test_methods")
+    .return ($P417)
+  control_414:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P418, exception, "payload"
+    .return ($P418)
+    rethrow exception
+.end
+
+
+.namespace ["Testcase"]
+.sub "test_prefix"  :subid("52_1256259143.31774") :method :outer("11_1256259143.31774")
+    .param pmc param_422 :slurpy
+    new $P421, 'ExceptionHandler'
+    set_addr $P421, control_420
+    $P421."handle_types"(58)
+    push_eh $P421
+    .lex "self", self
+    .lex "@value", param_422
+    find_lex $P423, "self"
+    find_lex $P424, "@value"
+    unless_null $P424, vivify_130
+    new $P424, "ResizablePMCArray"
+  vivify_130:
+    $P425 = $P423."_ATTR_DEFAULT"("test_prefix", $P424, "test_")
+    .return ($P425)
+  control_420:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P426, exception, "payload"
+    .return ($P426)
     rethrow exception
 .end
 
@@ -1838,44 +1900,350 @@
 
 
 .namespace []
-.sub "_block11"  :anon :subid("10_1256220716.53347")
+.sub "_block11"  :anon :subid("10_1256256784.28216")
+    get_hll_global $P14, ["Matcher";"Empty"], "_block13" 
+    .return ($P14)
+.end
+
+
+.namespace ["Matcher";"Empty"]
+.sub "_block13" :init :load :subid("11_1256256784.28216")
+    .const 'Sub' $P53 = "16_1256256784.28216" 
+    capture_lex $P53
+    .const 'Sub' $P45 = "15_1256256784.28216" 
+    capture_lex $P45
+    .const 'Sub' $P32 = "14_1256256784.28216" 
+    capture_lex $P32
+    .const 'Sub' $P15 = "12_1256256784.28216" 
+    capture_lex $P15
+    "_ONLOAD"()
+    .const 'Sub' $P53 = "16_1256256784.28216" 
+    capture_lex $P53
+    .return ($P53)
+.end
+
+
+.namespace ["Matcher";"Empty"]
+.sub "_ONLOAD"  :subid("12_1256256784.28216") :outer("11_1256256784.28216")
+    .const 'Sub' $P21 = "13_1256256784.28216" 
+    capture_lex $P21
+    new $P17, 'ExceptionHandler'
+    set_addr $P17, control_16
+    $P17."handle_types"(58)
+    push_eh $P17
+    get_global $P19, "$onload_done"
+    unless_null $P19, vivify_21
+    new $P19, "Undef"
+  vivify_21:
+    unless $P19, if_18_end
+    .const 'Sub' $P21 = "13_1256256784.28216" 
+    capture_lex $P21
+    $P21()
+  if_18_end:
+    new $P24, "Integer"
+    assign $P24, 1
+    set_global "$onload_done", $P24
+    get_hll_global $P25, ["Parrot"], "IMPORT"
+    $P25("Dumper")
+    new $P26, "String"
+    assign $P26, "Matcher::Empty"
+    .lex "$class_name", $P26
+    find_lex $P27, "$class_name"
+    unless_null $P27, vivify_22
+    new $P27, "Undef"
+  vivify_22:
+    "NOTE"("Creating class ", $P27)
+    get_hll_global $P28, ["Class"], "SUBCLASS"
+    find_lex $P29, "$class_name"
+    unless_null $P29, vivify_23
+    new $P29, "Undef"
+  vivify_23:
+    $P28($P29, "Matcher::TypeSafe")
+    $P30 = "NOTE"("done")
+    .return ($P30)
+  control_16:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P31, exception, "payload"
+    .return ($P31)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"Empty"]
+.sub "_block20"  :anon :subid("13_1256256784.28216") :outer("12_1256256784.28216")
+    new $P22, "Exception"
+    set $P22['type'], 58
+    new $P23, "Integer"
+    assign $P23, 0
+    setattribute $P22, 'payload', $P23
+    throw $P22
+    .return ()
+.end
+
+
+.namespace ["Matcher";"Empty"]
+.sub "describe_failure"  :subid("14_1256256784.28216") :method :outer("11_1256256784.28216")
+    .param pmc param_35
+    .param pmc param_36
+    new $P34, 'ExceptionHandler'
+    set_addr $P34, control_33
+    $P34."handle_types"(58)
+    push_eh $P34
+    .lex "self", self
+    .lex "$item", param_35
+    .lex "$description", param_36
+    new $P37, "Exception"
+    set $P37['type'], 58
+    find_lex $P38, "$description"
+    unless_null $P38, vivify_24
+    new $P38, "Undef"
+  vivify_24:
+    concat $P39, $P38, "had type: "
+    get_hll_global $P40, ["Parrot"], "typeof"
+    find_lex $P41, "$item"
+    unless_null $P41, vivify_25
+    new $P41, "Undef"
+  vivify_25:
+    $S42 = $P40($P41)
+    concat $P43, $P39, $S42
+    setattribute $P37, 'payload', $P43
+    throw $P37
+    .return ()
+  control_33:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P44, exception, "payload"
+    .return ($P44)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"Empty"]
+.sub "describe_self"  :subid("15_1256256784.28216") :method :outer("11_1256256784.28216")
+    .param pmc param_48
+    new $P47, 'ExceptionHandler'
+    set_addr $P47, control_46
+    $P47."handle_types"(58)
+    push_eh $P47
+    .lex "self", self
+    .lex "$description", param_48
+    new $P49, "Exception"
+    set $P49['type'], 58
+    find_lex $P50, "$description"
+    unless_null $P50, vivify_26
+    new $P50, "Undef"
+  vivify_26:
+    concat $P51, $P50, "empty"
+    setattribute $P49, 'payload', $P51
+    throw $P49
+    .return ()
+  control_46:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P52, exception, "payload"
+    .return ($P52)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"Empty"]
+.sub "matches_typesafe"  :subid("16_1256256784.28216") :method :outer("11_1256256784.28216")
+    .param pmc param_56
+    .const 'Sub' $P98 = "20_1256256784.28216" 
+    capture_lex $P98
+    .const 'Sub' $P84 = "19_1256256784.28216" 
+    capture_lex $P84
+    .const 'Sub' $P71 = "18_1256256784.28216" 
+    capture_lex $P71
+    .const 'Sub' $P62 = "17_1256256784.28216" 
+    capture_lex $P62
+    new $P55, 'ExceptionHandler'
+    set_addr $P55, control_54
+    $P55."handle_types"(58)
+    push_eh $P55
+    .lex "self", self
+    .lex "$item", param_56
+    get_hll_global $P58, ["Parrot"], "can"
+    find_lex $P59, "$item"
+    unless_null $P59, vivify_27
+    new $P59, "Undef"
+  vivify_27:
+    $P60 = $P58($P59, "is_empty")
+    if $P60, if_57
+    get_hll_global $P67, ["Parrot"], "can"
+    find_lex $P68, "$item"
+    unless_null $P68, vivify_28
+    new $P68, "Undef"
+  vivify_28:
+    $P69 = $P67($P68, "elements")
+    if $P69, if_66
+    get_hll_global $P80, ["Parrot"], "does"
+    find_lex $P81, "$item"
+    unless_null $P81, vivify_29
+    new $P81, "Undef"
+  vivify_29:
+    $P82 = $P80($P81, "array")
+    if $P82, if_79
+    get_hll_global $P94, ["Parrot"], "does"
+    find_lex $P95, "$item"
+    unless_null $P95, vivify_30
+    new $P95, "Undef"
+  vivify_30:
+    $P96 = $P94($P95, "hash")
+    unless $P96, if_93_end
+    .const 'Sub' $P98 = "20_1256256784.28216" 
+    capture_lex $P98
+    $P98()
+  if_93_end:
+    goto if_79_end
+  if_79:
+    .const 'Sub' $P84 = "19_1256256784.28216" 
+    capture_lex $P84
+    $P84()
+  if_79_end:
+    goto if_66_end
+  if_66:
+    .const 'Sub' $P71 = "18_1256256784.28216" 
+    capture_lex $P71
+    $P71()
+  if_66_end:
+    goto if_57_end
+  if_57:
+    .const 'Sub' $P62 = "17_1256256784.28216" 
+    capture_lex $P62
+    $P62()
+  if_57_end:
+    get_hll_global $P106, ["Parrot"], "die"
+    $P107 = $P106("Don't know how to determine if this object is empty.")
+    .return ($P107)
+  control_54:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P108, exception, "payload"
+    .return ($P108)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"Empty"]
+.sub "_block97"  :anon :subid("20_1256256784.28216") :outer("16_1256256784.28216")
+    new $P99, "Exception"
+    set $P99['type'], 58
+    find_lex $P100, "$item"
+    unless_null $P100, vivify_31
+    new $P100, "Undef"
+  vivify_31:
+    $N101 = $P100."keys"()
+    new $P102, "Integer"
+    assign $P102, 0
+    set $N103, $P102
+    iseq $I104, $N101, $N103
+    new $P105, 'Integer'
+    set $P105, $I104
+    setattribute $P99, 'payload', $P105
+    throw $P99
+    .return ()
+.end
+
+
+.namespace ["Matcher";"Empty"]
+.sub "_block83"  :anon :subid("19_1256256784.28216") :outer("16_1256256784.28216")
+    new $P85, "Exception"
+    set $P85['type'], 58
+    get_hll_global $P86, ["Parrot"], "elements"
+    find_lex $P87, "$item"
+    unless_null $P87, vivify_32
+    new $P87, "Undef"
+  vivify_32:
+    $N88 = $P86($P87)
+    new $P89, "Integer"
+    assign $P89, 0
+    set $N90, $P89
+    iseq $I91, $N88, $N90
+    new $P92, 'Integer'
+    set $P92, $I91
+    setattribute $P85, 'payload', $P92
+    throw $P85
+    .return ()
+.end
+
+
+.namespace ["Matcher";"Empty"]
+.sub "_block70"  :anon :subid("18_1256256784.28216") :outer("16_1256256784.28216")
+    new $P72, "Exception"
+    set $P72['type'], 58
+    find_lex $P73, "$item"
+    unless_null $P73, vivify_33
+    new $P73, "Undef"
+  vivify_33:
+    $N74 = $P73."elements"()
+    new $P75, "Integer"
+    assign $P75, 0
+    set $N76, $P75
+    iseq $I77, $N74, $N76
+    new $P78, 'Integer'
+    set $P78, $I77
+    setattribute $P72, 'payload', $P78
+    throw $P72
+    .return ()
+.end
+
+
+.namespace ["Matcher";"Empty"]
+.sub "_block61"  :anon :subid("17_1256256784.28216") :outer("16_1256256784.28216")
+    new $P63, "Exception"
+    set $P63['type'], 58
+    find_lex $P64, "$item"
+    unless_null $P64, vivify_34
+    new $P64, "Undef"
+  vivify_34:
+    $P65 = $P64."is_empty"()
+    setattribute $P63, 'payload', $P65
+    throw $P63
+    .return ()
+.end
+
+
+.namespace []
+.sub "_block11"  :anon :subid("10_1256257708.6361")
     get_hll_global $P14, ["Matcher";"Equals"], "_block13" 
     .return ($P14)
 .end
 
 
 .namespace ["Matcher";"Equals"]
-.sub "_block13" :init :load :subid("11_1256220716.53347")
-    .const 'Sub' $P182 = "29_1256220716.53347" 
-    capture_lex $P182
-    .const 'Sub' $P142 = "25_1256220716.53347" 
+.sub "_block13" :init :load :subid("11_1256257708.6361")
+    .const 'Sub' $P190 = "29_1256257708.6361" 
+    capture_lex $P190
+    .const 'Sub' $P150 = "25_1256257708.6361" 
+    capture_lex $P150
+    .const 'Sub' $P142 = "24_1256257708.6361" 
     capture_lex $P142
-    .const 'Sub' $P134 = "24_1256220716.53347" 
+    .const 'Sub' $P134 = "23_1256257708.6361" 
     capture_lex $P134
-    .const 'Sub' $P126 = "23_1256220716.53347" 
+    .const 'Sub' $P126 = "22_1256257708.6361" 
     capture_lex $P126
-    .const 'Sub' $P118 = "22_1256220716.53347" 
+    .const 'Sub' $P118 = "21_1256257708.6361" 
     capture_lex $P118
-    .const 'Sub' $P110 = "21_1256220716.53347" 
-    capture_lex $P110
-    .const 'Sub' $P87 = "19_1256220716.53347" 
-    capture_lex $P87
-    .const 'Sub' $P49 = "15_1256220716.53347" 
-    capture_lex $P49
-    .const 'Sub' $P34 = "14_1256220716.53347" 
+    .const 'Sub' $P95 = "19_1256257708.6361" 
+    capture_lex $P95
+    .const 'Sub' $P57 = "15_1256257708.6361" 
+    capture_lex $P57
+    .const 'Sub' $P34 = "14_1256257708.6361" 
     capture_lex $P34
-    .const 'Sub' $P15 = "12_1256220716.53347" 
+    .const 'Sub' $P15 = "12_1256257708.6361" 
     capture_lex $P15
     "_ONLOAD"()
-    .const 'Sub' $P182 = "29_1256220716.53347" 
-    capture_lex $P182
-    .return ($P182)
+    .const 'Sub' $P190 = "29_1256257708.6361" 
+    capture_lex $P190
+    .return ($P190)
 .end
 
 
 .namespace ["Matcher";"Equals"]
-.sub "_ONLOAD"  :subid("12_1256220716.53347") :outer("11_1256220716.53347")
-    .const 'Sub' $P21 = "13_1256220716.53347" 
+.sub "_ONLOAD"  :subid("12_1256257708.6361") :outer("11_1256257708.6361")
+    .const 'Sub' $P21 = "13_1256257708.6361" 
     capture_lex $P21
     new $P17, 'ExceptionHandler'
     set_addr $P17, control_16
@@ -1886,7 +2254,7 @@
     new $P19, "Undef"
   vivify_30:
     unless $P19, if_18_end
-    .const 'Sub' $P21 = "13_1256220716.53347" 
+    .const 'Sub' $P21 = "13_1256257708.6361" 
     capture_lex $P21
     $P21()
   if_18_end:
@@ -1927,7 +2295,7 @@
 
 
 .namespace ["Matcher";"Equals"]
-.sub "_block20"  :anon :subid("13_1256220716.53347") :outer("12_1256220716.53347")
+.sub "_block20"  :anon :subid("13_1256257708.6361") :outer("12_1256257708.6361")
     new $P22, "Exception"
     set $P22['type'], 58
     new $P23, "Integer"
@@ -1939,7 +2307,7 @@
 
 
 .namespace ["Matcher";"Equals"]
-.sub "describe_self"  :subid("14_1256220716.53347") :method :outer("11_1256220716.53347")
+.sub "describe_self"  :subid("14_1256257708.6361") :method :outer("11_1256257708.6361")
     .param pmc param_37
     new $P36, 'ExceptionHandler'
     set_addr $P36, control_35
@@ -1953,218 +2321,201 @@
     unless_null $P39, vivify_34
     new $P39, "Undef"
   vivify_34:
-    concat $P40, $P39, "a "
-    find_lex $P41, "self"
-    $S42 = $P41."match_type"()
-    concat $P43, $P40, $S42
-    concat $P44, $P43, " equal to "
-    find_lex $P45, "self"
-    $S46 = $P45."value"()
-    concat $P47, $P44, $S46
-    setattribute $P38, 'payload', $P47
+    find_lex $P42, "self"
+    $P43 = $P42."match_type"()
+    set $P44, $P43[0]
+    unless_null $P44, vivify_35
+    new $P44, "Undef"
+  vivify_35:
+    set $S45, $P44
+    iseq $I46, $S45, "I"
+    if $I46, if_41
+    set $S40, "a "
+    goto if_41_end
+  if_41:
+    set $S40, "an "
+  if_41_end:
+    concat $P47, $P39, $S40
+    find_lex $P48, "self"
+    $S49 = $P48."match_type"()
+    concat $P50, $P47, $S49
+    concat $P51, $P50, " equal to '"
+    find_lex $P52, "self"
+    $S53 = $P52."value"()
+    concat $P54, $P51, $S53
+    concat $P55, $P54, "'"
+    setattribute $P38, 'payload', $P55
     throw $P38
     .return ()
   control_35:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P48, exception, "payload"
-    .return ($P48)
+    getattribute $P56, exception, "payload"
+    .return ($P56)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Equals"]
-.sub "find_match_type"  :subid("15_1256220716.53347") :method :outer("11_1256220716.53347")
-    .param pmc param_52
-    .const 'Sub' $P82 = "18_1256220716.53347" 
-    capture_lex $P82
-    .const 'Sub' $P58 = "16_1256220716.53347" 
-    capture_lex $P58
-    new $P51, 'ExceptionHandler'
-    set_addr $P51, control_50
-    $P51."handle_types"(58)
-    push_eh $P51
+.sub "find_match_type"  :subid("15_1256257708.6361") :method :outer("11_1256257708.6361")
+    .param pmc param_60
+    .const 'Sub' $P90 = "18_1256257708.6361" 
+    capture_lex $P90
+    .const 'Sub' $P66 = "16_1256257708.6361" 
+    capture_lex $P66
+    new $P59, 'ExceptionHandler'
+    set_addr $P59, control_58
+    $P59."handle_types"(58)
+    push_eh $P59
     .lex "self", self
-    .lex "$item", param_52
-    new $P54, "ResizablePMCArray"
-    push $P54, "Float"
-    push $P54, "Integer"
-    defined $I55, $P54
-    unless $I55, for_undef_35
-    iter $P53, $P54
-    new $P75, 'ExceptionHandler'
-    set_addr $P75, loop74_handler
-    $P75."handle_types"(65, 67, 66)
-    push_eh $P75
-  loop74_test:
-    unless $P53, loop74_done
-    shift $P56, $P53
-  loop74_redo:
-    .const 'Sub' $P58 = "16_1256220716.53347" 
-    capture_lex $P58
-    $P58($P56)
-  loop74_next:
-    goto loop74_test
-  loop74_handler:
+    .lex "$item", param_60
+    new $P62, "ResizablePMCArray"
+    push $P62, "Float"
+    push $P62, "Integer"
+    defined $I63, $P62
+    unless $I63, for_undef_36
+    iter $P61, $P62
+    new $P83, 'ExceptionHandler'
+    set_addr $P83, loop82_handler
+    $P83."handle_types"(65, 67, 66)
+    push_eh $P83
+  loop82_test:
+    unless $P61, loop82_done
+    shift $P64, $P61
+  loop82_redo:
+    .const 'Sub' $P66 = "16_1256257708.6361" 
+    capture_lex $P66
+    $P66($P64)
+  loop82_next:
+    goto loop82_test
+  loop82_handler:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P76, exception, 'type'
-    eq $P76, 65, loop74_next
-    eq $P76, 67, loop74_redo
-  loop74_done:
+    getattribute $P84, exception, 'type'
+    eq $P84, 65, loop82_next
+    eq $P84, 67, loop82_redo
+  loop82_done:
     pop_eh 
-  for_undef_35:
-    find_lex $P79, "self"
-    $P80 = $P79."match_type"()
-    unless $P80, unless_78
-    set $P77, $P80
-    goto unless_78_end
-  unless_78:
-    .const 'Sub' $P82 = "18_1256220716.53347" 
-    capture_lex $P82
-    $P85 = $P82()
-    set $P77, $P85
-  unless_78_end:
-    .return ($P77)
-  control_50:
+  for_undef_36:
+    find_lex $P87, "self"
+    $P88 = $P87."match_type"()
+    unless $P88, unless_86
+    set $P85, $P88
+    goto unless_86_end
+  unless_86:
+    .const 'Sub' $P90 = "18_1256257708.6361" 
+    capture_lex $P90
+    $P93 = $P90()
+    set $P85, $P93
+  unless_86_end:
+    .return ($P85)
+  control_58:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P86, exception, "payload"
-    .return ($P86)
+    getattribute $P94, exception, "payload"
+    .return ($P94)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Equals"]
-.sub "_block57"  :anon :subid("16_1256220716.53347") :outer("15_1256220716.53347")
-    .param pmc param_59
-    .const 'Sub' $P68 = "17_1256220716.53347" 
-    capture_lex $P68
-    .lex "$_", param_59
-    get_hll_global $P62, ["Parrot"], "isa"
-    find_lex $P63, "$item"
-    unless_null $P63, vivify_36
-    new $P63, "Undef"
-  vivify_36:
-    find_lex $P64, "$_"
-    unless_null $P64, vivify_37
-    new $P64, "Undef"
+.sub "_block65"  :anon :subid("16_1256257708.6361") :outer("15_1256257708.6361")
+    .param pmc param_67
+    .const 'Sub' $P76 = "17_1256257708.6361" 
+    capture_lex $P76
+    .lex "$_", param_67
+    get_hll_global $P70, ["Parrot"], "isa"
+    find_lex $P71, "$item"
+    unless_null $P71, vivify_37
+    new $P71, "Undef"
   vivify_37:
-    set $S65, $P64
-    $P66 = $P62($P63, $S65)
-    if $P66, if_61
-    set $P60, $P66
-    goto if_61_end
-  if_61:
-    .const 'Sub' $P68 = "17_1256220716.53347" 
-    capture_lex $P68
-    $P73 = $P68()
-    set $P60, $P73
-  if_61_end:
-    .return ($P60)
-.end
-
-
-.namespace ["Matcher";"Equals"]
-.sub "_block67"  :anon :subid("17_1256220716.53347") :outer("16_1256220716.53347")
-    find_lex $P69, "self"
-    find_lex $P70, "$_"
-    unless_null $P70, vivify_38
-    new $P70, "Undef"
+    find_lex $P72, "$_"
+    unless_null $P72, vivify_38
+    new $P72, "Undef"
   vivify_38:
-    set $S71, $P70
-    $P72 = $P69."match_type"($S71)
-    .return ($P72)
+    set $S73, $P72
+    $P74 = $P70($P71, $S73)
+    if $P74, if_69
+    set $P68, $P74
+    goto if_69_end
+  if_69:
+    .const 'Sub' $P76 = "17_1256257708.6361" 
+    capture_lex $P76
+    $P81 = $P76()
+    set $P68, $P81
+  if_69_end:
+    .return ($P68)
 .end
 
 
 .namespace ["Matcher";"Equals"]
-.sub "_block81"  :anon :subid("18_1256220716.53347") :outer("15_1256220716.53347")
-    find_lex $P83, "self"
-    $P84 = $P83."match_type"("String")
-    .return ($P84)
-.end
-
-
-.namespace ["Matcher";"Equals"]
-.sub "init"  :subid("19_1256220716.53347") :method :outer("11_1256220716.53347")
-    .param pmc param_90
-    .param pmc param_91
-    .const 'Sub' $P100 = "20_1256220716.53347" 
-    capture_lex $P100
-    new $P89, 'ExceptionHandler'
-    set_addr $P89, control_88
-    $P89."handle_types"(58)
-    push_eh $P89
-    .lex "self", self
-    .lex "@children", param_90
-    .lex "%attributes", param_91
-    get_hll_global $P92, ["Matcher"], "init"
-    find_lex $P93, "self"
-    find_lex $P94, "@children"
-    unless_null $P94, vivify_39
-    new $P94, "ResizablePMCArray"
+.sub "_block75"  :anon :subid("17_1256257708.6361") :outer("16_1256257708.6361")
+    find_lex $P77, "self"
+    find_lex $P78, "$_"
+    unless_null $P78, vivify_39
+    new $P78, "Undef"
   vivify_39:
-    find_lex $P95, "%attributes"
-    unless_null $P95, vivify_40
-    new $P95, "Hash"
-  vivify_40:
-    $P92($P93, $P94, $P95)
-    find_lex $P97, "@children"
-    unless_null $P97, vivify_41
-    new $P97, "ResizablePMCArray"
-  vivify_41:
-    set $N98, $P97
-    if $N98, unless_96_end
-    .const 'Sub' $P100 = "20_1256220716.53347" 
-    capture_lex $P100
-    $P100()
-  unless_96_end:
-    find_lex $P102, "self"
-    find_lex $P103, "@children"
-    unless_null $P103, vivify_42
-    new $P103, "ResizablePMCArray"
-  vivify_42:
-    $P104 = $P103."shift"()
-    $P102."value"($P104)
-    find_lex $P105, "self"
-    find_lex $P106, "self"
-    $P107 = $P106."value"()
-    $P108 = $P105."find_match_type"($P107)
-    .return ($P108)
-  control_88:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P109, exception, "payload"
-    .return ($P109)
-    rethrow exception
+    set $S79, $P78
+    $P80 = $P77."match_type"($S79)
+    .return ($P80)
 .end
 
 
 .namespace ["Matcher";"Equals"]
-.sub "_block99"  :anon :subid("20_1256220716.53347") :outer("19_1256220716.53347")
-    $P101 = "DIE"("You must provide a comparison value for 'equals' matcher.")
-    .return ($P101)
+.sub "_block89"  :anon :subid("18_1256257708.6361") :outer("15_1256257708.6361")
+    find_lex $P91, "self"
+    $P92 = $P91."match_type"("String")
+    .return ($P92)
 .end
 
 
 .namespace ["Matcher";"Equals"]
-.sub "_match_Float"  :subid("21_1256220716.53347") :method :outer("11_1256220716.53347")
-    .param pmc param_113
-    new $P112, 'ExceptionHandler'
-    set_addr $P112, control_111
-    $P112."handle_types"(58)
-    push_eh $P112
+.sub "init"  :subid("19_1256257708.6361") :method :outer("11_1256257708.6361")
+    .param pmc param_98
+    .param pmc param_99
+    .const 'Sub' $P108 = "20_1256257708.6361" 
+    capture_lex $P108
+    new $P97, 'ExceptionHandler'
+    set_addr $P97, control_96
+    $P97."handle_types"(58)
+    push_eh $P97
     .lex "self", self
-    .lex "$item", param_113
-    find_lex $P114, "self"
-    find_lex $P115, "$item"
-    unless_null $P115, vivify_43
-    new $P115, "Undef"
+    .lex "@children", param_98
+    .lex "%attributes", param_99
+    get_hll_global $P100, ["Matcher"], "init"
+    find_lex $P101, "self"
+    find_lex $P102, "@children"
+    unless_null $P102, vivify_40
+    new $P102, "ResizablePMCArray"
+  vivify_40:
+    find_lex $P103, "%attributes"
+    unless_null $P103, vivify_41
+    new $P103, "Hash"
+  vivify_41:
+    $P100($P101, $P102, $P103)
+    find_lex $P105, "@children"
+    unless_null $P105, vivify_42
+    new $P105, "ResizablePMCArray"
+  vivify_42:
+    set $N106, $P105
+    if $N106, unless_104_end
+    .const 'Sub' $P108 = "20_1256257708.6361" 
+    capture_lex $P108
+    $P108()
+  unless_104_end:
+    find_lex $P110, "self"
+    find_lex $P111, "@children"
+    unless_null $P111, vivify_43
+    new $P111, "ResizablePMCArray"
   vivify_43:
-    $P116 = $P114."match_scalar"($P115)
+    $P112 = $P111."shift"()
+    $P110."value"($P112)
+    find_lex $P113, "self"
+    find_lex $P114, "self"
+    $P115 = $P114."value"()
+    $P116 = $P113."find_match_type"($P115)
     .return ($P116)
-  control_111:
+  control_96:
     .local pmc exception 
     .get_results (exception) 
     getattribute $P117, exception, "payload"
@@ -2174,7 +2525,14 @@
 
 
 .namespace ["Matcher";"Equals"]
-.sub "_match_Integer"  :subid("22_1256220716.53347") :method :outer("11_1256220716.53347")
+.sub "_block107"  :anon :subid("20_1256257708.6361") :outer("19_1256257708.6361")
+    $P109 = "DIE"("You must provide a comparison value for 'equals' matcher.")
+    .return ($P109)
+.end
+
+
+.namespace ["Matcher";"Equals"]
+.sub "_match_Float"  :subid("21_1256257708.6361") :method :outer("11_1256257708.6361")
     .param pmc param_121
     new $P120, 'ExceptionHandler'
     set_addr $P120, control_119
@@ -2199,7 +2557,7 @@
 
 
 .namespace ["Matcher";"Equals"]
-.sub "_match_String"  :subid("23_1256220716.53347") :method :outer("11_1256220716.53347")
+.sub "_match_Integer"  :subid("22_1256257708.6361") :method :outer("11_1256257708.6361")
     .param pmc param_129
     new $P128, 'ExceptionHandler'
     set_addr $P128, control_127
@@ -2224,20 +2582,20 @@
 
 
 .namespace ["Matcher";"Equals"]
-.sub "match_type"  :subid("24_1256220716.53347") :method :outer("11_1256220716.53347")
-    .param pmc param_137 :slurpy
+.sub "_match_String"  :subid("23_1256257708.6361") :method :outer("11_1256257708.6361")
+    .param pmc param_137
     new $P136, 'ExceptionHandler'
     set_addr $P136, control_135
     $P136."handle_types"(58)
     push_eh $P136
     .lex "self", self
-    .lex "@value", param_137
+    .lex "$item", param_137
     find_lex $P138, "self"
-    find_lex $P139, "@value"
+    find_lex $P139, "$item"
     unless_null $P139, vivify_46
-    new $P139, "ResizablePMCArray"
+    new $P139, "Undef"
   vivify_46:
-    $P140 = $P138."_ATTR"("match_type", $P139)
+    $P140 = $P138."match_scalar"($P139)
     .return ($P140)
   control_135:
     .local pmc exception 
@@ -2249,130 +2607,72 @@
 
 
 .namespace ["Matcher";"Equals"]
-.sub "match_scalar"  :subid("25_1256220716.53347") :method :outer("11_1256220716.53347")
-    .param pmc param_145
-    .const 'Sub' $P172 = "28_1256220716.53347" 
-    capture_lex $P172
-    .const 'Sub' $P162 = "27_1256220716.53347" 
-    capture_lex $P162
-    .const 'Sub' $P152 = "26_1256220716.53347" 
-    capture_lex $P152
+.sub "match_type"  :subid("24_1256257708.6361") :method :outer("11_1256257708.6361")
+    .param pmc param_145 :slurpy
     new $P144, 'ExceptionHandler'
     set_addr $P144, control_143
     $P144."handle_types"(58)
     push_eh $P144
     .lex "self", self
-    .lex "$item", param_145
+    .lex "@value", param_145
     find_lex $P146, "self"
-    $P147 = $P146."value"()
-    .lex "$value", $P147
-    find_lex $P149, "self"
-    $P150 = $P149."match_type"()
-    if $P150, unless_148_end
-    .const 'Sub' $P152 = "26_1256220716.53347" 
-    capture_lex $P152
-    $P152()
-  unless_148_end:
-    find_lex $P158, "self"
-    $S159 = $P158."match_type"()
-    iseq $I160, $S159, "String"
-    if $I160, if_157
-    .const 'Sub' $P172 = "28_1256220716.53347" 
-    capture_lex $P172
-    $P180 = $P172()
-    set $P156, $P180
-    goto if_157_end
-  if_157:
-    .const 'Sub' $P162 = "27_1256220716.53347" 
-    capture_lex $P162
-    $P170 = $P162()
-    set $P156, $P170
-  if_157_end:
-    .return ($P156)
+    find_lex $P147, "@value"
+    unless_null $P147, vivify_47
+    new $P147, "ResizablePMCArray"
+  vivify_47:
+    $P148 = $P146."_ATTR"("match_type", $P147)
+    .return ($P148)
   control_143:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P181, exception, "payload"
-    .return ($P181)
+    getattribute $P149, exception, "payload"
+    .return ($P149)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Equals"]
-.sub "_block151"  :anon :subid("26_1256220716.53347") :outer("25_1256220716.53347")
-    find_lex $P153, "self"
-    find_lex $P154, "$item"
-    unless_null $P154, vivify_47
-    new $P154, "Undef"
-  vivify_47:
-    $P155 = $P153."find_match_type"($P154)
-    .return ($P155)
-.end
-
-
-.namespace ["Matcher";"Equals"]
-.sub "_block171"  :anon :subid("28_1256220716.53347") :outer("25_1256220716.53347")
-    new $P173, "Exception"
-    set $P173['type'], 58
-    find_lex $P174, "$item"
-    unless_null $P174, vivify_48
-    new $P174, "Undef"
-  vivify_48:
-    set $N175, $P174
-    find_lex $P176, "$value"
-    unless_null $P176, vivify_49
-    new $P176, "Undef"
-  vivify_49:
-    set $N177, $P176
-    iseq $I178, $N175, $N177
-    new $P179, 'Integer'
-    set $P179, $I178
-    setattribute $P173, 'payload', $P179
-    throw $P173
-    .return ()
-.end
-
-
-.namespace ["Matcher";"Equals"]
-.sub "_block161"  :anon :subid("27_1256220716.53347") :outer("25_1256220716.53347")
-    new $P163, "Exception"
-    set $P163['type'], 58
-    find_lex $P164, "$item"
-    unless_null $P164, vivify_50
-    new $P164, "Undef"
-  vivify_50:
-    set $S165, $P164
-    find_lex $P166, "$value"
-    unless_null $P166, vivify_51
-    new $P166, "Undef"
-  vivify_51:
-    set $S167, $P166
-    iseq $I168, $S165, $S167
-    new $P169, 'Integer'
-    set $P169, $I168
-    setattribute $P163, 'payload', $P169
-    throw $P163
-    .return ()
-.end
-
-
-.namespace ["Matcher";"Equals"]
-.sub "value"  :subid("29_1256220716.53347") :method :outer("11_1256220716.53347")
-    .param pmc param_185 :slurpy
-    new $P184, 'ExceptionHandler'
-    set_addr $P184, control_183
-    $P184."handle_types"(58)
-    push_eh $P184
+.sub "match_scalar"  :subid("25_1256257708.6361") :method :outer("11_1256257708.6361")
+    .param pmc param_153
+    .const 'Sub' $P180 = "28_1256257708.6361" 
+    capture_lex $P180
+    .const 'Sub' $P170 = "27_1256257708.6361" 
+    capture_lex $P170
+    .const 'Sub' $P160 = "26_1256257708.6361" 
+    capture_lex $P160
+    new $P152, 'ExceptionHandler'
+    set_addr $P152, control_151
+    $P152."handle_types"(58)
+    push_eh $P152
     .lex "self", self
-    .lex "@value", param_185
-    find_lex $P186, "self"
-    find_lex $P187, "@value"
-    unless_null $P187, vivify_52
-    new $P187, "ResizablePMCArray"
-  vivify_52:
-    $P188 = $P186."_ATTR"("value", $P187)
-    .return ($P188)
-  control_183:
+    .lex "$item", param_153
+    find_lex $P154, "self"
+    $P155 = $P154."value"()
+    .lex "$value", $P155
+    find_lex $P157, "self"
+    $P158 = $P157."match_type"()
+    if $P158, unless_156_end
+    .const 'Sub' $P160 = "26_1256257708.6361" 
+    capture_lex $P160
+    $P160()
+  unless_156_end:
+    find_lex $P166, "self"
+    $S167 = $P166."match_type"()
+    iseq $I168, $S167, "String"
+    if $I168, if_165
+    .const 'Sub' $P180 = "28_1256257708.6361" 
+    capture_lex $P180
+    $P188 = $P180()
+    set $P164, $P188
+    goto if_165_end
+  if_165:
+    .const 'Sub' $P170 = "27_1256257708.6361" 
+    capture_lex $P170
+    $P178 = $P170()
+    set $P164, $P178
+  if_165_end:
+    .return ($P164)
+  control_151:
     .local pmc exception 
     .get_results (exception) 
     getattribute $P189, exception, "payload"
@@ -2381,56 +2681,141 @@
 .end
 
 
+.namespace ["Matcher";"Equals"]
+.sub "_block159"  :anon :subid("26_1256257708.6361") :outer("25_1256257708.6361")
+    find_lex $P161, "self"
+    find_lex $P162, "$item"
+    unless_null $P162, vivify_48
+    new $P162, "Undef"
+  vivify_48:
+    $P163 = $P161."find_match_type"($P162)
+    .return ($P163)
+.end
+
+
+.namespace ["Matcher";"Equals"]
+.sub "_block179"  :anon :subid("28_1256257708.6361") :outer("25_1256257708.6361")
+    new $P181, "Exception"
+    set $P181['type'], 58
+    find_lex $P182, "$item"
+    unless_null $P182, vivify_49
+    new $P182, "Undef"
+  vivify_49:
+    set $N183, $P182
+    find_lex $P184, "$value"
+    unless_null $P184, vivify_50
+    new $P184, "Undef"
+  vivify_50:
+    set $N185, $P184
+    iseq $I186, $N183, $N185
+    new $P187, 'Integer'
+    set $P187, $I186
+    setattribute $P181, 'payload', $P187
+    throw $P181
+    .return ()
+.end
+
+
+.namespace ["Matcher";"Equals"]
+.sub "_block169"  :anon :subid("27_1256257708.6361") :outer("25_1256257708.6361")
+    new $P171, "Exception"
+    set $P171['type'], 58
+    find_lex $P172, "$item"
+    unless_null $P172, vivify_51
+    new $P172, "Undef"
+  vivify_51:
+    set $S173, $P172
+    find_lex $P174, "$value"
+    unless_null $P174, vivify_52
+    new $P174, "Undef"
+  vivify_52:
+    set $S175, $P174
+    iseq $I176, $S173, $S175
+    new $P177, 'Integer'
+    set $P177, $I176
+    setattribute $P171, 'payload', $P177
+    throw $P171
+    .return ()
+.end
+
+
+.namespace ["Matcher";"Equals"]
+.sub "value"  :subid("29_1256257708.6361") :method :outer("11_1256257708.6361")
+    .param pmc param_193 :slurpy
+    new $P192, 'ExceptionHandler'
+    set_addr $P192, control_191
+    $P192."handle_types"(58)
+    push_eh $P192
+    .lex "self", self
+    .lex "@value", param_193
+    find_lex $P194, "self"
+    find_lex $P195, "@value"
+    unless_null $P195, vivify_53
+    new $P195, "ResizablePMCArray"
+  vivify_53:
+    $P196 = $P194."_ATTR"("value", $P195)
+    .return ($P196)
+  control_191:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P197, exception, "payload"
+    .return ($P197)
+    rethrow exception
+.end
+
+
 .namespace []
-.sub "_block11"  :anon :subid("10_1256206976.91354")
+.sub "_block11"  :anon :subid("10_1256258081.10172")
     get_hll_global $P14, ["Matcher";"EqualsFloat"], "_block13" 
     .return ($P14)
 .end
 
 
 .namespace ["Matcher";"EqualsFloat"]
-.sub "_block13" :init :load :subid("11_1256206976.91354")
-    .const 'Sub' $P161 = "28_1256206976.91354" 
-    capture_lex $P161
-    .const 'Sub' $P153 = "27_1256206976.91354" 
-    capture_lex $P153
-    .const 'Sub' $P135 = "25_1256206976.91354" 
-    capture_lex $P135
-    .const 'Sub' $P127 = "24_1256206976.91354" 
-    capture_lex $P127
-    .const 'Sub' $P119 = "23_1256206976.91354" 
-    capture_lex $P119
-    .const 'Sub' $P111 = "22_1256206976.91354" 
-    capture_lex $P111
-    .const 'Sub' $P61 = "16_1256206976.91354" 
-    capture_lex $P61
-    .const 'Sub' $P49 = "15_1256206976.91354" 
+.sub "_block13" :init :load :subid("11_1256258081.10172")
+    .const 'Sub' $P172 = "29_1256258081.10172" 
+    capture_lex $P172
+    .const 'Sub' $P164 = "28_1256258081.10172" 
+    capture_lex $P164
+    .const 'Sub' $P146 = "26_1256258081.10172" 
+    capture_lex $P146
+    .const 'Sub' $P138 = "25_1256258081.10172" 
+    capture_lex $P138
+    .const 'Sub' $P130 = "24_1256258081.10172" 
+    capture_lex $P130
+    .const 'Sub' $P122 = "23_1256258081.10172" 
+    capture_lex $P122
+    .const 'Sub' $P72 = "17_1256258081.10172" 
+    capture_lex $P72
+    .const 'Sub' $P60 = "16_1256258081.10172" 
+    capture_lex $P60
+    .const 'Sub' $P49 = "15_1256258081.10172" 
     capture_lex $P49
-    .const 'Sub' $P34 = "14_1256206976.91354" 
+    .const 'Sub' $P34 = "14_1256258081.10172" 
     capture_lex $P34
-    .const 'Sub' $P15 = "12_1256206976.91354" 
+    .const 'Sub' $P15 = "12_1256258081.10172" 
     capture_lex $P15
     "_ONLOAD"()
-    .const 'Sub' $P161 = "28_1256206976.91354" 
-    capture_lex $P161
-    .return ($P161)
+    .const 'Sub' $P172 = "29_1256258081.10172" 
+    capture_lex $P172
+    .return ($P172)
 .end
 
 
 .namespace ["Matcher";"EqualsFloat"]
-.sub "_ONLOAD"  :subid("12_1256206976.91354") :outer("11_1256206976.91354")
-    .const 'Sub' $P21 = "13_1256206976.91354" 
+.sub "_ONLOAD"  :subid("12_1256258081.10172") :outer("11_1256258081.10172")
+    .const 'Sub' $P21 = "13_1256258081.10172" 
     capture_lex $P21
     new $P17, 'ExceptionHandler'
     set_addr $P17, control_16
     $P17."handle_types"(58)
     push_eh $P17
     get_global $P19, "$onload_done"
-    unless_null $P19, vivify_29
+    unless_null $P19, vivify_30
     new $P19, "Undef"
-  vivify_29:
+  vivify_30:
     unless $P19, if_18_end
-    .const 'Sub' $P21 = "13_1256206976.91354" 
+    .const 'Sub' $P21 = "13_1256258081.10172" 
     capture_lex $P21
     $P21()
   if_18_end:
@@ -2443,21 +2828,21 @@
     assign $P26, "Matcher::EqualsFloat"
     .lex "$class_name", $P26
     find_lex $P27, "$class_name"
-    unless_null $P27, vivify_30
+    unless_null $P27, vivify_31
     new $P27, "Undef"
-  vivify_30:
+  vivify_31:
     "NOTE"("Creating class ", $P27)
     get_hll_global $P28, ["Class"], "SUBCLASS"
     find_lex $P29, "$class_name"
-    unless_null $P29, vivify_31
+    unless_null $P29, vivify_32
     new $P29, "Undef"
-  vivify_31:
+  vivify_32:
     $P28($P29, "Matcher::TypeSafe")
     get_hll_global $P30, ["Class"], "multi_method"
     find_lex $P31, "$class_name"
-    unless_null $P31, vivify_32
+    unless_null $P31, vivify_33
     new $P31, "Undef"
-  vivify_32:
+  vivify_33:
     $P30($P31, "matches_typesafe", "_match_" :named("starting_with"))
     $P32 = "NOTE"("done")
     .return ($P32)
@@ -2471,7 +2856,7 @@
 
 
 .namespace ["Matcher";"EqualsFloat"]
-.sub "_block20"  :anon :subid("13_1256206976.91354") :outer("12_1256206976.91354")
+.sub "_block20"  :anon :subid("13_1256258081.10172") :outer("12_1256258081.10172")
     new $P22, "Exception"
     set $P22['type'], 58
     new $P23, "Integer"
@@ -2483,7 +2868,7 @@
 
 
 .namespace ["Matcher";"EqualsFloat"]
-.sub "describe_failure"  :subid("14_1256206976.91354") :method :outer("11_1256206976.91354")
+.sub "describe_failure"  :subid("14_1256258081.10172") :method :outer("11_1256258081.10172")
     .param pmc param_37
     .param pmc param_38
     new $P36, 'ExceptionHandler'
@@ -2496,20 +2881,20 @@
     new $P39, "Exception"
     set $P39['type'], 58
     find_lex $P40, "$description"
-    unless_null $P40, vivify_33
+    unless_null $P40, vivify_34
     new $P40, "Undef"
-  vivify_33:
-    find_lex $P41, "$item"
-    unless_null $P41, vivify_34
-    new $P41, "Undef"
   vivify_34:
+    find_lex $P41, "$item"
+    unless_null $P41, vivify_35
+    new $P41, "Undef"
+  vivify_35:
     concat $P42, $P40, $P41
     concat $P43, $P42, " differed by "
     find_lex $P44, "self"
     find_lex $P45, "$item"
-    unless_null $P45, vivify_35
+    unless_null $P45, vivify_36
     new $P45, "Undef"
-  vivify_35:
+  vivify_36:
     $S46 = $P44."difference"($P45)
     concat $P47, $P43, $S46
     setattribute $P39, 'payload', $P47
@@ -2525,349 +2910,380 @@
 
 
 .namespace ["Matcher";"EqualsFloat"]
-.sub "difference"  :subid("15_1256206976.91354") :method :outer("11_1256206976.91354")
+.sub "describe_self"  :subid("15_1256258081.10172") :method :outer("11_1256258081.10172")
     .param pmc param_52
     new $P51, 'ExceptionHandler'
     set_addr $P51, control_50
     $P51."handle_types"(58)
     push_eh $P51
     .lex "self", self
-    .lex "$item", param_52
-    find_lex $P53, "$item"
-    unless_null $P53, vivify_36
-    new $P53, "Undef"
-  vivify_36:
-    find_lex $P54, "self"
-    $N55 = $P54."wanted"()
-    sub $P56, $P53, $N55
-    .lex "$difference", $P56
-
-			$P0 = find_lex '$difference'
-			$P57 = abs $P0
-		
-    .lex "$abs", $P57
-    new $P58, "Exception"
-    set $P58['type'], 58
-    find_lex $P59, "$abs"
-    unless_null $P59, vivify_37
-    new $P59, "Undef"
+    .lex "$description", param_52
+    new $P53, "Exception"
+    set $P53['type'], 58
+    find_lex $P54, "$description"
+    unless_null $P54, vivify_37
+    new $P54, "Undef"
   vivify_37:
-    setattribute $P58, 'payload', $P59
-    throw $P58
+    concat $P55, $P54, "a Number equal to "
+    find_lex $P56, "self"
+    $S57 = $P56."value"()
+    concat $P58, $P55, $S57
+    setattribute $P53, 'payload', $P58
+    throw $P53
     .return ()
   control_50:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P60, exception, "payload"
-    .return ($P60)
+    getattribute $P59, exception, "payload"
+    .return ($P59)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"EqualsFloat"]
-.sub "init"  :subid("16_1256206976.91354") :method :outer("11_1256206976.91354")
-    .param pmc param_64
-    .param pmc param_65
-    .const 'Sub' $P87 = "19_1256206976.91354" 
-    capture_lex $P87
-    .const 'Sub' $P80 = "18_1256206976.91354" 
-    capture_lex $P80
-    .const 'Sub' $P70 = "17_1256206976.91354" 
-    capture_lex $P70
-    new $P63, 'ExceptionHandler'
-    set_addr $P63, control_62
-    $P63."handle_types"(58)
-    push_eh $P63
+.sub "difference"  :subid("16_1256258081.10172") :method :outer("11_1256258081.10172")
+    .param pmc param_63
+    new $P62, 'ExceptionHandler'
+    set_addr $P62, control_61
+    $P62."handle_types"(58)
+    push_eh $P62
     .lex "self", self
-    .lex "@children", param_64
-    .lex "%attributes", param_65
-    find_lex $P67, "@children"
-    unless_null $P67, vivify_38
-    new $P67, "ResizablePMCArray"
+    .lex "$item", param_63
+    find_lex $P64, "$item"
+    unless_null $P64, vivify_38
+    new $P64, "Undef"
   vivify_38:
-    set $N68, $P67
-    if $N68, unless_66_end
-    .const 'Sub' $P70 = "17_1256206976.91354" 
-    capture_lex $P70
-    $P70()
-  unless_66_end:
-    find_lex $P72, "self"
-    find_lex $P73, "@children"
-    unless_null $P73, vivify_39
-    new $P73, "ResizablePMCArray"
+    find_lex $P65, "self"
+    $N66 = $P65."value"()
+    sub $P67, $P64, $N66
+    .lex "$difference", $P67
+
+			$P0 = find_lex '$difference'
+			$P68 = abs $P0
+		
+    .lex "$abs", $P68
+    new $P69, "Exception"
+    set $P69['type'], 58
+    find_lex $P70, "$abs"
+    unless_null $P70, vivify_39
+    new $P70, "Undef"
   vivify_39:
-    $P74 = $P73."shift"()
-    $P72."value"($P74)
-    find_lex $P77, "@children"
-    unless_null $P77, vivify_40
-    new $P77, "ResizablePMCArray"
-  vivify_40:
-    set $N78, $P77
-    if $N78, if_76
-    .const 'Sub' $P87 = "19_1256206976.91354" 
-    capture_lex $P87
-    $P109 = $P87()
-    set $P75, $P109
-    goto if_76_end
-  if_76:
-    .const 'Sub' $P80 = "18_1256206976.91354" 
-    capture_lex $P80
-    $P85 = $P80()
-    set $P75, $P85
-  if_76_end:
-    .return ($P75)
-  control_62:
+    setattribute $P69, 'payload', $P70
+    throw $P69
+    .return ()
+  control_61:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P110, exception, "payload"
-    .return ($P110)
-    rethrow exception
-.end
-
-
-.namespace ["Matcher";"EqualsFloat"]
-.sub "_block69"  :anon :subid("17_1256206976.91354") :outer("16_1256206976.91354")
-    $P71 = "DIE"("You must provide at least a target value for is-close-to matcher")
+    getattribute $P71, exception, "payload"
     .return ($P71)
+    rethrow exception
 .end
 
 
 .namespace ["Matcher";"EqualsFloat"]
-.sub "_block86"  :anon :subid("19_1256206976.91354") :outer("16_1256206976.91354")
-    .const 'Sub' $P105 = "21_1256206976.91354" 
-    capture_lex $P105
-    .const 'Sub' $P96 = "20_1256206976.91354" 
-    capture_lex $P96
-    find_lex $P90, "self"
-    $N91 = $P90."value"()
-    new $P92, "Integer"
-    assign $P92, 0
-    set $N93, $P92
-    isne $I94, $N91, $N93
-    if $I94, if_89
-    .const 'Sub' $P105 = "21_1256206976.91354" 
-    capture_lex $P105
-    $P108 = $P105()
-    set $P88, $P108
-    goto if_89_end
-  if_89:
-    .const 'Sub' $P96 = "20_1256206976.91354" 
-    capture_lex $P96
-    $P103 = $P96()
-    set $P88, $P103
-  if_89_end:
-    .return ($P88)
-.end
-
-
-.namespace ["Matcher";"EqualsFloat"]
-.sub "_block104"  :anon :subid("21_1256206976.91354") :outer("19_1256206976.91354")
-    find_lex $P106, "self"
-    $P107 = $P106."within"("0.0001")
-    .return ($P107)
-.end
-
-
-.namespace ["Matcher";"EqualsFloat"]
-.sub "_block95"  :anon :subid("20_1256206976.91354") :outer("19_1256206976.91354")
-    find_lex $P97, "self"
-    find_lex $P98, "self"
-    $P99 = $P98."value"()
-    new $P100, "String"
-    assign $P100, "0.0001"
-    mul $P101, $P99, $P100
-    $P102 = $P97."within"($P101)
-    .return ($P102)
-.end
-
-
-.namespace ["Matcher";"EqualsFloat"]
-.sub "_block79"  :anon :subid("18_1256206976.91354") :outer("16_1256206976.91354")
-    find_lex $P81, "self"
-    find_lex $P82, "@children"
-    unless_null $P82, vivify_41
-    new $P82, "ResizablePMCArray"
+.sub "init"  :subid("17_1256258081.10172") :method :outer("11_1256258081.10172")
+    .param pmc param_75
+    .param pmc param_76
+    .const 'Sub' $P98 = "20_1256258081.10172" 
+    capture_lex $P98
+    .const 'Sub' $P91 = "19_1256258081.10172" 
+    capture_lex $P91
+    .const 'Sub' $P81 = "18_1256258081.10172" 
+    capture_lex $P81
+    new $P74, 'ExceptionHandler'
+    set_addr $P74, control_73
+    $P74."handle_types"(58)
+    push_eh $P74
+    .lex "self", self
+    .lex "@children", param_75
+    .lex "%attributes", param_76
+    find_lex $P78, "@children"
+    unless_null $P78, vivify_40
+    new $P78, "ResizablePMCArray"
+  vivify_40:
+    set $N79, $P78
+    if $N79, unless_77_end
+    .const 'Sub' $P81 = "18_1256258081.10172" 
+    capture_lex $P81
+    $P81()
+  unless_77_end:
+    find_lex $P83, "self"
+    find_lex $P84, "@children"
+    unless_null $P84, vivify_41
+    new $P84, "ResizablePMCArray"
   vivify_41:
-    $P83 = $P82."shift"()
-    $P84 = $P81."within"($P83)
-    .return ($P84)
-.end
-
-
-.namespace ["Matcher";"EqualsFloat"]
-.sub "_match_Float"  :subid("22_1256206976.91354") :method :outer("11_1256206976.91354")
-    .param pmc param_114
-    new $P113, 'ExceptionHandler'
-    set_addr $P113, control_112
-    $P113."handle_types"(58)
-    push_eh $P113
-    .lex "self", self
-    .lex "$item", param_114
-    find_lex $P115, "self"
-    find_lex $P116, "$item"
-    unless_null $P116, vivify_42
-    new $P116, "Undef"
+    $P85 = $P84."shift"()
+    $P83."value"($P85)
+    find_lex $P88, "@children"
+    unless_null $P88, vivify_42
+    new $P88, "ResizablePMCArray"
   vivify_42:
-    $P117 = $P115."match_scalar"($P116)
-    .return ($P117)
-  control_112:
+    set $N89, $P88
+    if $N89, if_87
+    .const 'Sub' $P98 = "20_1256258081.10172" 
+    capture_lex $P98
+    $P120 = $P98()
+    set $P86, $P120
+    goto if_87_end
+  if_87:
+    .const 'Sub' $P91 = "19_1256258081.10172" 
+    capture_lex $P91
+    $P96 = $P91()
+    set $P86, $P96
+  if_87_end:
+    .return ($P86)
+  control_73:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P118, exception, "payload"
+    getattribute $P121, exception, "payload"
+    .return ($P121)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"EqualsFloat"]
+.sub "_block80"  :anon :subid("18_1256258081.10172") :outer("17_1256258081.10172")
+    $P82 = "DIE"("You must provide at least a target value for is-close-to matcher")
+    .return ($P82)
+.end
+
+
+.namespace ["Matcher";"EqualsFloat"]
+.sub "_block97"  :anon :subid("20_1256258081.10172") :outer("17_1256258081.10172")
+    .const 'Sub' $P116 = "22_1256258081.10172" 
+    capture_lex $P116
+    .const 'Sub' $P107 = "21_1256258081.10172" 
+    capture_lex $P107
+    find_lex $P101, "self"
+    $N102 = $P101."value"()
+    new $P103, "Integer"
+    assign $P103, 0
+    set $N104, $P103
+    isne $I105, $N102, $N104
+    if $I105, if_100
+    .const 'Sub' $P116 = "22_1256258081.10172" 
+    capture_lex $P116
+    $P119 = $P116()
+    set $P99, $P119
+    goto if_100_end
+  if_100:
+    .const 'Sub' $P107 = "21_1256258081.10172" 
+    capture_lex $P107
+    $P114 = $P107()
+    set $P99, $P114
+  if_100_end:
+    .return ($P99)
+.end
+
+
+.namespace ["Matcher";"EqualsFloat"]
+.sub "_block115"  :anon :subid("22_1256258081.10172") :outer("20_1256258081.10172")
+    find_lex $P117, "self"
+    $P118 = $P117."within"("0.0001")
     .return ($P118)
-    rethrow exception
 .end
 
 
 .namespace ["Matcher";"EqualsFloat"]
-.sub "_match_Integer"  :subid("23_1256206976.91354") :method :outer("11_1256206976.91354")
-    .param pmc param_122
-    new $P121, 'ExceptionHandler'
-    set_addr $P121, control_120
-    $P121."handle_types"(58)
-    push_eh $P121
-    .lex "self", self
-    .lex "$item", param_122
-    find_lex $P123, "self"
-    find_lex $P124, "$item"
-    unless_null $P124, vivify_43
-    new $P124, "Undef"
+.sub "_block106"  :anon :subid("21_1256258081.10172") :outer("20_1256258081.10172")
+    find_lex $P108, "self"
+    find_lex $P109, "self"
+    $P110 = $P109."value"()
+    new $P111, "String"
+    assign $P111, "0.0001"
+    mul $P112, $P110, $P111
+    $P113 = $P108."within"($P112)
+    .return ($P113)
+.end
+
+
+.namespace ["Matcher";"EqualsFloat"]
+.sub "_block90"  :anon :subid("19_1256258081.10172") :outer("17_1256258081.10172")
+    find_lex $P92, "self"
+    find_lex $P93, "@children"
+    unless_null $P93, vivify_43
+    new $P93, "ResizablePMCArray"
   vivify_43:
-    $P125 = $P123."match_scalar"($P124)
-    .return ($P125)
-  control_120:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P126, exception, "payload"
-    .return ($P126)
-    rethrow exception
+    $P94 = $P93."shift"()
+    $P95 = $P92."within"($P94)
+    .return ($P95)
 .end
 
 
 .namespace ["Matcher";"EqualsFloat"]
-.sub "_match_String"  :subid("24_1256206976.91354") :method :outer("11_1256206976.91354")
-    .param pmc param_130
-    new $P129, 'ExceptionHandler'
-    set_addr $P129, control_128
-    $P129."handle_types"(58)
-    push_eh $P129
+.sub "_match_Float"  :subid("23_1256258081.10172") :method :outer("11_1256258081.10172")
+    .param pmc param_125
+    new $P124, 'ExceptionHandler'
+    set_addr $P124, control_123
+    $P124."handle_types"(58)
+    push_eh $P124
     .lex "self", self
-    .lex "$item", param_130
-    find_lex $P131, "self"
-    find_lex $P132, "$item"
-    unless_null $P132, vivify_44
-    new $P132, "Undef"
+    .lex "$item", param_125
+    find_lex $P126, "self"
+    find_lex $P127, "$item"
+    unless_null $P127, vivify_44
+    new $P127, "Undef"
   vivify_44:
-    $P133 = $P131."match_scalar"($P132)
-    .return ($P133)
-  control_128:
+    $P128 = $P126."match_scalar"($P127)
+    .return ($P128)
+  control_123:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P134, exception, "payload"
-    .return ($P134)
+    getattribute $P129, exception, "payload"
+    .return ($P129)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"EqualsFloat"]
-.sub "match_scalar"  :subid("25_1256206976.91354") :method :outer("11_1256206976.91354")
-    .param pmc param_138
-    .const 'Sub' $P147 = "26_1256206976.91354" 
-    capture_lex $P147
-    new $P137, 'ExceptionHandler'
-    set_addr $P137, control_136
-    $P137."handle_types"(58)
-    push_eh $P137
+.sub "_match_Integer"  :subid("24_1256258081.10172") :method :outer("11_1256258081.10172")
+    .param pmc param_133
+    new $P132, 'ExceptionHandler'
+    set_addr $P132, control_131
+    $P132."handle_types"(58)
+    push_eh $P132
     .lex "self", self
-    .lex "$item", param_138
-    find_lex $P140, "self"
-    find_lex $P141, "$item"
-    unless_null $P141, vivify_45
-    new $P141, "Undef"
+    .lex "$item", param_133
+    find_lex $P134, "self"
+    find_lex $P135, "$item"
+    unless_null $P135, vivify_45
+    new $P135, "Undef"
   vivify_45:
-    $N142 = $P140."difference"($P141)
-    find_lex $P143, "self"
-    $N144 = $P143."within"()
-    isle $I145, $N142, $N144
-    unless $I145, if_139_end
-    .const 'Sub' $P147 = "26_1256206976.91354" 
-    capture_lex $P147
-    $P147()
-  if_139_end:
-    new $P150, "Exception"
-    set $P150['type'], 58
-    new $P151, "Integer"
-    assign $P151, 0
-    setattribute $P150, 'payload', $P151
-    throw $P150
-    .return ()
-  control_136:
+    $P136 = $P134."match_scalar"($P135)
+    .return ($P136)
+  control_131:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P152, exception, "payload"
-    .return ($P152)
+    getattribute $P137, exception, "payload"
+    .return ($P137)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"EqualsFloat"]
-.sub "_block146"  :anon :subid("26_1256206976.91354") :outer("25_1256206976.91354")
-    new $P148, "Exception"
-    set $P148['type'], 58
-    new $P149, "Integer"
-    assign $P149, 1
-    setattribute $P148, 'payload', $P149
-    throw $P148
-    .return ()
-.end
-
-
-.namespace ["Matcher";"EqualsFloat"]
-.sub "value"  :subid("27_1256206976.91354") :method :outer("11_1256206976.91354")
-    .param pmc param_156 :slurpy
-    new $P155, 'ExceptionHandler'
-    set_addr $P155, control_154
-    $P155."handle_types"(58)
-    push_eh $P155
+.sub "_match_String"  :subid("25_1256258081.10172") :method :outer("11_1256258081.10172")
+    .param pmc param_141
+    new $P140, 'ExceptionHandler'
+    set_addr $P140, control_139
+    $P140."handle_types"(58)
+    push_eh $P140
     .lex "self", self
-    .lex "@value", param_156
-    find_lex $P157, "self"
-    find_lex $P158, "@value"
-    unless_null $P158, vivify_46
-    new $P158, "ResizablePMCArray"
+    .lex "$item", param_141
+    find_lex $P142, "self"
+    find_lex $P143, "$item"
+    unless_null $P143, vivify_46
+    new $P143, "Undef"
   vivify_46:
-    $P159 = $P157."_ATTR"("value", $P158)
-    .return ($P159)
-  control_154:
+    $P144 = $P142."match_scalar"($P143)
+    .return ($P144)
+  control_139:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P160, exception, "payload"
-    .return ($P160)
+    getattribute $P145, exception, "payload"
+    .return ($P145)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"EqualsFloat"]
-.sub "within"  :subid("28_1256206976.91354") :method :outer("11_1256206976.91354")
-    .param pmc param_164 :slurpy
-    new $P163, 'ExceptionHandler'
-    set_addr $P163, control_162
-    $P163."handle_types"(58)
-    push_eh $P163
+.sub "match_scalar"  :subid("26_1256258081.10172") :method :outer("11_1256258081.10172")
+    .param pmc param_149
+    .const 'Sub' $P158 = "27_1256258081.10172" 
+    capture_lex $P158
+    new $P148, 'ExceptionHandler'
+    set_addr $P148, control_147
+    $P148."handle_types"(58)
+    push_eh $P148
     .lex "self", self
-    .lex "@value", param_164
-    find_lex $P165, "self"
-    find_lex $P166, "@value"
-    unless_null $P166, vivify_47
-    new $P166, "ResizablePMCArray"
+    .lex "$item", param_149
+    find_lex $P151, "self"
+    find_lex $P152, "$item"
+    unless_null $P152, vivify_47
+    new $P152, "Undef"
   vivify_47:
-    $P167 = $P165."_ATTR"("within", $P166)
-    .return ($P167)
-  control_162:
+    $N153 = $P151."difference"($P152)
+    find_lex $P154, "self"
+    $N155 = $P154."within"()
+    isle $I156, $N153, $N155
+    unless $I156, if_150_end
+    .const 'Sub' $P158 = "27_1256258081.10172" 
+    capture_lex $P158
+    $P158()
+  if_150_end:
+    new $P161, "Exception"
+    set $P161['type'], 58
+    new $P162, "Integer"
+    assign $P162, 0
+    setattribute $P161, 'payload', $P162
+    throw $P161
+    .return ()
+  control_147:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P168, exception, "payload"
-    .return ($P168)
+    getattribute $P163, exception, "payload"
+    .return ($P163)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"EqualsFloat"]
+.sub "_block157"  :anon :subid("27_1256258081.10172") :outer("26_1256258081.10172")
+    new $P159, "Exception"
+    set $P159['type'], 58
+    new $P160, "Integer"
+    assign $P160, 1
+    setattribute $P159, 'payload', $P160
+    throw $P159
+    .return ()
+.end
+
+
+.namespace ["Matcher";"EqualsFloat"]
+.sub "value"  :subid("28_1256258081.10172") :method :outer("11_1256258081.10172")
+    .param pmc param_167 :slurpy
+    new $P166, 'ExceptionHandler'
+    set_addr $P166, control_165
+    $P166."handle_types"(58)
+    push_eh $P166
+    .lex "self", self
+    .lex "@value", param_167
+    find_lex $P168, "self"
+    find_lex $P169, "@value"
+    unless_null $P169, vivify_48
+    new $P169, "ResizablePMCArray"
+  vivify_48:
+    $P170 = $P168."_ATTR"("value", $P169)
+    .return ($P170)
+  control_165:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P171, exception, "payload"
+    .return ($P171)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"EqualsFloat"]
+.sub "within"  :subid("29_1256258081.10172") :method :outer("11_1256258081.10172")
+    .param pmc param_175 :slurpy
+    new $P174, 'ExceptionHandler'
+    set_addr $P174, control_173
+    $P174."handle_types"(58)
+    push_eh $P174
+    .lex "self", self
+    .lex "@value", param_175
+    find_lex $P176, "self"
+    find_lex $P177, "@value"
+    unless_null $P177, vivify_49
+    new $P177, "ResizablePMCArray"
+  vivify_49:
+    $P178 = $P176."_ATTR"("within", $P177)
+    .return ($P178)
+  control_173:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P179, exception, "payload"
+    .return ($P179)
     rethrow exception
 .end
 
@@ -3032,81 +3448,83 @@
 
 
 .namespace []
-.sub "_block11"  :anon :subid("10_1256220718.3535")
+.sub "_block11"  :anon :subid("10_1256257953.41979")
     get_hll_global $P14, ["Matcher";"Factory"], "_block13" 
     .return ($P14)
 .end
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_block13" :init :load :subid("11_1256220718.3535")
-    .const 'Sub' $P239 = "36_1256220718.3535" 
-    capture_lex $P239
-    .const 'Sub' $P232 = "35_1256220718.3535" 
+.sub "_block13" :init :load :subid("11_1256257953.41979")
+    .const 'Sub' $P251 = "37_1256257953.41979" 
+    capture_lex $P251
+    .const 'Sub' $P242 = "36_1256257953.41979" 
+    capture_lex $P242
+    .const 'Sub' $P232 = "35_1256257953.41979" 
     capture_lex $P232
-    .const 'Sub' $P223 = "34_1256220718.3535" 
+    .const 'Sub' $P223 = "34_1256257953.41979" 
     capture_lex $P223
-    .const 'Sub' $P213 = "33_1256220718.3535" 
+    .const 'Sub' $P213 = "33_1256257953.41979" 
     capture_lex $P213
-    .const 'Sub' $P204 = "32_1256220718.3535" 
-    capture_lex $P204
-    .const 'Sub' $P194 = "31_1256220718.3535" 
-    capture_lex $P194
-    .const 'Sub' $P184 = "30_1256220718.3535" 
-    capture_lex $P184
-    .const 'Sub' $P177 = "29_1256220718.3535" 
-    capture_lex $P177
-    .const 'Sub' $P168 = "28_1256220718.3535" 
-    capture_lex $P168
-    .const 'Sub' $P159 = "27_1256220718.3535" 
-    capture_lex $P159
-    .const 'Sub' $P150 = "26_1256220718.3535" 
+    .const 'Sub' $P203 = "32_1256257953.41979" 
+    capture_lex $P203
+    .const 'Sub' $P196 = "31_1256257953.41979" 
+    capture_lex $P196
+    .const 'Sub' $P187 = "30_1256257953.41979" 
+    capture_lex $P187
+    .const 'Sub' $P178 = "29_1256257953.41979" 
+    capture_lex $P178
+    .const 'Sub' $P169 = "28_1256257953.41979" 
+    capture_lex $P169
+    .const 'Sub' $P160 = "27_1256257953.41979" 
+    capture_lex $P160
+    .const 'Sub' $P150 = "26_1256257953.41979" 
     capture_lex $P150
-    .const 'Sub' $P141 = "25_1256220718.3535" 
+    .const 'Sub' $P141 = "25_1256257953.41979" 
     capture_lex $P141
-    .const 'Sub' $P132 = "24_1256220718.3535" 
-    capture_lex $P132
-    .const 'Sub' $P123 = "23_1256220718.3535" 
-    capture_lex $P123
-    .const 'Sub' $P114 = "22_1256220718.3535" 
-    capture_lex $P114
-    .const 'Sub' $P105 = "21_1256220718.3535" 
+    .const 'Sub' $P131 = "24_1256257953.41979" 
+    capture_lex $P131
+    .const 'Sub' $P121 = "23_1256257953.41979" 
+    capture_lex $P121
+    .const 'Sub' $P112 = "22_1256257953.41979" 
+    capture_lex $P112
+    .const 'Sub' $P105 = "21_1256257953.41979" 
     capture_lex $P105
-    .const 'Sub' $P98 = "20_1256220718.3535" 
-    capture_lex $P98
-    .const 'Sub' $P89 = "19_1256220718.3535" 
-    capture_lex $P89
-    .const 'Sub' $P80 = "18_1256220718.3535" 
-    capture_lex $P80
-    .const 'Sub' $P71 = "17_1256220718.3535" 
+    .const 'Sub' $P96 = "20_1256257953.41979" 
+    capture_lex $P96
+    .const 'Sub' $P87 = "19_1256257953.41979" 
+    capture_lex $P87
+    .const 'Sub' $P78 = "18_1256257953.41979" 
+    capture_lex $P78
+    .const 'Sub' $P71 = "17_1256257953.41979" 
     capture_lex $P71
-    .const 'Sub' $P64 = "16_1256220718.3535" 
+    .const 'Sub' $P64 = "16_1256257953.41979" 
     capture_lex $P64
-    .const 'Sub' $P40 = "14_1256220718.3535" 
+    .const 'Sub' $P40 = "14_1256257953.41979" 
     capture_lex $P40
-    .const 'Sub' $P15 = "12_1256220718.3535" 
+    .const 'Sub' $P15 = "12_1256257953.41979" 
     capture_lex $P15
     "_ONLOAD"()
-    .const 'Sub' $P239 = "36_1256220718.3535" 
-    capture_lex $P239
-    .return ($P239)
+    .const 'Sub' $P251 = "37_1256257953.41979" 
+    capture_lex $P251
+    .return ($P251)
 .end
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_ONLOAD"  :subid("12_1256220718.3535") :outer("11_1256220718.3535")
-    .const 'Sub' $P21 = "13_1256220718.3535" 
+.sub "_ONLOAD"  :subid("12_1256257953.41979") :outer("11_1256257953.41979")
+    .const 'Sub' $P21 = "13_1256257953.41979" 
     capture_lex $P21
     new $P17, 'ExceptionHandler'
     set_addr $P17, control_16
     $P17."handle_types"(58)
     push_eh $P17
     get_global $P19, "$onload_done"
-    unless_null $P19, vivify_37
+    unless_null $P19, vivify_38
     new $P19, "Undef"
-  vivify_37:
+  vivify_38:
     unless $P19, if_18_end
-    .const 'Sub' $P21 = "13_1256220718.3535" 
+    .const 'Sub' $P21 = "13_1256257953.41979" 
     capture_lex $P21
     $P21()
   if_18_end:
@@ -3114,44 +3532,44 @@
     assign $P24, 1
     set_global "$onload_done", $P24
     get_hll_global $P25, ["Parrot"], "IMPORT"
-    $P25("Dumper")
+    $P25("Dumper", "ASSERT DUMP DUMP_ NOTE")
     new $P26, "String"
     assign $P26, "Matcher::Factory"
     .lex "$class_name", $P26
     find_lex $P27, "$class_name"
-    unless_null $P27, vivify_38
+    unless_null $P27, vivify_39
     new $P27, "Undef"
-  vivify_38:
+  vivify_39:
     "NOTE"("Creating class ", $P27)
     get_hll_global $P28, ["Class"], "SUBCLASS"
     find_lex $P29, "$class_name"
-    unless_null $P29, vivify_39
+    unless_null $P29, vivify_40
     new $P29, "Undef"
-  vivify_39:
+  vivify_40:
     $P28($P29, "Class::HashBased")
     get_hll_global $P30, ["Class"], "multi_sub"
     find_lex $P31, "$class_name"
-    unless_null $P31, vivify_40
+    unless_null $P31, vivify_41
     new $P31, "Undef"
-  vivify_40:
+  vivify_41:
     $P30($P31, "is", "_is_" :named("starting_with"))
     get_hll_global $P32, ["Class"], "multi_sub"
     find_lex $P33, "$class_name"
-    unless_null $P33, vivify_41
+    unless_null $P33, vivify_42
     new $P33, "Undef"
-  vivify_41:
+  vivify_42:
     $P32($P33, "equals", "_equals_" :named("starting_with"))
     get_hll_global $P34, ["Class"], "multi_sub"
     find_lex $P35, "$class_name"
-    unless_null $P35, vivify_42
+    unless_null $P35, vivify_43
     new $P35, "Undef"
-  vivify_42:
+  vivify_43:
     $P34($P35, "not", "_not_" :named("starting_with"))
     get_hll_global $P36, ["Class"], "multi_sub"
     find_lex $P37, "$class_name"
-    unless_null $P37, vivify_43
+    unless_null $P37, vivify_44
     new $P37, "Undef"
-  vivify_43:
+  vivify_44:
     $P36($P37, "returns", "_returns_" :named("starting_with"))
     $P38 = "NOTE"("done")
     .return ($P38)
@@ -3165,7 +3583,7 @@
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_block20"  :anon :subid("13_1256220718.3535") :outer("12_1256220718.3535")
+.sub "_block20"  :anon :subid("13_1256257953.41979") :outer("12_1256257953.41979")
     new $P22, "Exception"
     set $P22['type'], 58
     new $P23, "Integer"
@@ -3177,10 +3595,10 @@
 
 
 .namespace ["Matcher";"Factory"]
-.sub "assert_that"  :subid("14_1256220718.3535") :outer("11_1256220718.3535")
+.sub "assert_that"  :subid("14_1256257953.41979") :outer("11_1256257953.41979")
     .param pmc param_43
     .param pmc param_44
-    .const 'Sub' $P51 = "15_1256220718.3535" 
+    .const 'Sub' $P51 = "15_1256257953.41979" 
     capture_lex $P51
     new $P42, 'ExceptionHandler'
     set_addr $P42, control_41
@@ -3189,17 +3607,17 @@
     .lex "$item", param_43
     .lex "$matcher", param_44
     find_lex $P46, "$matcher"
-    unless_null $P46, vivify_44
+    unless_null $P46, vivify_45
     new $P46, "Undef"
-  vivify_44:
-    find_lex $P47, "$item"
-    unless_null $P47, vivify_45
-    new $P47, "Undef"
   vivify_45:
+    find_lex $P47, "$item"
+    unless_null $P47, vivify_46
+    new $P47, "Undef"
+  vivify_46:
     $P48 = $P46."matches"($P47)
     isfalse $I49, $P48
     unless $I49, if_45_end
-    .const 'Sub' $P51 = "15_1256220718.3535" 
+    .const 'Sub' $P51 = "15_1256257953.41979" 
     capture_lex $P51
     $P51()
   if_45_end:
@@ -3220,28 +3638,27 @@
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_block50"  :anon :subid("15_1256220718.3535") :outer("14_1256220718.3535")
-    "say"("MATCH FAILED")
+.sub "_block50"  :anon :subid("15_1256257953.41979") :outer("14_1256257953.41979")
     find_lex $P52, "$matcher"
-    unless_null $P52, vivify_46
+    unless_null $P52, vivify_47
     new $P52, "Undef"
-  vivify_46:
+  vivify_47:
     $P53 = $P52."describe_self"("Expected: ")
     find_lex $P54, "$matcher"
-    unless_null $P54, vivify_47
+    unless_null $P54, vivify_48
     new $P54, "Undef"
-  vivify_47:
-    find_lex $P55, "$item"
-    unless_null $P55, vivify_48
-    new $P55, "Undef"
   vivify_48:
+    find_lex $P55, "$item"
+    unless_null $P55, vivify_49
+    new $P55, "Undef"
+  vivify_49:
     $S56 = $P54."describe_failure"($P55, "\n     but: ")
     concat $P57, $P53, $S56
     .lex "$explain", $P57
     find_lex $P58, "$explain"
-    unless_null $P58, vivify_49
+    unless_null $P58, vivify_50
     new $P58, "Undef"
-  vivify_49:
+  vivify_50:
     "say"($P58)
     new $P59, "Exception"
     set $P59['type'], 58
@@ -3254,7 +3671,7 @@
 
 
 .namespace ["Matcher";"Factory"]
-.sub "defined"  :subid("16_1256220718.3535") :outer("11_1256220718.3535")
+.sub "defined"  :subid("16_1256257953.41979") :outer("11_1256257953.41979")
     new $P66, 'ExceptionHandler'
     set_addr $P66, control_65
     $P66."handle_types"(58)
@@ -3276,103 +3693,103 @@
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_equals_Float"  :subid("17_1256220718.3535") :outer("11_1256220718.3535")
-    .param pmc param_74
+.sub "empty"  :subid("17_1256257953.41979") :outer("11_1256257953.41979")
     new $P73, 'ExceptionHandler'
     set_addr $P73, control_72
     $P73."handle_types"(58)
     push_eh $P73
-    .lex "$value", param_74
-    new $P75, "Exception"
-    set $P75['type'], 58
-    get_hll_global $P76, ["Matcher"], "IsCloseTo"
-    find_lex $P77, "$value"
-    unless_null $P77, vivify_50
-    new $P77, "Undef"
-  vivify_50:
-    $P78 = $P76."new"($P77)
-    setattribute $P75, 'payload', $P78
-    throw $P75
+    new $P74, "Exception"
+    set $P74['type'], 58
+    get_hll_global $P75, ["Matcher"], "Empty"
+    $P76 = $P75."new"()
+    setattribute $P74, 'payload', $P76
+    throw $P74
     .return ()
   control_72:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P79, exception, "payload"
-    .return ($P79)
+    getattribute $P77, exception, "payload"
+    .return ($P77)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_equals_Integer"  :subid("18_1256220718.3535") :outer("11_1256220718.3535")
-    .param pmc param_83
-    new $P82, 'ExceptionHandler'
-    set_addr $P82, control_81
-    $P82."handle_types"(58)
-    push_eh $P82
-    .lex "$value", param_83
-    new $P84, "Exception"
-    set $P84['type'], 58
-    get_hll_global $P85, ["Matcher"], "Equals"
-    find_lex $P86, "$value"
-    unless_null $P86, vivify_51
-    new $P86, "Undef"
+.sub "_equals_Float"  :subid("18_1256257953.41979") :outer("11_1256257953.41979")
+    .param pmc param_81
+    new $P80, 'ExceptionHandler'
+    set_addr $P80, control_79
+    $P80."handle_types"(58)
+    push_eh $P80
+    .lex "$value", param_81
+    new $P82, "Exception"
+    set $P82['type'], 58
+    get_hll_global $P83, ["Matcher"], "IsCloseTo"
+    find_lex $P84, "$value"
+    unless_null $P84, vivify_51
+    new $P84, "Undef"
   vivify_51:
-    $P87 = $P85."new"($P86, "Integer" :named("match_type"))
-    setattribute $P84, 'payload', $P87
-    throw $P84
+    $P85 = $P83."new"($P84)
+    setattribute $P82, 'payload', $P85
+    throw $P82
     .return ()
-  control_81:
+  control_79:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P88, exception, "payload"
-    .return ($P88)
+    getattribute $P86, exception, "payload"
+    .return ($P86)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_equals_String"  :subid("19_1256220718.3535") :outer("11_1256220718.3535")
-    .param pmc param_92
-    new $P91, 'ExceptionHandler'
-    set_addr $P91, control_90
-    $P91."handle_types"(58)
-    push_eh $P91
-    .lex "$value", param_92
-    new $P93, "Exception"
-    set $P93['type'], 58
-    get_hll_global $P94, ["Matcher"], "Equals"
-    find_lex $P95, "$value"
-    unless_null $P95, vivify_52
-    new $P95, "Undef"
+.sub "_equals_Integer"  :subid("19_1256257953.41979") :outer("11_1256257953.41979")
+    .param pmc param_90
+    new $P89, 'ExceptionHandler'
+    set_addr $P89, control_88
+    $P89."handle_types"(58)
+    push_eh $P89
+    .lex "$value", param_90
+    new $P91, "Exception"
+    set $P91['type'], 58
+    get_hll_global $P92, ["Matcher"], "Equals"
+    find_lex $P93, "$value"
+    unless_null $P93, vivify_52
+    new $P93, "Undef"
   vivify_52:
-    $P96 = $P94."new"($P95, "String" :named("match_type"))
-    setattribute $P93, 'payload', $P96
-    throw $P93
+    $P94 = $P92."new"($P93, "Integer" :named("match_type"))
+    setattribute $P91, 'payload', $P94
+    throw $P91
     .return ()
-  control_90:
+  control_88:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P97, exception, "payload"
-    .return ($P97)
+    getattribute $P95, exception, "payload"
+    .return ($P95)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Factory"]
-.sub "false"  :subid("20_1256220718.3535") :outer("11_1256220718.3535")
-    new $P100, 'ExceptionHandler'
-    set_addr $P100, control_99
-    $P100."handle_types"(58)
-    push_eh $P100
-    new $P101, "Exception"
-    set $P101['type'], 58
-    get_hll_global $P102, ["Matcher"], "False"
-    $P103 = $P102."new"()
-    setattribute $P101, 'payload', $P103
-    throw $P101
+.sub "_equals_String"  :subid("20_1256257953.41979") :outer("11_1256257953.41979")
+    .param pmc param_99
+    new $P98, 'ExceptionHandler'
+    set_addr $P98, control_97
+    $P98."handle_types"(58)
+    push_eh $P98
+    .lex "$value", param_99
+    new $P100, "Exception"
+    set $P100['type'], 58
+    get_hll_global $P101, ["Matcher"], "Equals"
+    find_lex $P102, "$value"
+    unless_null $P102, vivify_53
+    new $P102, "Undef"
+  vivify_53:
+    $P103 = $P101."new"($P102, "String" :named("match_type"))
+    setattribute $P100, 'payload', $P103
+    throw $P100
     .return ()
-  control_99:
+  control_97:
     .local pmc exception 
     .get_results (exception) 
     getattribute $P104, exception, "payload"
@@ -3382,109 +3799,105 @@
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_is_Float"  :subid("21_1256220718.3535") :outer("11_1256220718.3535")
-    .param pmc param_108
+.sub "false"  :subid("21_1256257953.41979") :outer("11_1256257953.41979")
     new $P107, 'ExceptionHandler'
     set_addr $P107, control_106
     $P107."handle_types"(58)
     push_eh $P107
-    .lex "$value", param_108
-    new $P109, "Exception"
-    set $P109['type'], 58
-    get_hll_global $P110, ["Matcher"], "IsCloseTo"
-    find_lex $P111, "$value"
-    unless_null $P111, vivify_53
-    new $P111, "Undef"
-  vivify_53:
-    $P112 = $P110."new"($P111)
-    setattribute $P109, 'payload', $P112
-    throw $P109
+    new $P108, "Exception"
+    set $P108['type'], 58
+    get_hll_global $P109, ["Matcher"], "False"
+    $P110 = $P109."new"()
+    setattribute $P108, 'payload', $P110
+    throw $P108
     .return ()
   control_106:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P113, exception, "payload"
-    .return ($P113)
+    getattribute $P111, exception, "payload"
+    .return ($P111)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_is_Integer"  :subid("22_1256220718.3535") :outer("11_1256220718.3535")
-    .param pmc param_117
-    new $P116, 'ExceptionHandler'
-    set_addr $P116, control_115
-    $P116."handle_types"(58)
-    push_eh $P116
-    .lex "$value", param_117
-    new $P118, "Exception"
-    set $P118['type'], 58
-    get_hll_global $P119, ["Matcher"], "Equals"
-    find_lex $P120, "$value"
-    unless_null $P120, vivify_54
-    new $P120, "Undef"
+.sub "instance_of"  :subid("22_1256257953.41979") :outer("11_1256257953.41979")
+    .param pmc param_115
+    new $P114, 'ExceptionHandler'
+    set_addr $P114, control_113
+    $P114."handle_types"(58)
+    push_eh $P114
+    .lex "$type", param_115
+    new $P116, "Exception"
+    set $P116['type'], 58
+    get_hll_global $P117, ["Matcher"], "InstanceOf"
+    find_lex $P118, "$type"
+    unless_null $P118, vivify_54
+    new $P118, "Undef"
   vivify_54:
-    $P121 = $P119."new"($P120, "Integer" :named("match_type"))
-    setattribute $P118, 'payload', $P121
-    throw $P118
+    $P119 = $P117."new"($P118)
+    setattribute $P116, 'payload', $P119
+    throw $P116
     .return ()
-  control_115:
+  control_113:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P122, exception, "payload"
-    .return ($P122)
+    getattribute $P120, exception, "payload"
+    .return ($P120)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_is_Matcher"  :subid("23_1256220718.3535") :outer("11_1256220718.3535")
-    .param pmc param_126
-    new $P125, 'ExceptionHandler'
-    set_addr $P125, control_124
-    $P125."handle_types"(58)
-    push_eh $P125
-    .lex "$matcher", param_126
-    new $P127, "Exception"
-    set $P127['type'], 58
-    get_hll_global $P128, ["Matcher"], "DescribedAs"
-    find_lex $P129, "$matcher"
-    unless_null $P129, vivify_55
-    new $P129, "Undef"
+.sub "_is_Float"  :subid("23_1256257953.41979") :outer("11_1256257953.41979")
+    .param pmc param_124
+    new $P123, 'ExceptionHandler'
+    set_addr $P123, control_122
+    $P123."handle_types"(58)
+    push_eh $P123
+    .lex "$value", param_124
+    new $P125, "Exception"
+    set $P125['type'], 58
+    get_hll_global $P126, ["Matcher"], "EqualsFloat"
+    find_lex $P127, "$value"
+    unless_null $P127, vivify_55
+    new $P127, "Undef"
   vivify_55:
-    $P130 = $P128."new"("is", $P129)
-    setattribute $P127, 'payload', $P130
-    throw $P127
+    $P128 = $P126."new"($P127)
+    $P129 = "is"($P128)
+    setattribute $P125, 'payload', $P129
+    throw $P125
     .return ()
-  control_124:
+  control_122:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P131, exception, "payload"
-    .return ($P131)
+    getattribute $P130, exception, "payload"
+    .return ($P130)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_is_String"  :subid("24_1256220718.3535") :outer("11_1256220718.3535")
-    .param pmc param_135
-    new $P134, 'ExceptionHandler'
-    set_addr $P134, control_133
-    $P134."handle_types"(58)
-    push_eh $P134
-    .lex "$value", param_135
-    new $P136, "Exception"
-    set $P136['type'], 58
-    get_hll_global $P137, ["Matcher"], "Equals"
-    find_lex $P138, "$value"
-    unless_null $P138, vivify_56
-    new $P138, "Undef"
+.sub "_is_Integer"  :subid("24_1256257953.41979") :outer("11_1256257953.41979")
+    .param pmc param_134
+    new $P133, 'ExceptionHandler'
+    set_addr $P133, control_132
+    $P133."handle_types"(58)
+    push_eh $P133
+    .lex "$value", param_134
+    new $P135, "Exception"
+    set $P135['type'], 58
+    get_hll_global $P136, ["Matcher"], "Equals"
+    find_lex $P137, "$value"
+    unless_null $P137, vivify_56
+    new $P137, "Undef"
   vivify_56:
-    $P139 = $P137."new"($P138, "String" :named("match_type"))
-    setattribute $P136, 'payload', $P139
-    throw $P136
+    $P138 = $P136."new"($P137, "Integer" :named("match_type"))
+    $P139 = "is"($P138)
+    setattribute $P135, 'payload', $P139
+    throw $P135
     .return ()
-  control_133:
+  control_132:
     .local pmc exception 
     .get_results (exception) 
     getattribute $P140, exception, "payload"
@@ -3494,21 +3907,21 @@
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_not_Float"  :subid("25_1256220718.3535") :outer("11_1256220718.3535")
+.sub "_is_Matcher"  :subid("25_1256257953.41979") :outer("11_1256257953.41979")
     .param pmc param_144
     new $P143, 'ExceptionHandler'
     set_addr $P143, control_142
     $P143."handle_types"(58)
     push_eh $P143
-    .lex "$value", param_144
+    .lex "$matcher", param_144
     new $P145, "Exception"
     set $P145['type'], 58
-    find_lex $P146, "$value"
-    unless_null $P146, vivify_57
-    new $P146, "Undef"
+    get_hll_global $P146, ["Matcher"], "DescribedAs"
+    find_lex $P147, "$matcher"
+    unless_null $P147, vivify_57
+    new $P147, "Undef"
   vivify_57:
-    $P147 = "is"($P146)
-    $P148 = "not"($P147)
+    $P148 = $P146."new"("is", $P147)
     setattribute $P145, 'payload', $P148
     throw $P145
     .return ()
@@ -3522,7 +3935,7 @@
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_not_Integer"  :subid("26_1256220718.3535") :outer("11_1256220718.3535")
+.sub "_is_String"  :subid("26_1256257953.41979") :outer("11_1256257953.41979")
     .param pmc param_153
     new $P152, 'ExceptionHandler'
     set_addr $P152, control_151
@@ -3531,180 +3944,180 @@
     .lex "$value", param_153
     new $P154, "Exception"
     set $P154['type'], 58
-    find_lex $P155, "$value"
-    unless_null $P155, vivify_58
-    new $P155, "Undef"
+    get_hll_global $P155, ["Matcher"], "Equals"
+    find_lex $P156, "$value"
+    unless_null $P156, vivify_58
+    new $P156, "Undef"
   vivify_58:
-    $P156 = "is"($P155)
-    $P157 = "not"($P156)
-    setattribute $P154, 'payload', $P157
+    $P157 = $P155."new"($P156, "String" :named("match_type"))
+    $P158 = "is"($P157)
+    setattribute $P154, 'payload', $P158
     throw $P154
     .return ()
   control_151:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P158, exception, "payload"
-    .return ($P158)
+    getattribute $P159, exception, "payload"
+    .return ($P159)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_not_Matcher"  :subid("27_1256220718.3535") :outer("11_1256220718.3535")
-    .param pmc param_162
-    new $P161, 'ExceptionHandler'
-    set_addr $P161, control_160
-    $P161."handle_types"(58)
-    push_eh $P161
-    .lex "$matcher", param_162
-    new $P163, "Exception"
-    set $P163['type'], 58
-    get_hll_global $P164, ["Matcher"], "Not"
-    find_lex $P165, "$matcher"
+.sub "_not_Float"  :subid("27_1256257953.41979") :outer("11_1256257953.41979")
+    .param pmc param_163
+    new $P162, 'ExceptionHandler'
+    set_addr $P162, control_161
+    $P162."handle_types"(58)
+    push_eh $P162
+    .lex "$value", param_163
+    new $P164, "Exception"
+    set $P164['type'], 58
+    find_lex $P165, "$value"
     unless_null $P165, vivify_59
     new $P165, "Undef"
   vivify_59:
-    $P166 = $P164."new"($P165)
-    setattribute $P163, 'payload', $P166
-    throw $P163
+    $P166 = "is"($P165)
+    $P167 = "not"($P166)
+    setattribute $P164, 'payload', $P167
+    throw $P164
     .return ()
-  control_160:
+  control_161:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P167, exception, "payload"
-    .return ($P167)
+    getattribute $P168, exception, "payload"
+    .return ($P168)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_not_String"  :subid("28_1256220718.3535") :outer("11_1256220718.3535")
-    .param pmc param_171
-    new $P170, 'ExceptionHandler'
-    set_addr $P170, control_169
-    $P170."handle_types"(58)
-    push_eh $P170
-    .lex "$value", param_171
-    new $P172, "Exception"
-    set $P172['type'], 58
-    find_lex $P173, "$value"
-    unless_null $P173, vivify_60
-    new $P173, "Undef"
+.sub "_not_Integer"  :subid("28_1256257953.41979") :outer("11_1256257953.41979")
+    .param pmc param_172
+    new $P171, 'ExceptionHandler'
+    set_addr $P171, control_170
+    $P171."handle_types"(58)
+    push_eh $P171
+    .lex "$value", param_172
+    new $P173, "Exception"
+    set $P173['type'], 58
+    find_lex $P174, "$value"
+    unless_null $P174, vivify_60
+    new $P174, "Undef"
   vivify_60:
-    $P174 = "is"($P173)
-    $P175 = "not"($P174)
-    setattribute $P172, 'payload', $P175
-    throw $P172
+    $P175 = "is"($P174)
+    $P176 = "not"($P175)
+    setattribute $P173, 'payload', $P176
+    throw $P173
     .return ()
-  control_169:
+  control_170:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P176, exception, "payload"
-    .return ($P176)
+    getattribute $P177, exception, "payload"
+    .return ($P177)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Factory"]
-.sub "null"  :subid("29_1256220718.3535") :outer("11_1256220718.3535")
-    new $P179, 'ExceptionHandler'
-    set_addr $P179, control_178
-    $P179."handle_types"(58)
-    push_eh $P179
-    new $P180, "Exception"
-    set $P180['type'], 58
-    get_hll_global $P181, ["Matcher"], "Null"
-    $P182 = $P181."new"()
-    setattribute $P180, 'payload', $P182
-    throw $P180
-    .return ()
-  control_178:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P183, exception, "payload"
-    .return ($P183)
-    rethrow exception
-.end
-
-
-.namespace ["Matcher";"Factory"]
-.sub "_returns_Float"  :subid("30_1256220718.3535") :outer("11_1256220718.3535")
-    .param pmc param_187
-    new $P186, 'ExceptionHandler'
-    set_addr $P186, control_185
-    $P186."handle_types"(58)
-    push_eh $P186
-    .lex "$value", param_187
-    new $P188, "Exception"
-    set $P188['type'], 58
-    get_hll_global $P189, ["Matcher"], "IsCloseTo"
-    find_lex $P190, "$value"
-    unless_null $P190, vivify_61
-    new $P190, "Undef"
+.sub "_not_Matcher"  :subid("29_1256257953.41979") :outer("11_1256257953.41979")
+    .param pmc param_181
+    new $P180, 'ExceptionHandler'
+    set_addr $P180, control_179
+    $P180."handle_types"(58)
+    push_eh $P180
+    .lex "$matcher", param_181
+    new $P182, "Exception"
+    set $P182['type'], 58
+    get_hll_global $P183, ["Matcher"], "Not"
+    find_lex $P184, "$matcher"
+    unless_null $P184, vivify_61
+    new $P184, "Undef"
   vivify_61:
-    $P191 = $P189."new"($P190)
-    $P192 = "returns"($P191)
-    setattribute $P188, 'payload', $P192
-    throw $P188
+    $P185 = $P183."new"($P184)
+    setattribute $P182, 'payload', $P185
+    throw $P182
     .return ()
-  control_185:
+  control_179:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P193, exception, "payload"
-    .return ($P193)
+    getattribute $P186, exception, "payload"
+    .return ($P186)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_returns_Integer"  :subid("31_1256220718.3535") :outer("11_1256220718.3535")
-    .param pmc param_197
-    new $P196, 'ExceptionHandler'
-    set_addr $P196, control_195
-    $P196."handle_types"(58)
-    push_eh $P196
-    .lex "$value", param_197
-    new $P198, "Exception"
-    set $P198['type'], 58
-    get_hll_global $P199, ["Matcher"], "Equals"
-    find_lex $P200, "$value"
-    unless_null $P200, vivify_62
-    new $P200, "Undef"
+.sub "_not_String"  :subid("30_1256257953.41979") :outer("11_1256257953.41979")
+    .param pmc param_190
+    new $P189, 'ExceptionHandler'
+    set_addr $P189, control_188
+    $P189."handle_types"(58)
+    push_eh $P189
+    .lex "$value", param_190
+    new $P191, "Exception"
+    set $P191['type'], 58
+    find_lex $P192, "$value"
+    unless_null $P192, vivify_62
+    new $P192, "Undef"
   vivify_62:
-    $P201 = $P199."new"($P200)
-    $P202 = "returns"($P201)
-    setattribute $P198, 'payload', $P202
-    throw $P198
+    $P193 = "is"($P192)
+    $P194 = "not"($P193)
+    setattribute $P191, 'payload', $P194
+    throw $P191
     .return ()
-  control_195:
+  control_188:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P203, exception, "payload"
-    .return ($P203)
+    getattribute $P195, exception, "payload"
+    .return ($P195)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_returns_Matcher"  :subid("32_1256220718.3535") :outer("11_1256220718.3535")
-    .param pmc param_207
-    new $P206, 'ExceptionHandler'
-    set_addr $P206, control_205
-    $P206."handle_types"(58)
-    push_eh $P206
-    .lex "$value", param_207
-    new $P208, "Exception"
-    set $P208['type'], 58
-    get_hll_global $P209, ["Matcher"], "DescribedAs"
-    find_lex $P210, "$value"
-    unless_null $P210, vivify_63
-    new $P210, "Undef"
-  vivify_63:
-    $P211 = $P209."new"("returns", $P210)
-    setattribute $P208, 'payload', $P211
-    throw $P208
+.sub "null"  :subid("31_1256257953.41979") :outer("11_1256257953.41979")
+    new $P198, 'ExceptionHandler'
+    set_addr $P198, control_197
+    $P198."handle_types"(58)
+    push_eh $P198
+    new $P199, "Exception"
+    set $P199['type'], 58
+    get_hll_global $P200, ["Matcher"], "Null"
+    $P201 = $P200."new"()
+    setattribute $P199, 'payload', $P201
+    throw $P199
     .return ()
-  control_205:
+  control_197:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P202, exception, "payload"
+    .return ($P202)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"Factory"]
+.sub "_returns_Float"  :subid("32_1256257953.41979") :outer("11_1256257953.41979")
+    .param pmc param_206
+    new $P205, 'ExceptionHandler'
+    set_addr $P205, control_204
+    $P205."handle_types"(58)
+    push_eh $P205
+    .lex "$value", param_206
+    new $P207, "Exception"
+    set $P207['type'], 58
+    get_hll_global $P208, ["Matcher"], "IsCloseTo"
+    find_lex $P209, "$value"
+    unless_null $P209, vivify_63
+    new $P209, "Undef"
+  vivify_63:
+    $P210 = $P208."new"($P209)
+    $P211 = "returns"($P210)
+    setattribute $P207, 'payload', $P211
+    throw $P207
+    .return ()
+  control_204:
     .local pmc exception 
     .get_results (exception) 
     getattribute $P212, exception, "payload"
@@ -3714,7 +4127,7 @@
 
 
 .namespace ["Matcher";"Factory"]
-.sub "_returns_String"  :subid("33_1256220718.3535") :outer("11_1256220718.3535")
+.sub "_returns_Integer"  :subid("33_1256257953.41979") :outer("11_1256257953.41979")
     .param pmc param_216
     new $P215, 'ExceptionHandler'
     set_addr $P215, control_214
@@ -3743,7 +4156,7 @@
 
 
 .namespace ["Matcher";"Factory"]
-.sub "same_as"  :subid("34_1256220718.3535") :outer("11_1256220718.3535")
+.sub "_returns_Matcher"  :subid("34_1256257953.41979") :outer("11_1256257953.41979")
     .param pmc param_226
     new $P225, 'ExceptionHandler'
     set_addr $P225, control_224
@@ -3752,12 +4165,12 @@
     .lex "$value", param_226
     new $P227, "Exception"
     set $P227['type'], 58
-    get_hll_global $P228, ["Matcher"], "IdenticalTo"
+    get_hll_global $P228, ["Matcher"], "DescribedAs"
     find_lex $P229, "$value"
     unless_null $P229, vivify_65
     new $P229, "Undef"
   vivify_65:
-    $P230 = $P228."new"($P229)
+    $P230 = $P228."new"("returns", $P229)
     setattribute $P227, 'payload', $P230
     throw $P227
     .return ()
@@ -3771,51 +4184,80 @@
 
 
 .namespace ["Matcher";"Factory"]
-.sub "true"  :subid("35_1256220718.3535") :outer("11_1256220718.3535")
+.sub "_returns_String"  :subid("35_1256257953.41979") :outer("11_1256257953.41979")
+    .param pmc param_235
     new $P234, 'ExceptionHandler'
     set_addr $P234, control_233
     $P234."handle_types"(58)
     push_eh $P234
-    new $P235, "Exception"
-    set $P235['type'], 58
-    get_hll_global $P236, ["Matcher"], "True"
-    $P237 = $P236."new"()
-    setattribute $P235, 'payload', $P237
-    throw $P235
+    .lex "$value", param_235
+    new $P236, "Exception"
+    set $P236['type'], 58
+    get_hll_global $P237, ["Matcher"], "Equals"
+    find_lex $P238, "$value"
+    unless_null $P238, vivify_66
+    new $P238, "Undef"
+  vivify_66:
+    $P239 = $P237."new"($P238)
+    $P240 = "returns"($P239)
+    setattribute $P236, 'payload', $P240
+    throw $P236
     .return ()
   control_233:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P238, exception, "payload"
-    .return ($P238)
+    getattribute $P241, exception, "payload"
+    .return ($P241)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"Factory"]
-.sub "type"  :subid("36_1256220718.3535") :outer("11_1256220718.3535")
-    .param pmc param_242
-    new $P241, 'ExceptionHandler'
-    set_addr $P241, control_240
-    $P241."handle_types"(58)
-    push_eh $P241
-    .lex "$type", param_242
-    new $P243, "Exception"
-    set $P243['type'], 58
-    get_hll_global $P244, ["Matcher"], "ObjectOfType"
-    find_lex $P245, "$type"
-    unless_null $P245, vivify_66
-    new $P245, "Undef"
-  vivify_66:
-    $P246 = $P244."new"($P245)
-    setattribute $P243, 'payload', $P246
-    throw $P243
+.sub "same_as"  :subid("36_1256257953.41979") :outer("11_1256257953.41979")
+    .param pmc param_245
+    new $P244, 'ExceptionHandler'
+    set_addr $P244, control_243
+    $P244."handle_types"(58)
+    push_eh $P244
+    .lex "$value", param_245
+    new $P246, "Exception"
+    set $P246['type'], 58
+    get_hll_global $P247, ["Matcher"], "IdenticalTo"
+    find_lex $P248, "$value"
+    unless_null $P248, vivify_67
+    new $P248, "Undef"
+  vivify_67:
+    $P249 = $P247."new"($P248)
+    setattribute $P246, 'payload', $P249
+    throw $P246
     .return ()
-  control_240:
+  control_243:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P247, exception, "payload"
-    .return ($P247)
+    getattribute $P250, exception, "payload"
+    .return ($P250)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"Factory"]
+.sub "true"  :subid("37_1256257953.41979") :outer("11_1256257953.41979")
+    new $P253, 'ExceptionHandler'
+    set_addr $P253, control_252
+    $P253."handle_types"(58)
+    push_eh $P253
+    new $P254, "Exception"
+    set $P254['type'], 58
+    get_hll_global $P255, ["Matcher"], "True"
+    $P256 = $P255."new"()
+    setattribute $P254, 'payload', $P256
+    throw $P254
+    .return ()
+  control_252:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P257, exception, "payload"
+    .return ($P257)
     rethrow exception
 .end
 
@@ -4045,34 +4487,443 @@
 
 
 .namespace []
-.sub "_block11"  :anon :subid("10_1256215458.01415")
+.sub "_block11"  :anon :subid("10_1256255772.51689")
+    get_hll_global $P14, ["Matcher";"InstanceOf"], "_block13" 
+    .return ($P14)
+.end
+
+
+.namespace ["Matcher";"InstanceOf"]
+.sub "_block13" :init :load :subid("11_1256255772.51689")
+    .const 'Sub' $P120 = "23_1256255772.51689" 
+    capture_lex $P120
+    .const 'Sub' $P112 = "22_1256255772.51689" 
+    capture_lex $P112
+    .const 'Sub' $P87 = "19_1256255772.51689" 
+    capture_lex $P87
+    .const 'Sub' $P66 = "17_1256255772.51689" 
+    capture_lex $P66
+    .const 'Sub' $P54 = "16_1256255772.51689" 
+    capture_lex $P54
+    .const 'Sub' $P32 = "14_1256255772.51689" 
+    capture_lex $P32
+    .const 'Sub' $P15 = "12_1256255772.51689" 
+    capture_lex $P15
+    "_ONLOAD"()
+    .const 'Sub' $P120 = "23_1256255772.51689" 
+    capture_lex $P120
+    .return ($P120)
+.end
+
+
+.namespace ["Matcher";"InstanceOf"]
+.sub "_ONLOAD"  :subid("12_1256255772.51689") :outer("11_1256255772.51689")
+    .const 'Sub' $P21 = "13_1256255772.51689" 
+    capture_lex $P21
+    new $P17, 'ExceptionHandler'
+    set_addr $P17, control_16
+    $P17."handle_types"(58)
+    push_eh $P17
+    get_global $P19, "$onload_done"
+    unless_null $P19, vivify_25
+    new $P19, "Undef"
+  vivify_25:
+    unless $P19, if_18_end
+    .const 'Sub' $P21 = "13_1256255772.51689" 
+    capture_lex $P21
+    $P21()
+  if_18_end:
+    new $P24, "Integer"
+    assign $P24, 1
+    set_global "$onload_done", $P24
+    get_hll_global $P25, ["Parrot"], "IMPORT"
+    $P25("Dumper")
+    new $P26, "String"
+    assign $P26, "Matcher::InstanceOf"
+    .lex "$class_name", $P26
+    find_lex $P27, "$class_name"
+    unless_null $P27, vivify_26
+    new $P27, "Undef"
+  vivify_26:
+    "NOTE"("Creating class ", $P27)
+    get_hll_global $P28, ["Class"], "SUBCLASS"
+    find_lex $P29, "$class_name"
+    unless_null $P29, vivify_27
+    new $P29, "Undef"
+  vivify_27:
+    $P28($P29, "Matcher")
+    $P30 = "NOTE"("done")
+    .return ($P30)
+  control_16:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P31, exception, "payload"
+    .return ($P31)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"InstanceOf"]
+.sub "_block20"  :anon :subid("13_1256255772.51689") :outer("12_1256255772.51689")
+    new $P22, "Exception"
+    set $P22['type'], 58
+    new $P23, "Integer"
+    assign $P23, 0
+    setattribute $P22, 'payload', $P23
+    throw $P22
+    .return ()
+.end
+
+
+.namespace ["Matcher";"InstanceOf"]
+.sub "describe_failure"  :subid("14_1256255772.51689") :method :outer("11_1256255772.51689")
+    .param pmc param_35
+    .param pmc param_36
+    .const 'Sub' $P42 = "15_1256255772.51689" 
+    capture_lex $P42
+    new $P34, 'ExceptionHandler'
+    set_addr $P34, control_33
+    $P34."handle_types"(58)
+    push_eh $P34
+    .lex "self", self
+    .lex "$item", param_35
+    .lex "$description", param_36
+    get_hll_global $P38, ["Parrot"], "is_null"
+    find_lex $P39, "$item"
+    unless_null $P39, vivify_28
+    new $P39, "Undef"
+  vivify_28:
+    $P40 = $P38($P39)
+    unless $P40, if_37_end
+    .const 'Sub' $P42 = "15_1256255772.51689" 
+    capture_lex $P42
+    $P42()
+  if_37_end:
+    new $P46, "Exception"
+    set $P46['type'], 58
+    find_lex $P47, "$description"
+    unless_null $P47, vivify_30
+    new $P47, "Undef"
+  vivify_30:
+    concat $P48, $P47, "had type: "
+    get_hll_global $P49, ["Parrot"], "typeof"
+    find_lex $P50, "$item"
+    unless_null $P50, vivify_31
+    new $P50, "Undef"
+  vivify_31:
+    $S51 = $P49($P50)
+    concat $P52, $P48, $S51
+    setattribute $P46, 'payload', $P52
+    throw $P46
+    .return ()
+  control_33:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P53, exception, "payload"
+    .return ($P53)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"InstanceOf"]
+.sub "_block41"  :anon :subid("15_1256255772.51689") :outer("14_1256255772.51689")
+    new $P43, "Exception"
+    set $P43['type'], 58
+    find_lex $P44, "$description"
+    unless_null $P44, vivify_29
+    new $P44, "Undef"
+  vivify_29:
+    concat $P45, $P44, "was null"
+    setattribute $P43, 'payload', $P45
+    throw $P43
+    .return ()
+.end
+
+
+.namespace ["Matcher";"InstanceOf"]
+.sub "describe_self"  :subid("16_1256255772.51689") :method :outer("11_1256255772.51689")
+    .param pmc param_57
+    new $P56, 'ExceptionHandler'
+    set_addr $P56, control_55
+    $P56."handle_types"(58)
+    push_eh $P56
+    .lex "self", self
+    .lex "$description", param_57
+    new $P58, "Exception"
+    set $P58['type'], 58
+    find_lex $P59, "$description"
+    unless_null $P59, vivify_32
+    new $P59, "Undef"
+  vivify_32:
+    concat $P60, $P59, "an instance of type '"
+    find_lex $P61, "self"
+    $S62 = $P61."type_name"()
+    concat $P63, $P60, $S62
+    concat $P64, $P63, "'"
+    setattribute $P58, 'payload', $P64
+    throw $P58
+    .return ()
+  control_55:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P65, exception, "payload"
+    .return ($P65)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"InstanceOf"]
+.sub "init"  :subid("17_1256255772.51689") :method :outer("11_1256255772.51689")
+    .param pmc param_69
+    .param pmc param_70
+    .const 'Sub' $P80 = "18_1256255772.51689" 
+    capture_lex $P80
+    new $P68, 'ExceptionHandler'
+    set_addr $P68, control_67
+    $P68."handle_types"(58)
+    push_eh $P68
+    .lex "self", self
+    .lex "@args", param_69
+    .lex "%opts", param_70
+    get_hll_global $P71, ["Matcher"], "init"
+    find_lex $P72, "self"
+    find_lex $P73, "@args"
+    unless_null $P73, vivify_33
+    new $P73, "ResizablePMCArray"
+  vivify_33:
+    find_lex $P74, "%opts"
+    unless_null $P74, vivify_34
+    new $P74, "Hash"
+  vivify_34:
+    $P71($P72, $P73, $P74)
+    find_lex $P77, "@args"
+    unless_null $P77, vivify_35
+    new $P77, "ResizablePMCArray"
+  vivify_35:
+    set $N78, $P77
+    if $N78, if_76
+    new $P75, 'Float'
+    set $P75, $N78
+    goto if_76_end
+  if_76:
+    .const 'Sub' $P80 = "18_1256255772.51689" 
+    capture_lex $P80
+    $P85 = $P80()
+    set $P75, $P85
+  if_76_end:
+    .return ($P75)
+  control_67:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P86, exception, "payload"
+    .return ($P86)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"InstanceOf"]
+.sub "_block79"  :anon :subid("18_1256255772.51689") :outer("17_1256255772.51689")
+    find_lex $P81, "self"
+    find_lex $P82, "@args"
+    unless_null $P82, vivify_36
+    new $P82, "ResizablePMCArray"
+  vivify_36:
+    $P83 = $P82."shift"()
+    $P84 = $P81."type"($P83)
+    .return ($P84)
+.end
+
+
+.namespace ["Matcher";"InstanceOf"]
+.sub "matches"  :subid("19_1256255772.51689") :method :outer("11_1256255772.51689")
+    .param pmc param_90
+    .const 'Sub' $P106 = "21_1256255772.51689" 
+    capture_lex $P106
+    .const 'Sub' $P96 = "20_1256255772.51689" 
+    capture_lex $P96
+    new $P89, 'ExceptionHandler'
+    set_addr $P89, control_88
+    $P89."handle_types"(58)
+    push_eh $P89
+    .lex "self", self
+    .lex "$item", param_90
+    get_hll_global $P92, ["Parrot"], "is_null"
+    find_lex $P93, "$item"
+    unless_null $P93, vivify_37
+    new $P93, "Undef"
+  vivify_37:
+    $P94 = $P92($P93)
+    unless $P94, if_91_end
+    .const 'Sub' $P96 = "20_1256255772.51689" 
+    capture_lex $P96
+    $P96()
+  if_91_end:
+    get_hll_global $P100, ["Parrot"], "isa"
+    find_lex $P101, "$item"
+    unless_null $P101, vivify_38
+    new $P101, "Undef"
+  vivify_38:
+    find_lex $P102, "self"
+    $P103 = $P102."type"()
+    $P104 = $P100($P101, $P103)
+    unless $P104, if_99_end
+    .const 'Sub' $P106 = "21_1256255772.51689" 
+    capture_lex $P106
+    $P106()
+  if_99_end:
+    new $P109, "Exception"
+    set $P109['type'], 58
+    new $P110, "Integer"
+    assign $P110, 0
+    setattribute $P109, 'payload', $P110
+    throw $P109
+    .return ()
+  control_88:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P111, exception, "payload"
+    .return ($P111)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"InstanceOf"]
+.sub "_block95"  :anon :subid("20_1256255772.51689") :outer("19_1256255772.51689")
+    new $P97, "Exception"
+    set $P97['type'], 58
+    new $P98, "Integer"
+    assign $P98, 0
+    setattribute $P97, 'payload', $P98
+    throw $P97
+    .return ()
+.end
+
+
+.namespace ["Matcher";"InstanceOf"]
+.sub "_block105"  :anon :subid("21_1256255772.51689") :outer("19_1256255772.51689")
+    new $P107, "Exception"
+    set $P107['type'], 58
+    new $P108, "Integer"
+    assign $P108, 1
+    setattribute $P107, 'payload', $P108
+    throw $P107
+    .return ()
+.end
+
+
+.namespace ["Matcher";"InstanceOf"]
+.sub "type"  :subid("22_1256255772.51689") :method :outer("11_1256255772.51689")
+    .param pmc param_115 :slurpy
+    new $P114, 'ExceptionHandler'
+    set_addr $P114, control_113
+    $P114."handle_types"(58)
+    push_eh $P114
+    .lex "self", self
+    .lex "@value", param_115
+    find_lex $P116, "self"
+    find_lex $P117, "@value"
+    unless_null $P117, vivify_39
+    new $P117, "ResizablePMCArray"
+  vivify_39:
+    $P118 = $P116."_ATTR"("type", $P117)
+    .return ($P118)
+  control_113:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P119, exception, "payload"
+    .return ($P119)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"InstanceOf"]
+.sub "type_name"  :subid("23_1256255772.51689") :method :outer("11_1256255772.51689")
+    .const 'Sub' $P131 = "24_1256255772.51689" 
+    capture_lex $P131
+    new $P122, 'ExceptionHandler'
+    set_addr $P122, control_121
+    $P122."handle_types"(58)
+    push_eh $P122
+    .lex "self", self
+    find_lex $P123, "self"
+    $P124 = $P123."type"()
+    .lex "$type", $P124
+    find_lex $P125, "$type"
+    unless_null $P125, vivify_40
+    new $P125, "Undef"
+  vivify_40:
+    .lex "$type_name", $P125
+    get_hll_global $P127, ["Parrot"], "isa"
+    find_lex $P128, "$type"
+    unless_null $P128, vivify_41
+    new $P128, "Undef"
+  vivify_41:
+    $P129 = $P127($P128, "String")
+    if $P129, unless_126_end
+    .const 'Sub' $P131 = "24_1256255772.51689" 
+    capture_lex $P131
+    $P131()
+  unless_126_end:
+    new $P135, "Exception"
+    set $P135['type'], 58
+    find_lex $P136, "$type_name"
+    unless_null $P136, vivify_43
+    new $P136, "Undef"
+  vivify_43:
+    setattribute $P135, 'payload', $P136
+    throw $P135
+    .return ()
+  control_121:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P137, exception, "payload"
+    .return ($P137)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"InstanceOf"]
+.sub "_block130"  :anon :subid("24_1256255772.51689") :outer("23_1256255772.51689")
+    get_hll_global $P132, ["Parrot"], "typeof"
+    find_lex $P133, "$type"
+    unless_null $P133, vivify_42
+    new $P133, "Undef"
+  vivify_42:
+    $P134 = $P132($P133)
+    store_lex "$type_name", $P134
+    .return ($P134)
+.end
+
+
+.namespace []
+.sub "_block11"  :anon :subid("10_1256252960.12447")
     get_hll_global $P14, ["Matcher"], "_block13" 
     .return ($P14)
 .end
 
 
 .namespace ["Matcher"]
-.sub "_block13" :init :load :subid("11_1256215458.01415")
-    .const 'Sub' $P62 = "17_1256215458.01415" 
+.sub "_block13" :init :load :subid("11_1256252960.12447")
+    .const 'Sub' $P62 = "17_1256252960.12447" 
     capture_lex $P62
-    .const 'Sub' $P51 = "16_1256215458.01415" 
+    .const 'Sub' $P51 = "16_1256252960.12447" 
     capture_lex $P51
-    .const 'Sub' $P44 = "15_1256215458.01415" 
+    .const 'Sub' $P44 = "15_1256252960.12447" 
     capture_lex $P44
-    .const 'Sub' $P32 = "14_1256215458.01415" 
+    .const 'Sub' $P32 = "14_1256252960.12447" 
     capture_lex $P32
-    .const 'Sub' $P15 = "12_1256215458.01415" 
+    .const 'Sub' $P15 = "12_1256252960.12447" 
     capture_lex $P15
     "_ONLOAD"()
-    .const 'Sub' $P62 = "17_1256215458.01415" 
+    .const 'Sub' $P62 = "17_1256252960.12447" 
     capture_lex $P62
     .return ($P62)
 .end
 
 
 .namespace ["Matcher"]
-.sub "_ONLOAD"  :subid("12_1256215458.01415") :outer("11_1256215458.01415")
-    .const 'Sub' $P21 = "13_1256215458.01415" 
+.sub "_ONLOAD"  :subid("12_1256252960.12447") :outer("11_1256252960.12447")
+    .const 'Sub' $P21 = "13_1256252960.12447" 
     capture_lex $P21
     new $P17, 'ExceptionHandler'
     set_addr $P17, control_16
@@ -4083,7 +4934,7 @@
     new $P19, "Undef"
   vivify_18:
     unless $P19, if_18_end
-    .const 'Sub' $P21 = "13_1256215458.01415" 
+    .const 'Sub' $P21 = "13_1256252960.12447" 
     capture_lex $P21
     $P21()
   if_18_end:
@@ -4118,7 +4969,7 @@
 
 
 .namespace ["Matcher"]
-.sub "_block20"  :anon :subid("13_1256215458.01415") :outer("12_1256215458.01415")
+.sub "_block20"  :anon :subid("13_1256252960.12447") :outer("12_1256252960.12447")
     new $P22, "Exception"
     set $P22['type'], 58
     new $P23, "Integer"
@@ -4130,7 +4981,7 @@
 
 
 .namespace ["Matcher"]
-.sub "describe_failure"  :subid("14_1256215458.01415") :method :outer("11_1256215458.01415")
+.sub "describe_failure"  :subid("14_1256252960.12447") :method :outer("11_1256252960.12447")
     .param pmc param_35
     .param pmc param_36
     new $P34, 'ExceptionHandler'
@@ -4166,7 +5017,7 @@
 
 
 .namespace ["Matcher"]
-.sub "describe_self"  :subid("15_1256215458.01415") :method :outer("11_1256215458.01415")
+.sub "describe_self"  :subid("15_1256252960.12447") :method :outer("11_1256252960.12447")
     .param pmc param_47
     new $P46, 'ExceptionHandler'
     set_addr $P46, control_45
@@ -4187,7 +5038,7 @@
 
 
 .namespace ["Matcher"]
-.sub "init"  :subid("16_1256215458.01415") :method :outer("11_1256215458.01415")
+.sub "init"  :subid("16_1256252960.12447") :method :outer("11_1256252960.12447")
     .param pmc param_54
     .param pmc param_55
     new $P53, 'ExceptionHandler'
@@ -4219,7 +5070,7 @@
 
 
 .namespace ["Matcher"]
-.sub "matches"  :subid("17_1256215458.01415") :method :outer("11_1256215458.01415")
+.sub "matches"  :subid("17_1256252960.12447") :method :outer("11_1256252960.12447")
     .param pmc param_65
     new $P64, 'ExceptionHandler'
     set_addr $P64, control_63
@@ -4836,36 +5687,36 @@
 
 
 .namespace []
-.sub "_block11"  :anon :subid("10_1256206982.36362")
+.sub "_block11"  :anon :subid("10_1256257074.72654")
     get_hll_global $P14, ["Matcher";"TypeSafe"], "_block13" 
     .return ($P14)
 .end
 
 
 .namespace ["Matcher";"TypeSafe"]
-.sub "_block13" :init :load :subid("11_1256206982.36362")
-    .const 'Sub' $P101 = "22_1256206982.36362" 
-    capture_lex $P101
-    .const 'Sub' $P93 = "21_1256206982.36362" 
-    capture_lex $P93
-    .const 'Sub' $P74 = "19_1256206982.36362" 
-    capture_lex $P74
-    .const 'Sub' $P63 = "18_1256206982.36362" 
-    capture_lex $P63
-    .const 'Sub' $P32 = "14_1256206982.36362" 
+.sub "_block13" :init :load :subid("11_1256257074.72654")
+    .const 'Sub' $P106 = "22_1256257074.72654" 
+    capture_lex $P106
+    .const 'Sub' $P98 = "21_1256257074.72654" 
+    capture_lex $P98
+    .const 'Sub' $P79 = "19_1256257074.72654" 
+    capture_lex $P79
+    .const 'Sub' $P68 = "18_1256257074.72654" 
+    capture_lex $P68
+    .const 'Sub' $P32 = "14_1256257074.72654" 
     capture_lex $P32
-    .const 'Sub' $P15 = "12_1256206982.36362" 
+    .const 'Sub' $P15 = "12_1256257074.72654" 
     capture_lex $P15
     "_ONLOAD"()
-    .const 'Sub' $P101 = "22_1256206982.36362" 
-    capture_lex $P101
-    .return ($P101)
+    .const 'Sub' $P106 = "22_1256257074.72654" 
+    capture_lex $P106
+    .return ($P106)
 .end
 
 
 .namespace ["Matcher";"TypeSafe"]
-.sub "_ONLOAD"  :subid("12_1256206982.36362") :outer("11_1256206982.36362")
-    .const 'Sub' $P21 = "13_1256206982.36362" 
+.sub "_ONLOAD"  :subid("12_1256257074.72654") :outer("11_1256257074.72654")
+    .const 'Sub' $P21 = "13_1256257074.72654" 
     capture_lex $P21
     new $P17, 'ExceptionHandler'
     set_addr $P17, control_16
@@ -4876,7 +5727,7 @@
     new $P19, "Undef"
   vivify_23:
     unless $P19, if_18_end
-    .const 'Sub' $P21 = "13_1256206982.36362" 
+    .const 'Sub' $P21 = "13_1256257074.72654" 
     capture_lex $P21
     $P21()
   if_18_end:
@@ -4911,7 +5762,7 @@
 
 
 .namespace ["Matcher";"TypeSafe"]
-.sub "_block20"  :anon :subid("13_1256206982.36362") :outer("12_1256206982.36362")
+.sub "_block20"  :anon :subid("13_1256257074.72654") :outer("12_1256257074.72654")
     new $P22, "Exception"
     set $P22['type'], 58
     new $P23, "Integer"
@@ -4923,14 +5774,14 @@
 
 
 .namespace ["Matcher";"TypeSafe"]
-.sub "describe_failure"  :subid("14_1256206982.36362") :method :outer("11_1256206982.36362")
+.sub "describe_failure"  :subid("14_1256257074.72654") :method :outer("11_1256257074.72654")
     .param pmc param_35
     .param pmc param_36
-    .const 'Sub' $P52 = "17_1256206982.36362" 
-    capture_lex $P52
-    .const 'Sub' $P49 = "16_1256206982.36362" 
+    .const 'Sub' $P57 = "17_1256257074.72654" 
+    capture_lex $P57
+    .const 'Sub' $P49 = "16_1256257074.72654" 
     capture_lex $P49
-    .const 'Sub' $P43 = "15_1256206982.36362" 
+    .const 'Sub' $P43 = "15_1256257074.72654" 
     capture_lex $P43
     new $P34, 'ExceptionHandler'
     set_addr $P34, control_33
@@ -4951,75 +5802,83 @@
     find_lex $P46, "self"
     $P47 = $P46."wrong_type"()
     if $P47, if_45
-    .const 'Sub' $P52 = "17_1256206982.36362" 
-    capture_lex $P52
-    $P52()
+    .const 'Sub' $P57 = "17_1256257074.72654" 
+    capture_lex $P57
+    $P57()
     goto if_45_end
   if_45:
-    .const 'Sub' $P49 = "16_1256206982.36362" 
+    .const 'Sub' $P49 = "16_1256257074.72654" 
     capture_lex $P49
     $P49()
   if_45_end:
     goto if_38_end
   if_38:
-    .const 'Sub' $P43 = "15_1256206982.36362" 
+    .const 'Sub' $P43 = "15_1256257074.72654" 
     capture_lex $P43
     $P43()
   if_38_end:
-    new $P58, "Exception"
-    set $P58['type'], 58
-    find_lex $P59, "$description"
-    unless_null $P59, vivify_29
-    new $P59, "Undef"
-  vivify_29:
-    find_lex $P60, "$failure"
-    unless_null $P60, vivify_30
-    new $P60, "Undef"
+    new $P63, "Exception"
+    set $P63['type'], 58
+    find_lex $P64, "$description"
+    unless_null $P64, vivify_30
+    new $P64, "Undef"
   vivify_30:
-    concat $P61, $P59, $P60
-    setattribute $P58, 'payload', $P61
-    throw $P58
+    find_lex $P65, "$failure"
+    unless_null $P65, vivify_31
+    new $P65, "Undef"
+  vivify_31:
+    concat $P66, $P64, $P65
+    setattribute $P63, 'payload', $P66
+    throw $P63
     .return ()
   control_33:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P62, exception, "payload"
-    .return ($P62)
+    getattribute $P67, exception, "payload"
+    .return ($P67)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"TypeSafe"]
-.sub "_block51"  :anon :subid("17_1256206982.36362") :outer("14_1256206982.36362")
-    new $P53, "Exception"
-    set $P53['type'], 58
-    find_lex $P54, "self"
-    find_lex $P55, "$item"
-    unless_null $P55, vivify_27
-    new $P55, "Undef"
+.sub "_block56"  :anon :subid("17_1256257074.72654") :outer("14_1256257074.72654")
+    new $P58, "Exception"
+    set $P58['type'], 58
+    find_lex $P59, "self"
+    find_lex $P60, "$item"
+    unless_null $P60, vivify_27
+    new $P60, "Undef"
   vivify_27:
-    find_lex $P56, "$description"
-    unless_null $P56, vivify_28
-    new $P56, "Undef"
+    find_lex $P61, "$description"
+    unless_null $P61, vivify_28
+    new $P61, "Undef"
   vivify_28:
-    $P57 = $P54."describe_failure_typesafe"($P55, $P56)
-    setattribute $P53, 'payload', $P57
-    throw $P53
+    $P62 = $P59."describe_failure_typesafe"($P60, $P61)
+    setattribute $P58, 'payload', $P62
+    throw $P58
     .return ()
 .end
 
 
 .namespace ["Matcher";"TypeSafe"]
-.sub "_block48"  :anon :subid("16_1256206982.36362") :outer("14_1256206982.36362")
+.sub "_block48"  :anon :subid("16_1256257074.72654") :outer("14_1256257074.72654")
     new $P50, "String"
-    assign $P50, "was the wrong type"
-    store_lex "$failure", $P50
-    .return ($P50)
+    assign $P50, "was the wrong type ('"
+    get_hll_global $P51, ["Parrot"], "typeof"
+    find_lex $P52, "$item"
+    unless_null $P52, vivify_29
+    new $P52, "Undef"
+  vivify_29:
+    $S53 = $P51($P52)
+    concat $P54, $P50, $S53
+    concat $P55, $P54, "')"
+    store_lex "$failure", $P55
+    .return ($P55)
 .end
 
 
 .namespace ["Matcher";"TypeSafe"]
-.sub "_block42"  :anon :subid("15_1256206982.36362") :outer("14_1256206982.36362")
+.sub "_block42"  :anon :subid("15_1256257074.72654") :outer("14_1256257074.72654")
     new $P44, "String"
     assign $P44, "was null"
     store_lex "$failure", $P44
@@ -5028,145 +5887,145 @@
 
 
 .namespace ["Matcher";"TypeSafe"]
-.sub "describe_failure_typesafe"  :subid("18_1256206982.36362") :method :outer("11_1256206982.36362")
-    .param pmc param_66
-    .param pmc param_67
-    new $P65, 'ExceptionHandler'
-    set_addr $P65, control_64
-    $P65."handle_types"(58)
-    push_eh $P65
+.sub "describe_failure_typesafe"  :subid("18_1256257074.72654") :method :outer("11_1256257074.72654")
+    .param pmc param_71
+    .param pmc param_72
+    new $P70, 'ExceptionHandler'
+    set_addr $P70, control_69
+    $P70."handle_types"(58)
+    push_eh $P70
     .lex "self", self
-    .lex "$item", param_66
-    .lex "$description", param_67
-    new $P68, "Exception"
-    set $P68['type'], 58
-    find_lex $P69, "$description"
-    unless_null $P69, vivify_31
-    new $P69, "Undef"
-  vivify_31:
-    concat $P70, $P69, "was: "
-    find_lex $P71, "$item"
-    unless_null $P71, vivify_32
-    new $P71, "Undef"
+    .lex "$item", param_71
+    .lex "$description", param_72
+    new $P73, "Exception"
+    set $P73['type'], 58
+    find_lex $P74, "$description"
+    unless_null $P74, vivify_32
+    new $P74, "Undef"
   vivify_32:
-    concat $P72, $P70, $P71
-    setattribute $P68, 'payload', $P72
-    throw $P68
-    .return ()
-  control_64:
-    .local pmc exception 
-    .get_results (exception) 
-    getattribute $P73, exception, "payload"
-    .return ($P73)
-    rethrow exception
-.end
-
-
-.namespace ["Matcher";"TypeSafe"]
-.sub "matches"  :subid("19_1256206982.36362") :method :outer("11_1256206982.36362")
-    .param pmc param_77
-    .const 'Sub' $P85 = "20_1256206982.36362" 
-    capture_lex $P85
-    new $P76, 'ExceptionHandler'
-    set_addr $P76, control_75
-    $P76."handle_types"(58)
-    push_eh $P76
-    .lex "self", self
-    .lex "$item", param_77
-    find_lex $P78, "self"
-    $P78."wrong_type"(0)
-    get_hll_global $P80, ["Parrot"], "is_null"
-    find_lex $P81, "$item"
-    unless_null $P81, vivify_33
-    new $P81, "Undef"
+    concat $P75, $P74, "was: "
+    find_lex $P76, "$item"
+    unless_null $P76, vivify_33
+    new $P76, "Undef"
   vivify_33:
-    $P82 = $P80($P81)
-    isfalse $I83, $P82
-    unless $I83, if_79_end
-    .const 'Sub' $P85 = "20_1256206982.36362" 
-    capture_lex $P85
-    $P85()
-  if_79_end:
-    new $P90, "Exception"
-    set $P90['type'], 58
-    new $P91, "Integer"
-    assign $P91, 0
-    setattribute $P90, 'payload', $P91
-    throw $P90
+    concat $P77, $P75, $P76
+    setattribute $P73, 'payload', $P77
+    throw $P73
     .return ()
-  control_75:
+  control_69:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P92, exception, "payload"
-    .return ($P92)
+    getattribute $P78, exception, "payload"
+    .return ($P78)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"TypeSafe"]
-.sub "_block84"  :anon :subid("20_1256206982.36362") :outer("19_1256206982.36362")
-    new $P86, "Exception"
-    set $P86['type'], 58
-    find_lex $P87, "self"
-    find_lex $P88, "$item"
-    unless_null $P88, vivify_34
-    new $P88, "Undef"
+.sub "matches"  :subid("19_1256257074.72654") :method :outer("11_1256257074.72654")
+    .param pmc param_82
+    .const 'Sub' $P90 = "20_1256257074.72654" 
+    capture_lex $P90
+    new $P81, 'ExceptionHandler'
+    set_addr $P81, control_80
+    $P81."handle_types"(58)
+    push_eh $P81
+    .lex "self", self
+    .lex "$item", param_82
+    find_lex $P83, "self"
+    $P83."wrong_type"(0)
+    get_hll_global $P85, ["Parrot"], "is_null"
+    find_lex $P86, "$item"
+    unless_null $P86, vivify_34
+    new $P86, "Undef"
   vivify_34:
-    $P89 = $P87."matches_typesafe"($P88)
-    setattribute $P86, 'payload', $P89
-    throw $P86
+    $P87 = $P85($P86)
+    isfalse $I88, $P87
+    unless $I88, if_84_end
+    .const 'Sub' $P90 = "20_1256257074.72654" 
+    capture_lex $P90
+    $P90()
+  if_84_end:
+    new $P95, "Exception"
+    set $P95['type'], 58
+    new $P96, "Integer"
+    assign $P96, 0
+    setattribute $P95, 'payload', $P96
+    throw $P95
     .return ()
-.end
-
-
-.namespace ["Matcher";"TypeSafe"]
-.sub "matches_typesafe"  :subid("21_1256206982.36362") :method :outer("11_1256206982.36362")
-    .param pmc param_96
-    new $P95, 'ExceptionHandler'
-    set_addr $P95, control_94
-    $P95."handle_types"(58)
-    push_eh $P95
-    .lex "self", self
-    .lex "$item", param_96
-    find_lex $P97, "self"
-    $P97."wrong_type"(1)
-    new $P98, "Exception"
-    set $P98['type'], 58
-    new $P99, "Integer"
-    assign $P99, 0
-    setattribute $P98, 'payload', $P99
-    throw $P98
-    .return ()
-  control_94:
+  control_80:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P100, exception, "payload"
-    .return ($P100)
+    getattribute $P97, exception, "payload"
+    .return ($P97)
     rethrow exception
 .end
 
 
 .namespace ["Matcher";"TypeSafe"]
-.sub "wrong_type"  :subid("22_1256206982.36362") :method :outer("11_1256206982.36362")
-    .param pmc param_104 :slurpy
-    new $P103, 'ExceptionHandler'
-    set_addr $P103, control_102
-    $P103."handle_types"(58)
-    push_eh $P103
-    .lex "self", self
-    .lex "@value", param_104
-    find_lex $P105, "self"
-    find_lex $P106, "@value"
-    unless_null $P106, vivify_35
-    new $P106, "ResizablePMCArray"
+.sub "_block89"  :anon :subid("20_1256257074.72654") :outer("19_1256257074.72654")
+    new $P91, "Exception"
+    set $P91['type'], 58
+    find_lex $P92, "self"
+    find_lex $P93, "$item"
+    unless_null $P93, vivify_35
+    new $P93, "Undef"
   vivify_35:
-    $P107 = $P105."_ATTR"("wrong_type", $P106)
-    .return ($P107)
-  control_102:
+    $P94 = $P92."matches_typesafe"($P93)
+    setattribute $P91, 'payload', $P94
+    throw $P91
+    .return ()
+.end
+
+
+.namespace ["Matcher";"TypeSafe"]
+.sub "matches_typesafe"  :subid("21_1256257074.72654") :method :outer("11_1256257074.72654")
+    .param pmc param_101
+    new $P100, 'ExceptionHandler'
+    set_addr $P100, control_99
+    $P100."handle_types"(58)
+    push_eh $P100
+    .lex "self", self
+    .lex "$item", param_101
+    find_lex $P102, "self"
+    $P102."wrong_type"(1)
+    new $P103, "Exception"
+    set $P103['type'], 58
+    new $P104, "Integer"
+    assign $P104, 0
+    setattribute $P103, 'payload', $P104
+    throw $P103
+    .return ()
+  control_99:
     .local pmc exception 
     .get_results (exception) 
-    getattribute $P108, exception, "payload"
-    .return ($P108)
+    getattribute $P105, exception, "payload"
+    .return ($P105)
+    rethrow exception
+.end
+
+
+.namespace ["Matcher";"TypeSafe"]
+.sub "wrong_type"  :subid("22_1256257074.72654") :method :outer("11_1256257074.72654")
+    .param pmc param_109 :slurpy
+    new $P108, 'ExceptionHandler'
+    set_addr $P108, control_107
+    $P108."handle_types"(58)
+    push_eh $P108
+    .lex "self", self
+    .lex "@value", param_109
+    find_lex $P110, "self"
+    find_lex $P111, "@value"
+    unless_null $P111, vivify_36
+    new $P111, "ResizablePMCArray"
+  vivify_36:
+    $P112 = $P110."_ATTR"("wrong_type", $P111)
+    .return ($P112)
+  control_107:
+    .local pmc exception 
+    .get_results (exception) 
+    getattribute $P113, exception, "payload"
+    .return ($P113)
     rethrow exception
 .end
 

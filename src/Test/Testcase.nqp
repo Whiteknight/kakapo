@@ -36,7 +36,7 @@ method assert_that($item_desc, $item, $matcher) {
 	unless $result {
 		my $explain := $matcher.describe_self("Expected: " ~ $item_desc ~ ' ')
 			~ $matcher.describe_failure($item, "\n     but: ");
-		say($explain);			
+		self.emit($explain);			
 	}		
 	
 	return $result;
@@ -46,6 +46,16 @@ method before_methods(*@value)		{ self._ATTR_SETBY('before_methods', 'fetch_befo
 method before_prefix(*@value)		{ self._ATTR_DEFAULT('before_prefix', @value, 'before_'); }	
 method beforeall_methods(*@value)	{ self._ATTR_SETBY('beforeall_methods', 'fetch_beforeall_methods'); }	
 method beforeall_prefix(*@value)		{ self._ATTR_DEFAULT('beforeall_prefix', @value, 'beforeall_'); }	
+
+method emit(*@parts)			{ say(@parts.join); }
+
+method note(*@message) {
+	self.emit(
+		"#\n",
+		"# NOTE: ", @message.join, "\n",
+		"#"
+	);
+}
 
 # FIXME: This doesn't get the methods from parents.
 method fetch_methods(:$starting_with) {
@@ -99,13 +109,7 @@ method ok($result, $note?) {
 		@output.push($note);
 	}
 	
-	say(@output.join(' '));
-}
-
-method run_test($method_name, :$after_prefix?, :$before_prefix?) {
-	self.run_before_methods;
-	Class::call_method(self, $method_name);
-	self.run_after_methods;
+	self.emit(@output.join(' '));
 }
 
 method run_all_tests() {
@@ -128,23 +132,29 @@ method run_methods(@methods, *@args, *%opts) {
 	NOTE("done");
 }
 
+method run_test($method_name, :$after_prefix?, :$before_prefix?) {
+	self.run_before_methods;
+	Class::call_method(self, $method_name);
+	self.run_after_methods;
+}
+
 method run_tests(*@names) {
+	NOTE("Creating new testcase");
+	my $testcase := self.new();
+	
 	NOTE("Running 'beforeall' methods");
-	self.run_beforeall_methods;
+	$testcase.run_beforeall_methods;
 	
 	unless @names {
 		NOTE("No test list specified. Running all tests.");
-		@names := self.fetch_test_methods();
+		@names := $testcase.fetch_test_methods();
 	}
 	
 	NOTE("Got ", +@names, " tests to run.");
 
 	for @names {
 		my $method := ~ $_;
-		
-		NOTE("Creating new testcase for test: ", $method);
-		my $testcase := self.new();
-		
+				
 		NOTE("Running 'before' methods");
 		$testcase.run_before_methods();
 		
@@ -156,11 +166,9 @@ method run_tests(*@names) {
 	}
 	
 	NOTE("Done with tests. Running 'afterall' methods");
-	self.run_afterall_methods;
+	$testcase.run_afterall_methods;
 }
-
 
 method test_counter(*@value)		{ self._ATTR_CONST('test_counter', @value); }	
 method test_methods()			{ self._ATTR_SETBY('test_methods', 'fetch_test_methods'); }	
 method test_prefix(*@value)		{ self._ATTR_DEFAULT('test_prefix', @value, 'test_'); }	
-

@@ -24,6 +24,9 @@ sub _ONLOAD() {
 }
 
 method test_defined() {
+	
+	self.note("Testing Parrot::defined()");
+	
 	my $one := 1;
 	my $zero := 0;
 	my $empty := '';
@@ -43,6 +46,9 @@ method test_defined() {
 }
 
 method test_get_hll_global() {
+
+	self.note("Testing Parrot::get_hll_global()");
+
 	self.assert_that("get_hll_global(foo)", Parrot::get_hll_global('Xyzzy::foo'), is(same_as(Xyzzy::foo)));
 	
 	our $Test;
@@ -56,10 +62,16 @@ method test_get_hll_global() {
 }
 
 method test_get_sub() {
+
+	self.note("Testing Parrot::get_sub()");
+
 	self.assert_that("get_sub(foo)", Parrot::get_sub('Xyzzy::foo'), is(same_as(Xyzzy::foo)));
 }
 
 method test_import() {
+
+	self.note("Testing Parrot::IMPORT()");
+
 	self.assert_that("Remote symbol 'foo'", Xyzzy::foo, is(defined()));
 	self.assert_that("Local symbol 'foo'", Kakapo::Test::Parrot::foo, is(not(defined())));
 	
@@ -70,6 +82,9 @@ method test_import() {
 }
 
 method test_is_null() {
+
+	self.note("Testing Parrot::is_null()");
+
 	my $one := 1;
 	my $zero := 0;
 	my $empty := '';

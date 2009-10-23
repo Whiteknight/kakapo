@@ -26,8 +26,13 @@ module Matcher::EqualsFloat {
 			~ self.difference($item);
 	}
 
+	method describe_self($description) {
+		return $description 
+			~ "a Number equal to " ~ self.value;
+	}
+	
 	method difference($item) {
-		my $difference := $item - self.wanted;
+		my $difference := $item - self.value;
 		my $abs := Q:PIR {
 			$P0 = find_lex '$difference'
 			%r = abs $P0

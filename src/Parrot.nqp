@@ -61,22 +61,14 @@ sub IMPORT($namespace, $names?) {
 	
 	for @names {
 		if $caller_nsp{~ $_} {
-			#NOTE("I will not overwrite namespace entry: " ~ $_);
-			say("I will not overwrite namespace entry: " ~ $_);
+			#say("I will not overwrite namespace entry: " ~ $_);
 		}
 		else {
 			@new_names.push(~ $_);
 		}
 	}
 	
-	# say("Exporting ", +@new_names, " functions from ", $from_nsp, " to ", $caller_nsp);
-	# if $from_nsp{'DIE'} {
-		# say("Die info: ", $from_nsp{'DIE'}.get_namespace.get_name.join('::'));
-	# }
-	# say(@new_names.join(", "));
-	# Dumper::BACKTRACE();
 	$from_nsp.export_to($caller_nsp, @names);
-	# say("done");
 }
 
 sub call_onload($nsp) {
@@ -107,6 +99,17 @@ sub caller_namespace($index?) {
 	return $nsp;
 }
 
+sub can($object, $method_name) {
+	my $result := Q:PIR {
+		$P0 = find_lex '$object'
+		$P1 = find_lex '$method_name'
+		$S1 = $P1
+		$I0 = can $P0, $S1
+		%r = box $I0
+	};
+	
+	return $result;
+}
 sub compile($string) {
 	
 	my $result := Q:PIR {
@@ -136,6 +139,28 @@ sub die($message) {
 		$S0 = $P0
 		die $S0
 	};
+}
+
+sub does($object, $role) {
+	my $result := Q:PIR {
+		$P0 = find_lex '$object'
+		$P1 = find_lex '$role'
+		$S1 = $P1
+		$I0 = does $P0, $S1
+		%r = box $I0
+	};
+
+	return $result;
+}
+
+sub elements($item) {
+	my $result := Q:PIR {
+		$P0 = find_lex '$item'
+		$I0 = elements $P0
+		%r = box $I0
+	};
+
+	return $result;
 }
 
 sub get_address_of($what) {
@@ -299,7 +324,8 @@ sub trace($value) {
 sub typeof($pmc) {
 	my $result := Q:PIR {
 		$P0 = find_lex '$pmc'
-		%r = typeof $P0
+		$S0 = typeof $P0
+		%r = box $S0
 	};
 	return $result;
 }
