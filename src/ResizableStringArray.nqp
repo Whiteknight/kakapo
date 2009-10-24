@@ -26,3 +26,6 @@ sub new(*@contents) {
 	
 	return @array;
 }
+
+# Note: Can't pass an RPA to RSA.splice, so this will die a lot.
+method splice(@data, :$from?, :$replacing?) { Array::splice(self, @data, :from($from), :replacing($replacing)); }
