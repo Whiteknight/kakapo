@@ -189,6 +189,28 @@ sub reverse(@original) {
 	return @result;
 }
 
+# Found some kind of bug with named args in 1.7, but since pcc branch is landing,
+# there's no hope of a fix. So move all the opts to %opts, and DIY.
+method splice(@value, *%opts) {
+	my $from := %opts.contains('from') ?? %opts<from> !! 0;
+	my $replacing := %opts.contains('replacing') ?? %opts<replacing> !! 0;
+
+	Q:PIR {
+		.local pmc array, new_data
+		array		= find_lex 'self'
+		new_data	= find_lex '@value'
+		.local int offset, count
+		$P2 = find_lex '$from'
+		offset = $P2
+		$P3 = find_lex '$replacing'
+		count = $P3
+		
+		splice array, new_data, offset, count
+	};
+	
+	return self;
+}
+
 sub unique(@original) {
 	my @result := Array::empty();
 	

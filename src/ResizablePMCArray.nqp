@@ -15,3 +15,5 @@ sub new(*@contents) {
 		?? @contents
 		!! Parrot::new_pmc('ResizablePMCArray');
 }
+
+method splice(@data, :$from?, :$replacing?) { Array::splice(self, @data, :from($from), :replacing($replacing)); }

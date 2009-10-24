@@ -50,6 +50,7 @@ BASE_LIB_PIRS = 		\
 	src/Dumper.pir	\
 	src/File.pir		\
 	src/Hash.pir		\
+	src/ManagedQueue.pir \
 	src/Miscellaneous.pir \
 	src/OS.pir		\
 	src/Parrot.pir 	\
@@ -206,6 +207,9 @@ test: build $(ALL_TESTS)
 
 test-array: build t/Array.pir
 	$(PARROT) $(PARROT_FLAGS) t/Array.pir
+
+test-mq: build t/ManagedQueue.pir
+	$(PARROT) $(PARROT_FLAGS) t/ManagedQueue.pir
 
 test-parrot: build t/Parrot.pir
 	$(PARROT) $(PARROT_FLAGS) t/Parrot.pir
