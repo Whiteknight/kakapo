@@ -248,10 +248,24 @@ sub get_interpreter() {
 	return $Parrot_interpreter;
 }
 
-sub get_namespace($name) {
-	my @namespace := $name.split('::');
-	my $namespace := get_hll_namespace(@namespace);
-	return $namespace;
+sub get_namespace($name?) {
+	if $name {
+		my @namespace := $name.split('::');
+		my $nsp := get_hll_namespace(@namespace);
+		
+		unless defined($nsp) {
+			$nsp := get_hll_namespace(Array::empty());
+			
+			while @namespace {
+				$nsp := $nsp.make_namespace(@namespace.shift);
+			}
+		}
+		
+		return $nsp;
+	}
+	# NB: 'else' would create a new lexical sub, changing 2->3
+	my $nsp := caller_namespace(2);
+	return $nsp;
 }
 
 sub get_hll_global($path) {
@@ -336,6 +350,66 @@ sub iseq($a, $b) {
 	};
 	
 	return $result;
+}
+
+sub key($first, *@parts) {
+	unless @parts { @parts := Array::empty(); }
+	
+	@parts.unshift($first);
+	my $key;
+	
+	while @parts {
+		my $element := @parts.shift;
+		Q:PIR {
+			.local pmc segment
+			segment = new [ 'Key' ]
+			
+			.local pmc element
+			element = find_lex '$element'
+			
+			$I0 = isa element, 'Integer'
+			unless $I0 goto not_Integer
+			$I0 = element
+			segment = $I0
+			goto have_key
+			
+		not_Integer:
+			
+			$I0 = isa element, 'Float'
+			unless $I0 goto not_Float
+			$N0 = element
+			segment = $N0
+			goto have_key
+			
+		not_Float:
+			
+			$I0 = isa element, 'String'
+			unless $I0 goto not_String
+			$S0 = element
+			segment = $S0
+			goto have_key
+			
+		not_String:
+			die "Invalid PMC type passed to Parrot::key"
+			
+		have_key:
+			.local pmc key
+			key = find_lex '$key'
+			
+			$I0 = isa key, 'Key'
+			unless $I0 goto set_key
+			push key, segment
+			goto done
+		
+		set_key:
+			key = segment
+			store_lex '$key', key
+			
+		done:
+		};
+	}
+	
+	return $key;
 }
 
 sub join($pmc, $delim) {

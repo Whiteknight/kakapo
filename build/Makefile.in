@@ -38,6 +38,8 @@ ALL_LIB_PIRS =		\
 
 ALL_TESTS =		\
 	test-array		\
+	test-global		\
+	test-mq		\
 	test-parrot		\
 	test-rpa		\
 	test-rsa
@@ -49,6 +51,7 @@ BASE_LIB_PIRS = 		\
 	src/ConfigFile.pir	\
 	src/Dumper.pir	\
 	src/File.pir		\
+	src/Global.pir	\
 	src/Hash.pir		\
 	src/ManagedQueue.pir \
 	src/Miscellaneous.pir \
@@ -207,6 +210,9 @@ test: build $(ALL_TESTS)
 
 test-array: build t/Array.pir
 	$(PARROT) $(PARROT_FLAGS) t/Array.pir
+
+test-global: build t/Global.pir
+	$(PARROT) $(PARROT_FLAGS) t/Global.pir
 
 test-mq: build t/ManagedQueue.pir
 	$(PARROT) $(PARROT_FLAGS) t/ManagedQueue.pir

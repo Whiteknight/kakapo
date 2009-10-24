@@ -189,8 +189,10 @@ module Class {
 		my @actions;
 		
 		unless $default_method {
-			@actions.push(
-				"die 'No method available that will accept the parameters given'",
+			@actions := Array::new(
+				"$P0 = get_hll_global ['Dumper'], 'DUMP_'",
+				"$P0(pos)",
+				"die 'No method available that will accept the arguments given'",
 			);
 		}
 	
