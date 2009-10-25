@@ -186,6 +186,18 @@ sub elements($item) {
 	return $result;
 }
 
+sub exit($result?) {
+	unless defined($result) {
+		$result := 0;
+	}
+	
+	Q:PIR {
+		$P0 = find_lex '$result'
+		$I0 = $P0
+		exit $I0
+	};
+}
+
 sub get_address_of($what) {
 	my $address := Q:PIR {
 		$P0 = find_lex '$what'

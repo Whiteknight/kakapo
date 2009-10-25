@@ -6,6 +6,8 @@ sub _ONLOAD() {
 	if our $onload_done { return 0; }
 	$onload_done := 1;	
 	
+	Pair::_ONLOAD();
+	
 	Dumper::_ONLOAD();
 Testcase::_ONLOAD();
 	Global::use('Dumper');
@@ -165,5 +167,12 @@ method insert_actual($pair, %opts) {
 }
 
 method is_empty()				{ return +self.queue == 0; }
-method next()				{ return self.queue.shift.value; }
+method next() {
+	if self.queue {
+		return self.queue.shift.value;
+	}
+	
+	return my $undef;
+}
+
 method queue(*@value)			{ self._ATTR_ARRAY('queue', @value); }

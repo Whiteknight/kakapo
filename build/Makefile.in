@@ -41,6 +41,7 @@ ALL_TESTS =		\
 	test-global		\
 	test-mq		\
 	test-parrot		\
+	test-program		\
 	test-rpa		\
 	test-rsa
 
@@ -61,6 +62,7 @@ BASE_LIB_PIRS = 		\
 	src/OS.pir		\
 	src/Pair.pir 		\
 	src/Parrot.pir 	\
+	src/Program.pir 	\
 	src/Registry.pir 	\
 	src/ResizablePMCArray.pir \
 	src/ResizableStringArray.pir \
@@ -223,6 +225,9 @@ test-mq: build t/ManagedQueue.pir
 
 test-parrot: build t/Parrot.pir
 	$(PARROT) $(PARROT_FLAGS) t/Parrot.pir
+
+test-program: build t/Program.pir
+	$(PARROT) $(PARROT_FLAGS) t/Program.pir
 
 test-rpa: build t/ResizablePMCArray.pir
 	$(PARROT) $(PARROT_FLAGS) t/ResizablePMCArray.pir
