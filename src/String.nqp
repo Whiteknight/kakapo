@@ -2,7 +2,7 @@
 
 module String;
 
-Parrot::IMPORT('Dumper');
+Global::use('Dumper');
 
 our %Cclass_id;
 %Cclass_id<ANY>			:= 65535;

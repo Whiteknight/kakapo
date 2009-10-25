@@ -5,6 +5,8 @@ class Dumper;
 our %Already_in;
 our %Bits;
 our $Caller_depth;
+our %Dumper_config_cache;
+our $Kakapo_config;
 our $Prefix;
 
 _ONLOAD();
@@ -13,9 +15,6 @@ sub _ONLOAD() {
 	if our $onload_done { return 0; }
 	$onload_done := 1;
 
-	Parrot::_ONLOAD();
-	#say("Dumper::_ONLOAD");
-	
 	%Already_in<ASSERTold>	:= 0;
 	%Already_in<ASSERT>	:= 0;
 	%Already_in<DIE>		:= 0;
@@ -29,25 +28,14 @@ sub _ONLOAD() {
 	
 	$Caller_depth := 0;
 	
+	Parrot::_ONLOAD();
 	Parrot::load_bytecode('dumper.pbc');
-}
-
-sub ASSERTold(@info, $condition, @message) {
-	if %Already_in<ASSERTold> { return $condition; }
-	%Already_in<ASSERTold>++;
-
-	if $condition {
-		if @info[0] && @info[0] % 8 >= 4 {
-			@message.unshift("ASSERT PASSED: ");
-			NOTEold(@info, @message);
-		}
-	}
-	else {
-		@message.unshift("ASSERT FAILED: ");
-		DIE(@info, @message);
-	}
 	
-	%Already_in<ASSERTold>--;
+	Global::export('ASSERT', 'DIE', 'DUMP', 'DUMP_', 'NOTE');
+	
+	ConfigFile::_ONLOAD();
+	Global::use(:symbols('$Kakapo_config'));
+	
 }
 
 sub ASSERT($condition, *@message, :$caller_level?) {
@@ -128,12 +116,6 @@ sub DUMP(*@pos, :$caller_level?, :@info?, *%named) {
 	%Already_in<DUMP>--;
 }
 
-sub DUMPold(@info, @pos, %named) {
-	DUMP(@pos, %named,
-		:caller_level(+1),
-		:info(@info));
-}
-
 sub DUMP_(*@what, :$label?, :$prefix?) {
 	unless $label { $label := '$VAR'; }
 	print($prefix);
@@ -152,19 +134,13 @@ sub NOTE(*@parts, :$caller_level?, :@info?) {
 		# $caller_level + 2 for NOTE(), unless-block()
 		@info := info(:caller_level($caller_level + 2));
 	}
-	
+
 	if @info[0] && @info[0] % 2 {
 		$Prefix := make_named_prefix(@info);
 		say($Prefix, ': ', @parts.join);
 	}
 	
 	%Already_in<NOTE>--;
-}
-
-sub NOTEold(@info, @parts) {
-	NOTE(@parts.join, 
-		:caller_level(+1), 
-		:info(@info));
 }
 
 =sub caller_depth_below($namespace, $name, :$limit?)
@@ -238,7 +214,7 @@ sub caller_depth_below($namespace, $name, :$starting, :$limit?) {
 
 	handler:
 		say "Suppressed exception in caller_depth_below"
-		backtrace
+		#backtrace
 		
 	done:
 		pop_eh
@@ -342,37 +318,28 @@ sub get_caller($level?, :$attr?) {
 sub get_config(*@key) {
 	my $result;
 
-	if Registry<CONFIG> {
-		$result := Registry<CONFIG>.query(@key.join('::'));
+	if $Kakapo_config {
+		$result := $Kakapo_config.query(@key.join('::'));
 	}
 
 	return $result;
 }
 
 sub get_dumper_config($named_caller, :$starting) {
-	unless our %_dumper_config_cache {
-		%_dumper_config_cache := Hash::empty();
-	}
-
-	my $addr := Parrot::get_address_of($named_caller);
-
-	unless my @config := %_dumper_config_cache{$addr} {
-		my $name := ~ $named_caller;
-		
-		my @namespace := $named_caller.get_namespace.get_name.clone;
-		# Replace hll 'parrot' with 'Dump' for dumper config settings.
-		@namespace[0] := 'Dump';
-		@namespace.push($name);
-		
-		my $key := @namespace.join('::');
-
+	my @parts := $named_caller.get_namespace.get_name.clone;
+	@parts[0] := 'Dump';
+	@parts.push(~ $named_caller);
+	
+	my $key := @parts.join('::');
+	
+	unless my @config := %Dumper_config_cache{$key} {
 		@config := Array::new(
 			get_config($key),
 			0,
 			$key
 		);
 
-		%_dumper_config_cache{$addr} := @config;
+		%Dumper_config_cache{$key} := @config;
 	}
 
 	# Even if cached, recompute stack depth. A function may
@@ -387,7 +354,7 @@ sub get_dumper_config($named_caller, :$starting) {
 
 =sub info
 
-Returns an array of 4 items:
+Returns an array of:
 
 =item * [0] = proceed, either 0 or the flags set in config file for caller name
 
@@ -403,31 +370,27 @@ sub info(:$caller_level) {
 	if %Already_in<INFO> { return @Info_rejected; }	
 	%Already_in<INFO>++;
 
-	unless $caller_level {
-		# The old dump and note code calls info direct.
-		$caller_level := +1;
-	}
-	
 	$caller_level ++;
-	our $last_lexpad_addr;
-	our @result;
 	
-	# If lexpad address is the same, it's the same call frame.
-	# Return identical result.
+	our $Last_lexpad_addr;
+	our @Result;
+	
+	# If lexpad address is the same, it's the same call frame. So return 
+	# the identical result. This is a "called-from-same-block" cache, to
+	# handle frequent pairings of NOTE+DUMP, e.g.
 	my $lexpad_addr := Parrot::get_address_of(get_caller($caller_level, :attr('lexpad')));
 	
-	if $lexpad_addr && $lexpad_addr == $last_lexpad_addr {
-		# Do nothing - last result still in @result.
+	if $lexpad_addr && $lexpad_addr == $Last_lexpad_addr {
+		# Do nothing - last result still in @Result.
 	}
 	else {
-		$last_lexpad_addr	:= $lexpad_addr;
+		$Last_lexpad_addr	:= $lexpad_addr;
 		my $caller		:= find_named_caller(:starting($caller_level + 1));
-
-		@result		:= get_dumper_config($caller, :starting($Caller_depth));
+		@Result		:= get_dumper_config($caller, :starting($Caller_depth));
 	}
 
 	%Already_in<INFO>--;
-	return @result;
+	return @Result;
 }
 
 our $Prefix_string := ':..';
@@ -451,6 +414,10 @@ sub make_named_prefix(@info) {
 	return $prefix;
 }
 
+sub reset_cache() {
+	%Dumper_config_cache := Hash::empty();
+}
+
 sub stack_depth(:$starting) {
 	our $Stack_root_offset;
 	our $Root_sub;
@@ -472,7 +439,6 @@ sub stack_depth(:$starting) {
 	# If config doesn't know Root yet, we're probably in the early stages,
 	# before the config file loads. Return 0.
 	if $Root_sub {
-	say("Root sub: ", $Root_nsp, " :: ", $Root_sub);
 		$depth := caller_depth_below($Root_nsp, $Root_sub, 
 			:starting($starting + 2));
 		$depth := $depth - $Stack_root_offset;

@@ -46,7 +46,10 @@ ALL_TESTS =		\
 
 BASE_LIB_PIRS = 		\
 	src/Array.pir		\
-	src/Class.pir		\
+	src/Classes/Class.pir	\
+	src/Classes/ArrayBased.pir	\
+	src/Classes/BaseBehavior.pir \
+	src/Classes/HashBased.pir	\
 	src/Config.pir	\
 	src/ConfigFile.pir	\
 	src/Dumper.pir	\
@@ -56,6 +59,7 @@ BASE_LIB_PIRS = 		\
 	src/ManagedQueue.pir \
 	src/Miscellaneous.pir \
 	src/OS.pir		\
+	src/Pair.pir 		\
 	src/Parrot.pir 	\
 	src/Registry.pir 	\
 	src/ResizablePMCArray.pir \

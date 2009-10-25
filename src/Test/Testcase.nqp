@@ -1,5 +1,7 @@
 module Testcase;
 
+our $Kakapo_config;	# Imported
+
 _ONLOAD();
 
 sub _ONLOAD() {
@@ -7,9 +9,11 @@ sub _ONLOAD() {
 	$onload_done := 1;
 	
 	ConfigFile::_ONLOAD();
-	Registry<CONFIG>.file('kakapo.cfg');
+	Global::use(:symbols('$Kakapo_config'));
+	$Kakapo_config.file('kakapo.cfg');
+	Dumper::reset_cache();
 	
-	Parrot::IMPORT('Dumper');
+	Global::use('Dumper');
 	Parrot::IMPORT('Matcher::Factory');
 	
 	my $class_name := 'Testcase';

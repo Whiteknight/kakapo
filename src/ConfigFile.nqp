@@ -8,16 +8,14 @@ sub _ONLOAD() {
 	if our $onload_done { return 0; }
 	$onload_done := 1;
 
-	Registry::_ONLOAD();
-
-	Parrot::IMPORT('Dumper');
+	Global::use('Dumper');
 
 	Class::SUBCLASS('ConfigFile',
 		'Class::HashBased');	
-		
-	# Store an instance in the Registry
+
+	# Create a Global for config data.
 	my $config := ConfigFile.new();
-	Registry<CONFIG> := $config;
+	Global::register_global('$Kakapo_config', $config);
 	
 	#$config.store('Dump::File::slurp', 1);
 	
@@ -28,7 +26,7 @@ sub _ONLOAD() {
 	#$config.store('Dump::ConfigFile::store', 1);
 	$config.store('Dump::Parrot::defined', 7);
 	
-	$config.store('Dump::Stack::Root', 'parrot::close::Compiler::main');
+	$config.store('Dump::Stack::Root', 'parrot::Testcase::_ONLOAD');
 	
 	NOTE("ConfigFile::_onload: done");
 }

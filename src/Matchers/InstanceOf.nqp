@@ -6,7 +6,7 @@ sub _ONLOAD() {
 	if our $onload_done { return 0; }
 	$onload_done := 1;
 			
-	Parrot::IMPORT('Dumper');
+	Global::use('Dumper');
 	
 	my $class_name := 'Matcher::InstanceOf';
 	

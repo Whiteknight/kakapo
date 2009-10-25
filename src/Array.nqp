@@ -7,7 +7,7 @@ our %Bsearch_compare_func;
 _ONLOAD(); 
 
 sub _ONLOAD() {
-	Parrot::IMPORT('Dumper');
+	Global::use('Dumper');
 
 	%Bsearch_compare_func{'<=>'}	:= Array::cmp_numeric;
 	%Bsearch_compare_func{'R<=>'}	:= Array::cmp_numeric_R;

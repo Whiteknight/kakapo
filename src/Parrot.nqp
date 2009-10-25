@@ -154,7 +154,9 @@ sub delete($pmc, $key) {
 	return $pmc;
 }
 
-sub die($message) {
+sub die(*@parts) {
+	my $message := @parts.join;
+	
 	Q:PIR {
 		$P0 = find_lex '$message'
 		$S0 = $P0

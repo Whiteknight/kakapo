@@ -124,10 +124,18 @@ sub use($module?, :@import?, :@symbols?) {
 	my $export_nsp := $module.make_namespace('EXPORT');
 	my $target_nsp := Parrot::caller_namespace(2);
 
+	if $module<_ONLOAD> {
+	say("Running _ONLOAD for ", $module.get_name.join('::'));
+		$module<_ONLOAD>();
+	}
+	
 	if @import {
 		for @import {
 			my $source_nsp := $export_nsp.make_namespace(~ $_);
-			$source_nsp.export_to($target_nsp, $source_nsp.keys);
+			
+			if $source_nsp.keys {
+				$source_nsp.export_to($target_nsp, $source_nsp.keys);
+			}
 		}
 	}
 	

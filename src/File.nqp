@@ -1,7 +1,7 @@
 # $Id: File.nqp 171 2009-10-04 19:18:10Z austin_hastings@yahoo.com $
 class File;
 
-Parrot::IMPORT('Dumper');
+Global::use('Dumper');
 	
 ################################################################
 

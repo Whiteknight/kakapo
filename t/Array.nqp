@@ -10,14 +10,12 @@ Q:PIR { load_bytecode 'library/kakapo.pbc' };
 
 _ONLOAD();
 
-#Kakapo::Test::Array.run_all_tests;
-Kakapo::Test::Array.run_tests('test_bsearch');
+Kakapo::Test::Array.run_all_tests;
 
 sub _ONLOAD() {
 	if our $onload_done { return 0; }
 	$onload_done := 1;
 	
-	Parrot::IMPORT('Dumper', q<ASSERT DUMP DUMP_ NOTE>);
 	Parrot::IMPORT('Matcher::Factory');
 	
 	my $class_name := 'Kakapo::Test::Array';
