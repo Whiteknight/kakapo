@@ -47,28 +47,28 @@ ALL_TESTS =		\
 	test-rsa
 
 BASE_LIB_PIRS = 		\
-	src/Array.pir		\
 	src/Classes/Class.pir	\
 	src/Classes/ArrayBased.pir	\
 	src/Classes/BaseBehavior.pir \
 	src/Classes/HashBased.pir	\
-	src/Config.pir	\
-	src/ConfigFile.pir	\
-	src/Dumper.pir	\
-	src/File.pir		\
-	src/Global.pir	\
-	src/Hash.pir		\
-	src/Kakapo.pir	\
-	src/ManagedQueue.pir \
-	src/Miscellaneous.pir \
-	src/OS.pir		\
-	src/Pair.pir 		\
-	src/Parrot.pir 	\
+	src/ConfigFile.pir		\
+	src/Dumper.pir		\
+	src/Global.pir		\
+	src/Kakapo.pir		\
+	src/ManagedQueue.pir	\
+	src/Miscellaneous.pir	\
+	src/Pair.pir 			\
+	src/Parrot.pir 		\
+	src/Pmc/Array.pir		\
+	src/Pmc/Config.pir	\
+	src/Pmc/File.pir		\
+	src/Pmc/Hash.pir		\
+	src/Pmc/OS.pir		\
+	src/Pmc/ResizablePMCArray.pir \
+	src/Pmc/ResizableStringArray.pir \
+	src/Pmc/String.pir	\
+	src/Pmc/Undef.pir
 	src/Program.pir 	\
-	src/ResizablePMCArray.pir \
-	src/ResizableStringArray.pir \
-	src/String.pir		\
-	src/Undef.pir
 
 GENERATED_FILES =		\
 	$(ALL_LIB_PIRS)		\
