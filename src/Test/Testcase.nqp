@@ -2,13 +2,9 @@ module Testcase;
 
 our $Kakapo_config;	# Imported
 
-_ONLOAD();
+Program::initload(:after('Class', 'Class::HashBased', 'ConfigFile', 'Dumper', 'Global', 'Matcher::Factory'));
 
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;
-	
-	ConfigFile::_ONLOAD();
+sub _initload() {
 	Global::use(:symbols('$Kakapo_config'));
 	$Kakapo_config.file('kakapo.cfg');
 	Dumper::reset_cache();
@@ -17,7 +13,7 @@ sub _ONLOAD() {
 	Parrot::IMPORT('Matcher::Factory');
 	
 	my $class_name := 'Testcase';
-	
+say("Creating class ", $class_name);
 	NOTE("Creating class ", $class_name);
 	Class::SUBCLASS($class_name,
 		'Class::HashBased',
@@ -56,7 +52,7 @@ method before_prefix(*@value)		{ self._ATTR_DEFAULT('before_prefix', @value, 'be
 method beforeall_methods(*@value)	{ self._ATTR_SETBY('beforeall_methods', 'fetch_beforeall_methods'); }	
 method beforeall_prefix(*@value)		{ self._ATTR_DEFAULT('beforeall_prefix', @value, 'beforeall_'); }	
 
-method emit(*@parts)			{ say(@parts.join); }
+method emit(*@parts)			{ say("> ", @parts.join); }
 
 method note(*@message) {
 	self.emit(
@@ -181,3 +177,17 @@ method run_tests(*@names) {
 method test_counter(*@value)		{ self._ATTR_CONST('test_counter', @value); }	
 method test_methods()			{ self._ATTR_SETBY('test_methods', 'fetch_test_methods'); }	
 method test_prefix(*@value)		{ self._ATTR_DEFAULT('test_prefix', @value, 'test_'); }	
+
+=for nextTime
+	self.test('queue runs in correct order'
+	).assert(
+		that('Results array', @results, is(empty())
+		that('Results array', @results, is(empty()))
+	).do(
+		Program::process_init_queue();
+	).assert(
+		that('Results array[0]', @results[0], is('x1')),
+		that('Results array[1]', @results[1], is('x2')),
+	).done;
+	
+=cut

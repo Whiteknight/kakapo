@@ -28,7 +28,7 @@ sub assert_that($item, $matcher) {
 	if ! $matcher.matches($item) {
 		my $explain := $matcher.describe_self("Expected: ")
 			~ $matcher.describe_failure($item, "\n     but: ");
-		say($explain);			
+		say("assert: ", $explain);			
 		return 0;
 	}
 	

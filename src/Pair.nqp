@@ -1,11 +1,17 @@
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
+=module Pair
+
+Provides a basic Pair class.
+
+=cut
+
 module Pair;
 
-_ONLOAD();
+Program::initload(:after('Class', 'Class::ArrayBased', 'Dumper', 'Global', 'Parrot'));
 
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;	
-	
+sub _initload() {
 	Global::use('Dumper');
 	
 	my $class_name := 'Pair';

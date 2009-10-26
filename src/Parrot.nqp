@@ -1,18 +1,18 @@
-# $Id: $
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
+=module Parrot
+
+Provides access to low-level functions of the Parrot VM.
+
+=cut
 
 module Parrot;
 
-_ONLOAD();
+Program::initload(:after('Array', 'Dumper', 'Global'));
 
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;
-
-	Q:PIR {
-		.include 'iglobals.pasm'
-		.include 'interpinfo.pasm'
-		.include 'sysinfo.pasm'
-	};
+sub _initload() {
+	Global::use('Dumper');
 }
 
 sub IMPORT($namespace, $names?) {
@@ -491,53 +491,48 @@ module Parrot::Globals {
 
 	our %_Global_index;
 	
-	_ONLOAD();
-
-	sub _ONLOAD() {
-		if our $onload_done { return 0; }
-		$onload_done := 1;
-
-		Q:PIR {
-			.include 'iglobals.pasm' 
-			
-			$P0 = new 'Hash'
-			
-			$P1 = box .IGLOBALS_CLASSNAME_HASH
-			$P0['IGLOBALS_CLASSNAME_HASH'] = $P1
-			
-			$P1 = box .IGLOBALS_COMPREG_HASH
-			$P0['IGLOBALS_COMPREG_HASH'] = $P1
-			
-			$P1 = box .IGLOBALS_ARGV_LIST
-			$P0['IGLOBALS_ARGV_LIST'] = $P1
-			
-			$P1 = box .IGLOBALS_NCI_FUNCS
-			$P0['IGLOBALS_NCI_FUNCS'] = $P1
-			
-			$P1 = box .IGLOBALS_INTERPRETER
-			$P0['IGLOBALS_INTERPRETER'] = $P1
-			
-			$P1 = box .IGLOBALS_DYN_LIBS
-			$P0['IGLOBALS_DYN_LIBS'] = $P1
-			
-			$P1 = box .IGLOBALS_CONFIG_HASH
-			$P0['IGLOBALS_CONFIG_HASH'] = $P1
-			
-			$P1 = box .IGLOBALS_LIB_PATHS
-			$P0['IGLOBALS_LIB_PATHS'] = $P1
-			
-			$P1 = box .IGLOBALS_PBC_LIBS
-			$P0['IGLOBALS_PBC_LIBS'] = $P1
-			
-			$P1 = box .IGLOBALS_EXECUTABLE
-			$P0['IGLOBALS_EXECUTABLE'] = $P1
-			
-			$P1 = box .IGLOBALS_SIZE
-			$P0['IGLOBALS_SIZE'] = $P1
-			
-			set_global '%_Global_index', $P0
-		};
-	}
+	say("Parrot::Globals init block");
+	
+	Q:PIR {
+		.include 'iglobals.pasm' 
+		
+		$P0 = new 'Hash'
+		
+		$P1 = box .IGLOBALS_CLASSNAME_HASH
+		$P0['IGLOBALS_CLASSNAME_HASH'] = $P1
+		
+		$P1 = box .IGLOBALS_COMPREG_HASH
+		$P0['IGLOBALS_COMPREG_HASH'] = $P1
+		
+		$P1 = box .IGLOBALS_ARGV_LIST
+		$P0['IGLOBALS_ARGV_LIST'] = $P1
+		
+		$P1 = box .IGLOBALS_NCI_FUNCS
+		$P0['IGLOBALS_NCI_FUNCS'] = $P1
+		
+		$P1 = box .IGLOBALS_INTERPRETER
+		$P0['IGLOBALS_INTERPRETER'] = $P1
+		
+		$P1 = box .IGLOBALS_DYN_LIBS
+		$P0['IGLOBALS_DYN_LIBS'] = $P1
+		
+		$P1 = box .IGLOBALS_CONFIG_HASH
+		$P0['IGLOBALS_CONFIG_HASH'] = $P1
+		
+		$P1 = box .IGLOBALS_LIB_PATHS
+		$P0['IGLOBALS_LIB_PATHS'] = $P1
+		
+		$P1 = box .IGLOBALS_PBC_LIBS
+		$P0['IGLOBALS_PBC_LIBS'] = $P1
+		
+		$P1 = box .IGLOBALS_EXECUTABLE
+		$P0['IGLOBALS_EXECUTABLE'] = $P1
+		
+		$P1 = box .IGLOBALS_SIZE
+		$P0['IGLOBALS_SIZE'] = $P1
+		
+		set_global '%_Global_index', $P0
+	};
 
 	sub _fetch($key) {
 		return Parrot::_get_interpreter()[$key];

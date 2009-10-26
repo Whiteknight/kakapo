@@ -1,23 +1,52 @@
 module ManagedQueue;
 
-_ONLOAD();
+Program::initload(:after('Class', 'Dumper', 'Global'));
 
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;	
-	
-	Pair::_ONLOAD();
-	
-	Dumper::_ONLOAD();
-Testcase::_ONLOAD();
+sub _initload() {
 	Global::use('Dumper');
-	
+
 	my $class_name := 'ManagedQueue';
 	
 	NOTE("Creating class ", $class_name);
 	Class::SUBCLASS($class_name,
 		'Class::HashBased',
-	);
+	);	
+}
+
+sub after($q, @items) {
+	if Parrot::isa(@items, 'String') { @items := Array::new(@items); }
+	
+	my $index := $q.elements;
+	
+	while $index >= 0 {
+		$index--;
+		
+		for @items {
+			if $q[$index].key eq ~$_ {
+				return $index + 1;
+			}
+		}
+	}
+	
+	return -1;
+}
+	
+sub before($q, @before) {
+	if Parrot::isa(@before, 'String') { @before := Array::new(@before); }
+	
+	my $index := 0;
+
+	while $index < $q.elements {
+		for @before {
+			if $q[$index].key eq ~$_ {
+				return $index;
+			}
+		}
+		
+		$index++;
+	}
+	
+	return -1;
 }
 
 method contains($key) {
@@ -37,6 +66,7 @@ method delete($item, *@items) {
 	}
 }
 
+method element_at($index)		{ return self.queue[$index]; }
 method elements()				{ return self.queue.elements; }
 
 method first_index_of($key) {
@@ -130,37 +160,23 @@ method insert_actual($pair, %opts) {
 	my $after	:= 0;		# 0 = before, 1 = after
 	my $index	:= self.queue.elements;
 	my $replace	:= 0;
-	my $target;
 	
 	if %opts<first_out> {
 		$index := 0;
 	}
 	elsif %opts.contains('after') {
-		$target := %opts<after>;
-		$after := 1;
+		$index := after(self.queue, %opts<after>);
 	}
 	elsif %opts.contains('before') {
-		$target := %opts<before>;
+		$index := before(self.queue, %opts<before>);
 	}
 	elsif %opts.contains('replacing') {
-		$target := %opts<replacing>;
+		$index := before(self.queue, %opts<replacing>);
+		if $index < 0 { return self; }
 		$replace := 1;
 	}
 	# else { default case: append at end }
 	
-	if Parrot::defined($target) {
-		my $insert := $after 
-			?? self.last_index_of($target)
-			!! self.first_index_of($target);
-		
-		if $insert >= 0 {
-			$index := $insert + $after;
-		}
-		elsif $replace { # not found && must replace
-			return self;
-		}
-	}
-
 	my @items := Array::new($pair);
 	self.queue.splice(@items, :from($index), :replacing($replace));
 	return self;
@@ -176,3 +192,10 @@ method next() {
 }
 
 method queue(*@value)			{ self._ATTR_ARRAY('queue', @value); }
+
+method remove_element_at($index) {
+	my $item := self.queue[$index];
+	self.queue.delete($index);
+	return $item;
+}
+

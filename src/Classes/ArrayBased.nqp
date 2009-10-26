@@ -1,11 +1,17 @@
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
+=module Class::ArrayBased
+
+Base class built around  an array.
+
+=cut 
+
 module Class::ArrayBased;
 
-_ONLOAD();
+Program::initload(:after('Class', 'Class::BaseBehavior', 'Dumper', 'Global'));
 
-sub _ONLOAD() {
-	if our $Onload_done { return 0; }
-	$Onload_done := 1;
-
+sub _initload() {
 	Global::use('Dumper');
 	
 	my $class_name := 'Class::ArrayBased';
@@ -26,9 +32,10 @@ method __ATTR_String($name, @value) {
 #method __ATTR_Integer($index, @value) {
 method _ATTR($index, @value) {
 	if +@value {
+say("Storing attr: ", $index);
 		self[$index] := @value[0];
 	}
+else { say("Fetching attr: ", $index); }
 	
 	return self[$index];
 }
-

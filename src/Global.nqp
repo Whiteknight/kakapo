@@ -1,12 +1,13 @@
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
+=module Global
+
+Provides cross-module import and export, and serves as a global symbol registry.
+
+=cut
+
 module Global;
-
-_ONLOAD(); 
-
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;
-
-}
 
 =sub export(*@symbols, :$as?, :@tags?)
 
@@ -19,9 +20,10 @@ name of the symbol.
 The symbol is added to all of the export groups named in C<@tags>.  This allows
 definition of partially overlapping tag sets, by adding the common symbols to
 multiple tags:
+
     Global::export('c1', 'c2', 'c3', :tags('A', 'B'));
-    Global::export('a1', 'a2', :tags('A'));     # A include a1, a2, c1, c2, c3
-    Global::export('b1', :tags('B'));           # B includes b1, c1, c2, c3
+    Global::export('a1', 'a2', :tags('A'));	# A include a1, a2, c1, c2, c3
+    Global::export('b1', :tags('B'));		# B includes b1, c1, c2, c3
 
 If no tags are specified, the tag 'DEFAULT' is used. (This is the same tag used
 by C<import> when no other tags are specified.)

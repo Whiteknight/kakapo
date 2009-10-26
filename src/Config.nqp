@@ -1,31 +1,23 @@
-# $Id:  $
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
+=module File
+
+Wrapper for config.pbc, a generated file containing Parrot configuration data.
+
+=cut 
 
 module Config;
 
-_ONLOAD();
+Program::initload(:after('Dumper', 'Global'));
 
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;
-	
+sub _initload() {
+	Global::use('Dumper');
 }
-
-
-sub DUMPold(*@pos, *%what) {
-	my @info := Dumper::info();
-	@info[0] and Dumper::DUMPold(@info, @pos, %what);
-}
-
-sub NOTEold(*@parts) {
-	my @info := Dumper::info();
-	@info[0] and Dumper::NOTEold(@info, @parts);
-}
-
-################################################################
-
-our $_Pmc;
 
 sub _get_pmc() {
+	our $_Pmc;
+
 	unless Parrot::defined($_Pmc) {
 		$_Pmc := Q:PIR {
 			load_bytecode "config.pbc"
@@ -33,13 +25,13 @@ sub _get_pmc() {
 		};		
 	}
 	
-	DUMPold($_Pmc);
+	DUMP($_Pmc);
 	return $_Pmc;
 }
 
 sub query($key) {
-	NOTEold("Querying for Config setting: '", $key, "'");
+	NOTE("Querying for Config setting: '", $key, "'");
 	my $result := _get_pmc(){$key};
-	DUMPold($result);
+	DUMP($result);
 	return $result;
 }

@@ -2,22 +2,15 @@ module Class;
 
 our %Class_info;
 
-_ONLOAD();
+Program::initload(:after('Array', 'Dumper', 'Global', 'Hash', 'Parrot', 'Program', 'String'));
 
-sub _ONLOAD() {
-	if our $Onload_done { return 0; }
-	$Onload_done := 1;
-
+sub _initload() {
 	Parrot::load_bytecode('P6object.pir');
 	Global::use('Dumper');
 	
 	%Class_info := Hash::empty();
 }
 	
-sub IS_A($object, $type) {
-	return $object.HOW.isa($object, $type);
-}
-
 sub capture_namespace($nsp) {
 	my %sub_addrs := Hash::empty();
 	
@@ -55,6 +48,7 @@ sub check_namespace(%before, %after) {
 }
 
 sub NEW_CLASS($class_name) {
+say("NEW_CLASS: ", $class_name);
 	my $class_info := _class_info($class_name);
 	
 	if $class_info<created> {
@@ -312,7 +306,7 @@ sub get_meta() {
 	our $meta;
 	
 	unless Parrot::defined($meta) {
-		$meta := Q:PIR { %r = new 'P6metaclass' };
+		$meta := Parrot::new_pmc('P6metaclass');
 	}
 
 	return $meta;

@@ -1,8 +1,19 @@
-# $Id: String.nqp 181 2009-10-17 23:51:09Z austin_hastings@yahoo.com $
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module String;
+=module 
 
-Global::use('Dumper');
+Provides basic String functions, and adds some methods to the String PMC.
+
+=cut
+
+Program::initload(:after('Array', 'Dumper', 'Hash'));
+
+sub _initload() {
+	Global::use('Dumper');
+}
+
 
 our %Cclass_id;
 %Cclass_id<ANY>			:= 65535;
@@ -54,6 +65,8 @@ sub character_offset_of($string, *%opts) {
 	my $result := $offset - $line_offset;
 	return $result;
 }
+
+method defined()			{ 1 }
 
 =sub display_width($str) {
 
@@ -214,6 +227,8 @@ sub index($haystack, $needle, *%opts) {
 	
 	return $result;
 }
+
+method isa($type)			{ Parrot::isa(self, $type); }
 
 sub is_cclass($class_name, $str, *%opts) {
 	my $offset	:= 0 + %opts<offset>;

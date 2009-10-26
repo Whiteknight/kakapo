@@ -1,4 +1,19 @@
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
 module ResizableStringArray;
+=module
+
+Provides missing methods to RSA.
+
+=cut
+
+
+Program::initload(:after('Dumper', 'Global'));
+
+sub _initload() {
+	Global::use('Dumper');
+}
 
 method append(@other) {
 	for @other {
@@ -10,6 +25,7 @@ method clone()				{ Parrot::clone(self); }
 method contains($what)			{ Array::contains(self, $what); }
 method delete($key)				{ Parrot::delete(self, $key); }
 method elements(*@value)			{ Array::elements_(self, @value); }
+method isa($type)				{ Parrot::isa(self, $type); }
 		
 method join(*@delim) {
 	@delim.push('');

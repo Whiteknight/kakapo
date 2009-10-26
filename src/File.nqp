@@ -1,13 +1,23 @@
-# $Id: File.nqp 171 2009-10-04 19:18:10Z austin_hastings@yahoo.com $
-class File;
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-Global::use('Dumper');
+=module File
+
+Wrapper for File PMC type, providing a few extra functions. 
+
+=cut 
+
+module File;
+
+Program::initload(:after('Dumper', 'String'));
+
+sub _initload() {
+	Global::use('Dumper');
+}
 	
-################################################################
-
-our $_Pmc;
-
 sub _get_pmc() {
+	our $_Pmc;
+
 	unless Parrot::defined($_Pmc) {
 		$_Pmc := Q:PIR {
 			%r = root_new [ 'parrot' ; 'File' ]

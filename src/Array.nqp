@@ -1,25 +1,26 @@
-# $Id: Array.nqp 183 2009-10-19 00:53:58Z austin_hastings@yahoo.com $
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
+=module Array
+
+A common dumping ground for methods added to RPA and RSA, plus a central 
+point for convenience functions like ::new and ::empty.
+
+=cut 
 
 module Array;
 
 our %Bsearch_compare_func;
+%Bsearch_compare_func{'<=>'}	:= Array::cmp_numeric;
+%Bsearch_compare_func{'R<=>'}	:= Array::cmp_numeric_R;
+%Bsearch_compare_func{'cmp'}	:= Array::cmp_string;
+%Bsearch_compare_func{'Rcmp'}	:= Array::cmp_string_R;
 
-_ONLOAD(); 
+Program::initload(:after('Dumper', 'Global', 'Parrot'));
 
-sub _ONLOAD() {
+sub _initload() {
 	Global::use('Dumper');
-
-	%Bsearch_compare_func{'<=>'}	:= Array::cmp_numeric;
-	%Bsearch_compare_func{'R<=>'}	:= Array::cmp_numeric_R;
-	%Bsearch_compare_func{'cmp'}	:= Array::cmp_string;
-	%Bsearch_compare_func{'Rcmp'}	:= Array::cmp_string_R;
-
 }
-
-sub cmp_numeric($a, $b) { return $a - $b; }
-sub cmp_numeric_R($a, $b) { return $b - $a; }
-sub cmp_string($a, $b) { if $a lt $b { return -1; } else { return 1; } }
-sub cmp_string_R($a, $b) { if $b lt $a { return -1; } else { return 1; } }
 
 =sub bsearch(@array, $value, ...)
 
@@ -116,6 +117,11 @@ sub clone(@original) {
 	return @clone;
 }
 
+sub cmp_numeric($a, $b) { return $a - $b; }
+sub cmp_numeric_R($a, $b) { return $b - $a; }
+sub cmp_string($a, $b) { if $a lt $b { return -1; } else { return 1; } }
+sub cmp_string_R($a, $b) { if $b lt $a { return -1; } else { return 1; } }
+
 =sub concat(@a1, @a2, ...)
 
 Concatenates a list of zero or more arrays into one long array. Returns the 
@@ -160,19 +166,6 @@ method elements_(@value) {
 
 sub empty() {
 	return Parrot::new_pmc('ResizablePMCArray');
-}
-
-# NOTE: Deprecated. This permits null array, but should be replaced by @a.join method.
-sub join($_delim, @parts) {
-	my $result := '';
-	my $delim := '';
-
-	for @parts {
-		$result := $result ~ $delim ~ $_;
-		$delim := $_delim;
-	}
-
-	return $result;
 }
 
 sub new(*@elements) {

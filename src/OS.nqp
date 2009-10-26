@@ -1,4 +1,12 @@
-# $Id: OS.nqp 166 2009-09-27 15:58:50Z austin_hastings@yahoo.com $
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
+=module OS
+
+Wrapper for OS PMC type.
+
+=cut 
+
 class OS;
 
 sub _get_pmc() {

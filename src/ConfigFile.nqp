@@ -1,13 +1,17 @@
-# $Id: Config.nqp 185 2009-10-19 02:14:23Z austin_hastings@yahoo.com $
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
+=module ConfigFile
+
+Queryable config settings file, must like Properties in Java.
+
+=cut 
 
 module ConfigFile;
 
-_ONLOAD();
+Program::initload(:after('Class', 'Class::HashBased', 'Dumper', 'File', 'Global', 'Hash', 'String'));
 
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;
-
+sub _initload() {
 	Global::use('Dumper');
 
 	Class::SUBCLASS('ConfigFile',
@@ -26,13 +30,28 @@ sub _ONLOAD() {
 	#$config.store('Dump::ConfigFile::store', 1);
 	$config.store('Dump::Parrot::defined', 7);
 	
-	$config.store('Dump::Stack::Root', 'parrot::Testcase::_ONLOAD');
+	#$config.store('Dump::Stack::Root', 'parrot::Testcase::_ONLOAD');
 	
 	NOTE("ConfigFile::_onload: done");
 }
-		
-method file($filename?) {
+
+=method file($filename?)
+
+Gets or sets the file used by this object. If no C< $filename > is given, just 
+returns the current filename. Else, if the specified filename is different from
+the current one, the new file is read in, parsed, and replaces the current
+config data.
+
+=for depends
+	ConfigFile::parse_config
+	File::slurp
+	Hash::empty
+	Dumper::NOTE
+	Dumper::DUMP
 	
+=end
+
+method file($filename?) {
 	if $filename && self<_filename> ne $filename {
 		NOTE("Reading filename: ", $filename);
 		my $data := File::slurp($filename);
@@ -45,12 +64,38 @@ method file($filename?) {
 	return self<_filename>;
 }
 
-method init(@children, %attributes) {
+=method init(@args, %opts)
+
+New object initialization method, called by C< .new() >.
+
+=for depends
+	none
+	
+=end
+
+method init(@args, %opts) {
 	self<_filename> := '<no filename set>';
 	
 	# There is no parent .init
 	return self;
 }
+
+=method parse_config($data)
+
+Parses a string C< $data > containing the 'config file' contents. Blank lines 
+and lines beginning with '#' are ignored, other lines are processed as 
+key = value pairs.
+
+=for depends
+	ConfigFile::store
+	Dumper::DUMP
+	Dumper::NOTE
+	String::split
+	String::trim
+	String::length
+	ResizablePMCArray.join
+
+=end
 
 method parse_config($data) {
 	my @lines := $data.split("\n");
@@ -88,6 +133,17 @@ method parse_config($data) {
 	DUMP(self);
 }
 
+=method query(*@keys)
+
+Looks up the entry indicated by joining the various C<@keys> with '::'. That 
+is, C< query('A', 'B') > looks up the config entry stored as 'A::B'.
+
+=for depends
+	ResizablePMCArray::join
+	Dumper::NOTE
+	
+=end
+
 method query(*@keys) {
 	my $key := @keys.join('::');
 	NOTE('Querying for key: ', $key);
@@ -97,6 +153,15 @@ method query(*@keys) {
 	
 	return $value;
 }
+
+=method store($key, $value)
+
+Stores the given C< $value > for C< $key >.
+
+=for depends
+	Dumper::NOTE
+	
+=end
 
 method store($key, $value) {
 	NOTE("ConfigFile: Storing key '", $key, "' value: ", $value);

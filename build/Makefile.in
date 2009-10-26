@@ -15,6 +15,7 @@ PERL          := @perl@
 CAT           := @cat@
 CHMOD         := @chmod@
 CP            := @cp@
+LINK          := $(BIN_DIR)/pbc_merge@exe@
 MKPATH        := @mkpath@
 RM_F          := @rm_f@
 RM_RF         := @rm_rf@
@@ -57,16 +58,17 @@ BASE_LIB_PIRS = 		\
 	src/File.pir		\
 	src/Global.pir	\
 	src/Hash.pir		\
+	src/Kakapo.pir	\
 	src/ManagedQueue.pir \
 	src/Miscellaneous.pir \
 	src/OS.pir		\
 	src/Pair.pir 		\
 	src/Parrot.pir 	\
 	src/Program.pir 	\
-	src/Registry.pir 	\
 	src/ResizablePMCArray.pir \
 	src/ResizableStringArray.pir \
-	src/String.pir
+	src/String.pir		\
+	src/Undef.pir
 
 GENERATED_FILES =		\
 	$(ALL_LIB_PIRS)		\
@@ -75,10 +77,14 @@ GENERATED_FILES =		\
 	library/kakapo_test.pir	\
 	$(LIBRARY_PBCS)
 
+KRT0 = \
+	library/krt0.pbc
+	
 LIBRARY_PBCS =			\
 	library/kakapo.pbc		\
 	library/kakapo_base.pbc	\
-	library/kakapo_test.pbc
+	library/kakapo_test.pbc	\
+	$(KRT0)
 	
 TEST_LIB_PIRS =			\
 	src/Test/Testcase.pir	\
@@ -106,7 +112,8 @@ TEST_LIB_PIRS =			\
 #######################################################################
 
 # NOTE: Using "old sk00l" implicit rules here because Microsoft's Nmake supports those.
-.SUFFIXES: .pg .nqp .pira .pir .pbc
+.SUFFIXES: 
+.SUFFIXES: .pg .nqp .pira .pir .pbc .pbx
 .PRECIOUS: .pir
 
 .pg.pira:
@@ -124,7 +131,7 @@ TEST_LIB_PIRS =			\
 .pir.pbc:
 	@echo "*** Compiling to PBC: $<"
 	$(COMPILE_pir) --output=$@ $<
-
+	
 #######################################################################
 ##### Targets start here (asciibetical order)
 #######################################################################
@@ -178,6 +185,9 @@ library/kakapo_base.pir: $(BASE_LIB_PIRS) src/kakapo_top.pir src/kakapo_bottom.p
 library/kakapo_test.pir: $(TEST_LIB_PIRS) src/kakapo_top.pir src/kakapo_bottom.pir Makefile
 	cat src/kakapo_top.pir $(TEST_LIB_PIRS) src/kakapo_bottom.pir > $@
 
+library/krt0.pir: src/krt0.pir
+	$(CP) src/krt0.pir $@
+
 install:
 	# install kakapo main
 	$(CP) library/kakapo.pbc $(LIB_DIR)/library/kakapo.pbc
@@ -188,6 +198,9 @@ install:
 	# install kakapo_test
 	$(CP) library/kakapo_test.pbc $(LIB_DIR)/library/kakapo_test.pbc
 	$(CHMOD) 0444 $(LIB_DIR)/library/kakapo_test.pbc
+	# install krt0
+	$(CP) library/krt0.pbc $(LIB_DIR)/library/krt0.pbc
+	$(CHMOD) 0444 $(LIB_DIR)/library/krt0.pbc
 	# install docs
 	-$(MKPATH) $(DOC_DIR)/kakapo
 	$(CP) $(DOC_FILES) $(DOC_DIR)/kakapo
@@ -200,6 +213,7 @@ release: build
 	$(CP) library/kakapo.pir released/kakapo.pir
 	$(CP) library/kakapo_base.pir released/kakapo_base.pir
 	$(CP) library/kakapo_test.pir released/kakapo_test.pir
+	$(CP) library/krt0.pir released/krt0.pir
 	
 src/kakapo_bottom.pir: src/kakapo_bottom_pir.tmpl
 	$(CP) $< $@
@@ -232,9 +246,18 @@ test-program: build t/Program.pir
 test-rpa: build t/ResizablePMCArray.pir
 	$(PARROT) $(PARROT_FLAGS) t/ResizablePMCArray.pir
 
-test-rsa: build t/ResizableStringArray.pir
-	$(PARROT) $(PARROT_FLAGS) t/ResizableStringArray.pir
+test-rsa: build $(KRT0) t/test-rsa.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/test-undef.pbc
 
+t/test-rsa.pbc: t/ResizableStringArray.pbc	
+	$(LINK) --output=$@ $(KRT0) t/ResizableStringArray.pbc
+
+test-undef: build $(KRT0) t/test-undef.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/test-undef.pbc
+
+t/test-undef.pbc: t/Undef.pbc
+	$(LINK) --output=$@ $(KRT0) t/Undef.pbc
+	
 testclean:
 	$(RM_F) $(TEST_CLEANUPS)
 

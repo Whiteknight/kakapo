@@ -1,13 +1,21 @@
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
+=module Class::BaseBehavior
+
+Common methods for Class::___Based
+
+=cut 
+
 module Class::BaseBehavior;
 
 our @no_args := Array::empty();
 
-_ONLOAD();
+Program::initload(:after('Class', 'Dumper', 'Global', 'Parrot'));
+say("Hello, class::basebehavior block13");
 
-sub _ONLOAD() {
-	if our $Onload_done { return 0; }
-	$Onload_done := 1;
-
+sub _initload() {
+say("Hello, class::basebehavior initload");
 	my $get_bool := "
 .namespace [ 'Class' ; 'BaseBehavior' ]
 .sub '__get_bool' :vtable('get_bool') :method

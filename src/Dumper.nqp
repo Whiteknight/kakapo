@@ -1,41 +1,39 @@
-# $Id: Dumper.nqp 183 2009-10-19 00:53:58Z austin_hastings@yahoo.com $
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-class Dumper;
+=module Dumper
+
+Configurable module for generating debug output.
+
+=cut 
+
+module Dumper;
 
 our %Already_in;
+%Already_in<ASSERTold>	:= 0;
+%Already_in<ASSERT>	:= 0;
+%Already_in<DIE>		:= 0;
+%Already_in<DUMP>	:= 0;
+%Already_in<INFO>	:= 0;
+%Already_in<NOTE>	:= 0;
+
 our %Bits;
-our $Caller_depth;
+%Bits<NOTE>		:= 1;	
+%Bits<DUMP>		:= 2;
+%Bits<ASSERT>		:= 4;
+
+our $Caller_depth		:= 0;
 our %Dumper_config_cache;
 our $Kakapo_config;
 our $Prefix;
-
-_ONLOAD();
-
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;
-
-	%Already_in<ASSERTold>	:= 0;
-	%Already_in<ASSERT>	:= 0;
-	%Already_in<DIE>		:= 0;
-	%Already_in<DUMP>	:= 0;
-	%Already_in<INFO>	:= 0;
-	%Already_in<NOTE>	:= 0;
-
-	%Bits<NOTE>	:= 1;	
-	%Bits<DUMP>	:= 2;
-	%Bits<ASSERT>	:= 4;
 	
-	$Caller_depth := 0;
-	
-	Parrot::_ONLOAD();
+Program::initload(:after('Global', 'Parrot'));
+
+sub _initload() {
 	Parrot::load_bytecode('dumper.pbc');
-	
 	Global::export('ASSERT', 'DIE', 'DUMP', 'DUMP_', 'NOTE');
-	
-	ConfigFile::_ONLOAD();
+	# FIXME: Parameterize this.
 	Global::use(:symbols('$Kakapo_config'));
-	
 }
 
 sub ASSERT($condition, *@message, :$caller_level?) {

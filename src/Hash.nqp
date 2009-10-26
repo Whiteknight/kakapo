@@ -1,4 +1,11 @@
-# $Id: Hash.nqp 186 2009-10-19 20:31:30Z austin_hastings@yahoo.com $
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
+=module Hash
+
+Provides some extra methods for Hash, plus some convenient creator subs.
+
+=cut 
 
 module Hash;
 
