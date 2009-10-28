@@ -24,9 +24,9 @@ module Matcher::Null {
 	
 	method matches(*@value) {
 		unless +@value {
-			Parrot::die("A value must be passed to matches($item)");
+			Opcode::die("A value must be passed to matches($item)");
 		}
 		
-		return Parrot::is_null(@value[0]);
+		return Opcode::isnull(@value[0]);
 	}
 }

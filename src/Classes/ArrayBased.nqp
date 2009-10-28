@@ -9,9 +9,7 @@ Base class built around  an array.
 
 module Class::ArrayBased;
 
-Program::initload(:after('Class', 'Class::BaseBehavior', 'Dumper', 'Global'));
-
-sub _initload() {
+sub _pre_initload() {
 	Global::use('Dumper');
 	
 	my $class_name := 'Class::ArrayBased';
@@ -32,10 +30,50 @@ method __ATTR_String($name, @value) {
 #method __ATTR_Integer($index, @value) {
 method _ATTR($index, @value) {
 	if +@value {
-say("Storing attr: ", $index);
 		self[$index] := @value[0];
 	}
-else { say("Fetching attr: ", $index); }
 	
 	return self[$index];
+}
+
+method __dump($dumper, $label) {
+	my $subindent;
+	my $indent;
+
+	# (subindent, indent) = dumper."newIndent"()
+	Q:PIR {
+		.local string indent, subindent
+		$P0 = find_lex '$dumper'
+		(subindent, indent) = $P0.'newIndent'()
+		$P0 = box subindent
+		store_lex '$subindent', $P0
+		$P0 = box indent
+		store_lex '$indent', $P0
+	};
+	
+	my $brace := '{';
+	
+	my $index:= 0;
+	my $limit := Array::elements(self);
+	
+	while $index < $limit {
+		print($brace, "\n", $subindent);
+		$brace := '';
+		
+		my $val	:= self[$index];
+	
+		print("[", $index, "] => ");
+		$dumper.dump($label, $val);
+		
+		$index++;
+	}
+	
+	if $brace {
+		print("(no attributes set)");
+	} 
+	else {
+		print("\n", $indent, '}');
+	}
+	
+	$dumper.deleteIndent();
 }

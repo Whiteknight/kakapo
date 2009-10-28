@@ -52,13 +52,14 @@ BASE_LIB_PIRS = 		\
 	src/Classes/BaseBehavior.pir \
 	src/Classes/HashBased.pir	\
 	src/ConfigFile.pir		\
+	src/DependencyQueue.pir \
 	src/Dumper.pir		\
 	src/Global.pir		\
 	src/Kakapo.pir		\
+	src/LimitedPair.pir 	\
 	src/ManagedQueue.pir	\
-	src/Miscellaneous.pir	\
-	src/Pair.pir 			\
 	src/Parrot.pir 		\
+	src/Parrot/Opcode.pir 	\
 	src/Pmc/Array.pir		\
 	src/Pmc/Config.pir	\
 	src/Pmc/File.pir		\
@@ -67,8 +68,8 @@ BASE_LIB_PIRS = 		\
 	src/Pmc/ResizablePMCArray.pir \
 	src/Pmc/ResizableStringArray.pir \
 	src/Pmc/String.pir	\
-	src/Pmc/Undef.pir
-	src/Program.pir 	\
+	src/Pmc/Undef.pir	\
+	src/Program.pir
 
 GENERATED_FILES =		\
 	$(ALL_LIB_PIRS)		\
@@ -83,29 +84,31 @@ KRT0 = \
 LIBRARY_PBCS =			\
 	library/kakapo.pbc		\
 	library/kakapo_base.pbc	\
-	library/kakapo_test.pbc	\
+	library/kakapo_test.pbc		\
 	$(KRT0)
 	
 TEST_LIB_PIRS =			\
-	src/Test/Testcase.pir	\
-	src/Matchers/AllOf.pir	\
+	src/Test/Testcase.pir		\
+	src/Matchers/AllOf.pir		\
 	src/Matchers/AnyOne.pir	\
 	src/Matchers/Defined.pir	\
-	src/Matchers/DescribedAs.pir	\
-	src/Matchers/Elements.pir	\
-	src/Matchers/Empty.pir	\
-	src/Matchers/Equals.pir	\
-	src/Matchers/EqualsArray.pir	\
-	src/Matchers/EqualsFloat.pir	\
-	src/Matchers/False.pir	\
+	src/Matchers/Equals.pir		\
 	src/Matchers/Factory.pir	\
-	src/Matchers/IdenticalTo.pir	\
-	src/Matchers/InstanceOf.pir	\
 	src/Matchers/Matcher.pir	\
-	src/Matchers/Not.pir	\
-	src/Matchers/Null.pir	\
-	src/Matchers/True.pir	\
-	src/Matchers/TypeSafe.pir	\
+	src/Matchers/Not.pir		\
+	src/Matchers/TypeSafe.pir
+	
+	# src/Matchers/DescribedAs.pir	\
+	# src/Matchers/Elements.pir	\
+	# src/Matchers/Empty.pir		\
+	# src/Matchers/EqualsArray.pir	\
+	# src/Matchers/EqualsFloat.pir	\
+	# src/Matchers/False.pir		\
+	# src/Matchers/IdenticalTo.pir	\
+	# src/Matchers/InstanceOf.pir	\
+	
+	# src/Matchers/Null.pir		\
+	# src/Matchers/True.pir		\
 
 #######################################################################
 ##### Implicit rules here 
@@ -252,11 +255,11 @@ test-rsa: build $(KRT0) t/test-rsa.pbc
 t/test-rsa.pbc: t/ResizableStringArray.pbc	
 	$(LINK) --output=$@ $(KRT0) t/ResizableStringArray.pbc
 
-test-undef: build $(KRT0) t/test-undef.pbc
+test-undef: build t/test-undef.pbc
 	$(PARROT) $(PARROT_FLAGS) -Llibrary t/test-undef.pbc
 
-t/test-undef.pbc: t/Undef.pbc
-	$(LINK) --output=$@ $(KRT0) t/Undef.pbc
+t/test-undef.pbc: $(KRT0)  t/Undef.pbc src/kakapo_bottom.pbc
+	$(LINK) --output=$@ $(KRT0) t/Undef.pbc src/kakapo_bottom.pbc
 	
 testclean:
 	$(RM_F) $(TEST_CLEANUPS)

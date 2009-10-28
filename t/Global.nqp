@@ -32,7 +32,7 @@ method test_export() {
 	
 	self.note("Testing Global::export() function");
 	
-	my $nsp := Parrot::get_namespace();
+	my $nsp := Opcode::get_namespace();
 	
 	self.assert_that("Tag FOO namespace", $nsp<EXPORT><FOO>, is(not(defined())));
 	our $foo := 'oof';
@@ -94,7 +94,7 @@ method test_use() {
 	
 	self.note("Testing Global::use() function");
 	
-	my $nsp := Parrot::get_namespace();
+	my $nsp := Opcode::get_namespace();
 	GlobalTest::_ONLOAD();
 	
 	self.assert_that('Imported symbol', $nsp{'hamilton'}, is(not(defined())));

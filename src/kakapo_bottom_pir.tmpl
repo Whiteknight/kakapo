@@ -1,1 +1,28 @@
-# Nothing here yet.
+# kakapo_bottom.pir - code to be attached to the end of kakapo libraries.
+
+# Copyright (C) 2009, Austin Hastings. See LICENSE distributed with this file 
+# or at http://www.opensource.org/licenses/artistic-license-2.0.php
+
+.namespace [ 'Kakapo' ; 'krt0' ]
+
+.sub kakapo_bottom_init :init
+	$P0 = get_hll_global ['Program'], 'process_init_queue'
+	unless null $P0 goto process_queue
+	
+	die "Could not locate 'Program::process_init_queue' function."
+
+process_queue:
+	$P0()
+.end
+
+.sub kakapo_bottom_load :load
+	$P0 = get_hll_global ['Program'], 'process_load_queue'
+	unless null $P0 goto process_queue
+	
+	die "Could not locate 'Program::process_load_queue' function."
+
+process_queue:
+say "kakapo_bottom_load: calling queue"
+	$P0()
+say "kakapo_bottom_load: back"
+.end

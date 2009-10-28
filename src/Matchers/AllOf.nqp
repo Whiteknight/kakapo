@@ -1,12 +1,18 @@
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
 module Matcher::AllOf;
+=module
+	Matchers that matches only when all of its child matchers do. This is a short-circuiting 'AND'.
+=end
 
-_ONLOAD();
+Global::use('Dumper');
+Program::initload(:after('Matcher'));
+Matcher::Factory::export_sub(Matcher::AllOf::factory, :as('all_of'));
 
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;
-			
-	Global::use('Dumper');
+sub _initload() {
+	if our $_Initload_done { return 0; }
+	$_Initload_done := 1;
 	
 	my $class_name := 'Matcher::AllOf';
 	
@@ -14,8 +20,6 @@ sub _ONLOAD() {
 	Class::SUBCLASS($class_name,
 		'Matcher'
 	);
-			
-	NOTE("done");
 }
 
 method describe_failure($item, $description) {
@@ -29,6 +33,8 @@ method describe_self($description) {
 }
 
 method described_as(*@value)		{ self._ATTR('described_as', @value); }
+
+sub factory(*@list)				{ Matcher::AllOf.new(Matcher::Factory::make_matcher_list(@list)); }
 
 method init(@args, %opts) {
 	Matcher::init(self, @args, %opts);
@@ -46,3 +52,4 @@ method matches($item) {
 }
 
 method matchers(*@value)			{ self._ATTR('matchers', @value); }
+

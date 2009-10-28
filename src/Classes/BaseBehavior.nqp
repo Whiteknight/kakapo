@@ -1,40 +1,12 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-=module Class::BaseBehavior
-
-Common methods for Class::___Based
-
+module Class::BaseBehavior;
+=module
+	Common methods for Class::*Based
 =cut 
 
-module Class::BaseBehavior;
-
-our @no_args := Array::empty();
-
-Program::initload(:after('Class', 'Dumper', 'Global', 'Parrot'));
-say("Hello, class::basebehavior block13");
-
-sub _initload() {
-say("Hello, class::basebehavior initload");
-	my $get_bool := "
-.namespace [ 'Class' ; 'BaseBehavior' ]
-.sub '__get_bool' :vtable('get_bool') :method
-$I0 = self.'get_bool'()
-.return ($I0)
-.end";
-	Parrot::compile($get_bool);
-	
-	my $get_string := "
-.namespace [ 'Class' ; 'BaseBehavior' ]
-.sub '__get_string' :vtable('get_string') :method
-$S0 = self.'get_string'()
-.return ($S0)
-.end";
-	Parrot::compile($get_string);
-	
-	Global::use('Dumper');
-	Class::NEW_CLASS('Class::BaseBehavior');
-}
+our @No_args;
 
 method _ABSTRACT_METHOD() {
 	DIE("A subclass must override this abstract method.");
@@ -45,7 +17,7 @@ method _ATTR($name, @value)	{ self._ABSTRACT_METHOD(); }
 method _ATTR_ARRAY($name, @value) {
 	my $result := self._ATTR($name, @value);
 	
-	if ! Parrot::defined($result) {
+	if ! Opcode::defined($result) {
 		$result := self._ATTR($name, 
 			Array::new(Array::empty())
 		);
@@ -57,7 +29,7 @@ method _ATTR_ARRAY($name, @value) {
 method _ATTR_DEFAULT($name, @value, $default) {
 	my $result := self._ATTR($name, @value);
 	
-	if ! Parrot::defined($result) {
+	if ! Opcode::defined($result) {
 		$result := self._ATTR($name,
 			Array::new($default)
 		);
@@ -67,8 +39,8 @@ method _ATTR_DEFAULT($name, @value, $default) {
 }
 
 method _ATTR_CONST($name, @value) {
-	if +@value && Parrot::defined(
-		self._ATTR($name, @no_args)) {
+	if +@value && Opcode::defined(
+		self._ATTR($name, @No_args)) {
 		DIE("You cannot reset the value of the '", $name, "' attribute.");
 	}
 	
@@ -78,7 +50,7 @@ method _ATTR_CONST($name, @value) {
 method _ATTR_HASH($name, @value) {
 	my $result := self._ATTR($name, @value);
 	
-	if ! Parrot::defined($result) {
+	if ! Opcode::defined($result) {
 		$result := self._ATTR($name, 
 			Array::new(Hash::empty())
 		);
@@ -88,11 +60,11 @@ method _ATTR_HASH($name, @value) {
 }
 
 method _ATTR_SETBY($name, $method_name) {
-	my $result := self._ATTR($name, @no_args);
+	my $result := self._ATTR($name, @No_args);
 	
-	if ! Parrot::defined($result) {
-		Class::call_method(self, $method_name);
-		$result := self._ATTR($name, @no_args);
+	if ! Opcode::defined($result) {
+		Parrot::call_method(self, $method_name);
+		$result := self._ATTR($name, @No_args);
 	}
 	
 	return $result;
@@ -109,7 +81,7 @@ method get_string() {
 method init(@children, %attributes) {
 	for %attributes {
 		NOTE("Setting attribute: '", ~$_, "'");
-		Class::call_method(self, ~$_, %attributes{$_});
+		Parrot::call_method(self, ~$_, %attributes{$_});
 	}
 }
 
@@ -118,12 +90,43 @@ method isa($type) {
 }
 
 method new(*@children, *%attributes) {
-	my $class := Parrot::get_attribute(self.HOW, 'parrotclass');
-	my $new_object := Parrot::new_pmc($class);
+	my $class := Opcode::getattribute(self.HOW, 'parrotclass');
+	my $new_object := Opcode::new($class);
 	
 	# NB: I'm not flattening the params, because that forces
 	# everybody to do call_method or in-line pir to pass
 	# along flat args.
 	$new_object.init(@children, %attributes);
 	return $new_object;
+}
+
+sub _pre_initload() {
+=sub
+	Special sub called when the Kakapo library is loaded or initialized.
+	This is to guarantee this module is available during :init and :load
+	processing for other modules.
+	
+=end
+
+	Global::use('Dumper');
+	
+	@No_args := Array::empty();
+
+	my $get_bool := "
+.namespace [ 'Class' ; 'BaseBehavior' ]
+.sub '__get_bool' :vtable('get_bool') :method
+	$I0 = self.'get_bool'()
+	.return ($I0)
+.end";
+	Parrot::compile($get_bool);
+	
+	my $get_string := "
+.namespace [ 'Class' ; 'BaseBehavior' ]
+.sub '__get_string' :vtable('get_string') :method
+	$S0 = self.'get_string'()
+	.return ($S0)
+.end";
+	Parrot::compile($get_string);
+	
+	Class::NEW_CLASS('Class::BaseBehavior');
 }

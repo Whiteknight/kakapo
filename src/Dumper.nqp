@@ -1,90 +1,48 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-=module Dumper
-
-Configurable module for generating debug output.
-
-=cut 
-
 module Dumper;
-
-our %Already_in;
-%Already_in<ASSERTold>	:= 0;
-%Already_in<ASSERT>	:= 0;
-%Already_in<DIE>		:= 0;
-%Already_in<DUMP>	:= 0;
-%Already_in<INFO>	:= 0;
-%Already_in<NOTE>	:= 0;
+=module 
+	Configurable module for generating debug output.
+=end
 
 our %Bits;
 %Bits<NOTE>		:= 1;	
 %Bits<DUMP>		:= 2;
 %Bits<ASSERT>		:= 4;
 
-our $Caller_depth		:= 0;
+our $Caller_depth;
 our %Dumper_config_cache;
 our $Kakapo_config;
 our $Prefix;
-	
-Program::initload(:after('Global', 'Parrot'));
 
-sub _initload() {
-	Parrot::load_bytecode('dumper.pbc');
-	Global::export('ASSERT', 'DIE', 'DUMP', 'DUMP_', 'NOTE');
-	# FIXME: Parameterize this.
-	Global::use(:symbols('$Kakapo_config'));
+sub _pre_initload() {
+=sub
+	Special sub called when the Kakapo library is loaded or initialized to guarantee this module 
+	is already initialized during :init and :load processing.
+=end
+
+	Opcode::load_bytecode('dumper.pbc');
+	
+	$Caller_depth := 0;
+
+	Global::export('ASSERT', 'DUMP', 'DUMP_', 'NOTE');
+	#Global::use(:symbols('$Kakapo_config'));		# FIXME: Parameterize this.
 }
 
 sub ASSERT($condition, *@message, :$caller_level?) {
-	if %Already_in<ASSERT> { return $condition; }
-	%Already_in<ASSERT>++;
+	unless lock('ASSERT') { return 0; }
 	
-	my $message;
-	
-	if +@message {
-		$message := @message.join;
-	}
-	else {
-		$message := "ASSERTION FAILED";
-	}
-	
-	unless $condition {
-		Q:PIR {
-			$P0 = find_lex '$message'
-			$S0 = $P0
-			die $S0
-		};
-	}
-	
-	%Already_in<ASSERT>--;
-	return $condition;
-}
+	my $message := +@message ?? @message.join !! 'ASSERTION FAILED';
 
-sub BACKTRACE() {
-	Q:PIR {
-		backtrace
-	};
-}
-
-sub DIE(*@msg) {
-	if %Already_in<DIE> { return 0; }
-	%Already_in<DIE>++;
-
-	my $message := 'DIE: ' ~ @msg.join;
-		
-	Q:PIR {
-		$P0 = find_lex '$message'
-		$S0 = $P0
-		die $S0
-	};
+	# This is a bit of a hack, but it shows ASSERT instead of _block99 in the stack trace.
+	$condition ?? 0 !! Opcode::die($message);
 	
-	%Already_in<DIE>--;
+	unlock('ASSERT');
 }
 
 sub DUMP(*@pos, :$caller_level?, :@info?, *%named) {
-	if %Already_in<DUMP> { return 0; }
-	%Already_in<DUMP>++;
+	unless lock('DUMP') { return 0; }
 
 	unless $caller_level {
 		$caller_level := 0;
@@ -111,18 +69,17 @@ sub DUMP(*@pos, :$caller_level?, :@info?, *%named) {
 		}
 	}
 	
-	%Already_in<DUMP>--;
+	unlock('DUMP');
 }
 
 sub DUMP_(*@what, :$label?, :$prefix?) {
 	unless $label { $label := '$VAR'; }
 	print($prefix);
-	PCT::HLLCompiler.dumper(@what, $label);
+	_dumper(@what, $label);
 }
 
 sub NOTE(*@parts, :$caller_level?, :@info?) {
-	if %Already_in<NOTE> { return 0; }
-	%Already_in<NOTE>++;
+	unless lock('NOTE') { return 0; }
 
 	unless $caller_level {
 		$caller_level := 0;
@@ -138,7 +95,7 @@ sub NOTE(*@parts, :$caller_level?, :@info?) {
 		say($Prefix, ': ', @parts.join);
 	}
 	
-	%Already_in<NOTE>--;
+	unlock('NOTE');
 }
 
 =sub caller_depth_below($namespace, $name, :$limit?)
@@ -225,9 +182,9 @@ sub caller_depth_below($namespace, $name, :$starting, :$limit?) {
 
 sub find_named_caller(:$nth?, :$starting?) {
 	unless $nth { $nth := 1; }
-	
+
 	$starting := 0 + $starting;
-	
+
 	my $caller := Q:PIR {
 		.local pmc interp
 		interp = getinterp
@@ -250,7 +207,7 @@ sub find_named_caller(:$nth?, :$starting?) {
 	
 	skip_over_blocks:	# Skip over '_block...' lexical scopes
 		inc depth
-		
+
 		# Make a [ 'sub'; $depth ] key
 		key = new 'Key'
 		key = 'sub'
@@ -260,9 +217,15 @@ sub find_named_caller(:$nth?, :$starting?) {
 		
 		caller = interp [ key ]
 		caller_name = caller
-		$S0 = substr caller_name, 0, 6
+		$S0 = substr caller_name, 0, 8
+		
+		# NB: '_block13' is magical because it is the block NQP uses for "file scope".
+		if $S0 == '_block13' goto dont_skip_block13
+		
+		$S0 = substr $S0, 0, 6
 		
 		if $S0 == '_block' goto skip_over_blocks
+	dont_skip_block13:
 		
 		# Found one. Is that enough?
 		inc num_found
@@ -365,8 +328,7 @@ Returns an array of:
 our @Info_rejected := Array::new(0, -1, 'null');
 
 sub info(:$caller_level) {
-	if %Already_in<INFO> { return @Info_rejected; }	
-	%Already_in<INFO>++;
+	unless lock('info') { return @Info_rejected; }
 
 	$caller_level ++;
 	
@@ -387,8 +349,29 @@ sub info(:$caller_level) {
 		@Result		:= get_dumper_config($caller, :starting($Caller_depth));
 	}
 
-	%Already_in<INFO>--;
+	unlock('info');
 	return @Result;
+}
+
+sub lock($key) {
+	unless our %_Already_in {
+		%_Already_in := Hash::new(
+			:ASSERT(0),
+			:DIE(0),
+			:DUMP(0),
+			:info(0),
+			:NOTE(0),
+		);
+	}
+	
+	my $locked := %_Already_in{$key};
+	
+	if $locked {	
+		return 0;
+	}
+	
+	$locked++;
+	return 1;
 }
 
 our $Prefix_string := ':..';
@@ -443,4 +426,13 @@ sub stack_depth(:$starting) {
 	}
 
 	return $depth;
+}
+
+sub unlock($key) {
+	our %_Already_in;		# Shared with lock()
+	my $locked := %_Already_in{$key};
+	
+	if $locked {
+		$locked--;
+	}
 }

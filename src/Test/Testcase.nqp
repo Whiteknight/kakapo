@@ -1,35 +1,24 @@
 module Testcase;
 
-our $Kakapo_config;	# Imported
-
-Program::initload(:after('Class', 'Class::HashBased', 'ConfigFile', 'Dumper', 'Global', 'Matcher::Factory'));
-
-sub _initload() {
-	Global::use(:symbols('$Kakapo_config'));
-	$Kakapo_config.file('kakapo.cfg');
-	Dumper::reset_cache();
+Global::use('Dumper');
 	
-	Global::use('Dumper');
-	Parrot::IMPORT('Matcher::Factory');
-	
-	my $class_name := 'Testcase';
+my $class_name := 'Testcase';
 say("Creating class ", $class_name);
-	NOTE("Creating class ", $class_name);
-	Class::SUBCLASS($class_name,
-		'Class::HashBased',
-	);
-			
-	NOTE("done");
-}
+NOTE("Creating class ", $class_name);
+Class::SUBCLASS($class_name,
+	'Class::HashBased',
+);
+		
+NOTE("done");
 
 method after_methods(*@value)		{ self._ATTR_SETBY('after_methods', 'fetch_after_methods'); }	
-method after_prefix(*@value)		{ self._ATTR_DEFAULT('after_prefix', @value, 'after_'); }	
-method afterall_methods(*@value)	{ self._ATTR_SETBY('afterall_methods', 'fetch_afterall_methods'); }	
+method after_prefix(*@value)			{ self._ATTR_DEFAULT('after_prefix', @value, 'after_'); }	
+method afterall_methods(*@value)		{ self._ATTR_SETBY('afterall_methods', 'fetch_afterall_methods'); }	
 method afterall_prefix(*@value)		{ self._ATTR_DEFAULT('afterall_prefix', @value, 'afterall_'); }	
 
 method assert_that($item_desc, *@item) {
 	unless +@item == 2 {
-		Parrot::die("You must provide 3 args: $item_desc, $item, $matcher");
+		Opcode::die("You must provide 3 args: $item_desc, $item, $matcher");
 	}
 	
 	my $matcher := @item[1];
@@ -49,10 +38,10 @@ method assert_that($item_desc, *@item) {
 
 method before_methods(*@value)		{ self._ATTR_SETBY('before_methods', 'fetch_before_methods'); }	
 method before_prefix(*@value)		{ self._ATTR_DEFAULT('before_prefix', @value, 'before_'); }	
-method beforeall_methods(*@value)	{ self._ATTR_SETBY('beforeall_methods', 'fetch_beforeall_methods'); }	
+method beforeall_methods(*@value)		{ self._ATTR_SETBY('beforeall_methods', 'fetch_beforeall_methods'); }	
 method beforeall_prefix(*@value)		{ self._ATTR_DEFAULT('beforeall_prefix', @value, 'beforeall_'); }	
 
-method emit(*@parts)			{ say("> ", @parts.join); }
+method emit(*@parts)				{ say(@parts.join); }
 
 method note(*@message) {
 	self.emit(
@@ -131,7 +120,7 @@ method run_methods(@methods, *@args, *%opts) {
 
 	for @methods {
 		NOTE("Running method: ", $_);
-		Class::call_method_(self, ~ $_, @args, %opts);
+		Parrot::call_method_(self, ~ $_, @args, %opts);
 	}
 	
 	NOTE("done");
@@ -139,7 +128,7 @@ method run_methods(@methods, *@args, *%opts) {
 
 method run_test($method_name, :$after_prefix?, :$before_prefix?) {
 	self.run_before_methods;
-	Class::call_method(self, $method_name);
+	Parrot::call_method(self, $method_name);
 	self.run_after_methods;
 }
 
@@ -164,7 +153,7 @@ method run_tests(*@names) {
 		$testcase.run_before_methods();
 		
 		NOTE("Running test: ", $method);
-		Class::call_method($testcase, $method);
+		Parrot::call_method($testcase, $method);
 		
 		NOTE("Running 'after' methods");
 		$testcase.run_after_methods();

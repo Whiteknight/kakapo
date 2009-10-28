@@ -9,31 +9,27 @@ Queryable config settings file, must like Properties in Java.
 
 module ConfigFile;
 
-Program::initload(:after('Class', 'Class::HashBased', 'Dumper', 'File', 'Global', 'Hash', 'String'));
+Global::use('Dumper');
 
-sub _initload() {
-	Global::use('Dumper');
+Class::SUBCLASS('ConfigFile',
+	'Class::HashBased');	
 
-	Class::SUBCLASS('ConfigFile',
-		'Class::HashBased');	
+# Create a Global for config data.
+my $config := ConfigFile.new();
+Global::register_global('$Kakapo_config', $config);
 
-	# Create a Global for config data.
-	my $config := ConfigFile.new();
-	Global::register_global('$Kakapo_config', $config);
-	
-	#$config.store('Dump::File::slurp', 1);
-	
-	$config.store('Dump::ConfigFile::_onload', 0);
-	#$config.store('Dump::ConfigFile::file', 1);
-	$config.store('Dump::ConfigFile::parse_config', 0);
-	$config.store('Dump::ConfigFile::query', 0);
-	#$config.store('Dump::ConfigFile::store', 1);
-	$config.store('Dump::Parrot::defined', 7);
-	
-	#$config.store('Dump::Stack::Root', 'parrot::Testcase::_ONLOAD');
-	
-	NOTE("ConfigFile::_onload: done");
-}
+#$config.store('Dump::File::slurp', 1);
+
+$config.store('Dump::ConfigFile::_onload', 0);
+#$config.store('Dump::ConfigFile::file', 1);
+$config.store('Dump::ConfigFile::parse_config', 0);
+$config.store('Dump::ConfigFile::query', 0);
+#$config.store('Dump::ConfigFile::store', 1);
+$config.store('Dump::Opcode::defined', 7);
+
+#$config.store('Dump::Stack::Root', 'parrot::Testcase::_ONLOAD');
+
+NOTE("ConfigFile::_onload: done");
 
 =method file($filename?)
 

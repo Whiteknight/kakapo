@@ -19,11 +19,11 @@ sub _ONLOAD() {
 }
 
 method describe_failure($item, $description) {
-	if Parrot::is_null($item) {
+	if Opcode::isnull($item) {
 		return $description ~ 'was null';
 	}
 
-	return $description ~ 'had type: ' ~ Parrot::typeof($item);
+	return $description ~ 'had type: ' ~ Opcode::typeof($item);
 }
 
 method describe_self($description) {
@@ -40,11 +40,11 @@ method init(@args, %opts) {
 }
 
 method matches($item) {
-	if Parrot::is_null($item) {
+	if Opcode::isnull($item) {
 		return 0;
 	}
 	
-	if Parrot::isa($item, self.type) {
+	if Opcode::isa($item, self.type) {
 		return 1;
 	}
 	
@@ -57,8 +57,8 @@ method type_name() {
 	my $type := self.type;
 	my $type_name := $type;
 	
-	unless Parrot::isa($type, 'String') {
-		$type_name := Parrot::typeof($type);
+	unless Opcode::isa($type, 'String') {
+		$type_name := Opcode::typeof($type);
 	}
 	
 	return $type_name;

@@ -8,23 +8,15 @@ Kakapo::Test::ResizablePMCArray.run_all_tests;
 
 module Kakapo::Test::ResizablePMCArray {
 
-	Q:PIR { load_bytecode 'library/kakapo.pbc' };
-	_ONLOAD();
-	
-	sub _ONLOAD() {
-		if our $onload_done { return 0; }
-		$onload_done := 1;	
+	Global::use('Dumper');
+	Global::use('Matcher::Factory');
 		
-		Parrot::IMPORT('Dumper', q<ASSERT DUMP DUMP_ NOTE>);
-		Parrot::IMPORT('Matcher::Factory');
+	my $class_name := 'Kakapo::Test::ResizablePMCArray';
 		
-		my $class_name := 'Kakapo::Test::ResizablePMCArray';
-		
-		NOTE("Creating class ", $class_name);
-		Class::SUBCLASS($class_name,
-			'Testcase',
-		);	
-	}
+	NOTE("Creating class ", $class_name);
+	Class::SUBCLASS($class_name,
+		'Testcase',
+	);	
 
 	method test_rpa_append() {
 		

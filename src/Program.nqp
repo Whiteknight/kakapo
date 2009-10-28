@@ -17,7 +17,9 @@ our $Main;
 our $Processing_init_queue;
 our $Processing_load_queue;
 
-Program::initload(:after('Dumper', 'Global', 'Hash', 'ManagedQueue', 'Parrot'));
+if ! Opcode::defined($Main) {
+	$Main := 'main';
+}
 
 =begin SYNOPSIS
 
@@ -50,38 +52,109 @@ Program::initload(:after('Dumper', 'Global', 'Hash', 'ManagedQueue', 'Parrot'));
 	
 =end SYNOPSIS
 
-sub add_call($q, $name, $call, %opts) {
+sub add_call($queue, $call, %opts, $caller_nsp, *@sub_names) {
 =sub	:INTERNAL
-	Adds a C< $name > and C< $call > L< C< Pair > > to the given
-	queue. Translates options into L< C< ManagedQueue > > 
-	-compatible format.
+	Constructs a I< call > registration and adds it to the given C< $queue >. See 
+	L<C< create_call_pair >> and L<C< enqueue_pair >> for parameter details.
 =end
 
-	my $pair := Pair.new($name, $call);
-	
-	if %opts<after>	{ $q.insert($pair, :after(%opts<after>)); }
-	elsif %opts<before>	{ $q.insert($pair, :before(%opts<before>)); }
-	elsif %opts<first>	{ $q.insert($pair, :first_out(1)); }
-	else			{ $q.insert($pair, :last_out(1)); }
+	my $call_pair := create_call_pair($call, %opts<name>, $caller_nsp, @sub_names);
+	enqueue_pair($queue, $call_pair, %opts);
 }
 
-sub create_call_pair($name, $call, $caller_nsp, @sub_names) {
+sub at_end($call, *%opts) {
+=sub
+	Registers a call to be made at the end of the program. When the C< main > routine returns, or 
+	when user code calls C< Program::exit >, the calls that have been registered with C< at_end > 
+	are executed, in order. 
+
+	The C< :name > is a string used to identify this registration, for use with the C< :after > and 
+	C< :before > options. If no name is provided, the stringification of C< $call > will be used. 
+	If a call has been registered via: 
+
+	=code	at_end('barney');	# calls local sub &barney at end.
+
+	then another call may be enqueued using relative positioning: 
+
+	=code	at_end('fred', :before('barney'));
+
+	The C< :first > and C< :last > options position the call absolutely in the queue, but later 
+	C< :first > or C< :last > registrations will override the position. 
+
+	=for code
+		at_end('barney', :last);	# barney 
+		at_end('fred' :first);		# fred, barney 
+		at_end('wilma' :before('fred'));	# wilma, fred, barney 
+		at_end('betty' :after('wilma'));	# wilma, betty, fred, barney 
+	
+	By default, C< :last > is assumed. 
+=end
+
+	unless %opts { %opts := Hash::empty(); }
+	unless $At_end_queue { $At_end_queue := Array::new(); }
+	unless %opts<name> { %opts<name> := ~ $call; }
+	my $caller_nsp := Parrot::caller_namespace(2);
+	add_call($At_end_queue, $call, %opts, $caller_nsp);
+}
+
+sub at_start($call, *%opts) {
+=sub
+	Registers a call to be made before the start of the main program. 
+	Just before the C<main> routine is called, the calls that 
+	have been registered with C<at_start> are executed, in order. 
+
+	See L<C< at_end >> for parameter interpretation. 
+=end
+
+	unless %opts { %opts := Hash::empty(); }
+	unless $At_start_queue { $At_start_queue := Array::new(); }
+	unless %opts<name> { %opts<name> := ~ $call; }
+	my $caller_nsp := Parrot::caller_namespace(2);
+	add_call($At_start_queue, $call, %opts, $caller_nsp);
+}
+
+sub call($call) {
 =sub	:INTERNAL
-	Determines the name and sub D< call > to use for any of the various queue registration 
-	routines. In general, these are called like C< init(:after('foo')) > or C< init('myinit') >. 
-	(See L< C< at_end > > for the meaning of the various relative-positioning options.)
+	Calls the Sub or MultiSub PMC passed as C<$call>, or, if C<$call> 
+	is a String, looks up the named symbol and calls that.
+=end
+
+	if Opcode::isa($call, 'String') {
+		$call := Opcode::get_hll_global($call);
+	}
+	
+	if $call {
+		return $call();
+	}
+	
+	return my $undef;
+}
+
+sub call_main() {
+=sub 
+	Executes the calls registered in the L<C< at_start >> queue, then
+	runs the C<main> sub registered via L<C< register_main >>. If the
+	C<main> sub returns, the result is passed to L<C< exit >>.
+=end
+
+	process_queue($At_start_queue);
+
+	my $result := call($Main);
+	exit($result);
+}
+
+sub create_call_pair($call, $name, $caller_nsp, @sub_names) {
+=sub	:INTERNAL
+	Determines the name and sub D< call pair > to use for any of the various queue registration 
+	routines. In general, these are called like C< init(:after('foo')) > or C< init('myinit') >.  (See 
+	L<C< at_end >> for the meaning of the various relative-positioning options.)
 	
 	Creates and returns a C< Pair > composed of the options, the resolved sub name or object, and a 
 	C< name > key.
 	
 =param $caller_nsp
-	 The C< $caller_nsp > is captured early and passed as a parameter only because capturing it 
-	requires fiddling with lexical blocks.
-
-=param %opts	
-	The C< %opts > are as given to e.g., C< init >, and are checked for a C< :name > element. 
-	If C< :name > is specified, this is used as the label for the call. Otherwise, the namespace
-	of the caller is used. 
+	The namespace name is used as the default key for the call pair, unless a C< $name > is defined. 
+	Likewise, bare sub names in C< $call > are qualified with the namespace name.
 =end
 
 	my @parts := $caller_nsp.get_name;
@@ -92,66 +165,10 @@ sub create_call_pair($name, $call, $caller_nsp, @sub_names) {
 	if $call.defined {
 		if $call.isa('String') {
 			if +$call.split('::') == 1 {
-				$call := $label
-			}
-			else {
-				$call := $caller_nsp_name ~ '::' ~ $call;
+				$call := $label ~ '::' ~ $call;
 			}
 		}
-	}
-	else {
-		for @sub_names {
-			if ! $call && $caller_nsp{~$_} {
-				$call := $caller_nsp{~$_};
-			}
-		}
-	}
-	
-	return Pair.new($label, $call);
-}
-
-sub add_call_bundle($queue, $call, %opts, $caller_nsp, *@sub_names) {
-=sub	:INTERNAL
-	Determines the name and sub D< call > to use for any of the various queue registration 
-	routines. In general, these are called like C< init(:after('foo')) > or C< init('myinit') >. 
-	(See L< C< at_end > > for the meaning of the various relative-positioning options.)
-	
-	Constructs a I< call bundle > composed of the options, the resolved sub name or object,
-	and a C< name > key, and adds the bundle to the C< $queue>.
-	
-=param %opts	
-	The C< %opts > are as given to e.g., C< init >, and are checked for a C< :name > element. 
-	If C< :name > is specified, this is used as the label for the call. Otherwise, the namespace
-	of the caller is used. 
-
-=param $caller_nsp
-	 The C< $caller_nsp > is captured early and passed as a parameter only because capturing it 
-	requires fiddling with lexical blocks. 
-=end
-
-	my @parts := $caller_nsp.get_name;
-	@parts.shift;
-	my $caller_nsp_name := @parts.join('::');
-	my $label := %opts<name> ?? %opts<name> !! $caller_nsp_name;
-
-=param $call
-	If C< $call > is a String, it is the name of a sub in the caller's namespace, or the qualified 
-	name of another sub ('Foo::Bar::init'). A name like '::init' will resolve to the 'init' sub in 
-	the root namespace. 
-
-	It is a fatal error if C< $call > is not a String, and does not support either the .invoke() 
-	method or the .invoke vtable op. 
-=end
-
-	if Parrot::defined($call) {
-		if Parrot::isa($call, 'String') {
-			if +$call.split('::') == 1 {
-				$call := $label
-			}
-			else {
-				$call := $caller_nsp_name ~ '::' ~ $call;
-			}
-		}
+		# else, it must be a *Sub, or something invokable.
 	}
 	else {
 =param @sub_names
@@ -165,99 +182,29 @@ sub add_call_bundle($queue, $call, %opts, $caller_nsp, *@sub_names) {
 			}
 		}
 	}
-	
-	%opts.delete(q<processed>);
-	%opts<pair> := Pair.new($label, $call);
-	my $bundle := Pair.new($label, %opts);
-	
-=param $queue
-	A reference to a queue. The constructed bundle is added to the C< $queue >. Depending on
-	the timing of the request, the queue may be a basic RPA, or a high-level object class. In general,
-	the RPA is much more likely. Adding an init or load sub after processing has begun is unlikely.
+
+	return make_pair($label, $call);
+}
+
+sub enqueue_pair($queue, $pair, %opts) {
+=sub	:INTERNAL
+	Adds a I< call pair > to the given queue. If the given C< $queue > is not upgraded, creates a delayed 
+	registration bundle with C< $pair > and C< %opts > and enqueues that, instead. If C< $queue > is
+	upgraded, translates the C< %opts > into L<C< ManagedQueue >>-compatible args.
 =end
 
-	if Parrot::isa($queue, 'ResizablePMCArray') {
-		$queue.push($bundle);
+	if is_upgraded($queue) {
+		if %opts<after>	{ $queue.insert($pair, :after(%opts<after>)); }
+		elsif %opts<before> { $queue.insert($pair, :before(%opts<before>)); }
+		elsif %opts<first>	{ $queue.insert($pair, :first_out(1)); }
+		else			{ $queue.insert($pair, :last_out(1)); }
 	}
 	else {
-		$queue.insert($bundle);
-	}	
-}
-
-sub at_end($name, $call, *%opts) {
-=sub
-	Registers a call to be made at the end of the program. When the 
-	C< main > routine returns, or when user code calls C< 
-	Program::exit >, the calls that have been registered with C< 
-	at_end > are executed, in order. 
-
-	The C< $name > is a string used to identify this registration, 
-	for use with the C< :after > and C< :before > options. If a 
-	call has been registered via: 
-
-	=code	at_end('barney', &some_sub); 
-
-	then another call may be enqueued using relative positioning: 
-
-	=code	at_end('fred', &other_sub, :before('barney')); 
-
-	The C< :first > and C< :last > options position the call 
-	absolutely in the queue, but later C< :first > or C< :last > 
-	registrations will override the position. 
-
-	=for code
-		at_end('barney', &b, :last);		# barney 
-		at_end('fred', &f, :first);			# fred, barney 
-		at_end('wilma', &w, :before('fred'));	# wilma, fred, barney 
-		at_end('betty', &b, :after('wilma'));	# wilma, betty, fred, barney 
-	
-	By default, C< :last > is assumed. 
-
-=end
-
-	add_call($At_end_queue, $name, $call, %opts);
-}
-
-sub at_start($name, $call, *%opts) {
-=sub
-	Registers a call to be made before the start of the main program. 
-	Just before the C<main> routine is called, the calls that 
-	have been registered with C<at_start> are executed, in order. 
-
-	See L< C< at_end > > for parameter interpretation. 
-=end
-
-	add_call($At_start_queue, $name, $call, %opts);
-}
-
-sub call($call) {
-=sub	:INTERNAL
-	Calls the Sub or MultiSub PMC passed as C<$call>, or, if C<$call> 
-	is a String, looks up the named symbol and calls that.
-=end
-
-	if Parrot::isa($call, 'String') {
-		$call := Parrot::get_hll_global($call);
+		%opts<pair> := $pair;
+		my $key := Opcode::isa($pair, 'FixedPMCArray') ?? $pair[0] !! $pair.key;
+		my $bundle := make_pair($key, %opts);
+		$queue.push($bundle);
 	}
-	
-	if $call {
-		return $call();
-	}
-	
-	return my $undef;
-}
-
-sub call_main() {
-=sub 
-	Executes the calls registered in the L< C< at_start > > queue, then
-	runs the C<main> sub registered via L< C< register_main > >. If the
-	C<main> sub returns, the result is passed to L< C< exit > >.
-=end
-
-	process_queue($At_start_queue);
-	
-	my $result := call($Main);
-	exit($result);
 }
 
 sub exit($result) {
@@ -273,10 +220,10 @@ sub exit($result) {
 sub _exit($result) {
 =sub
 	Immediately exits the Parrot VM, returning C<$result>, without calling any of 
-	the registered L< C< at_end > > calls.
+	the registered L<C< at_end >> calls.
 =end
 
-	Parrot::exit($result);
+	Opcode::exit($result);
 }
 
 sub init($call?, *%opts) {
@@ -289,55 +236,76 @@ sub init($call?, *%opts) {
 	class can defer global object initialization until the class is registered.
 =end
 
+	init_($call, %opts, Parrot::caller_namespace(2));
+}
+
+sub init_($call, %opts, $caller_nsp) {
+=sub	:INTERNAL
+	Internal version of C< init >, callable with slurped args.
+=end
+
 	unless %opts { %opts := Hash::empty(); }
 	unless $Init_queue { $Init_queue := Array::new(); }
 	
-	add_call_bundle($Init_queue, $call, %opts, Parrot::caller_namespace(2), '_init', '_initload');
+	add_call($Init_queue, $call, %opts, $caller_nsp, '_init', '_initload');
 }
 
 sub initload($call?, *%opts) {
 =sub 
-	A shortcut routine. Equivalent to calling L< C< init > > and L< C< load > > with the same 
-	arguments.
+	A shortcut routine. Equivalent to calling L<C< init >> and L<C< load >> with the same arguments.
 =end
 
-	add_call($Init_queue, $call, %opts);
-	add_call($Load_queue, $call, %opts);
+	my $caller_nsp := Parrot::caller_namespace(2);
+	init_($call, %opts, $caller_nsp);
+	load_($call, %opts, $caller_nsp);
 }
 
-sub _initload() {
-=sub	:INTERNAL
-	Called at init/load time. Sets up the various queues, and 
-	registers the name C< main > in the root namespace as 
-	the default main call. 
-=end
-
-	$At_end_queue	:= upgrade_queue($At_end_queue);
-	$At_start_queue	:= upgrade_queue($At_start_queue);
-	$Init_queue	:= upgrade_queue($Init_queue);
-	$Load_queue	:= upgrade_queue($Load_queue);
-	
-	if ! Parrot::defined($Main) {
-		$Main := '::main';
-	}
+sub is_upgraded($queue) {
+	return $queue.isa('ManagedQueue');
 }
 
-sub load($name, $call, *%opts) {
+sub load($call, *%opts) {
 =sub
 	Requests a call to the sub named by C< $call >, or to the sub object given in C< $call >, or
 	to a default sub (named '_load' or '_initload') in the caller's namespace. The call will take
 	place after all C< :load > subs in this library or program have been run. 
 	
-	The purpose of this routine is analogous to that of L< C< init > >, except for the (very 
+	The purpose of this routine is analogous to that of L<C< init >>, except for the (very 
 	significant!) difference between C< :init > and C< :load > processing. The argument values
 	and semantics are identical to those of C< init >.
 	
 =end
 
+	load_($call, %opts, Parrot::caller_namespace(2));
+}
+
+sub load_($call, %opts, $caller_nsp) {
+=sub	:INTERNAL
+	Internal version of C< load >, callable with slurped args.
+=end
+
 	unless %opts { %opts := Hash::empty(); }
 	unless $Load_queue { $Load_queue := Array::new(); }
 	
-	add_call_bundle($Load_queue, $call, %opts, Parrot::caller_namespace(2), '_load', '_initload');
+	add_call($Load_queue, $call, %opts, $caller_nsp, '_load', '_initload');
+}
+
+sub make_pair($key, $value) {
+=sub	:INTERNAL
+	Tries to make a L<C< Pair >> object out of C< $key >, and C< $value >. If class C< Pair > is 
+	not ready yet, makes a FixedPMCArray[2], instead.
+=end
+	
+	if Opcode::isa(LimitedPair, 'NameSpace') {		
+		my $pair := Opcode::new('FixedPMCArray');
+		Opcode::set_integer($pair, 2);
+		$pair[0] := $key;
+		$pair[1] := $value;
+		return $pair;
+	}
+	else {
+		return LimitedPair.new($key, $value);
+	}
 }
 
 sub process_init_queue() {
@@ -346,18 +314,19 @@ sub process_init_queue() {
 	If the queue is not already ordered according to the parameters given when the calls
 	were registered, the queue is first reordered.
 	
-	See L< C< init > > for how to add items to the queue.
+	See L<C< init >> for how to add items to the queue.
 
 	Returns nothing.
 =end
 
 	unless $Processing_init_queue {
 		$Processing_init_queue := 1;
-	
+
 		if $Init_queue.isa('ResizablePMCArray') {
+
 			$Init_queue := upgrade_queue($Init_queue);
 		}
-	
+
 		process_queue($Init_queue);
 	}
 }
@@ -375,6 +344,8 @@ sub process_load_queue() {
 		}
 	
 		process_queue($Load_queue);
+say("process-load-q: done");
+Dumper::DUMP_($Load_queue);
 	}
 }
 
@@ -383,8 +354,12 @@ sub process_queue($q) {
 	Called to process any of the queues in this module. Pulls all of the calls out of the queue, in order, and invokes them.
 =end
 
-	while my &call := $q.next {
-		call(&call);
+Dumper::DUMP_($q);
+	if Opcode::defined($q) {
+		while $q.elements {
+			my &call := $q.next;
+			call(&call);
+		}
 	}
 }
 
@@ -393,7 +368,9 @@ sub register_main($call) {
 	Sets the C< main > function to call.
 =end
 
-	$Main := $call;
+	if Opcode::defined($call) {
+		$Main := $call;
+	}
 }
 
 sub upgrade_queue($queue) {
@@ -404,8 +381,8 @@ sub upgrade_queue($queue) {
 	make new ManagedQueue objects. Because there is no guarantee of the order that C< :init > and C< :load > methods
 	are run, there is no way to ensure that ManagedQueue is registered before any other class tries to register a call.
 	
-	To deal with this uncertainty, the various registration functions (L< C< init > >, L< C< initload > >, and 
-	L< C< load > >) will create a simple ResizablePMCArray if no ManagedQueue exists. In this case, the entire request 
+	To deal with this uncertainty, the various registration functions (L<C< init >>, L<C< initload >>, and 
+	L<C< load >>) will create a simple ResizablePMCArray if no ManagedQueue exists. In this case, the entire request 
 	is bundled up and placed in the RPA.
 	
 	This function creates a new ManagedQueue, processes the RPA, unpacks the registration bundles and inserts the
@@ -414,7 +391,7 @@ sub upgrade_queue($queue) {
 	Returns the new ManagedQueue.
 =end
 
-	if ! Parrot::defined($queue) {
+	if ! Opcode::defined($queue) {
 		$queue := ManagedQueue.new();
 	}
 	elsif $queue.isa('ResizablePMCArray') {
@@ -422,18 +399,13 @@ sub upgrade_queue($queue) {
 		$queue := ManagedQueue.new();
 		
 		while @rpa {
-			my %opts := @rpa.shift.value;
+			my $item := @rpa.shift;
+			my %opts := Opcode::isa($item, 'FixedPMCArray') ?? $item[1] !! $item.value;
 			my $pair := %opts<pair>;
-			
-			add_call($queue, $pair, %opts);
+			$pair := make_pair($pair[0], $pair[1]);
+			enqueue_pair($queue, $pair, %opts);
 		}
 	}
 	
 	return $queue;
 }
-
-=for COPYRIGHT 
-Copyright E<COPYRIGHT SIGN> 2009, Austin Hastings. 
-
-=for LICENSE
-Browse to http://www.opensource.org/licenses/artistic-license-2.0.php, or see the accompanying LICENSE file.

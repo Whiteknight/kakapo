@@ -1,19 +1,12 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-=module Parrot
-
-Provides access to low-level functions of the Parrot VM.
-
-=cut
-
 module Parrot;
+=module
+	Provides access to low-level functions of the Parrot VM.
+=end
 
-Program::initload(:after('Array', 'Dumper', 'Global'));
-
-sub _initload() {
-	Global::use('Dumper');
-}
+Global::use('Dumper');
 
 sub IMPORT($namespace, $names?) {
 	my $caller_nsp := caller_namespace(2);
@@ -71,6 +64,33 @@ sub IMPORT($namespace, $names?) {
 	$from_nsp.export_to($caller_nsp, @names);
 }
 
+method call_method($method_name, *@args, *%opts) {
+	return call_method_(self, $method_name, @args, %opts);
+}
+
+method call_method_($method_name, @args, %opts) {
+=method
+	Calls method C< $method_name > with flattened arglist C< @args > and flattened 
+	options C< %opts >. Returns the result of the method call.
+=end
+
+	Q:PIR {
+		.local pmc meth, args, opts
+		meth	= find_lex '$method_name'
+		args	= find_lex '@args'
+		opts	= find_lex '%opts'
+		
+		$I0 = isa meth, 'Sub'
+		unless $I0 goto call_string
+		
+		.tailcall self.meth(args :flat, opts :named :flat)
+		
+	call_string:
+		$S0 = meth
+		.tailcall self.$S0(args :flat, opts :named :flat)
+	};
+}
+
 sub call_onload($nsp) {
 	if my &onload := $nsp<_ONLOAD> {
 		&onload();
@@ -99,25 +119,32 @@ sub caller_namespace($index?) {
 	return $nsp;
 }
 
-sub can($object, $method_name) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$object'
-		$P1 = find_lex '$method_name'
-		$S1 = $P1
-		$I0 = can $P0, $S1
-		%r = box $I0
-	};
-	
-	return $result;
+sub call_sub($sub_name, *@args, *%opts) {
+	return call_sub_($sub_name, @args, %opts);
 }
 
-sub clone($pmc) {
-	my $clone := Q:PIR {
-		$P0 = find_lex '$pmc'
-		%r = clone $P0
-	};
+sub call_sub_($sub_name, @args, %opts) {
+=sub
+	Calls sub C< $sub_name > with flattened arglist C< @args > and flattened options C< %opts >. 
+	Returns the result of the sub call.
+=end
+
+	Q:PIR {
+		.local pmc sub, args, opts
+		sub	= find_lex '$sub'
+		args 	= find_lex '@args'
+		opts	= find_lex '%opts'
 		
-	return $clone;
+		$I0 = isa sub, 'Sub'
+		unless $I0 goto call_string
+		
+		.tailcall sub(args :flat, opts :named :flat)
+		
+	call_string:
+		$S0 = sub
+		$P0 = find_sub_not_null $S0
+		.tailcall $P0(args :flat, opts :named :flat)
+	};
 }
 
 sub compile($string) {
@@ -131,71 +158,6 @@ sub compile($string) {
 	};
 	
 	return $result;
-}
-
-sub defined(*@what) {
-	my $result := Q:PIR {
-		$P0 = find_lex '@what'
-		$I0 = defined $P0[0]
-		%r = box $I0
-	};
-	
-	return $result;
-}
-
-sub delete($pmc, $key) {
-	Q:PIR {
-		$P0 = find_lex '$pmc'
-		$P1 = find_lex '$key'
-		$I0 = $P1
-		delete $P0[$I0]
-	};
-	
-	return $pmc;
-}
-
-sub die(*@parts) {
-	my $message := @parts.join;
-	
-	Q:PIR {
-		$P0 = find_lex '$message'
-		$S0 = $P0
-		die $S0
-	};
-}
-
-sub does($object, $role) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$object'
-		$P1 = find_lex '$role'
-		$S1 = $P1
-		$I0 = does $P0, $S1
-		%r = box $I0
-	};
-
-	return $result;
-}
-
-sub elements($item) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$item'
-		$I0 = elements $P0
-		%r = box $I0
-	};
-
-	return $result;
-}
-
-sub exit($result?) {
-	unless defined($result) {
-		$result := 0;
-	}
-	
-	Q:PIR {
-		$P0 = find_lex '$result'
-		$I0 = $P0
-		exit $I0
-	};
 }
 
 sub get_address_of($what) {
@@ -212,25 +174,6 @@ sub get_address_of($what) {
 	return $address;
 }
 
-sub get_attribute($pmc, $attribute_name) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$pmc'
-		$P1 = find_lex '$attribute_name'
-		$S0 = $P1
-		%r = getattribute $P0, $S0
-	};
-	
-	return $result;
-}
-
-sub get_class($pmc) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$pmc'
-		%r = get_class $P0
-	};
-	return $result;
-}
-
 sub get_compiler() {
 	unless our $Parrot_compiler {
 		$Parrot_compiler := Q:PIR {
@@ -242,73 +185,12 @@ sub get_compiler() {
 	return $Parrot_compiler;
 }
 
-sub get_integer($pmc) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$pmc'
-		$I0 = $P0
-		%r = box $I0
-	};
-	
-	return $result;
-}
-
-sub get_interpreter() {
-	unless our $Parrot_interpreter {
-		$Parrot_interpreter := Q:PIR {
-			%r = getinterp
-		};
-	}
-	
-	return $Parrot_interpreter;
-}
-
-sub get_namespace($name?) {
-	if $name {
-		my @namespace := $name.split('::');
-		my $nsp := get_hll_namespace(@namespace);
-		
-		unless defined($nsp) {
-			$nsp := get_hll_namespace(Array::empty());
-			
-			while @namespace {
-				$nsp := $nsp.make_namespace(@namespace.shift);
-			}
-		}
-		
-		return $nsp;
-	}
-	# NB: 'else' would create a new lexical sub, changing 2->3
-	my $nsp := caller_namespace(2);
-	return $nsp;
-}
-
-sub get_hll_global($path) {
-	my @parts := $path.split('::');
-	my $name := @parts.pop;
-	
-	my $result := Q:PIR {
-		$P0 = find_lex '@parts'
-		$P1 = find_lex '$name'
-		$S1 = $P1
-		%r = get_hll_global [$P0], $S1
-	};
-	
-	return $result;
-}
-	
-sub get_hll_namespace(@parts) {
-	my $namespace := Q:PIR {
-		$P0 = find_lex '@parts'
-		%r = get_hll_namespace $P0
-	};
-	
-	return $namespace;
-}
+# _get_interpreter cached the interp. Moved to Opcode and dumbed down. Recode your stuff.
 
 sub get_sub($path) {
 	my @parts := $path.split('::');
 	my $name := @parts.pop;
-	my $namespace := get_hll_namespace(@parts);
+	my $namespace := Opcode::get_hll_namespace(@parts);
 	my $sub;
 	
 	if $namespace {
@@ -316,54 +198,6 @@ sub get_sub($path) {
 	}
 	
 	return $sub;
-}
-
-sub inspect($pmc, $key) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$pmc'
-		$P1 = find_lex '$key'
-		$S1 = $P1
-		%r = inspect $P0, $S1
-	};
-	return $result;
-}
-
-sub is_null(*@what) {
-	my $result := 0;
-	
-	if +@what {
-		$result := Q:PIR {
-			$P0 = find_lex '@what'
-			$P1 = shift $P0
-			$I0 = isnull $P1
-			%r = box $I0
-		};
-	}
-	
-	return $result;
-}
-		
-sub isa($pmc, $class) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$pmc'
-		$P1 = find_lex '$class'
-		$S1 = $P1
-		$I0 = isa $P0, $S1
-		%r = box $I0
-	};
-
-	return $result;
-}
-
-sub iseq($a, $b) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$a'
-		$P1 = find_lex '$b'
-		$I0 = iseq $P0, $P1
-		%r = box $I0
-	};
-	
-	return $result;
 }
 
 sub key($first, *@parts) {
@@ -426,72 +260,9 @@ sub key($first, *@parts) {
 	return $key;
 }
 
-sub join($pmc, $delim) {
-	my $result := Q:PIR {
-		.local pmc aggregate
-		aggregate = find_lex '$pmc'
-		
-		.local string delim
-		$P0 = find_lex '$delim'
-		delim = $P0
-		
-		$S0 = join delim, aggregate
-		%r = box $S0
-	};
-	
-	return $result;
-}
-
-sub load_bytecode($file) {
-	Q:PIR {
-		$P0 = find_lex '$file'
-		$S0 = $P0
-		load_bytecode $S0
-	};
-}
-
-sub new_pmc($type) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$type'
-		%r = new $P0
-	};
-	
-	return $result;
-}
-
-sub set_integer($pmc, $int) {
-	Q:PIR {
-		$P0 = find_lex '$pmc'
-		$P1 = find_lex '$int'
-		$I1 = $P1
-		$P0 = $I1
-	};
-	
-	return $pmc;
-}
-
-sub trace($value) {
-	Q:PIR {
-		$P0 = find_lex '$value'
-		$I0 = $P0
-		trace $I0
-	};
-}
-
-sub typeof($pmc) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$pmc'
-		$S0 = typeof $P0
-		%r = box $S0
-	};
-	return $result;
-}
-
 module Parrot::Globals {
 
 	our %_Global_index;
-	
-	say("Parrot::Globals init block");
 	
 	Q:PIR {
 		.include 'iglobals.pasm' 

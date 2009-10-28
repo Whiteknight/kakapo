@@ -9,9 +9,7 @@ Base class built around a Hash
 
 module Class::HashBased;
 
-Program::initload(:after('Class', 'Class::BaseBehavior', 'Dumper', 'Global'));
-
-sub _initload() {
+sub _pre_initload() {
 	Global::use('Dumper');
 	Class::SUBCLASS('Class::HashBased',
 		'Class::BaseBehavior',

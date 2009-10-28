@@ -1,14 +1,15 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-=module Array
+module Array;
+=module
 
 A common dumping ground for methods added to RPA and RSA, plus a central 
 point for convenience functions like ::new and ::empty.
 
-=cut 
+=end
 
-module Array;
+Global::use('Dumper');
 
 our %Bsearch_compare_func;
 %Bsearch_compare_func{'<=>'}	:= Array::cmp_numeric;
@@ -16,11 +17,7 @@ our %Bsearch_compare_func;
 %Bsearch_compare_func{'cmp'}	:= Array::cmp_string;
 %Bsearch_compare_func{'Rcmp'}	:= Array::cmp_string_R;
 
-Program::initload(:after('Dumper', 'Global', 'Parrot'));
-
-sub _initload() {
-	Global::use('Dumper');
-}
+our @Empty := Array::empty();
 
 =sub bsearch(@array, $value, ...)
 
@@ -65,7 +62,7 @@ sub bsearch(@array, $value, *%opts) {
 
 	my &compare := %Bsearch_compare_func{$cmp};
 
-	if Parrot::isa($cmp, 'Sub') || Parrot::isa($cmp, 'MultiSub') {
+	if Opcode::isa($cmp, 'Sub') || Opcode::isa($cmp, 'MultiSub') {
 		&compare := $cmp;
 	}
 	
@@ -146,7 +143,7 @@ sub concat(*@sources) {
 	
 method contains($item) {
 	for self {
-		if Parrot::iseq($item, $_) {
+		if Opcode::iseq($item, $_) {
 			return 1;
 		}
 	}
@@ -158,14 +155,14 @@ method elements(*@value)			{ elements_(self, @value); }
 
 method elements_(@value) {
 	if +@value {
-		Parrot::set_integer(self, @value.shift);
+		Opcode::set_integer(self, @value.shift);
 	}
 
-	return Parrot::elements(self);
+	return Opcode::elements(self);
 }
 
 sub empty() {
-	return Parrot::new_pmc('ResizablePMCArray');
+	return Opcode::new('ResizablePMCArray');
 }
 
 sub new(*@elements) {
@@ -182,6 +179,31 @@ sub reverse(@original) {
 	return @result;
 }
 
+method slice(:$from?, :$to?) {
+	my $elements := self.elements;
+	unless Opcode::defined($from)	{ $from := 0; }
+	unless Opcode::defined($to)	{ $to := $elements; }
+	
+	if $from < 0	{ $from := $from + $elements; }
+	if $to < 0	{ $to := $to + $elements; }
+	
+	if $from >= $elements {
+		Opcode::die("$from parameter out of range: ", $from, " exceeds # elements: ", $elements);
+	}
+	
+	if $to >= $elements {
+		Opcode::die("$to parameter out of range: ", $from, " exceeds # elements: ", $elements);
+	}
+
+	my @slice := self.clone;
+	@slice.splice(@Empty, :from(0), :replacing($from));
+	
+	$to := $to - $from;
+	$to++;
+	@slice.splice(@Empty, :from($to), :replacing(@slice.elements - $to));
+	return @slice;
+}
+
 # Found some kind of bug with named args in 1.7, but since pcc branch is landing,
 # there's no hope of a fix. So move all the opts to %opts, and DIY.
 method splice(@value, *%opts) {
@@ -189,8 +211,7 @@ method splice(@value, *%opts) {
 	my $replacing := %opts.contains('replacing') ?? %opts<replacing> !! 0;
 
 	Q:PIR {
-		.local pmc array, new_data
-		array		= find_lex 'self'
+		.local pmc new_data
 		new_data	= find_lex '@value'
 		.local int offset, count
 		$P2 = find_lex '$from'
@@ -198,7 +219,7 @@ method splice(@value, *%opts) {
 		$P3 = find_lex '$replacing'
 		count = $P3
 		
-		splice array, new_data, offset, count
+		splice self, new_data, offset, count
 	};
 	
 	return self;

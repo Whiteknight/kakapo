@@ -228,7 +228,7 @@ sub index($haystack, $needle, *%opts) {
 	return $result;
 }
 
-method isa($type)			{ Parrot::isa(self, $type); }
+method isa($type)			{ Opcode::isa(self, $type); }
 
 sub is_cclass($class_name, $str, *%opts) {
 	my $offset	:= 0 + %opts<offset>;

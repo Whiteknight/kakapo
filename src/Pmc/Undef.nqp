@@ -17,4 +17,4 @@ Translates method call to vtable lookup.
 =end
 
 method defined()			{ 0 }
-method isa($type)			{ Parrot::isa(self, $type); }
+method isa($type)			{ Opcode::isa(self, $type); }

@@ -1,28 +1,28 @@
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
 module Matcher::Factory;
+=module
+	Provides factory methods to facilitate constructing matchers.
+=end
 
-_ONLOAD();
+Global::use(Dumper);
+my $class_name := 'Matcher::Factory';
 
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;
-			
-	Global::use('Dumper');
-	
-	my $class_name := 'Matcher::Factory';
-	
-	NOTE("Creating class ", $class_name);
-	Class::SUBCLASS($class_name,
-		'Class::HashBased',
-	);
+# FIXME: The class is created only for the sake of multis, which I don't think require the class anymore. Check and if true get 
+# rid of the SUBCLASS call.
+say("Creating class ", $class_name);
+NOTE("Creating class ", $class_name);
+Class::SUBCLASS($class_name,
+	'Class::HashBased',
+);
 
-	Class::multi_sub($class_name, 'is', :starting_with('_is_'));
-	Class::multi_sub($class_name, 'equals', :starting_with('_equals_'));
-	Class::multi_sub($class_name, 'make_matcher', :starting_with('_make_'));
-	Class::multi_sub($class_name, 'not', :starting_with('_not_'));
-	Class::multi_sub($class_name, 'returns', :starting_with('_returns_'));
-
-	NOTE("done");
-}
+Class::multi_sub($class_name, 'equals', :starting_with('_equals_'));
+Class::multi_sub($class_name, 'make_matcher', :starting_with('_make_'));
+Class::multi_sub($class_name, 'returns', :starting_with('_returns_'));
+Global::export('assert_that', 'empty', 'equals', 'false', 'has', 'instance_of', 'null', 'returns', 'same_as', 'true');
+		
+NOTE("done");
 
 sub assert_that($item, $matcher) {
 	if ! $matcher.matches($item) {
@@ -35,11 +35,18 @@ sub assert_that($item, $matcher) {
 	return 1;
 }
 
-sub all_of(*@list)			{ return Matcher::AllOf(make_matcher_list(@list)); }
-sub any_of(*@list)			{ return Matcher::AnyOne(make_matcher_list(@list)); }
+sub export_sub($sub, :$as, :$tags?) {
+=sub
+	Used to export a C< $sub > from a Matcher's namespace as a Factory method.
+=end
+		
+	unless $tags {
+		$tags := 'DEFAULT';
+	}
+	
+	Global::export($sub, :as($as), :tags($tags));
+}
 
-sub defined()				{ return Matcher::Defined.new(); }
-sub elements($count)		{ return Matcher::Elements.new($count); }
 sub empty()				{ return Matcher::Empty.new(); }
 
 sub _equals_Float($value)		{ return Matcher::IsCloseTo.new($value); }
@@ -51,13 +58,8 @@ sub false()				{ return Matcher::False.new(); }
 sub has($matcher)			{ return Matcher::DescribedAs.new('has', $matcher); }
 sub instance_of($type)		{ return Matcher::InstanceOf.new($type); }
 
-sub _is_Float($value)		{ return is(Matcher::EqualsFloat.new($value)); }
-sub _is_Integer($value)		{ return is(Matcher::Equals.new($value, :match_type('Integer'))); }
-sub _is_Matcher($matcher)	{ return Matcher::DescribedAs.new('is', $matcher); }
-sub _is_String($value)		{ return is(Matcher::Equals.new($value, :match_type('String'))); }
-
 sub _make_Float($value)		{ return equals($value); }
-sub _make_Integer($value)		{ return equals($value); }
+sub _make_Integer($value)	{ return equals($value); }
 sub _make_Matcher($matcher)	{ return $matcher; }
 sub _make_String($value)		{ return equals($value); }
 
@@ -71,11 +73,6 @@ sub make_matcher_list(@list) {
 	return Matcher::AnyOne(@matchers);
 }
 			
-sub _not_Float($value)		{ return not(is($value)); }
-sub _not_Integer($value)		{ return not(is($value)); }
-sub _not_Matcher($matcher)	{ return Matcher::Not.new($matcher); }
-sub _not_String($value)		{ return not(is($value)); }
-
 sub null()				{ return Matcher::Null.new(); }	
 
 sub _returns_Float($value)		{ return returns(Matcher::IsCloseTo.new($value)); }

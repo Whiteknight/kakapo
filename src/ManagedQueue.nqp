@@ -1,24 +1,23 @@
 module ManagedQueue;
+=module
+	Provides a queue that can insert using absolute or relative ordering.
+=end
 
-Program::initload(:after('Class', 'Dumper', 'Global'));
+Global::use('Dumper');
 
-sub _initload() {
-	Global::use('Dumper');
+my $class_name := 'ManagedQueue';
 
-	my $class_name := 'ManagedQueue';
-	
-	NOTE("Creating class ", $class_name);
-	Class::SUBCLASS($class_name,
-		'Class::HashBased',
-	);	
-}
+NOTE("Creating class ", $class_name);
+Class::SUBCLASS($class_name,
+	'Class::HashBased',
+);	
 
 sub after($q, @items) {
-	if Parrot::isa(@items, 'String') { @items := Array::new(@items); }
+	if Opcode::isa(@items, 'String') { @items := Array::new(@items); }
 	
 	my $index := $q.elements;
 	
-	while $index >= 0 {
+	while $index > 0 {
 		$index--;
 		
 		for @items {
@@ -32,7 +31,7 @@ sub after($q, @items) {
 }
 	
 sub before($q, @before) {
-	if Parrot::isa(@before, 'String') { @before := Array::new(@before); }
+	if Opcode::isa(@before, 'String') { @before := Array::new(@before); }
 	
 	my $index := 0;
 
@@ -74,7 +73,7 @@ method first_index_of($key) {
 	my $limit := self.queue.elements;
 	
 	while $index < $limit {
-		if Parrot::iseq(self.queue[$index].key, $key) {
+		if Opcode::iseq(self.queue[$index].key, $key) {
 			return $index;
 		}
 		
@@ -90,7 +89,7 @@ method last_index_of($key) {
 	while $index {
 		$index--;
 		
-		if Parrot::iseq(self.queue[$index].key, $key) {
+		if Opcode::iseq(self.queue[$index].key, $key) {
 			return $index;
 		}
 	}
@@ -102,11 +101,11 @@ method init(@items, %opts) {
 	while @items {
 		my $item := @items.shift;
 		
-		if Parrot::isa($item, 'Pair') {
+		if Opcode::isa($item, 'LimitedPair') {
 			self.insert($item);
 		}
 		else {
-			self.insert(Pair.new($item, @items.shift));
+			self.insert(LimitedPair.new($item, @items.shift));
 		}
 	}
 }
@@ -116,7 +115,7 @@ method init(@items, %opts) {
 
 =method insert($key, $value, [ as above ])
 
-Inserts an element C<$pair> in the queue. If no options are specified, the
+Inserts an element C< $pair > in the queue. If no options are specified, the
 default is C<:last_out>. That is, 
     
     $mq.insert($a);
@@ -144,13 +143,13 @@ that behavior.
 =cut
 
 method insert($key, *@value, *%opts) {
-	unless Parrot::isa($key, 'Pair') {
+	unless Opcode::isa($key, 'LimitedPair') {
 		unless +@value {
-			Parrot::die("Inserting a ", Parrot::typeof($key),
+			Opcode::die("Inserting a ", Opcode::typeof($key),
 				"as a key requires a second $value element");
 		}
 		
-		$key := Pair.new($key, @value.shift);
+		$key := LimitedPair.new($key, @value.shift);
 	}
 	
 	self.insert_actual($key, %opts);
@@ -158,9 +157,9 @@ method insert($key, *@value, *%opts) {
 
 method insert_actual($pair, %opts) {
 	my $after	:= 0;		# 0 = before, 1 = after
-	my $index	:= self.queue.elements;
+	my $index	:= -1;
 	my $replace	:= 0;
-	
+
 	if %opts<first_out> {
 		$index := 0;
 	}
@@ -177,6 +176,10 @@ method insert_actual($pair, %opts) {
 	}
 	# else { default case: append at end }
 	
+	if $index < 0 {
+		$index := self.queue.elements;
+	}
+	
 	my @items := Array::new($pair);
 	self.queue.splice(@items, :from($index), :replacing($replace));
 	return self;
@@ -184,11 +187,13 @@ method insert_actual($pair, %opts) {
 
 method is_empty()				{ return +self.queue == 0; }
 method next() {
+	my $result;
+	
 	if self.queue {
-		return self.queue.shift.value;
+		$result := self.queue.shift.value;
 	}
 	
-	return my $undef;
+	return $result;
 }
 
 method queue(*@value)			{ self._ATTR_ARRAY('queue', @value); }

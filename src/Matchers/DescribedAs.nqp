@@ -33,7 +33,7 @@ method init(@args, %opts) {
 	
 	unless self.described_as {
 		unless +@args {
-			Parrot::die("You must provide a description");
+			Opcode::die("You must provide a description");
 		}
 		
 		self.described_as(@args.shift);
@@ -41,7 +41,7 @@ method init(@args, %opts) {
 	
 	unless self.predicate {
 		unless +@args {
-			Parrot::die("You must provide a Matcher predicate");
+			Opcode::die("You must provide a Matcher predicate");
 		}
 		
 		self.predicate(@args.shift);
@@ -50,7 +50,7 @@ method init(@args, %opts) {
 
 method matches(*@item) {
 	my %opts;
-	my $result := Class::call_method_(self.predicate, 'matches', @item, %opts);
+	my $result := Parrot::call_method_(self.predicate, 'matches', @item, %opts);
 	return $result;
 }
 

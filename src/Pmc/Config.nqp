@@ -1,24 +1,17 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-=module File
-
-Wrapper for config.pbc, a generated file containing Parrot configuration data.
-
+module Config;
+=module
+	Wrapper for config.pbc, a generated file containing Parrot configuration data.
 =cut 
 
-module Config;
-
-Program::initload(:after('Dumper', 'Global'));
-
-sub _initload() {
-	Global::use('Dumper');
-}
+Global::use(Dumper);
 
 sub _get_pmc() {
 	our $_Pmc;
 
-	unless Parrot::defined($_Pmc) {
+	unless Opcode::defined($_Pmc) {
 		$_Pmc := Q:PIR {
 			load_bytecode "config.pbc"
 			%r = _config()

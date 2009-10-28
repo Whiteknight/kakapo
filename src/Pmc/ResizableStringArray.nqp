@@ -21,20 +21,20 @@ method append(@other) {
 	}
 }
 
-method clone()				{ Parrot::clone(self); }
+method clone()				{ Opcode::clone(self); }
 method contains($what)			{ Array::contains(self, $what); }
-method delete($key)				{ Parrot::delete(self, $key); }
+method delete($key)				{ Opcode::delete(self, $key); }
 method elements(*@value)			{ Array::elements_(self, @value); }
-method isa($type)				{ Parrot::isa(self, $type); }
+method isa($type)				{ Opcode::isa(self, $type); }
 		
 method join(*@delim) {
 	@delim.push('');
 	my $delim := @delim.shift;
-	return Parrot::join(self, $delim);
+	return Opcode::join(self, $delim);
 }
 
 sub new(*@contents) {
-	my @array := Parrot::new_pmc('ResizableStringArray');
+	my @array := Opcode::new('ResizableStringArray');
 	
 	for @contents {
 		@array.push( ~ $_);
@@ -42,6 +42,8 @@ sub new(*@contents) {
 	
 	return @array;
 }
+
+method slice(:$from?, :$to?)		{ Array::slice(self, :from($from), :to($to)); }
 
 # Note: Can't pass an RPA to RSA.splice, so this will die a lot.
 method splice(@data, :$from?, :$replacing?) { Array::splice(self, @data, :from($from), :replacing($replacing)); }

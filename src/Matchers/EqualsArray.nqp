@@ -32,7 +32,7 @@ module Matcher::EqualsArray {
 	}
 	
 	method matches_typesafe($item) {
-		my $result := Parrot::iseq(self.value, $item);
+		my $result := Opcode::iseq(self.value, $item);
 		return $result;
 	}
 	

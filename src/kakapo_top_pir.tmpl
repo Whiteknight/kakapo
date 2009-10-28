@@ -4,8 +4,21 @@
 .include 'interpinfo.pasm'
 .include 'sysinfo.pasm'
 
-.sub '' :anon :load :init 
-	$P0 = get_hll_global ['Miscellaneous'], '_ONLOAD'
+# Special-case handling for the very first modules to load.
+
+.sub '_kakapo_top_pre_initload' :load :init
+
+=sub
+	By virtue of appearing first in the library, this function runs before all other :init or :load
+	subs. Call the Kakapo _pre_initload hook to set up those modules that absolutely must be
+	done first.
+=cut
+	
+	$P0 = get_hll_global ['Kakapo'], '_pre_initload'
+	unless null $P0 goto call_sub
+	
+	die "Could not locate Kakapo::_pre_initload. Is kakapo.pir corrupt or missing?"
+
+call_sub:
 	$P0()
-	.return (0)
 .end

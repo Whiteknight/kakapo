@@ -1,57 +1,61 @@
-module Matcher::TypeSafe {
-	
-	_ONLOAD();
-	
-	sub _ONLOAD() {
-		if our $onload_done { return 0; }
-		$onload_done := 1;
-				
-		Global::use('Dumper');
-		
-		my $class_name := 'Matcher::TypeSafe';
-		
-		NOTE("Creating class ", $class_name);
-		Class::SUBCLASS($class_name,
-			'Matcher'
-		);
-				
-		NOTE("done");
-	}
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-	method describe_failure($item, $description) {
-		my $failure;
-		
-		if Parrot::is_null($item) {
-			$failure := 'was null';
-		}
-		elsif self.wrong_type {
-			$failure := "was the wrong type ('" ~ Parrot::typeof($item) ~ "')";
-		}
-		else {
-			return self.describe_failure_typesafe($item, $description);
-		}
-		
-		return $description ~ $failure;
-	}
+module Matcher::TypeSafe;
+=module
+	Abstract class that handles type-safety and null/undef checking of its args.
+=end
+	
+say("*** Typesafe block13");
+Global::use('Dumper');
+Program::initload(:after('Matcher'));
 
-	method describe_failure_typesafe($item, $description) {
-		return $description ~ "was: " ~ $item;
-	}
-		
-	method matches($item) {
-		self.wrong_type(0);
-		
-		if ! Parrot::is_null($item) {
-			return self.matches_typesafe($item);
-		}
-		
-		return 0;
-	}	
+sub _initload() {
+	if our $_Initload_done { return 0; }
+	$_Initload_done := 1;			
 	
-	method matches_typesafe($item) {
-		self.wrong_type(1);
-		return 0;
-	}
+	my $class_name := 'Matcher::TypeSafe';
 	
-	method wrong_type(*@value)		{ self._ATTR('wrong_type', @value); }
+	say("Creating class ", $class_name);
+	NOTE("Creating class ", $class_name);
+	Class::SUBCLASS($class_name,
+		'Matcher'
+	);
 }
+
+method describe_failure($item, $description) {
+	my $failure;
+	
+	if Opcode::isnull($item) {
+		$failure := 'was null';
+	}
+	elsif self.wrong_type {
+		$failure := "was the wrong type ('" ~ Opcode::typeof($item) ~ "')";
+	}
+	else {
+		return self.describe_failure_typesafe($item, $description);
+	}
+	
+	return $description ~ $failure;
+}
+
+method describe_failure_typesafe($item, $description) {
+	return $description ~ "was: " ~ $item;
+}
+	
+method matches($item) {
+	self.wrong_type(0);
+	
+	if ! Opcode::isnull($item) {
+		return self.matches_typesafe($item);
+	}
+	
+	return 0;
+}	
+
+method matches_typesafe($item) {
+	self.wrong_type(1);
+	return 0;
+}
+
+method wrong_type(*@value)		{ self._ATTR('wrong_type', @value); }

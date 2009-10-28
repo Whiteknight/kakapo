@@ -1,21 +1,26 @@
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
 module Matcher::AnyOne;
+=module
+	Matcher that matches if any one of its child matchers accepts. This is a short-circuiting 'OR'.
+=end
 
-_ONLOAD();
+Global::use('Dumper');
+Program::initload(:after('Matcher'));
+Matcher::Factory::export_sub(Matcher::AnyOne::factory, :as('any_of'));
 
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;
-			
-	Global::use('Dumper');
+sub _initload() {
+	if our $_Initload_done { return 0; }
+	$_Initload_done := 1;	
 	
 	my $class_name := 'Matcher::AnyOne';
 	
+	say("Creating class ", $class_name);
 	NOTE("Creating class ", $class_name);
 	Class::SUBCLASS($class_name,
 		'Matcher'
 	);
-			
-	NOTE("done");
 }
 
 method describe_failure($item, $description) {
@@ -29,6 +34,8 @@ method describe_self($description) {
 }
 
 method described_as(*@value)		{ self._ATTR('described_as', @value); }
+
+sub factory(*@list)				{ Matcher::AnyOne.new(Matcher::Factory::make_matcher_list(@list)); }
 
 method init(@args, %opts) {
 	Matcher::init(self, @args, %opts);

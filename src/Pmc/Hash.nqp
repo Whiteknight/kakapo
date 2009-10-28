@@ -1,13 +1,10 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-=module Hash
-
-Provides some extra methods for Hash, plus some convenient creator subs.
-
-=cut 
-
 module Hash;
+=module
+Provides some extra methods for Hash, plus some convenient creator subs.
+=cut 
 
 method contains($key) {
 	my $result := Q:PIR {
@@ -70,10 +67,10 @@ sub merge(%first, *@hashes, :%into?, :$use_last?) {
 	
 	@hashes.unshift(%first);	# Ensure at least one element.
 
-	unless Parrot::defined(%into) {
+	unless Opcode::defined(%into) {
 		%into := @hashes.shift();
 		
-		unless Parrot::defined(%into) {
+		unless Opcode::defined(%into) {
 			%into := Hash::new();
 		}
 	}
@@ -102,10 +99,10 @@ sub merge(%first, *@hashes, :%into?, :$use_last?) {
 sub merge_keys(%first, *@hashes, :@keys!, :%into?, :$use_last?) {
 	@hashes.unshift(%first);
 	
-	unless Parrot::defined(%into) {
+	unless Opcode::defined(%into) {
 		%into := @hashes.shift();
 		
-		unless Parrot::defined(%into) {
+		unless Opcode::defined(%into) {
 			%into := Hash::new();
 		}
 	}
@@ -133,10 +130,19 @@ sub merge_keys(%first, *@hashes, :@keys!, :%into?, :$use_last?) {
 
 sub new(*@pos, *%pairs) {
 	if +@pos {
-		PCT::HLLCompiler.dumper(@pos, 'positional args to Hash::new');
-		Dumper::DIE('WTF? Remember Hash is the default class.');
-	}
+		my $message := 'Invalid call to Hash::new with positional args.';
 		
+		if Opcode::isa(@pos[0], 'NameSpace') {
+			$message := $message ~ ' '
+				~ 'Likely a call to ' 
+				~ @pos[0].get_name.join('::')
+				~ '.new() - before class was created';
+		}
+
+		Dumper::DUMP_(@pos, 'positional args to Hash::new');
+		Opcode::die($message);
+	}
+
 	return %pairs;
 }
 

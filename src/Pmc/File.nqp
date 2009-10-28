@@ -18,7 +18,7 @@ sub _initload() {
 sub _get_pmc() {
 	our $_Pmc;
 
-	unless Parrot::defined($_Pmc) {
+	unless Opcode::defined($_Pmc) {
 		$_Pmc := Q:PIR {
 			%r = root_new [ 'parrot' ; 'File' ]
 		};
