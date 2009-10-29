@@ -1,12 +1,17 @@
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
 module Matcher::DescribedAs;
+=module
+	Slathers a text label on another matcher.
+=end
 
-_ONLOAD();
+Global::use('Dumper');
+Program::initload(:after('Matcher'));
 
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;
-			
-	Global::use('Dumper');
+sub _initload() {
+	if our $_Initload_done { return 0; }
+	$_Initload_done := 1;
 	
 	my $class_name := 'Matcher::DescribedAs';
 	
@@ -14,8 +19,6 @@ sub _ONLOAD() {
 	Class::SUBCLASS($class_name,
 		'Matcher'
 	);
-			
-	NOTE("done");
 }
 
 method describe_failure($item, $description) {

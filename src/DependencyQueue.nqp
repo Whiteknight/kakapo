@@ -13,14 +13,13 @@ save each key in an "already run" cache
 reset the q completely after processing.
 =end
 
-Global::use('Dumper');
-Class::SUBCLASS('DependencyQueue', 
-	'Class::HashBased');
+_pre_initload();
 
 method added(*@value)		{ self._ATTR_HASH('added', @value); }
 method already_done(*@value)	{ self._ATTR_HASH('already_done', @value); }
 method cycle(*@value)		{ self._ATTR_HASH('cycle', @value); }
 method cycle_keys(*@value)	{ self._ATTR_ARRAY('cycle_keys', @value); }
+method open(*@value)		{ self._ATTR_HASH('open', @value); }
 method pending(*@value)		{ self._ATTR_HASH('pending', @value); }
 method queue(*@value)		{ self._ATTR_ARRAY('queue', @value); }
 	
@@ -35,26 +34,53 @@ method already_added($name) {
 	return self.already_done{$name} || self.added{$name};
 }
 
-method elements()			{ self.queue.elements; }
-
 method init(@args, %opts) {
 	for @args {
-		self.already_done{~$_} := 1;
+		self.mark_as_done(~ $_);
 	}
+	
+	self.open(1);
+}
+
+method is_empty() { 
+	if self.open {
+		return self.pending.elements == 0;
+	}
+	
+	return self.queue.elements == 0;
+}
+
+method mark_as_done($label) {
+	self.already_done{$label} := 1;
+}
+
+method marked_done($label) {
+	return self.already_done{$label};
 }
 
 method next() {
 	if self.open {
-		tsort_queue();
+		self.tsort_queue();
 	}
 
 	if self.queue.elements {
 		my $node := self.queue.shift;
-		self.already_done{$node[0]} := 1;
+say("Next node: ", $node[0]);
+		self.mark_as_done($node[0]);
 		return $node[1];
 	}
 	
 	return my $undef;
+}
+
+sub _pre_initload() {
+	if our $_Pre_initload_done { return 0; }
+	$_Pre_initload_done := 1;
+	
+	Global::use('Dumper');
+	
+	Class::SUBCLASS('DependencyQueue', 
+		'Class::HashBased');
 }
 
 method reset() {
@@ -63,15 +89,11 @@ method reset() {
 }
 
 method tsort_queue() {
-	my %already_done := self.already_done;
-
-	# setup
 	self.open(0);
 	self.cycle_keys(Array::empty());
 	self.cycle(Hash::empty());
 	self.added(Hash::empty());
-	
-	# depth-first insert
+
 	self.tsort_add_keys(self.pending.keys);
 }
 

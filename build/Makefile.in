@@ -91,19 +91,19 @@ TEST_LIB_PIRS =			\
 	src/Test/Testcase.pir		\
 	src/Matchers/AllOf.pir		\
 	src/Matchers/AnyOne.pir	\
+	src/Matchers/Boolean.pir	\
 	src/Matchers/Defined.pir	\
+	src/Matchers/DescribedAs.pir	\
 	src/Matchers/Equals.pir		\
 	src/Matchers/Factory.pir	\
 	src/Matchers/Matcher.pir	\
 	src/Matchers/Not.pir		\
 	src/Matchers/TypeSafe.pir
 	
-	# src/Matchers/DescribedAs.pir	\
 	# src/Matchers/Elements.pir	\
 	# src/Matchers/Empty.pir		\
 	# src/Matchers/EqualsArray.pir	\
 	# src/Matchers/EqualsFloat.pir	\
-	# src/Matchers/False.pir		\
 	# src/Matchers/IdenticalTo.pir	\
 	# src/Matchers/InstanceOf.pir	\
 	
@@ -148,6 +148,9 @@ all: build
 
 build:	kakapo.cfg $(LIBRARY_PBCS)
 	@echo "Build complete"
+
+CHANGES:	src/package.nqp
+	$(CP) src/package.nqp $@
 
 clean:
 	$(RM_F) $(GENERATED_FILES)

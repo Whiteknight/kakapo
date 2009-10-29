@@ -6,14 +6,9 @@ module ResizablePMCArray;
 	Provides missing methods to RPA.
 =end
 
-Program::initload();
-
-sub _initload() {
-	Global::use('Dumper');
-}
+Global::use('Dumper');
 
 # method append(@other) - built in
-
 method clone()				{ Opcode::clone(self); }
 method contains($what)			{ Array::contains(self, $what); }
 method delete($key)				{ Opcode::delete(self, $key); }

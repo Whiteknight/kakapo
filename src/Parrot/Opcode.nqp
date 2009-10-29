@@ -366,7 +366,7 @@ sub _pre_initload() {
 =end
 
 	Global::export(:tags('DEFAULT'),	'defined', 'die');
-	Global::export(:tags('TYPE'),	'can', 'does', 'get_class', 'isa', 'new', 'typeof');
+	Global::export(:tags('TYPE'),		'can', 'does', 'get_class', 'isa', 'new', 'typeof');
 }
 
 method set_integer($value) {

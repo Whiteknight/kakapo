@@ -34,6 +34,8 @@ Class::SUBCLASS($class_name,
 	'Class::HashBased',
 );
 		
+Program::initload(:done(1));
+
 
 method describe_failure($item, $description) {
 	return $description

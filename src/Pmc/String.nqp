@@ -8,12 +8,8 @@ Provides basic String functions, and adds some methods to the String PMC.
 
 =cut
 
-Program::initload(:after('Array', 'Dumper', 'Hash'));
-
-sub _initload() {
-	Global::use('Dumper');
-}
-
+Global::use('Dumper');
+Program::initload(:done(1));	# Register as "already done"
 
 our %Cclass_id;
 %Cclass_id<ANY>			:= 65535;

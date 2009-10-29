@@ -13,10 +13,8 @@ sub main() {
 module Kakapo::Test::Undef;
 
 say("KTUndef initload");
-Global::use(Dumper);
-DUMP_(Matcher::Factory);
+Global::use('Dumper');
 Global::use('Matcher::Factory');
-DUMP_(Kakapo::Test::Undef);
 
 my $class_name := 'Kakapo::Test::Undef';
 

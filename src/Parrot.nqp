@@ -68,12 +68,15 @@ method call_method($method_name, *@args, *%opts) {
 	return call_method_(self, $method_name, @args, %opts);
 }
 
-method call_method_($method_name, @args, %opts) {
+method call_method_($method_name, @args?, %opts?) {
 =method
 	Calls method C< $method_name > with flattened arglist C< @args > and flattened 
 	options C< %opts >. Returns the result of the method call.
 =end
 
+	unless Opcode::defined(@args)	{ @args := Array::empty(); }
+	unless Opcode::defined(%opts)	{ %opts := Hash::empty(); }
+	
 	Q:PIR {
 		.local pmc meth, args, opts
 		meth	= find_lex '$method_name'
@@ -258,6 +261,16 @@ sub key($first, *@parts) {
 	}
 	
 	return $key;
+}
+
+sub namespace_name($nsp) {
+	if Opcode::isa($nsp, 'String') {
+		return $nsp;
+	}
+	
+	my @parts := $nsp.get_name;
+	@parts.shift;
+	return @parts.join('::');
 }
 
 module Parrot::Globals {

@@ -20,7 +20,7 @@ Class::SUBCLASS($class_name,
 Class::multi_sub($class_name, 'equals', :starting_with('_equals_'));
 Class::multi_sub($class_name, 'make_matcher', :starting_with('_make_'));
 Class::multi_sub($class_name, 'returns', :starting_with('_returns_'));
-Global::export('assert_that', 'empty', 'equals', 'false', 'has', 'instance_of', 'null', 'returns', 'same_as', 'true');
+Global::export('assert_that', 'empty', 'equals', 'has', 'instance_of', 'null', 'returns', 'same_as');
 		
 NOTE("done");
 
@@ -54,7 +54,6 @@ sub _equals_Integer($value)	{ return Matcher::Equals.new($value, :match_type('In
 sub _equals_String($value)		{ return Matcher::Equals.new($value, :match_type('String')); }
 sub _equals_ResizablePMCArray($value) { return Matcher::EqualsArray.new($value); }
 
-sub false()				{ return Matcher::False.new(); }
 sub has($matcher)			{ return Matcher::DescribedAs.new('has', $matcher); }
 sub instance_of($type)		{ return Matcher::InstanceOf.new($type); }
 
@@ -81,4 +80,3 @@ sub _returns_Matcher($value)	{ return Matcher::DescribedAs.new('returns', $value
 sub _returns_String($value)	{ return returns(Matcher::Equals.new($value)); }
 
 sub same_as($value)		{ return Matcher::IdenticalTo.new($value); }
-sub true()				{ return Matcher::True.new(); }

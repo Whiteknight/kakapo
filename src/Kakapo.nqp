@@ -35,6 +35,8 @@ sub _pre_initload() {
 	Dumper::_pre_initload();
 	Opcode::_pre_initload();
 	Class::_pre_initload();
+	DependencyQueue::_pre_initload();
+	Program::_pre_initload('Global', 'Dumper', 'Opcode', 'Class', 'DependencyQueue', 'Program');
 	
 	say("Kakapo _pre_initload done");
 }

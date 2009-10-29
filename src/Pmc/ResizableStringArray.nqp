@@ -3,17 +3,10 @@
 
 module ResizableStringArray;
 =module
+	Provides missing methods to RSA.
+=end
 
-Provides missing methods to RSA.
-
-=cut
-
-
-Program::initload(:after('Dumper', 'Global'));
-
-sub _initload() {
-	Global::use('Dumper');
-}
+Global::use('Dumper');
 
 method append(@other) {
 	for @other {

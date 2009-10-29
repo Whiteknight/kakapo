@@ -33,9 +33,9 @@ method describe_self($description) {
 		~ " equal to '" ~ self.value ~ "'";
 }
 
-sub _factory_Float($value)			{ factory(Matcher::EqualsFloat.new($value)); }
+sub _factory_Float($value)		{ factory(Matcher::EqualsFloat.new($value)); }
 sub _factory_Integer($value)		{ factory(Matcher::Equals.new($value, :match_type('Integer'))); }
-sub _factory_Matcher($matcher)		{ Matcher::DescribedAs.new('is', $matcher); }
+sub _factory_Matcher($matcher)	{ Matcher::DescribedAs.new('is', $matcher); }
 sub _factory_String($value)		{ factory(Matcher::Equals.new($value, :match_type('String'))); }
 
 method find_match_type($item) {
@@ -50,14 +50,14 @@ method find_match_type($item) {
 	}
 }
 
-method init(@children, %attributes) {
-	Matcher::init(self, @children, %attributes);
+method init(@args, %opts) {
+	Matcher::init(self, @args, %opts);
 	
-	unless +@children {
+	unless +@args {
 		DIE("You must provide a comparison value for 'equals' matcher.");
 	}
 	
-	self.value(@children.shift);
+	self.value(@args.shift);
 	self.find_match_type(self.value);
 }
 

@@ -1,19 +1,12 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-=module File
-
-Wrapper for File PMC type, providing a few extra functions. 
-
-=cut 
-
 module File;
+=module
+	Wrapper for File PMC type, providing a few extra functions. 
+=end
 
-Program::initload(:after('Dumper', 'String'));
-
-sub _initload() {
-	Global::use('Dumper');
-}
+Global::use('Dumper');
 	
 sub _get_pmc() {
 	our $_Pmc;
