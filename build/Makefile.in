@@ -249,22 +249,25 @@ test-undef: build t/Pmc/test-undef.pbc
 test-attributes: t/Classes/test-Attributes.pbc
 	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Classes/test-Attributes.pbc
 
+#----------------------------------------------------------------------
+# Compile rules that support the test-foo targets, above.
+#----------------------------------------------------------------------
+
 t/Classes/test-Attributes.pbc: $(KRT0) t/Classes/Attributes.pbc
 	$(LINK) --output=$@ $(KRT0) t/Classes/Attributes.pbc
-
 	
 t/Pmc/test-array.pbc: $(KRT0) t/Pmc/Array.pbc
 	$(LINK) --output=$@ $(KRT0) t/Pmc/Array.pbc
-	
+
 t/Pmc/test-rpa.pbc: $(KRT0) t/Pmc/ResizablePMCArray.pbc
 	$(LINK) --output=$@ $(KRT0) t/Pmc/ResizablePMCArray.pbc
-	
+
 t/Pmc/test-rsa.pbc: $(KRT0) t/Pmc/ResizableStringArray.pbc	
 	$(LINK) --output=$@ $(KRT0) t/Pmc/ResizableStringArray.pbc
 
 t/Pmc/test-undef.pbc: $(KRT0)  t/Pmc/Undef.pbc
 	$(LINK) --output=$@ $(KRT0) t/Pmc/Undef.pbc
-	
+
 testclean:
 	$(RM_F) $(TEST_CLEANUPS)
 
