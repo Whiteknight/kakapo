@@ -3,7 +3,7 @@
 
 module Global;
 =module
-Provides cross-module import and export, and serves as a global symbol registry.
+	Provides cross-module import and export, and serves as a global symbol registry.
 =end
 
 sub export($symbol, *@symbols, :$as?, :$namespace?, :@tags?) {
@@ -64,13 +64,37 @@ but it is a valid import tag.
 			if Opcode::isa($export_sym, 'String') {
 				$export_sym := $source_nsp.get_sym($export_sym);
 			}
-			
-			$tag_nsp{$as} := $export_sym;
+
+			inject_symbol($export_sym, :as($as), :namespace($tag_nsp));
 		}
 		else {
 			$source_nsp.export_to($tag_nsp, @symbols);
 		}
 	}
+}
+
+sub inject_symbol($object, :$namespace, :$as?, :$force?) {
+=sub
+Injects a PMC C< $object > into a C< $namespace >, optionally C< $as > a certain name. For C< Sub > and 
+C< MultiSub > PMCs, the name is not a requirement since they know their own names. For other PMC types,
+including injecting variable rather than functions, the C< $as > name must be provided by the caller. If 
+C< $force > is specified, any pre-existing symbol is overwritten. Otherwise, if a name collision occurs
+FIXME: an exception should be thrown, but currently isn't.
+=end
+
+	unless Opcode::defined($as) { $as := ~ $object; }	# Subs carry their name
+	
+	if ! Opcode::isa($namespace, 'NameSpace') {
+		$namespace := Opcode::get_hll_namespace($namespace);
+	}
+
+	# NB: find_var searches for *anything*, while find_sub requires isa(sub). In this case,
+	# any collision is bad.
+	if ! $force && Opcode::defined($namespace.find_var($as)) {
+		return 0;
+	}
+	
+	$namespace.add_var($as, $object);
 }
 
 sub register_global($name, $object, :$namespace?) {
@@ -117,11 +141,13 @@ C<register_global> function. (q.v.)
 
 sub use($module?, :@tags?, :@symbols?) {
 	if ! Opcode::defined($module) { $module := Parrot::caller_namespace(1); }
-	elsif Opcode::isa($module, 'String') { $module := Opcode::get_hll_namespace($module); }
 	if ! Opcode::defined(@tags) { @tags := Array::empty(); }
 	elsif Opcode::isa(@tags, 'String') { @tags := Array::new(@tags); }
 	if ! Opcode::defined(@symbols) { @symbols := Array::empty(); }
 	elsif Opcode::isa(@symbols, 'String') { @symbols := Array::new(@symbols); }
+
+	if Opcode::isa($module, 'P6object')	{ $module := Opcode::typeof($module); }
+	if Opcode::isa($module, 'String')		{ $module := Opcode::get_hll_namespace($module); }
 
 	if +@tags == 0 && +@symbols == 0 {
 		@tags.push('DEFAULT');
@@ -132,9 +158,9 @@ sub use($module?, :@tags?, :@symbols?) {
 
 	for @tags {
 		my $source_nsp := $export_nsp.make_namespace(~ $_);
+		my @symbols := $source_nsp.keys;
 		
-		if $source_nsp.keys {
-			my @symbols := $source_nsp.keys;
+		if +@symbols {
 			$source_nsp.export_to($target_nsp, @symbols);
 		}
 	}

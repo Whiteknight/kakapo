@@ -3,7 +3,7 @@
 
 module Class;
 =module 
-	Provides a more-advanced class/subclass management library.
+	Provides a class/subclass management library.
 	
 	Future:
 	Class::declare('My::Class',
@@ -11,10 +11,24 @@ module Class;
 	
 =end
 
-Global::use(Dumper);
+sub _pre_initload() {
+=sub
+Special sub called when the Kakapo library is loaded or initialized. This is to guarantee this 
+module is available during :init and :load processing for other modules.
+=end
+
+	Global::use('Opcode');	# defined, die
+	Global::use('Dumper');
+	
+	Opcode::load_bytecode('P6object.pir');
+	
+	Class::BaseBehavior::_pre_initload();
+	Class::ArrayBased::_pre_initload();
+	Class::HashBased::_pre_initload();
+}
 
 sub NEW_CLASS($class_name) {
-say("NEW_CLASS: ", $class_name);
+	NOTE("NEW_CLASS: ", $class_name);
 	my $class_info := _class_info($class_name);
 	
 	if $class_info<created> {
@@ -36,8 +50,6 @@ sub SUBCLASS($class_name, *@parents) {
 		$class_info<created> := 1;
 	}
 	
-	say("Creating subclass ", $class_name, 
-		" with ", +@parents, " parents.");
 	NOTE("Creating subclass ", $class_name, 
 		" with ", +@parents, " parents.");
 	my $meta := get_meta();
@@ -75,7 +87,6 @@ sub _class_info($class_name) {
 sub compile_default_multi($class_name, $multi_name, :$is_method) {
 	my $kind := $is_method ?? 'multimethod' !! 'multisub';
 
-say("Compile default multi: ", $class_name, " :: ", $multi_name);
 	NOTE("Compiling default ", $kind, " for: ", 
 		$class_name, " :: ", $multi_name);
 
@@ -150,7 +161,6 @@ sub compile_multi($class_name, $multi_name, *@param_types,
 	
 	$class_info<multisubs>{$multi_name}{$signature} := 1;
 	
-#say("Compile multi: ", $class_name, " :: ", $multi_name, "( ", $signature, ")");
 	trampoline($class_name, $multi_name, 
 		:actions(@actions),
 		:adverbs(":multi(" ~ $signature ~ ")"
@@ -195,16 +205,6 @@ sub find_method_named($class, $method) {
 	return $result;
 }
 
-sub get_meta() {
-	our $meta;
-	
-	unless Opcode::defined($meta) {
-		$meta := Opcode::new('P6metaclass');
-	}
-
-	return $meta;
-}
-
 sub get_method_list($obj) {
 	my $class := Class::of($obj);
 
@@ -228,7 +228,7 @@ sub multi_method($class_name, $multi_name, :$starting_with) {
 sub multi_sub($class_name, $multi_name, :$starting_with, :$is_method?) {
 	my $kind := $is_method ?? 'multimethod' !! 'multisub';
 	
-	say("Creating new ", $kind, " '", $multi_name, "' for class ", $class_name,
+	NOTE("Creating new ", $kind, " '", $multi_name, "' for class ", $class_name,
 		", out of methods starting with ", $starting_with);
 	
 	my $class_info	:= _class_info($class_name);
@@ -253,7 +253,6 @@ sub multi_sub($class_name, $multi_name, :$starting_with, :$is_method?) {
 		}
 	}
 
-#say("All matching trampolines built. Adding method to class.");
 	NOTE("All matching trampolines built. Adding method to class.");
 	my $multi_sub := $nsp{$multi_name};
 	
@@ -296,24 +295,6 @@ sub of($object) {
 	}
 	
 	return $class;
-}
-
-sub _pre_initload() {
-=sub
-	Special sub called when the Kakapo library is loaded or initialized.
-	This is to guarantee this module is available during :init and :load
-	processing for other modules.
-	
-=end
-
-	Global::use('Opcode');	# defined, die
-	Global::use('Dumper');
-	
-	Opcode::load_bytecode('P6object.pir');
-	
-	Class::BaseBehavior::_pre_initload();
-	Class::ArrayBased::_pre_initload();
-	Class::HashBased::_pre_initload();
 }
 
 sub signature(@types) {
@@ -392,6 +373,19 @@ sub trampoline($namespace, $name, :$target,
 	
 	my $trampoline := @code.join("\n");
 	NOTE("Trampoline is:\n", $trampoline);
-	Parrot::compile($trampoline);
+	Pir::compile($trampoline);
 	NOTE("Trampoline compiled okay.");
 }	
+
+### Moved to P6object.nqp
+
+sub get_meta() {
+	our $meta;
+	
+	unless Opcode::defined($meta) {
+		$meta := Opcode::new('P6metaclass');
+	}
+
+	return $meta;
+}
+

@@ -6,62 +6,47 @@ module Parrot;
 	Provides access to low-level functions of the Parrot VM.
 =end
 
-Global::use('Dumper');
+sub _pre_initload() {
+	Global::use('Dumper');
+
+	Global::export(
+		'call_method',	'call_method_', 
+		'call_sub',		'call_sub_', 
+		:tags('CALL')
+	);
+	
+	Global::export(
+		'caller_namespace', 
+		'namespace_name', 
+		:tags('NAMESPACE')
+	);
+}
+
 
 sub IMPORT($namespace, $names?) {
-	my $caller_nsp := caller_namespace(2);
-	my $from_nsp := get_namespace($namespace);
+	Opcode::die("IMPORT is dead. Use Global::use instead.");
+}
 
-	unless $from_nsp {
-		say("Namespace: ", $namespace);
-		Dumper::DUMP_($namespace);
-		Dumper::DUMP_($from_nsp);
+sub caller_namespace($index?) {
+	unless $index {
+		$index := 1;
 	}
 	
-	# Make sure the target namespace is finished loading
-	call_onload($from_nsp);
-	
-	my @names;
-	
-	if $names {
-		@names := $names.split(' ');
-	}
-	else {
-		for $from_nsp {
-			my $name := ~$_;
-			my $first_char := $name[0];
-			my $skip := 0;
+	my $nsp := Q:PIR {
+		.local pmc key
+		key = new 'Key'
+		key = 'namespace'
+		$P0 = find_lex '$index'
+		$S0 = $P0
+		$P1 = new 'Key'
+		$P1 = $S0
+		push key, $P1
 		
-			if $first_char eq '$' 
-				|| $first_char eq '@' 
-				|| $first_char eq '%'
-				|| $first_char eq '&'
-				|| $first_char eq '_' {
-				$skip := 1;
-			}
-			elsif String::substr($name, 0, 6) eq '_block' {
-				$skip := 1;
-			}
-			
-			unless $skip {
-				@names.push(~$_);
-			}
-		}
-	}
-
-	# NO OVERWRITING. 
-	my @new_names := Array::empty();
+		$P0 = getinterp
+		%r = $P0[ key ]
+	};
 	
-	for @names {
-		if $caller_nsp{~ $_} {
-			#say("I will not overwrite namespace entry: " ~ $_);
-		}
-		else {
-			@new_names.push(~ $_);
-		}
-	}
-	
-	$from_nsp.export_to($caller_nsp, @names);
+	return $nsp;
 }
 
 method call_method($method_name, *@args, *%opts) {
@@ -94,34 +79,6 @@ method call_method_($method_name, @args?, %opts?) {
 	};
 }
 
-sub call_onload($nsp) {
-	if my &onload := $nsp<_ONLOAD> {
-		&onload();
-	}
-}
-	
-sub caller_namespace($index?) {
-	unless $index {
-		$index := 1;
-	}
-	
-	my $nsp := Q:PIR {
-		.local pmc key
-		key = new 'Key'
-		key = 'namespace'
-		$P0 = find_lex '$index'
-		$S0 = $P0
-		$P1 = new 'Key'
-		$P1 = $S0
-		push key, $P1
-		
-		$P0 = getinterp
-		%r = $P0[ key ]
-	};
-	
-	return $nsp;
-}
-
 sub call_sub($sub_name, *@args, *%opts) {
 	return call_sub_($sub_name, @args, %opts);
 }
@@ -150,57 +107,34 @@ sub call_sub_($sub_name, @args, %opts) {
 	};
 }
 
-sub compile($string) {
-	
-	my $result := Q:PIR {
-		.local pmc comp
-		comp = compreg 'PIR'
-		
-		$P0 = find_lex '$string'
-		%r = comp($P0)
-	};
-	
-	return $result;
-}
-
 sub get_address_of($what) {
-	my $address := Q:PIR {
-		$P0 = find_lex '$what'
-		if null $P0 goto null_object
-		$I0 = get_addr $P0
-		goto done
-	null_object:
-		$I0 = 0
-	done:
-		%r = box $I0
-	};
-	return $address;
-}
-
-sub get_compiler() {
-	unless our $Parrot_compiler {
-		$Parrot_compiler := Q:PIR {
-			load_language 'parrot'
-			%r = compreg 'parrot'
-		};
-	}
-	
-	return $Parrot_compiler;
+	return Opcode::get_addr($what);
 }
 
 # _get_interpreter cached the interp. Moved to Opcode and dumbed down. Recode your stuff.
 
-sub get_sub($path) {
+sub get_sub($path, :$caller_nsp?) {
 	my @parts := $path.split('::');
 	my $name := @parts.pop;
+	my &sub;
+	
+	if +@parts == 0 {	# Check in caller nsp
+		unless $caller_nsp { $caller_nsp := caller_namespace(2); }
+		
+		&sub := $caller_nsp.find_sub($name);
+		
+		if Opcode::defined(&sub) {
+			return &sub;
+		}
+	}
+
 	my $namespace := Opcode::get_hll_namespace(@parts);
-	my $sub;
 	
 	if $namespace {
-		$sub := $namespace.find_sub($name);
+		&sub := $namespace.find_sub($name);
 	}
 	
-	return $sub;
+	return &sub;
 }
 
 sub key($first, *@parts) {
@@ -271,58 +205,4 @@ sub namespace_name($nsp) {
 	my @parts := $nsp.get_name;
 	@parts.shift;
 	return @parts.join('::');
-}
-
-module Parrot::Globals {
-
-	our %_Global_index;
-	
-	Q:PIR {
-		.include 'iglobals.pasm' 
-		
-		$P0 = new 'Hash'
-		
-		$P1 = box .IGLOBALS_CLASSNAME_HASH
-		$P0['IGLOBALS_CLASSNAME_HASH'] = $P1
-		
-		$P1 = box .IGLOBALS_COMPREG_HASH
-		$P0['IGLOBALS_COMPREG_HASH'] = $P1
-		
-		$P1 = box .IGLOBALS_ARGV_LIST
-		$P0['IGLOBALS_ARGV_LIST'] = $P1
-		
-		$P1 = box .IGLOBALS_NCI_FUNCS
-		$P0['IGLOBALS_NCI_FUNCS'] = $P1
-		
-		$P1 = box .IGLOBALS_INTERPRETER
-		$P0['IGLOBALS_INTERPRETER'] = $P1
-		
-		$P1 = box .IGLOBALS_DYN_LIBS
-		$P0['IGLOBALS_DYN_LIBS'] = $P1
-		
-		$P1 = box .IGLOBALS_CONFIG_HASH
-		$P0['IGLOBALS_CONFIG_HASH'] = $P1
-		
-		$P1 = box .IGLOBALS_LIB_PATHS
-		$P0['IGLOBALS_LIB_PATHS'] = $P1
-		
-		$P1 = box .IGLOBALS_PBC_LIBS
-		$P0['IGLOBALS_PBC_LIBS'] = $P1
-		
-		$P1 = box .IGLOBALS_EXECUTABLE
-		$P0['IGLOBALS_EXECUTABLE'] = $P1
-		
-		$P1 = box .IGLOBALS_SIZE
-		$P0['IGLOBALS_SIZE'] = $P1
-		
-		set_global '%_Global_index', $P0
-	};
-
-	sub _fetch($key) {
-		return Parrot::_get_interpreter()[$key];
-	}
-	
-	sub get_global($key) {
-		return _fetch(%_Global_index{$key});
-	}		
 }

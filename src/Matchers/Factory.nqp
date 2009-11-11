@@ -11,7 +11,6 @@ my $class_name := 'Matcher::Factory';
 
 # FIXME: The class is created only for the sake of multis, which I don't think require the class anymore. Check and if true get 
 # rid of the SUBCLASS call.
-say("Creating class ", $class_name);
 NOTE("Creating class ", $class_name);
 Class::SUBCLASS($class_name,
 	'Class::HashBased',

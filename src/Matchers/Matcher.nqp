@@ -28,7 +28,6 @@ Global::use('Dumper');
 
 my $class_name := 'Matcher';
 
-say("Creating class ", $class_name);
 NOTE("Creating class ", $class_name);
 Class::SUBCLASS($class_name,
 	'Class::HashBased',

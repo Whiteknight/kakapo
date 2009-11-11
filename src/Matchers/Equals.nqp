@@ -17,7 +17,6 @@ sub _initload() {
 	
 	my $class_name := 'Matcher::Equals';
 	
-	say("Creating class ", $class_name);
 	NOTE("Creating class ", $class_name);
 	Class::SUBCLASS($class_name,
 		'Matcher::TypeSafe'

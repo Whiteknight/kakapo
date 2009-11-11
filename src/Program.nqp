@@ -48,10 +48,6 @@ our $Main;
 our $Processing_init_queue;
 our $Processing_load_queue;
 
-if ! Opcode::defined($Main) {
-	$Main := 'main';
-}
-
 _pre_initload();
 
 sub add_call($queue, $call, %opts, $caller_nsp) {
@@ -142,6 +138,7 @@ sub call_main() {
 	C<main> sub returns, the result is passed to L<C< exit >>.
 =end
 
+say("Program::call_main");
 	process_queue($At_start_queue);
 
 	my $status := call($Main);
@@ -220,8 +217,8 @@ sub _pre_initload(*@modules_done) {
 	
 	$At_end_queue	:= DependencyQueue.new();
 	$At_start_queue	:= DependencyQueue.new();
-	$Init_queue	:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
-	$Load_queue	:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
+	$Init_queue		:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
+	$Load_queue		:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
 
 	if ! Opcode::defined($Main) {
 		$Main := 'main';
@@ -266,9 +263,12 @@ sub process_queue($q) {
 sub register_main($call) {
 =sub
 	Sets the C< main > function to call.
+	
+	FIXME: This should default to the namespace of the caller, and to 'main' in that nsp if not given.
 =end
 
 	if Opcode::defined($call) {
+	say("Registering main routine: ", $call);
 		$Main := $call;
 	}
 }

@@ -34,9 +34,23 @@ sub _pre_initload() {
 	# Global::_pre_initload();	# No such sub. Not needed. :)
 	Dumper::_pre_initload();
 	Opcode::_pre_initload();
+	Parrot::_pre_initload();
+	P6object::_pre_initload();
+	Pir::_pre_initload();
 	Class::_pre_initload();
+	Undef::_pre_initload();
 	DependencyQueue::_pre_initload();
-	Program::_pre_initload('Global', 'Dumper', 'Opcode', 'Class', 'DependencyQueue', 'Program');
+	Program::_pre_initload(
+		'Global', 
+		'Dumper', 
+		'Opcode', 
+		'Parrot', 
+		'Pir', 
+		'Class', 
+		'Undef',
+		'DependencyQueue', 
+		'Program',
+	);
 	
 	say("Kakapo _pre_initload done");
 }

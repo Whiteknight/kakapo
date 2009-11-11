@@ -8,6 +8,16 @@ Provides NQP-callable versions of various Parrot opcodes.
 (NOTE: A lot of the code here uses 'method' just to save a find_lex opcode. Don't take it personally.)
 =cut
 
+sub _pre_initload() {
+=sub
+	Kakapo startup function. Do the Global exports early, so that other modules can import these 
+	functions during their init processing.
+=end
+
+	Global::export(:tags('DEFAULT'),	'defined', 'die');
+	Global::export(:tags('TYPE'),		'can', 'does', 'get_class', 'isa', 'new', 'typeof');
+}
+
 sub backtrace() {
 	Q:PIR {
 		backtrace
@@ -107,6 +117,18 @@ method find_lex() {
 	return $result;
 }
 
+method get_addr() {
+	my $result := Q:PIR {
+		$I0 = 0
+		if null self goto done
+		$I0 = get_addr self
+	done:
+		%r = box $I0
+	};
+	
+	return $result;
+}
+
 method getattribute($name) {
 	my $result := Q:PIR {
 		$P0 = find_lex '$name'
@@ -155,7 +177,7 @@ sub get_hll_global($p1, $p2?) {
 	}
 	
 	my $name := @parts.pop;
-	
+
 	my $result := Q:PIR {
 		$P0 = find_lex '@parts'
 		$P1 = find_lex '$name'
@@ -218,9 +240,7 @@ sub get_namespace($p1?) {
 		};
 	}
 	else {
-		$result := Q:PIR {
-			%r = get_namespace
-		};
+		$result := Parrot::caller_namespace(3);
 	}
 	
 	return $result;
@@ -357,16 +377,6 @@ sub new($type, $init?) {
 	};
 	
 	return $result;
-}
-
-sub _pre_initload() {
-=sub
-	Kakapo startup function. Do the Global exports early, so that other modules can import these 
-	functions during their init processing.
-=end
-
-	Global::export(:tags('DEFAULT'),	'defined', 'die');
-	Global::export(:tags('TYPE'),		'can', 'does', 'get_class', 'isa', 'new', 'typeof');
 }
 
 method set_integer($value) {

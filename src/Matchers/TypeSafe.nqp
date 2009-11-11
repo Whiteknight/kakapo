@@ -6,7 +6,6 @@ module Matcher::TypeSafe;
 	Abstract class that handles type-safety and null/undef checking of its args.
 =end
 	
-say("*** Typesafe block13");
 Global::use('Dumper');
 Program::initload(:after('Matcher'));
 
@@ -16,7 +15,6 @@ sub _initload() {
 	
 	my $class_name := 'Matcher::TypeSafe';
 	
-	say("Creating class ", $class_name);
 	NOTE("Creating class ", $class_name);
 	Class::SUBCLASS($class_name,
 		'Matcher'

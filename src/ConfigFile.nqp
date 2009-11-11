@@ -1,13 +1,10 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-=module ConfigFile
-
-Queryable config settings file, must like Properties in Java.
-
-=cut 
-
 module ConfigFile;
+=module
+	Queryable config settings file, must like Properties in Java.
+=cut 
 
 Global::use('Dumper');
 

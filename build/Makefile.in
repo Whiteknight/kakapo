@@ -40,7 +40,6 @@ ALL_LIB_PIRS =		\
 ALL_TESTS =		\
 	test-array		\
 	test-global		\
-	test-mq		\
 	test-parrot		\
 	test-program		\
 	test-rpa		\
@@ -51,17 +50,18 @@ BASE_LIB_PIRS = 		\
 	src/Classes/ArrayBased.pir	\
 	src/Classes/BaseBehavior.pir \
 	src/Classes/HashBased.pir	\
+	src/Classes/P6object.pir	\
 	src/ConfigFile.pir		\
 	src/DependencyQueue.pir \
 	src/Dumper.pir		\
 	src/Global.pir		\
 	src/Kakapo.pir		\
-	src/LimitedPair.pir 	\
-	src/ManagedQueue.pir	\
+	src/LimitedPair.pir 		\
 	src/Parrot.pir 		\
 	src/Parrot/Opcode.pir 	\
+	src/Pir.pir 			\
 	src/Pmc/Array.pir		\
-	src/Pmc/Config.pir	\
+	src/Pmc/Config.pir		\
 	src/Pmc/File.pir		\
 	src/Pmc/Hash.pir		\
 	src/Pmc/OS.pir		\
@@ -73,7 +73,6 @@ BASE_LIB_PIRS = 		\
 
 GENERATED_FILES =		\
 	$(ALL_LIB_PIRS)		\
-	library/kakapo.pir		\
 	library/kakapo_base.pir	\
 	library/kakapo_test.pir	\
 	$(LIBRARY_PBCS)
@@ -82,7 +81,6 @@ KRT0 = \
 	library/krt0.pbc
 	
 LIBRARY_PBCS =			\
-	library/kakapo.pbc		\
 	library/kakapo_base.pbc	\
 	library/kakapo_test.pbc		\
 	$(KRT0)
@@ -163,7 +161,7 @@ help:
 	@echo "The following targets are available for the user:"
 	@echo ""
 	@echo "  all:               build (This is the default target.)"
-	@echo "  build:             kakapo.cfg library/kakapo.pbc (+2 others)"
+	@echo "  build:             kakapo.cfg library/kakapo_*.pbc"
 	@echo ""
 	@echo "Testing:"
 	@echo "  test:              Run the test suite."
@@ -182,22 +180,16 @@ kakapo.cfg:
 #IF(win32):	IF NOT EXIST kakapo.cfg $(CP) kakapo_cfg.tmpl kakapo.cfg
 #IF(not(win32)):	if [ ! -f kakapo.cfg ]; then $(CP) kakapo_cfg.tmpl kakapo.cfg ; fi
 
-library/kakapo.pir: $(ALL_LIB_PIRS) src/kakapo_top.pir src/kakapo_bottom.pir Makefile
-	cat src/kakapo_top.pir $(ALL_LIB_PIRS) src/kakapo_bottom.pir > $@
-
 library/kakapo_base.pir: $(BASE_LIB_PIRS) src/kakapo_top.pir src/kakapo_bottom.pir Makefile
 	cat src/kakapo_top.pir $(BASE_LIB_PIRS) src/kakapo_bottom.pir > $@
 
-library/kakapo_test.pir: $(TEST_LIB_PIRS) src/kakapo_top.pir src/kakapo_bottom.pir Makefile
-	cat src/kakapo_top.pir $(TEST_LIB_PIRS) src/kakapo_bottom.pir > $@
+library/kakapo_test.pir: $(BASE_LIB_PIRS) $(TEST_LIB_PIRS) src/kakapo_top.pir src/kakapo_bottom.pir Makefile
+	cat src/kakapo_top.pir $(BASE_LIB_PIRS) $(TEST_LIB_PIRS) src/kakapo_bottom.pir > $@
 
 library/krt0.pir: src/krt0.pir
 	$(CP) src/krt0.pir $@
 
 install:
-	# install kakapo main
-	$(CP) library/kakapo.pbc $(LIB_DIR)/library/kakapo.pbc
-	$(CHMOD) 0444 $(LIB_DIR)/library/kakapo.pbc
 	# install kakapo_base
 	$(CP) library/kakapo_base.pbc $(LIB_DIR)/library/kakapo_base.pbc
 	$(CHMOD) 0444 $(LIB_DIR)/library/kakapo_base.pbc
@@ -216,7 +208,6 @@ realclean: clean
 
 release: build
 	-$(MKPATH) released
-	$(CP) library/kakapo.pir released/kakapo.pir
 	$(CP) library/kakapo_base.pir released/kakapo_base.pir
 	$(CP) library/kakapo_test.pir released/kakapo_test.pir
 	$(CP) library/krt0.pir released/krt0.pir
@@ -240,9 +231,6 @@ test-array: build t/Array.pir
 test-global: build t/Global.pir
 	$(PARROT) $(PARROT_FLAGS) t/Global.pir
 
-test-mq: build t/ManagedQueue.pir
-	$(PARROT) $(PARROT_FLAGS) t/ManagedQueue.pir
-
 test-parrot: build t/Parrot.pir
 	$(PARROT) $(PARROT_FLAGS) t/Parrot.pir
 
@@ -253,22 +241,30 @@ test-rpa: build t/ResizablePMCArray.pir
 	$(PARROT) $(PARROT_FLAGS) t/ResizablePMCArray.pir
 
 test-rsa: build $(KRT0) t/test-rsa.pbc
-	$(PARROT) $(PARROT_FLAGS) -Llibrary t/test-undef.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/test-rsa.pbc
 
 t/test-rsa.pbc: t/ResizableStringArray.pbc	
 	$(LINK) --output=$@ $(KRT0) t/ResizableStringArray.pbc
 
-test-undef: build t/test-undef.pbc
-	$(PARROT) $(PARROT_FLAGS) -Llibrary t/test-undef.pbc
+test-undef: build t/Pmc/test-undef.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/test-undef.pbc
 
-t/test-undef.pbc: $(KRT0)  t/Undef.pbc src/kakapo_bottom.pbc
-	$(LINK) --output=$@ $(KRT0) t/Undef.pbc src/kakapo_bottom.pbc
+t/Pmc/test-undef.pbc: $(KRT0)  t/Pmc/Undef.pbc
+	$(LINK) --output=$@ $(KRT0) t/Pmc/Undef.pbc
+
+test-attributes: t/Classes/test-Attributes.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Classes/test-Attributes.pbc
+	
+t/Classes/test-Attributes.pbc: $(KRT0) t/Classes/Attributes.pbc
+	$(LINK) --output=$@ $(KRT0) t/Classes/Attributes.pbc
+
+t/test-exp.pbc: t/test.pbc
+	$(LINK) --output=$@ $(KRT0) t/test.pbc $(KRT9)
 	
 testclean:
 	$(RM_F) $(TEST_CLEANUPS)
 
 uninstall:
-	$(RM_F) $(LIB_DIR)/library/kakapo.pbc
 	$(RM_F) $(LIB_DIR)/library/kakapo_base.pbc
 	$(RM_F) $(LIB_DIR)/library/kakapo_test.pbc
 	$(RM_RF) $(DOC_DIR)/kakapo

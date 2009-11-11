@@ -1,19 +1,21 @@
 module DependencyQueue;
 =module
-Always after.
 
-Program::_initload(:after(...)) as before
-
-always store the constraints
-
-process the constraints in a bunch
-
-save each key in an "already run" cache
-
-reset the q completely after processing.
+	A queue that orders its entries according to their prerequisites.
+	
 =end
 
 _pre_initload();
+
+sub _pre_initload() {
+	if our $_Pre_initload_done { return 0; }
+	$_Pre_initload_done := 1;
+	
+	Global::use('Dumper');
+	
+	Class::SUBCLASS('DependencyQueue', 
+		'Class::HashBased');
+}
 
 method added(*@value)		{ self._ATTR_HASH('added', @value); }
 method already_done(*@value)	{ self._ATTR_HASH('already_done', @value); }
@@ -65,22 +67,11 @@ method next() {
 
 	if self.queue.elements {
 		my $node := self.queue.shift;
-say("Next node: ", $node[0]);
 		self.mark_as_done($node[0]);
 		return $node[1];
 	}
 	
 	return my $undef;
-}
-
-sub _pre_initload() {
-	if our $_Pre_initload_done { return 0; }
-	$_Pre_initload_done := 1;
-	
-	Global::use('Dumper');
-	
-	Class::SUBCLASS('DependencyQueue', 
-		'Class::HashBased');
 }
 
 method reset() {

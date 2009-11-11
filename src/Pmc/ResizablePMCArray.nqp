@@ -11,8 +11,9 @@ Global::use('Dumper');
 # method append(@other) - built in
 method clone()				{ Opcode::clone(self); }
 method contains($what)			{ Array::contains(self, $what); }
-method delete($key)				{ Opcode::delete(self, $key); }
-method elements(*@value)			{ Array::elements_(self, @value); }
+method defined()				{ 1 }
+method delete($key)			{ Opcode::delete(self, $key); }
+method elements(*@value)		{ Array::elements_(self, @value); }
 method isa($type)				{ Opcode::isa(self, $type); }
 		
 method join(*@delim) {

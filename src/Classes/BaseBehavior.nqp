@@ -8,6 +8,35 @@ module Class::BaseBehavior;
 
 our @No_args;
 
+sub _pre_initload() {
+=sub
+	Special sub called when the Kakapo library is loaded or initialized. This is to guarantee 
+	this module is available during :init and :load processing for other modules.
+=end
+
+	Global::use('Dumper');
+	
+	@No_args := Array::empty();
+
+	my $get_bool := "
+.namespace [ 'Class' ; 'BaseBehavior' ]
+.sub '__get_bool' :vtable('get_bool') :method
+	$I0 = self.'get_bool'()
+	.return ($I0)
+.end";
+	Pir::compile($get_bool);
+	
+	my $get_string := "
+.namespace [ 'Class' ; 'BaseBehavior' ]
+.sub '__get_string' :vtable('get_string') :method
+	$S0 = self.'get_string'()
+	.return ($S0)
+.end";
+	Pir::compile($get_string);
+	
+	Class::NEW_CLASS('Class::BaseBehavior');
+}
+
 method _ABSTRACT_METHOD() {
 	DIE("A subclass must override this abstract method.");
 }
@@ -98,35 +127,4 @@ method new(*@children, *%attributes) {
 	# along flat args.
 	$new_object.init(@children, %attributes);
 	return $new_object;
-}
-
-sub _pre_initload() {
-=sub
-	Special sub called when the Kakapo library is loaded or initialized.
-	This is to guarantee this module is available during :init and :load
-	processing for other modules.
-	
-=end
-
-	Global::use('Dumper');
-	
-	@No_args := Array::empty();
-
-	my $get_bool := "
-.namespace [ 'Class' ; 'BaseBehavior' ]
-.sub '__get_bool' :vtable('get_bool') :method
-	$I0 = self.'get_bool'()
-	.return ($I0)
-.end";
-	Parrot::compile($get_bool);
-	
-	my $get_string := "
-.namespace [ 'Class' ; 'BaseBehavior' ]
-.sub '__get_string' :vtable('get_string') :method
-	$S0 = self.'get_string'()
-	.return ($S0)
-.end";
-	Parrot::compile($get_string);
-	
-	Class::NEW_CLASS('Class::BaseBehavior');
 }

@@ -16,7 +16,6 @@ sub _initload() {
 	
 	my $class_name := 'Matcher::AnyOne';
 	
-	say("Creating class ", $class_name);
 	NOTE("Creating class ", $class_name);
 	Class::SUBCLASS($class_name,
 		'Matcher'

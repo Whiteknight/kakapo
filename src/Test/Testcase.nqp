@@ -1,19 +1,53 @@
-module Testcase;
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-Global::use('Dumper');
+module Testcase;
+=module
+	An xUnit-like testcase class for NQP.
+	
+=SYNOPSIS
+
+	# mytest.nqp
+	class My::Test;
+
+	Global::use(		'P6object' );
+	
+	My::Test.is(		'Testcase' );
+	# My::Test.has(	attrs ...);
+	
+	My::Test.run_all_tests();
+	
+	method test_something() {
+		my @results;
+	
+		self.test(	'Something should happen'
+		).assert(
+			that('Results array', @results, is( empty() )),
+			that('Happening indicator', System::it_happened(), is( false() )),
+		).do(
+			@results := System::do_something(),
+		).assert(
+			that('Results array', @results, is( not( empty() ) )),
+			that('Element [0]', @results[0], is( 'x1' )),
+			that('Element [1]', @results[1], is( 'x2' )),
+		);		
+	}	
+=end
+
+Global::use(	'Dumper' );
+Global::use(	'P6object' );
 	
 my $class_name := 'Testcase';
-say("Creating class ", $class_name);
-NOTE("Creating class ", $class_name);
+
 Class::SUBCLASS($class_name,
 	'Class::HashBased',
 );
-		
-NOTE("done");
+
+say("Testcase is defined");
 
 method after_methods(*@value)		{ self._ATTR_SETBY('after_methods', 'fetch_after_methods'); }	
-method after_prefix(*@value)			{ self._ATTR_DEFAULT('after_prefix', @value, 'after_'); }	
-method afterall_methods(*@value)		{ self._ATTR_SETBY('afterall_methods', 'fetch_afterall_methods'); }	
+method after_prefix(*@value)		{ self._ATTR_DEFAULT('after_prefix', @value, 'after_'); }	
+method afterall_methods(*@value)	{ self._ATTR_SETBY('afterall_methods', 'fetch_afterall_methods'); }	
 method afterall_prefix(*@value)		{ self._ATTR_DEFAULT('afterall_prefix', @value, 'afterall_'); }	
 
 method assert_that($item_desc, *@item) {
@@ -38,10 +72,10 @@ method assert_that($item_desc, *@item) {
 
 method before_methods(*@value)		{ self._ATTR_SETBY('before_methods', 'fetch_before_methods'); }	
 method before_prefix(*@value)		{ self._ATTR_DEFAULT('before_prefix', @value, 'before_'); }	
-method beforeall_methods(*@value)		{ self._ATTR_SETBY('beforeall_methods', 'fetch_beforeall_methods'); }	
+method beforeall_methods(*@value)	{ self._ATTR_SETBY('beforeall_methods', 'fetch_beforeall_methods'); }	
 method beforeall_prefix(*@value)		{ self._ATTR_DEFAULT('beforeall_prefix', @value, 'beforeall_'); }	
 
-method emit(*@parts)				{ say(@parts.join); }
+method emit(*@parts)			{ say(@parts.join); }
 
 method note(*@message) {
 	self.emit(
@@ -166,17 +200,3 @@ method run_tests(*@names) {
 method test_counter(*@value)		{ self._ATTR_CONST('test_counter', @value); }	
 method test_methods()			{ self._ATTR_SETBY('test_methods', 'fetch_test_methods'); }	
 method test_prefix(*@value)		{ self._ATTR_DEFAULT('test_prefix', @value, 'test_'); }	
-
-=for nextTime
-	self.test('queue runs in correct order'
-	).assert(
-		that('Results array', @results, is(empty())
-		that('Results array', @results, is(empty()))
-	).do(
-		Program::process_init_queue();
-	).assert(
-		that('Results array[0]', @results[0], is('x1')),
-		that('Results array[1]', @results[1], is('x2')),
-	).done;
-	
-=cut
