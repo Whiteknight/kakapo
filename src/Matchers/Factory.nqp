@@ -48,7 +48,7 @@ sub export_sub($sub, :$as, :$tags?) {
 
 sub empty()				{ return Matcher::Empty.new(); }
 
-sub _equals_Float($value)		{ return Matcher::IsCloseTo.new($value); }
+sub _equals_Float($value)		{ return Matcher::EqualsFloat.new($value); }
 sub _equals_Integer($value)	{ return Matcher::Equals.new($value, :match_type('Integer')); }
 sub _equals_String($value)		{ return Matcher::Equals.new($value, :match_type('String')); }
 sub _equals_ResizablePMCArray($value) { return Matcher::EqualsArray.new($value); }

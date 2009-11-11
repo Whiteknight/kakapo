@@ -17,7 +17,7 @@ Test cases for Kakapo's Undef add-in methods.
 Class::SUBCLASS('Kakapo::Test::Undef', 
 	'Testcase');
 
-Global::use('Matcher::Factory');
+Global::use('Matcher::Factory');	# is(), not(), etc.
 
 method test_defined() {
 	self.assert_that('undef', Undef.new(), is(not(defined())));

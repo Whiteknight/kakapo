@@ -3,9 +3,7 @@
 
 module Program;
 =module
-
 Provides a conventional framework for program execution. 
-
 =end
 
 =begin SYNOPSIS
@@ -132,13 +130,12 @@ sub call($call) {
 }
 
 sub call_main() {
-=sub 
+=sub 	:INTERNAL
 	Executes the calls registered in the L<C< at_start >> queue, then
 	runs the C<main> sub registered via L<C< register_main >>. If the
 	C<main> sub returns, the result is passed to L<C< exit >>.
 =end
 
-say("Program::call_main");
 	process_queue($At_start_queue);
 
 	my $status := call($Main);

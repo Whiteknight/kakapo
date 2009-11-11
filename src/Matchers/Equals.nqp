@@ -3,7 +3,7 @@
 
 module Matcher::Equals;
 =module
-	TypeSafe matcher that matches if the target is the same as a preset value.
+TypeSafe matcher that matches if the target is the same as a preset value.
 =end
 
 Global::use('Dumper');
@@ -32,9 +32,9 @@ method describe_self($description) {
 		~ " equal to '" ~ self.value ~ "'";
 }
 
-sub _factory_Float($value)		{ factory(Matcher::EqualsFloat.new($value)); }
+sub _factory_Float($value)			{ factory(Matcher::EqualsFloat.new($value)); }
 sub _factory_Integer($value)		{ factory(Matcher::Equals.new($value, :match_type('Integer'))); }
-sub _factory_Matcher($matcher)	{ Matcher::DescribedAs.new('is', $matcher); }
+sub _factory_Matcher($matcher)		{ Matcher::DescribedAs.new('is', $matcher); }
 sub _factory_String($value)		{ factory(Matcher::Equals.new($value, :match_type('String'))); }
 
 method find_match_type($item) {

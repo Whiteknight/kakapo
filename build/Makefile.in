@@ -92,18 +92,18 @@ TEST_LIB_PIRS =			\
 	src/Matchers/Boolean.pir	\
 	src/Matchers/Defined.pir	\
 	src/Matchers/DescribedAs.pir	\
+	src/Matchers/Elements.pir	\
+	src/Matchers/Empty.pir		\
 	src/Matchers/Equals.pir		\
+	src/Matchers/EqualsArray.pir	\
+	src/Matchers/EqualsFloat.pir	\
 	src/Matchers/Factory.pir	\
+	src/Matchers/InstanceOf.pir	\
 	src/Matchers/Matcher.pir	\
 	src/Matchers/Not.pir		\
 	src/Matchers/TypeSafe.pir
 	
-	# src/Matchers/Elements.pir	\
-	# src/Matchers/Empty.pir		\
-	# src/Matchers/EqualsArray.pir	\
-	# src/Matchers/EqualsFloat.pir	\
 	# src/Matchers/IdenticalTo.pir	\
-	# src/Matchers/InstanceOf.pir	\
 	
 	# src/Matchers/Null.pir		\
 	# src/Matchers/True.pir		\
@@ -225,8 +225,8 @@ test: build $(ALL_TESTS)
 # Individual test-foo targets 
 #----------------------------------------------------------------------
 
-test-array: build t/Array.pir
-	$(PARROT) $(PARROT_FLAGS) t/Array.pir
+test-array: build t/Pmc/test-array.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/test-array.pbc
 
 test-global: build t/Global.pir
 	$(PARROT) $(PARROT_FLAGS) t/Global.pir
@@ -237,29 +237,33 @@ test-parrot: build t/Parrot.pir
 test-program: build t/Program.pir
 	$(PARROT) $(PARROT_FLAGS) t/Program.pir
 
-test-rpa: build t/ResizablePMCArray.pir
-	$(PARROT) $(PARROT_FLAGS) t/ResizablePMCArray.pir
+test-rpa: build t/Pmc/test-rpa.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/test-rpa.pbc
 
-test-rsa: build $(KRT0) t/test-rsa.pbc
-	$(PARROT) $(PARROT_FLAGS) -Llibrary t/test-rsa.pbc
-
-t/test-rsa.pbc: t/ResizableStringArray.pbc	
-	$(LINK) --output=$@ $(KRT0) t/ResizableStringArray.pbc
+test-rsa: build $(KRT0) t/Pmc/test-rsa.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/test-rsa.pbc
 
 test-undef: build t/Pmc/test-undef.pbc
 	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/test-undef.pbc
 
-t/Pmc/test-undef.pbc: $(KRT0)  t/Pmc/Undef.pbc
-	$(LINK) --output=$@ $(KRT0) t/Pmc/Undef.pbc
-
 test-attributes: t/Classes/test-Attributes.pbc
 	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Classes/test-Attributes.pbc
-	
+
 t/Classes/test-Attributes.pbc: $(KRT0) t/Classes/Attributes.pbc
 	$(LINK) --output=$@ $(KRT0) t/Classes/Attributes.pbc
 
-t/test-exp.pbc: t/test.pbc
-	$(LINK) --output=$@ $(KRT0) t/test.pbc $(KRT9)
+	
+t/Pmc/test-array.pbc: $(KRT0) t/Pmc/Array.pbc
+	$(LINK) --output=$@ $(KRT0) t/Pmc/Array.pbc
+	
+t/Pmc/test-rpa.pbc: $(KRT0) t/Pmc/ResizablePMCArray.pbc
+	$(LINK) --output=$@ $(KRT0) t/Pmc/ResizablePMCArray.pbc
+	
+t/Pmc/test-rsa.pbc: $(KRT0) t/Pmc/ResizableStringArray.pbc	
+	$(LINK) --output=$@ $(KRT0) t/Pmc/ResizableStringArray.pbc
+
+t/Pmc/test-undef.pbc: $(KRT0)  t/Pmc/Undef.pbc
+	$(LINK) --output=$@ $(KRT0) t/Pmc/Undef.pbc
 	
 testclean:
 	$(RM_F) $(TEST_CLEANUPS)

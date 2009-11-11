@@ -1,30 +1,25 @@
-=file t/Array.nqp
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-Test the Array component of the Kakapo library.
+sub main() {
+	Kakapo::Test::Array.run_tests();
+	Program::exit(0);
+}
 
-=cut
+module Kakapo;
+
+sub library_name()		{ 'kakapo_test.pbc' }
 
 module Kakapo::Test::Array;
+=module
+Test cases for Array methods
+=end
 
-Q:PIR { load_bytecode 'library/kakapo.pbc' };
+Class::SUBCLASS('Kakapo::Test::Array',
+	'Testcase',
+);	
 
-_ONLOAD();
-
-Kakapo::Test::Array.run_all_tests;
-
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;
-	
-	Parrot::IMPORT('Matcher::Factory');
-	
-	my $class_name := 'Kakapo::Test::Array';
-	
-	NOTE("Creating class ", $class_name);
-	Class::SUBCLASS($class_name,
-		'Testcase',
-	);	
-}
+Global::use('Matcher::Factory');
 
 method test_bsearch() {
 	

@@ -1,17 +1,27 @@
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
 module Matcher::Empty;
+=module
+Matches if target is an instance of a pre-specified class.
+=end
 
+	
 Global::use('Dumper');
-Global::use('Opcode');
+Program::initload(:after('Matcher::TypeSafe'));
+Matcher::Factory::export_sub(Matcher::Empty::factory, :as('empty'));
 
-my $class_name := 'Matcher::Empty';
 
-NOTE("Creating class ", $class_name);
+sub _initload() {
+	if our $_Initload_done { return 0; }
+	$_Initload_done := 1;
+			
+	my $class_name := 'Matcher::Empty';
 
-Class::SUBCLASS($class_name,
-	'Matcher::TypeSafe'
-);
-		
-NOTE("done");
+	Class::SUBCLASS($class_name,
+		'Matcher::TypeSafe'
+	);
+}
 
 method describe_failure($item, $description) {
 	return $description ~ 'had type: ' ~ Opcode::typeof($item);
