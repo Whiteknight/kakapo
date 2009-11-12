@@ -24,6 +24,7 @@ method test_attribute_accessors() {
 	$obj.a("apple");
 	$obj.b("banana");
 	
+	say("Attributes set");
 	self.assert_that('test object.a', $obj.a, is("apple"));
 	self.assert_that('test object.b', $obj.b, is("banana"));
 }
@@ -32,8 +33,8 @@ method test_initializer() {
 	my $obj := Kakapo::Test::Aclass.new(:a('albatross'), :b('byzantine'));
 
 	# Doesn't work because of wrong 'new' method.
-#	assert_that($obj.a, is("albatross"));
-#	assert_that($obj.b, is("byzantine"));
+	self.assert_that('test object.a', $obj.a, is("albatross"));
+	self.assert_that('test object.b', $obj.b, is("byzantine"));
 }
 
 

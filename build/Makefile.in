@@ -185,8 +185,8 @@ library/kakapo_base.pir: $(BASE_LIB_PIRS) src/kakapo_top.pir src/kakapo_bottom.p
 library/kakapo_test.pir: $(BASE_LIB_PIRS) $(TEST_LIB_PIRS) src/kakapo_top.pir src/kakapo_bottom.pir Makefile
 	cat src/kakapo_top.pir $(BASE_LIB_PIRS) $(TEST_LIB_PIRS) src/kakapo_bottom.pir > $@
 
-library/krt0.pir: src/krt0.pir
-	$(CP) src/krt0.pir $@
+library/krt0.pir: src/krt0_pir.tmpl
+	$(CP) src/krt0_pir.tmpl $@
 
 install:
 	# install kakapo_base
@@ -212,10 +212,10 @@ release: build
 	$(CP) library/krt0.pir released/krt0.pir
 	
 src/kakapo_bottom.pir: src/kakapo_bottom_pir.tmpl
-	$(CP) $< $@
+	$(CP) src/kakapo_bottom_pir.tmpl $@
 	
 src/kakapo_top.pir: src/kakapo_top_pir.tmpl
-	$(CP) $< $@
+	$(CP) src/kakapo_top_pir.tmpl $@
 
 test: build $(ALL_TESTS)
 	$(PARROT) $(PARROT_FLAGS) t/Parrot.pir

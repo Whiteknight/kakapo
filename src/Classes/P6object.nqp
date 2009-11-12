@@ -220,3 +220,20 @@ sub _pre_initload() {
 
 	Global::export('declare', 'extends', 'has', 'has_vtable');
 }
+
+module P6protoobject {
+
+	method new(*@pos, *%opt) {
+		my $parrotclass := Opcode::getattribute(self.HOW, 'parrotclass');
+		my $new_object := Opcode::new($parrotclass);
+
+		if Opcode::can($new_object, 'init_') {
+			$new_object.init_(@pos, %opt);
+		}
+		elsif Opcode::can($new_object, 'init') {
+			Parrot::call_method_($new_object, 'init', @pos, %opt);
+		}
+		
+		return $new_object;
+	}
+}
