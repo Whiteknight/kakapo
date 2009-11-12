@@ -16,7 +16,9 @@ method contains($key) {
 	
 	return $result;
 }
-	
+
+method defined()			{ 1 }
+
 method delete($key) {
 	Q:PIR {
 		$P0 = find_lex 'self'

@@ -51,6 +51,4 @@ sub _pre_initload() {
 		'DependencyQueue', 
 		'Program',
 	);
-	
-	say("Kakapo _pre_initload done");
 }

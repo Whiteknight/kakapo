@@ -20,8 +20,6 @@ sub _initload() {
 	Class::SUBCLASS($class_name,
 		'Matcher'
 	);
-	
-	say($class_name, " initload done");
 }
 
 method describe_failure($item, $description) {

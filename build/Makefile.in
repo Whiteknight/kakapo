@@ -31,17 +31,14 @@ PBC_TO_EXE    := $(BIN_DIR)/pbc_to_exe@exe@
 COMPILE_pg	:= $(PARROT) $(PARROT_ARGS) $(PERL6GRAMMAR)
 COMPILE_nqp	:= $(PARROT_NQP)
 COMPILE_pir	:= $(PARROT) $(PARROT_ARGS)
-STRIP_PIRA		:= grep -v '^.annotate'
-
-ALL_LIB_PIRS =		\
-	$(BASE_LIB_PIRS)	\
-	$(TEST_LIB_PIRS)
+STRIP_PIRA	:= grep -v '^.annotate'
 
 ALL_TESTS =		\
 	test-array		\
+	test-attributes	\
 	test-global		\
 	test-parrot		\
-	test-program		\
+	test-program	\
 	test-rpa		\
 	test-rsa
 
@@ -64,6 +61,7 @@ BASE_LIB_PIRS = 		\
 	src/Pmc/Config.pir		\
 	src/Pmc/File.pir		\
 	src/Pmc/Hash.pir		\
+	src/Pmc/Namespace.pir	\
 	src/Pmc/OS.pir		\
 	src/Pmc/ResizablePMCArray.pir \
 	src/Pmc/ResizableStringArray.pir \
@@ -72,7 +70,8 @@ BASE_LIB_PIRS = 		\
 	src/Program.pir
 
 GENERATED_FILES =		\
-	$(ALL_LIB_PIRS)		\
+	$(BASE_LIB_PIRS)	\
+	$(TEST_LIB_PIRS)	\
 	library/kakapo_base.pir	\
 	library/kakapo_test.pir	\
 	$(LIBRARY_PBCS)
@@ -246,7 +245,7 @@ test-rsa: build $(KRT0) t/Pmc/test-rsa.pbc
 test-undef: build t/Pmc/test-undef.pbc
 	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/test-undef.pbc
 
-test-attributes: t/Classes/test-Attributes.pbc
+test-attributes: build t/Classes/test-Attributes.pbc
 	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Classes/test-Attributes.pbc
 
 #----------------------------------------------------------------------

@@ -43,8 +43,6 @@ Class::SUBCLASS($class_name,
 	'Class::HashBased',
 );
 
-say("Testcase is defined");
-
 method after_methods(*@value)		{ self._ATTR_SETBY('after_methods', 'fetch_after_methods'); }	
 method after_prefix(*@value)		{ self._ATTR_DEFAULT('after_prefix', @value, 'after_'); }	
 method afterall_methods(*@value)	{ self._ATTR_SETBY('afterall_methods', 'fetch_afterall_methods'); }	
