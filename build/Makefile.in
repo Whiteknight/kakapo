@@ -102,10 +102,9 @@ TEST_LIB_PIRS =			\
 	src/Matchers/Not.pir		\
 	src/Matchers/TypeSafe.pir
 	
-	# src/Matchers/IdenticalTo.pir	\
-	
-	# src/Matchers/Null.pir		\
-	# src/Matchers/True.pir		\
+#	src/Matchers/IdenticalTo.pir	\	
+#	src/Matchers/Null.pir		\
+#	src/Matchers/True.pir		\
 
 #######################################################################
 ##### Implicit rules here 
