@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module ConfigFile;
-=module
-	Queryable config settings file, must like Properties in Java.
-=cut 
+# Queryable config settings file, must like Properties in Java.
 
-Global::use('Dumper');
+use('Dumper');
 
 Class::SUBCLASS('ConfigFile',
 	'Class::HashBased');	
@@ -28,23 +26,12 @@ $config.store('Dump::Opcode::defined', 7);
 
 NOTE("ConfigFile::_onload: done");
 
-=method file($filename?)
-
-Gets or sets the file used by this object. If no C< $filename > is given, just 
-returns the current filename. Else, if the specified filename is different from
-the current one, the new file is read in, parsed, and replaces the current
-config data.
-
-=for depends
-	ConfigFile::parse_config
-	File::slurp
-	Hash::empty
-	Dumper::NOTE
-	Dumper::DUMP
-	
-=end
-
 method file($filename?) {
+# Gets or sets the file used by this object. If no C< $filename > is given, just 
+# returns the current filename. Else, if the specified filename is different from
+# the current one, the new file is read in, parsed, and replaces the current
+# config data.
+
 	if $filename && self<_filename> ne $filename {
 		NOTE("Reading filename: ", $filename);
 		my $data := File::slurp($filename);
@@ -57,40 +44,20 @@ method file($filename?) {
 	return self<_filename>;
 }
 
-=method init(@args, %opts)
-
-New object initialization method, called by C< .new() >.
-
-=for depends
-	none
-	
-=end
-
 method init(@args, %opts) {
+# New object initialization method, called by C< .new() >.
+
 	self<_filename> := '<no filename set>';
 	
 	# There is no parent .init
 	return self;
 }
 
-=method parse_config($data)
-
-Parses a string C< $data > containing the 'config file' contents. Blank lines 
-and lines beginning with '#' are ignored, other lines are processed as 
-key = value pairs.
-
-=for depends
-	ConfigFile::store
-	Dumper::DUMP
-	Dumper::NOTE
-	String::split
-	String::trim
-	String::length
-	ResizablePMCArray.join
-
-=end
-
 method parse_config($data) {
+# Parses a string C< $data > containing the 'config file' contents. Blank lines 
+# and lines beginning with '#' are ignored, other lines are processed as 
+# key = value pairs.
+
 	my @lines := $data.split("\n");
 	DUMP(@lines);
 	
@@ -126,18 +93,10 @@ method parse_config($data) {
 	DUMP(self);
 }
 
-=method query(*@keys)
-
-Looks up the entry indicated by joining the various C<@keys> with '::'. That 
-is, C< query('A', 'B') > looks up the config entry stored as 'A::B'.
-
-=for depends
-	ResizablePMCArray::join
-	Dumper::NOTE
-	
-=end
-
 method query(*@keys) {
+# Looks up the entry indicated by joining the various C<@keys> with '::'. That 
+# is, C< query('A', 'B') > looks up the config entry stored as 'A::B'.
+
 	my $key := @keys.join('::');
 	NOTE('Querying for key: ', $key);
 	
@@ -147,16 +106,9 @@ method query(*@keys) {
 	return $value;
 }
 
-=method store($key, $value)
-
-Stores the given C< $value > for C< $key >.
-
-=for depends
-	Dumper::NOTE
-	
-=end
-
 method store($key, $value) {
+# Stores the given C< $value > for C< $key >.
+
 	NOTE("ConfigFile: Storing key '", $key, "' value: ", $value);
 	return self<_data>{$key} := $value;
 }

@@ -1,21 +1,7 @@
 module DependencyQueue;
-=module
-
-	A queue that orders its entries according to their prerequisites.
-	
-=end
+# A queue that orders its entries according to their prerequisites.
 
 _pre_initload();
-
-sub _pre_initload() {
-	if our $_Pre_initload_done { return 0; }
-	$_Pre_initload_done := 1;
-	
-	Global::use('Dumper');
-	
-	Class::SUBCLASS('DependencyQueue', 
-		'Class::HashBased');
-}
 
 method added(*@value)		{ self._ATTR_HASH('added', @value); }
 method already_done(*@value)	{ self._ATTR_HASH('already_done', @value); }
@@ -74,6 +60,16 @@ method next() {
 	return my $undef;
 }
 
+sub _pre_initload() {
+	if our $_Pre_initload_done { return 0; }
+	$_Pre_initload_done := 1;
+	
+	use('Dumper');
+	
+	Class::SUBCLASS('DependencyQueue', 
+		'Class::HashBased');
+}
+
 method reset() {
 	self.open(1);
 	self.pending(Hash::empty());
@@ -89,9 +85,7 @@ method tsort_queue() {
 }
 
 method tsort_add_keys(@list) {
-=method
-	Visits a list of keys, adding the attached calls to the queue in topological order.
-=end
+# Visits a list of keys, adding the attached calls to the queue in topological order.
 
 	for @list {
 		my $key := $_;		
