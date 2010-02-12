@@ -5,11 +5,14 @@ module UnitTest::Suite;
 INIT {
 	use(	'P6metaclass' );
 	
-	has(	'@!members' );
+	has(	'@!members',
+		'$.num_tests',
+	);
 }
 
 method add_test($test) {
 	self.members.push($test);
+	self.num_tests(self.num_tests + $test.num_tests);
 	return self;
 }
 
@@ -19,16 +22,16 @@ method add_tests(*@tests) {
 }
 
 method add_tests_(@tests) {
-	self.members.append(@tests);
+	for @tests {
+		self.add_test($_);
+	}
 	return self;
 }
 
-my method default_result($result) {
-	return $result.defined ?? $result !! UnitTest::Result.new();
-}
-
-method num_tests() {
-	return self.members.elements;
+my method default_result() {
+	my $result := UnitTest::Result.new();
+	$result.add_listener(UnitTest::Listener::TAP.new);
+	return $result;
 }
 
 method run($result?) {
@@ -36,6 +39,8 @@ method run($result?) {
 		$result := self.default_result;
 	}
 
+	$result.plan_tests(self.num_tests);
+	
 	for self.members {
 		unless $result.should_stop {
 			$_.run($result);
@@ -43,4 +48,8 @@ method run($result?) {
 	}
 	
 	return $result;
+}
+
+method suite() {
+	return self.new;
 }

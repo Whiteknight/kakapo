@@ -35,7 +35,7 @@ module Program;
 	
 =end SYNOPSIS
 
-# Don't initialize *anything,* here.   		!IMPORTANT
+# Don't initialize *anything,* here.    !IMPORTANT
 our $At_end_queue;
 our $At_start_queue;
 our $Init_queue;
@@ -43,8 +43,6 @@ our $Load_queue;
 our $Main;
 our $Processing_init_queue;
 our $Processing_load_queue;
-
-_pre_initload();
 
 sub add_call($queue, $call, %opts, $caller_nsp) {
 # Adds a C< $call > with C< @prereqs > to C< $queue >, tagged with key C< $name >. When no call 
@@ -108,7 +106,7 @@ sub call($call) {
 # Calls the Sub or MultiSub PMC passed as C<$call>, or, if C<$call> 
 # is a String, looks up the named symbol and calls that.
 
-	if Opcode::isa($call, 'String') {
+	if $call.isa('String') {
 		$call := Opcode::get_hll_global($call);
 	}
 
@@ -187,8 +185,8 @@ sub _pre_initload(*@modules_done) {
 	if our $_Pre_initload_done { return 0; }
 	$_Pre_initload_done := 1;
 	
-	Global::use('Dumper');
-	Global::use('Opcode', :tags('DEFAULT', 'TYPE'));
+	use(	'Dumper' );
+	use(	'Opcode', :tags('DEFAULT', 'TYPE'));
 	
 	$At_end_queue	:= DependencyQueue.new();
 	$At_start_queue	:= DependencyQueue.new();
@@ -196,7 +194,7 @@ sub _pre_initload(*@modules_done) {
 	$Load_queue	:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
 
 	if ! Opcode::defined($Main) {
-		$Main := 'main';
+		$Main := '::main';
 	}
 }
 
@@ -229,14 +227,23 @@ sub process_queue($q) {
 	$q.reset();
 }
 
-sub register_main($call) {
-# Sets the C< main > function to call.
-# FIXME: This should default to the namespace of the caller, and to 'main' in that nsp if not given.
+sub register_main($call?) {
+# Sets the C< main > function to call. If a name with no namespace is given, 
+# (like 'main') the caller's namespace is used. If no name is given at all,
+# the default name is 'main'.
 
-	if Opcode::defined($call) {
-	say("Registering main routine: ", $call);
-		$Main := $call;
+	unless $call.defined {
+		$call := 'main';
 	}
+	
+	if $call.isa('String') && $call.index('::') == -1 {
+		my $nsp := Parrot::caller_namespace(3);
+		my @parts := $nsp.get_name;
+		@parts.shift;	# Lose the 'parrot'
+		$call := @parts.join('::') ~ '::' ~ $call;
+	}
+
+	$Main := $call;
 }
 
 sub upgrade_queue($queue) {

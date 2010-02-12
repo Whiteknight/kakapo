@@ -21,10 +21,6 @@ sub _pre_initload() {
 }
 
 
-sub IMPORT($namespace, $names?) {
-	Opcode::die("IMPORT is dead. Use Global::use instead.");
-}
-
 sub caller_namespace($index?) {
 	unless $index {
 		$index := 1;

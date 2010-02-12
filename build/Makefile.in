@@ -60,6 +60,7 @@ BASE_LIB_PIRS = 		\
 	src/Parrot/Opcode.pir 	\
 	src/Pir.pir 			\
 	src/Pmc/Array.pir		\
+	src/Pmc/COMMON.pir	\
 	src/Pmc/Config.pir	\
 	src/Pmc/Exception.pir	\
 	src/Pmc/File.pir		\
@@ -91,11 +92,11 @@ LIBRARY_PBCS =			\
 	$(KRT0)
 
 TEST_CLEANUPS =			\
+	t/Global.pir				\
+	t/Parrot.pir				\
 	t/Pmc/test-array.pbc		\
 	t/Pmc/test-array.pir		\
 	t/Pmc/Array.pir			\
-	t/Global.pir				\
-	t/Parrot.pir				\
 	t/Program.pir			\
 	t/Pmc/test-rpa.pbc		\
 	t/Pmc/test-rsa.pbc		\
@@ -126,7 +127,7 @@ TEST_LIB_PIRS =			\
 	src/Matchers/Not.pir			\
 	src/Matchers/TypeSafe.pir		\
 	src/UnitTest/Listeners.pir		\
-	src/UnitTest/Loader.pir		\
+	src/UnitTest/Loader.pir			\
 	src/UnitTest/Result.pir			\
 	src/UnitTest/Suite.pir			\
 	src/UnitTest/Testcase.pir		\
@@ -252,6 +253,31 @@ test: build $(ALL_TESTS)
 # Individual test-foo targets 
 #----------------------------------------------------------------------
 
+t-pmc-common: build t/Pmc/COMMON.t.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/COMMON.t.pbc
+
+t-pmc-float: build t/Pmc/Float.t.pbc   t/Pmc/COMMON.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/Float.t.pbc
+	
+t-pmc-sub: build t/Pmc/Sub.t.pbc   t/Pmc/COMMON.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/Sub.t.pbc
+	
+t-pmc-undef: build t/Pmc/Undef.t.pbc   t/Pmc/COMMON.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/Undef.t.pbc
+	
+t-unittest: build t/UnitTest/AllTests.t.pbc   t/UnitTest/Loader.pbc   t/UnitTest/Suite.pbc   t/UnitTest/Testcase.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/UnitTest/AllTests.t.pbc
+
+t-unittest-loader: build t/UnitTest/Loader.t.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/UnitTest/Loader.t.pbc
+
+t-unittest-suite: build t/UnitTest/Suite.t.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/UnitTest/Suite.t.pbc
+
+t-unittest-testcase: build t/UnitTest/Testcase.t.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/UnitTest/Testcase.t.pbc
+
+# Need fixin
 t-pmc-array: build t/Pmc/test-array.pbc
 	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/test-array.pbc
 
@@ -263,15 +289,6 @@ test-parrot: build t/Parrot.pir
 
 test-program: build t/Program.pir
 	$(PARROT) $(PARROT_FLAGS) t/Program.pir
-
-t-unittest-loader: build t/UnitTest/Loader.t.pbc
-	$(PARROT) $(PARROT_FLAGS) -Llibrary t/UnitTest/Loader.t.pbc
-
-t-unittest-suite: build t/UnitTest/Suite.t.pbc
-	$(PARROT) $(PARROT_FLAGS) -Llibrary t/UnitTest/Suite.t.pbc
-
-t-unittest-testcase: build t/UnitTest/Testcase.t.pbc
-	$(PARROT) $(PARROT_FLAGS) -Llibrary t/UnitTest/Testcase.t.pbc
 
 test-rpa: build t/Pmc/test-rpa.pbc
 	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/test-rpa.pbc
@@ -292,11 +309,20 @@ test-sanity-p6object: build t/Sanity/test-P6object.pbc
 # Compile rules that support the test-foo targets, above.
 #----------------------------------------------------------------------
 
-t/Classes/test-Attributes.pbc: $(KRT0) t/Classes/Attributes.pbc
-	$(LINK) --output=$@ $(KRT0) t/Classes/Attributes.pbc
-	
-t/Pmc/test-array.pbc: $(KRT0) t/Pmc/Array.pbc
-	$(LINK) --output=$@  $(KRT0) t/Pmc/Array.pbc > $@
+t/Pmc/COMMON.t.pbc: $(KRT0) t/Pmc/COMMON.pbc
+	$(LINK) --output=$@  $(KRT0) t/Pmc/COMMON.pbc > $@
+
+t/Pmc/Float.t.pbc: $(KRT0) t/Pmc/Float.pbc
+	$(LINK) --output=$@  $(KRT0) t/Pmc/Float.pbc > $@
+
+t/Pmc/Sub.t.pbc: $(KRT0) t/Pmc/Sub.pbc
+	$(LINK) --output=$@  $(KRT0) t/Pmc/Sub.pbc > $@
+
+t/Pmc/Undef.t.pbc: $(KRT0) t/Pmc/Undef.pbc
+	$(LINK) --output=$@  $(KRT0) t/Pmc/Undef.pbc > $@
+
+t/UnitTest/AllTests.t.pbc: $(KRT0) t/UnitTest/AllTests.pbc
+	$(LINK) --output=$@  $(KRT0) t/UnitTest/AllTests.pbc > $@
 
 t/UnitTest/Loader.t.pbc: $(KRT0) t/UnitTest/Loader.pbc
 	$(LINK) --output=$@  $(KRT0) t/UnitTest/Loader.pbc > $@
@@ -306,6 +332,13 @@ t/UnitTest/Suite.t.pbc: $(KRT0) t/UnitTest/Suite.pbc
 
 t/UnitTest/Testcase.t.pbc: $(KRT0) t/UnitTest/Testcase.pbc
 	$(LINK) --output=$@  $(KRT0) t/UnitTest/Testcase.pbc > $@
+
+# Need fixin
+t/Classes/test-Attributes.pbc: $(KRT0) t/Classes/Attributes.pbc
+	$(LINK) --output=$@ $(KRT0) t/Classes/Attributes.pbc
+	
+t/Pmc/test-array.pbc: $(KRT0) t/Pmc/Array.pbc
+	$(LINK) --output=$@  $(KRT0) t/Pmc/Array.pbc > $@
 
 t/Pmc/test-rpa.pbc: $(KRT0) t/Pmc/ResizablePMCArray.pbc
 	$(LINK) --output=$@ $(KRT0) t/Pmc/ResizablePMCArray.pbc

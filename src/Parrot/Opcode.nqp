@@ -9,8 +9,8 @@ sub _pre_initload() {
 # Kakapo startup function. Do the Global exports early, so that other modules can import these 
 # functions during their init processing.
 
-	Global::export(:tags('DEFAULT'),	'defined', 'die');
-	Global::export(:tags('TYPE'),		'can', 'does', 'get_class', 'isa', 'new', 'typeof');
+	export(:tags('DEFAULT'),	'defined', 'die');
+	export(:tags('TYPE'),		'can', 'does', 'get_class', 'isa', 'new', 'typeof');
 }
 
 sub backtrace() {
@@ -164,7 +164,7 @@ sub get_hll_global($p1, $p2?) {
 # May be called with C< ('a::b') >, C< (@names) >, C< ('a::b', 'c') >, or C< (@nsp_names, 'c') >.
 
 	my @parts := isa($p1, 'String') ?? $p1.split('::') !! $p1;
-	
+
 	if $p2 {
 		@parts.push($p2);
 	}
@@ -229,7 +229,7 @@ sub get_namespace($p1?) {
 		};
 	}
 	else {
-		$result := Parrot::caller_namespace(3);
+		$result := Parrot::caller_namespace(2);
 	}
 	
 	return $result;
@@ -237,13 +237,13 @@ sub get_namespace($p1?) {
 
 sub get_root_global($p1, $p2?) {
 # May be called with C< ('a::b') >, C< (@names) >, C< ('a::b', 'c') >, or C< (@nsp_names, 'c') >.
-
-	my @parts := isa($p1, 'String') ?? $p1.split('::') !! $p1;
+	
+	my @parts := pir::isa($p1, 'String') ?? $p1.split('::') !! $p1;
 	
 	if $p2 {
 		@parts.push($p2);
 	}
-	
+
 	my $name := @parts.pop;
 	
 	my $result := Q:PIR {

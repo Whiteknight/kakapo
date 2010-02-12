@@ -12,7 +12,9 @@ class UnitTest::Listener::TAP;
 INIT {
 	use(	'P6metaclass' );
 	
-	has(	'$.test_number' );
+	has(	'$.plan',
+		'$.test_number',
+	);
 }
 
 method add_error($fault)		{ self.handle_fault($fault); }
@@ -44,7 +46,20 @@ method get_test_label($test) {
 
 method handle_fault($f) {
 	say(self.format_tap_report("not ok", $f.test_case));
-	say($f.fault.message);
+	say('# ' ~ $f.fault.message);
+}
+
+method plan_tests($num_tests) {
+	unless self.plan.defined {
+		if $num_tests > 0 {
+			self.plan($num_tests);
+			say("1..$num_tests");
+		}
+		else {
+			self.plan("no plan");
+			say("no plan");
+		}
+	}
 }
 
 method start_test($test) {

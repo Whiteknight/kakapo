@@ -26,7 +26,7 @@ class Test::UnitTest::Loader
 	
 	method test_load_tests_from_testcase() {
 		my $suite := self.loader.load_tests_from_testcase(
-			Test::UnitTest::Dummy
+			Test::UnitTest::WhichMethods
 		);
 		
 		unless $suite.num_tests == 3 {
@@ -35,9 +35,8 @@ class Test::UnitTest::Loader
 	}
 }
 
-class Test::UnitTest::Dummy
+class Test::UnitTest::WhichMethods
 	is UnitTest::Testcase {
-
 	method not_at_all()	{ Exception.new("not a valid test").throw; }
 	method not_a_test()	{ Exception.new("not a valid test").throw; }
 	method _test()		{ Exception.new("not a valid test").throw; }

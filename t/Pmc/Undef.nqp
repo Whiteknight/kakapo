@@ -1,30 +1,44 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-sub main() {
-	Kakapo::Test::Undef.run_tests();
+module Kakapo {
+	# Tell krt0 which file to load.	
+	sub library_name()		{ 'kakapo_test.pbc' }
 }
 
-module Kakapo;
-
-sub library_name()		{ 'kakapo_test.pbc' }
-
-module Kakapo::Test::Undef;
-=module
-Test cases for Kakapo's Undef add-in methods.
-=end
-
-Class::SUBCLASS('Kakapo::Test::Undef', 
-	'Testcase');
-
-Global::use('Matcher::Factory');	# is(), not(), etc.
-
-method test_defined() {
-	self.assert_that('undef', Undef.new(), is(not(defined())));
+INIT {
+	pir::load_bytecode('t/Pmc/COMMON.pbc');
 }
 
-method test_isa() {
-	self.assert_that('undef isa Undef', Undef.new().isa('Undef'), is(true()));
-	my $uninit;
-	self.assert_that('An uninitialized variable isa Undef', $uninit.isa('Undef'), is(true()));
+class Test::Pmc::Undef
+	is Test::Pmc::COMMON {
+	
+	INIT {
+		use(	'P6metaclass' );
+		use(	'UnitTest::Testcase' );
+		
+		Program::register_main();
+	}
+	
+	sub main() {
+		my $proto := Opcode::get_root_global(Opcode::get_namespace().get_name);
+		$proto.suite.run;
+	}
+	
+	method test_defined() {
+		verify_that( "Defined returns false" );
+		my $object := self.class.new;
+
+		if $object.defined { fail( "Undef.defined reports yes" ); }
+	}
+	
+	method test_new() {
+		verify_that( "'new' returns an object of the right type" );		
+		my $object := self.class.new;
+		
+		if Opcode::isnull($object) { fail( "New returned null" ); }
+		if Opcode::defined($object) { fail( "New returned 'defined' undef object" ); }
+		unless pir::isa($object, Opcode::typeof(self.class)) { fail("New returned wrong type"); }
+	}
+		
 }

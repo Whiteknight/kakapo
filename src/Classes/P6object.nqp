@@ -69,6 +69,24 @@ protoobject C< Foo::Bar > (of type P6protoobject) that belongs to a
 I<namespace> (a different PMC type) also called C< Foo::Bar >.
 
 =end
+method IDONTKNOW() {
+	return Undef.new;
+}
+
+method WHY() {
+}
+
+method BECAUSE() {
+}
+
+method TODAY() {
+}
+
+method TOMORROW() {
+}
+
+method IDONTGIVEADARN() {
+}
 
 method defined() {
 # returns true. (Overridden for the Undef PMC type.)

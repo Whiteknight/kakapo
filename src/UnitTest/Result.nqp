@@ -18,7 +18,7 @@ INIT {
 		'@!failures',
 		'@!listeners',
 		'$.should_stop',
-		'$.tests_run',
+		'$.num_tests',
 	);
 }
 
@@ -71,6 +71,10 @@ method notify_listeners($method, *@pos, *%named) {
 	return self;
 }
 	
+method plan_tests($num_tests) {
+	self.notify_listeners('plan_tests', $num_tests);
+}
+
 method remove_listener($listener) {
 	my $index := 0;
 
@@ -85,11 +89,11 @@ method remove_listener($listener) {
 }
 
 method run_count() {
-	return self.tests_run;
+	return self.num_tests;
 }
 
 method start_test($test) {
-	self.tests_run(self.tests_run + $test.num_tests);
+	self.num_tests(self.num_tests + $test.num_tests);
 	self.notify_listeners('start_test', $test);	
 }
 
