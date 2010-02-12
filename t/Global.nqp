@@ -1,32 +1,38 @@
-=file t/Global.nqp
+# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-Test the Global component of the Kakapo library.
-
-=cut
-
-module Kakapo::Test::Global;
-
-Q:PIR { load_bytecode 'library/kakapo.pbc' };
-
-_ONLOAD();
-
-Kakapo::Test::Global.run_all_tests;
-#Kakapo::Test::Global.run_tests('test_register_global');
-
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;
-	
-	Parrot::IMPORT('Dumper', q<ASSERT DUMP DUMP_ NOTE>);
-	Parrot::IMPORT('Matcher::Factory');
-	
-	my $class_name := 'Kakapo::Test::Global';
-	
-	NOTE("Creating class ", $class_name);
-	Class::SUBCLASS($class_name,
-		'Testcase',
-	);	
+module Kakapo {
+	# Tell krt0 which file to load.	
+	sub library_name()		{ 'kakapo_test.pbc' }
 }
+
+INIT {
+}
+
+class Test::Global
+	is UnitTest::Testcase {
+
+	INIT {
+		use(	'Dumper' );
+		use(	'Matcher::Factory' );
+		use(	'P6metaclass' );
+		use(	'UnitTest::Testcase' );
+		
+		Program::register_main();
+	}
+	
+	sub main() {
+		my $proto := Opcode::get_root_global(Opcode::get_namespace().get_name);
+		$proto.suite.run;
+	}
+	
+	# NOTE: While Testcase runs these tests with a new object, the namespace is persistent. So
+	# be sure to allow for sub-namespaces, symbols, and names carrying over from test to test.
+	
+	method test_export() {
+		my $namespace := Opcode::get_namespace();
+		
+	}
 
 method test_export() {
 	

@@ -30,9 +30,6 @@ my method _add_parents($class, @parents) {
 
 	my $parrotclass := self.declare_class($class);
 
-	say("Before adding parents, hierarchy is:");
-	dump_class($parrotclass);
-	
 	for @parents {
 	say("Adding parent: $_");
 	dump_class($_);

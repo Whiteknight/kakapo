@@ -5,22 +5,18 @@ module Matcher::Factory;
 # Provides factory methods to facilitate constructing matchers.
 
 INIT {
-	use(Dumper);
+	# Class::SUBCLASS($class_name,
+		# 'Class::HashBased',
+	# );
+	
 	my $class_name := 'Matcher::Factory';
-
-	# FIXME: The class is created only for the sake of multis, which I don't think require the class anymore. Check and if true get 
-	# rid of the SUBCLASS call.
-	NOTE("Creating class ", $class_name);
-	Class::SUBCLASS($class_name,
-		'Class::HashBased',
-	);
-
 	Class::multi_sub($class_name, 'equals', :starting_with('_equals_'));
 	Class::multi_sub($class_name, 'make_matcher', :starting_with('_make_'));
 	Class::multi_sub($class_name, 'returns', :starting_with('_returns_'));
-	Global::export('assert_that', 'empty', 'equals', 'has', 'instance_of', 'null', 'returns', 'same_as');
-			
-	NOTE("done");
+	
+	export('assert_that', 'empty', 'equals', 'has', 'instance_of', 'null', 'returns', 'same_as');
+	
+	export('export_sub', :tags( 'INTERNAL' ));			
 }
 
 sub assert_that($item, $matcher) {
@@ -40,7 +36,7 @@ sub export_sub($sub, :$as, :$tags?) {
 		$tags := 'DEFAULT';
 	}
 	
-	Global::export($sub, :as($as), :tags($tags));
+	export($sub, :as($as), :tags($tags));
 }
 
 sub empty()				{ return Matcher::Empty.new(); }

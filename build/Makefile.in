@@ -33,45 +33,45 @@ COMPILE_nqp	:= $(PARROT_NQP)
 COMPILE_pir	:= $(PARROT) $(PARROT_ARGS)
 STRIP_PIRA	:= grep -v '^.annotate'
 
+# FIXME: This should go away, replaced by some kind of AllTests mechanism that gloms the tests together in a single suite.
 ALL_TESTS =		\
-	test-array		\
-	test-attributes	\
-	test-global		\
-	test-parrot		\
-	test-program	\
-	test-rpa		\
-	test-rsa		\
-	test-sanity-p6object
+	t-pmc-common	\
+	t-pmc-float		\
+	t-pmc-sub		\
+	t-pmc-undef	\
+	t-unittest-loader	\
+	t-unittest-suite	\
+	t-unittest-testcase	\
 
 BASE_LIB_PIRS = 		\
-	src/Classes/Class.pir	\
-	src/Classes/ArrayBased.pir	\
-	src/Classes/BaseBehavior.pir	\
-	src/Classes/HashBased.pir	\
 	src/Classes/P6metaclass.pir	\
 	src/Classes/P6object.pir	\
+	src/Exceptions.pir		\
+	src/Pmc/COMMON.pir	\
+	src/Pmc/Exception.pir	\
+	src/Pmc/Hash.pir		\
+	src/Pmc/Undef.pir	\
 	src/ConfigFile.pir		\
 	src/DependencyQueue.pir \
 	src/Dumper.pir		\
-	src/Exceptions.pir		\
 	src/Global.pir		\
 	src/Kakapo.pir		\
 	src/Parrot.pir 		\
 	src/Parrot/Opcode.pir 	\
 	src/Pir.pir 			\
 	src/Pmc/Array.pir		\
-	src/Pmc/COMMON.pir	\
 	src/Pmc/Config.pir	\
-	src/Pmc/Exception.pir	\
 	src/Pmc/File.pir		\
-	src/Pmc/Hash.pir		\
 	src/Pmc/Namespace.pir	\
 	src/Pmc/OS.pir		\
 	src/Pmc/ResizablePMCArray.pir \
 	src/Pmc/ResizableStringArray.pir \
 	src/Pmc/String.pir	\
-	src/Pmc/Undef.pir	\
-	src/Program.pir
+	src/Program.pir		\
+	src/Classes/Class.pir	\
+	src/Classes/ArrayBased.pir	\
+	src/Classes/BaseBehavior.pir	\
+	src/Classes/HashBased.pir	\
 
 GENERATED_FILES =		\
 	$(BASE_LIB_PIRS)	\
@@ -247,11 +247,16 @@ src/kakapo_top.pir: src/kakapo_top_pir.tmpl
 	$(CP) src/kakapo_top_pir.tmpl $@
 
 test: build $(ALL_TESTS)
-	$(PARROT) $(PARROT_FLAGS) t/Parrot.pir
 
 #----------------------------------------------------------------------
 # Individual test-foo targets 
 #----------------------------------------------------------------------
+
+t-global: build t/Global.t.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Global.t.pbc
+
+t-matchers-boolean: build t/Matchers/Boolean.t.pbc
+	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Matchers/Boolean.t.pbc
 
 t-pmc-common: build t/Pmc/COMMON.t.pbc
 	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/COMMON.t.pbc
@@ -281,9 +286,6 @@ t-unittest-testcase: build t/UnitTest/Testcase.t.pbc
 t-pmc-array: build t/Pmc/test-array.pbc
 	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/test-array.pbc
 
-test-global: build t/Global.pir
-	$(PARROT) $(PARROT_FLAGS) t/Global.pir
-
 test-parrot: build t/Parrot.pir
 	$(PARROT) $(PARROT_FLAGS) t/Parrot.pir
 
@@ -308,6 +310,12 @@ test-sanity-p6object: build t/Sanity/test-P6object.pbc
 #----------------------------------------------------------------------
 # Compile rules that support the test-foo targets, above.
 #----------------------------------------------------------------------
+
+t/Global.t.pbc: $(KRT0) t/Global.pbc
+	$(LINK) --output=$@  $(KRT0) t/Global.pbc > $@
+
+t/Matchers/Boolean.t.pbc: $(KRT0) t/Matchers/Boolean.pbc
+	$(LINK) --output=$@  $(KRT0) t/Matchers/Boolean.pbc > $@
 
 t/Pmc/COMMON.t.pbc: $(KRT0) t/Pmc/COMMON.pbc
 	$(LINK) --output=$@  $(KRT0) t/Pmc/COMMON.pbc > $@

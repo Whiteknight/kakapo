@@ -4,17 +4,14 @@
 class Matcher;
 
 INIT {
+	# No more work is need for this class.
 	Program::initload(:done(1));
 }
 
-method describe_failure($item, $description) {
-	return $description ~ "was '$item'";
+method describe_failure($item, $previous) {
+	return $previous
+		~ "was '$item'";
 }
 
-method describe_self($description)	{ self._ABSTRACT_METHOD; }
-
-method init(@args, %opts) {
-	Class::BaseBehavior::init(self, @args, %opts);
-}
-
+method describe_self($previous)		{ self._ABSTRACT_METHOD; }
 method matches($item)			{ self._ABSTRACT_METHOD; }

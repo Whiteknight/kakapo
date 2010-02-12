@@ -1,53 +1,43 @@
+# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
 module DependencyQueue;
 # A queue that orders its entries according to their prerequisites.
 
-_pre_initload();
-
-method added(*@value)		{ self._ATTR_HASH('added', @value); }
-method already_done(*@value)	{ self._ATTR_HASH('already_done', @value); }
-method cycle(*@value)		{ self._ATTR_HASH('cycle', @value); }
-method cycle_keys(*@value)	{ self._ATTR_ARRAY('cycle_keys', @value); }
-method open(*@value)		{ self._ATTR_HASH('open', @value); }
-method pending(*@value)		{ self._ATTR_HASH('pending', @value); }
-method queue(*@value)		{ self._ATTR_ARRAY('queue', @value); }
-	
-method add_entry($name, $value, :@requires?) {
+our method add_entry($name, $value, :@requires?) {
 	unless @requires { @requires := Array::new(); }
 	
 	my @entry := Array::new($name, $value, @requires);
+say("add_entry");
+Dumper::DUMP_(@entry);
+pir::backtrace();
 	self.pending{$name} := @entry;
 }
 
-method already_added($name) {
+my method already_added($name) {
 	return self.already_done{$name} || self.added{$name};
 }
 
-method init(@args, %opts) {
-	for @args {
+method _init_positional_(@pos) {
+	for @pos {
 		self.mark_as_done(~ $_);
 	}
 	
-	self.open(1);
+	self.locked(0);
 }
 
-method is_empty() { 
-	if self.open {
-		return self.pending.elements == 0;
-	}
-	
-	return self.queue.elements == 0;
+our method is_empty() {
+	return self.locked
+		?? self.queue.elements == 0
+		!! self.pending.elements == 0;
 }
 
-method mark_as_done($label) {
+our method mark_as_done($label) {
 	self.already_done{$label} := 1;
 }
 
-method marked_done($label) {
-	return self.already_done{$label};
-}
-
-method next() {
-	if self.open {
+our method next() {
+	unless self.locked {
 		self.tsort_queue();
 	}
 
@@ -57,26 +47,30 @@ method next() {
 		return $node[1];
 	}
 	
-	return my $undef;
+	return Undef.new;
 }
 
 sub _pre_initload() {
-	if our $_Pre_initload_done { return 0; }
-	$_Pre_initload_done := 1;
+	use(	'P6metaclass' );
 	
-	use('Dumper');
-	
-	Class::SUBCLASS('DependencyQueue', 
-		'Class::HashBased');
+	has(	'%!added',
+		'%!already_done',
+		'%!cycle',
+		'@!cycle_keys',
+		'$!locked',
+		'%!pending',
+		'@!queue'
+	);
 }
-
+		
 method reset() {
-	self.open(1);
+	self.locked(0);
 	self.pending(Hash::empty());
 }
 
 method tsort_queue() {
-	self.open(0);
+say("Tsort queue");
+	self.locked(1);
 	self.cycle_keys(Array::empty());
 	self.cycle(Hash::empty());
 	self.added(Hash::empty());
@@ -87,12 +81,15 @@ method tsort_queue() {
 method tsort_add_keys(@list) {
 # Visits a list of keys, adding the attached calls to the queue in topological order.
 
+Dumper::DUMP_(@list);
 	for @list {
 		my $key := $_;		
-		
+say("key: $key");		
 		unless self.already_added($key) {
+	say("adding");
 			## First, check for cycles in the graph.
 			my $cycle_elts := self.cycle_keys.elements;
+	say("cycle checked");
 			self.cycle_keys.push($key);
 			
 			if self.cycle.exists($key) {

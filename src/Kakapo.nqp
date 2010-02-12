@@ -6,6 +6,7 @@ module Kakapo;
 
 INIT {
 	if Opcode::isnull(Kakapo::krt0::main) {
+		# No krt0 - what shall I do?
 	}
 }
 
@@ -32,7 +33,6 @@ sub _pre_initload() {
 	
 	# Note: Order is important, here.
 
-	
 	Global::_pre_initload();
 	Dumper::_pre_initload();
 	Kakapo::Pmc::COMMON::_pre_initload();

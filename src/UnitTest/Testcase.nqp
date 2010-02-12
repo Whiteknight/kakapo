@@ -13,7 +13,7 @@ INIT {
 	export( 'assert_that', 'fail', 'verify_that' );
 }
 
-my method assert($target, $matcher) {
+my method assert_match($target, $matcher) {
 	unless $matcher.matches($target) {
 		my $explain := $matcher.describe_self("Expected: ")
 			~ $matcher.describe_failure($target, "\n     but: ");
@@ -35,7 +35,19 @@ sub assert_that($target, $matcher) {
 		%r = $P0
 	};
 	
-	$self.assert($target, $matcher);
+	$self.assert_match($target, $matcher);
+}
+
+sub assert_false($bool, $message?) {
+	if $bool {
+		self()._fail($message);
+	}
+}
+
+sub assert_true($bool, $message?) {
+	unless $bool {
+		self()._fail($message);
+	}
 }
 
 my method default_loader() {
@@ -65,7 +77,7 @@ sub fail($why) {
 	
 	$self._fail($why);
 }
-	
+
 our method num_tests() {
 	return 1;
 }
@@ -126,6 +138,16 @@ method run($result?) {
 
 method run_test() {
 	Parrot::call_method(self, self.name);
+}
+
+sub self() {
+	my $self := pir::find_dynamic_lex__PS('self');
+	
+	if pir::isnull($self) {
+		pir::die("Fatal: No 'self' lexical in any caller scope");
+	}
+	
+	return $self;
 }
 
 our method set_up() { }
