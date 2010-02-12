@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::AnyOne;
-=module
-	Matcher that matches if any one of its child matchers accepts. This is a short-circuiting 'OR'.
-=end
+# Matcher that matches if any one of its child matchers accepts. This is a short-circuiting 'OR'.
 
-Global::use('Dumper');
+use('Dumper');
 Program::initload(:after('Matcher'));
 Matcher::Factory::export_sub(Matcher::AnyOne::factory, :as('any_of'));
 

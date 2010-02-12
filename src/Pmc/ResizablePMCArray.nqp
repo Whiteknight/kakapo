@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module ResizablePMCArray;
-=module
-	Provides missing methods to RPA.
-=end
+# Provides missing methods to RPA.
 
-Global::use('Dumper');
+use('Dumper');
 
 # method append(@other) - built in
 method clone()				{ Opcode::clone(self); }

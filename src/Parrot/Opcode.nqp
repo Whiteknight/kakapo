@@ -2,17 +2,12 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Opcode;
-=module 
-Provides NQP-callable versions of various Parrot opcodes.
-
-(NOTE: A lot of the code here uses 'method' just to save a find_lex opcode. Don't take it personally.)
-=cut
+# Provides NQP-callable versions of various Parrot opcodes.
+# (NOTE: A lot of the code here uses 'method' just to save a find_lex opcode. Don't take it personally.)
 
 sub _pre_initload() {
-=sub
-	Kakapo startup function. Do the Global exports early, so that other modules can import these 
-	functions during their init processing.
-=end
+# Kakapo startup function. Do the Global exports early, so that other modules can import these 
+# functions during their init processing.
 
 	Global::export(:tags('DEFAULT'),	'defined', 'die');
 	Global::export(:tags('TYPE'),		'can', 'does', 'get_class', 'isa', 'new', 'typeof');
@@ -166,9 +161,7 @@ method get_global() {
 }
 		
 sub get_hll_global($p1, $p2?) {
-=sub 
-	May be called with C< ('a::b') >, C< (@names) >, C< ('a::b', 'c') >, or C< (@nsp_names, 'c') >.
-=end
+# May be called with C< ('a::b') >, C< (@names) >, C< ('a::b', 'c') >, or C< (@nsp_names, 'c') >.
 
 	my @parts := isa($p1, 'String') ?? $p1.split('::') !! $p1;
 	
@@ -189,9 +182,7 @@ sub get_hll_global($p1, $p2?) {
 }
 
 sub get_hll_namespace($p1?) {
-=sub
-	Can be called C< () >, C< ('a::b') >, or C< (@parts) >.
-=end
+# Can be called C< () >, C< ('a::b') >, or C< (@parts) >.
 
 	my $result;
 	
@@ -223,9 +214,7 @@ sub getinterp() {
 }
 
 sub get_namespace($p1?) {
-=sub
-	Can be called C< () >, C< ('a::b') >, or C< (@parts) >.
-=end
+# Can be called C< () >, C< ('a::b') >, or C< (@parts) >.
 
 	my $result;
 	
@@ -247,9 +236,7 @@ sub get_namespace($p1?) {
 }
 
 sub get_root_global($p1, $p2?) {
-=sub 
-	May be called with C< ('a::b') >, C< (@names) >, C< ('a::b', 'c') >, or C< (@nsp_names, 'c') >.
-=end
+# May be called with C< ('a::b') >, C< (@names) >, C< ('a::b', 'c') >, or C< (@nsp_names, 'c') >.
 
 	my @parts := isa($p1, 'String') ?? $p1.split('::') !! $p1;
 	
@@ -358,6 +345,22 @@ method load_language() {
 	return self;
 }
 
+sub make_root_namespace($p1) {
+	my $result;
+	
+	if defined($p1) {
+		my @parts := isa($p1, 'String') ?? $p1.split('::') !! $p1;
+		
+		my $nsp := get_root_namespace();
+		$result := $nsp.make_namespace(@parts);
+	}
+	else {
+		die("Undefined namespace path");
+	}
+	
+	return $result;
+}
+
 sub new($type, $init?) {
 	my $result := Q:PIR {
 		.local pmc type, init
@@ -377,6 +380,24 @@ sub new($type, $init?) {
 	};
 	
 	return $result;
+}
+
+sub newclass($p1) {
+	my $result := Q:PIR {
+		$P0 = find_lex '$p1'
+		%r = newclass $P0
+	};
+	
+	return $result;
+}
+
+method setattribute($name, $value) {
+	Q:PIR {
+		$P0 = find_lex '$name'
+		$S0 = $P0
+		$P1 = find_lex '$value'
+		setattribute self, $S0, $P1
+	};
 }
 
 method set_integer($value) {
@@ -399,7 +420,14 @@ method store_lex($value) {
 	return $value;
 }
 
-sub trace($value) {
+sub throw($exc) {
+	Q:PIR {
+		$P0 = find_lex '$exc'
+		throw $P0
+	};
+}
+
+our sub trace($value) {
 	Q:PIR {
 		$P0 = find_lex '$value'
 		$I0 = $P0
@@ -407,9 +435,14 @@ sub trace($value) {
 	};
 }
 
-method typeof() {
+our sub typeof($what) {
 	my $result := Q:PIR {
-		$S0 = typeof self
+		$P0 = find_lex '$what'
+		unless null $P0 goto get_type
+		say "typeof <null> is not a valid request"
+		backtrace
+	get_type:
+		$S0 = typeof $P0
 		%r = box $S0
 	};
 

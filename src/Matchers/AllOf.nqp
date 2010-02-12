@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::AllOf;
-=module
-	Matchers that matches only when all of its child matchers do. This is a short-circuiting 'AND'.
-=end
+# Matchers that matches only when all of its child matchers do. This is a short-circuiting 'AND'.
 
-Global::use('Dumper');
+use('Dumper');
 Program::initload(:after('Matcher'));
 Matcher::Factory::export_sub(Matcher::AllOf::factory, :as('all_of'));
 

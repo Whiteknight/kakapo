@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::TypeSafe;
-=module
-	Abstract class that handles type-safety and null/undef checking of its args.
-=end
+# Abstract class that handles type-safety and null/undef checking of its args.
 	
-Global::use('Dumper');
+use('Dumper');
 Program::initload(:after('Matcher'));
 
 sub _initload() {

@@ -13,7 +13,7 @@ kakapo.pir is loaded dynamically.
 
 .namespace [ ]
 
-.sub '__run_first' :anon :init :load
+.sub '_krt0_initload' :anon :init :load
 	# Test for kakapo being loaded.
 	
 	$P0 = get_hll_global [ 'Kakapo' ], 'is_loaded'
@@ -39,8 +39,10 @@ kakapo_loaded:
 	# first. Call the sub directly to try to catch that case.
 	
 	$P0 = get_global '_kakapo_top_pre_initload'
-	$P0()
-	#.tailcall $P0()
+	if null $P0 goto no_top_load
+	
+	.tailcall $P0()
+no_top_load:
 .end
 
 .namespace [ 'Kakapo' ; 'krt0' ]
@@ -52,5 +54,7 @@ kakapo_loaded:
 	die "Could not locate Program::call_main. Is kakapo library corrupt or missing?"
 
 call_main:
-	$P0()
+	.tailcall $P0()
 .end
+
+##### Last line of KRT0.pir #####

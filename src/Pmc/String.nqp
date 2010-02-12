@@ -2,39 +2,32 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module String;
-=module 
-
-Provides basic String functions, and adds some methods to the String PMC.
-
-=cut
-
-Global::use('Dumper');
-Program::initload(:done(1));	# Register as "already done"
+# Provides basic String functions, and adds some methods to the String PMC.
 
 our %Cclass_id;
-%Cclass_id<ANY>			:= 65535;
-%Cclass_id<NONE>			:= 0;
-%Cclass_id<UPPERCASE>		:= 1;
-%Cclass_id<LOWERCASE>	:= 2;
-%Cclass_id<ALPHABETIC>	:= 4;
-%Cclass_id<NUMERIC>		:= 8;
-%Cclass_id<HEXADECIMAL>	:= 16;
-%Cclass_id<WHITESPACE>	:= 32;
-%Cclass_id<PRINTING>		:= 64;
-%Cclass_id<GRAPHICAL>		:= 128;
-%Cclass_id<BLANK>		:= 256;
-%Cclass_id<CONTROL>		:= 512;
-%Cclass_id<PUNCTUATION>	:= 1024;
-%Cclass_id<ALPHANUMERIC>	:= 2048;
-%Cclass_id<NEWLINE>		:= 4096;
-%Cclass_id<WORD>		:= 8192;
 
-=sub char_at($str, $index)
+sub _pre_initload() {
+	%Cclass_id := Hash::new(
+		:NONE(				0),
+		:ANY(				65535),
 
-Returns the character at C<$index> in C<$str>  -- that is, char_at($str, $index)
-is equivalent to doing C<$str[$index]>, except that doesn't work.
+		:UPPERCASE(			1),
+		:LOWERCASE(			2),
+		:ALPHABETIC(			4),
+		:NUMERIC(			8),
+		:HEXADECIMAL(		16),
+		:WHITESPACE(			32),
+		:PRINTING(			64),
+		:GRAPHICAL(			128),
+		:BLANK(				256),
+		:CONTROL(			512),
+		:PUNCTUATION(		1024),
+		:ALPHANUMERIC(		2048),
+		:NEWLINE(			4096),
+		:WORD(				8192),
+	);
+}
 
-=cut
 
 sub char_at($str, $index) {
 	return $str[$index];
@@ -64,18 +57,13 @@ sub character_offset_of($string, *%opts) {
 
 method defined()			{ 1 }
 
-=sub display_width($str) {
-
-Compute the display width of the C<$str>, assuming that tabs
-are 8 characters wide, and all other chars are 1 character wide. Thus, a 
-sequence like tab-space-space-tab will have a width of 16, since the two spaces
-do not equate to a full tab stop.
-
-Returns the computed width of C<$str>.
-
-=cut
-
 sub display_width($str) {
+# Compute the display width of the C<$str>, assuming that tabs
+# are 8 characters wide, and all other chars are 1 character wide. Thus, a 
+# sequence like tab-space-space-tab will have a width of 16, since the two spaces
+# do not equate to a full tab stop.
+# Returns the computed width of C<$str>.
+
 	my $width := 0;
 	
 	if $str {
@@ -97,12 +85,6 @@ sub display_width($str) {
 	return $width;
 }
 
-=sub downcase($string)
-
-Converts C<$string> to lower case.
-
-=cut
-
 sub downcase($str) {
 	my $result := Q:PIR {
 		$P0 = find_lex '$str'
@@ -114,18 +96,14 @@ sub downcase($str) {
 	return $result;
 }
 
-=sub find_cclass($class_name, $str, [:offset(#),] [:count(#)])
-
-Returns the index of the first character in C<$str> at or after C<:offset()> that
-is a member of the character class C<$class_name>. If C<:count()> is 
-specified, scanning ends after the C<:count()> characters have been scanned. 
-By default, C<:offset(0)> and C<:count(length($str))> are used.
-
-If no matching characters are found, returns the last index plus one.
-
-=cut
-
 sub find_cclass($class_name, $str, *%opts) {
+# Returns the index of the first character in C<$str> at or after C<:offset()> that
+# is a member of the character class C<$class_name>. If C<:count()> is 
+# specified, scanning ends after the C<:count()> characters have been scanned. 
+# By default, C<:offset(0)> and C<:count(length($str))> are used.
+
+# If no matching characters are found, returns the last index plus one.
+
 	my $offset	:= 0 + %opts<offset>;
 	my $count	:= %opts<count>;
 	
@@ -159,15 +137,11 @@ sub find_cclass($class_name, $str, *%opts) {
 	return $result;
 }
 
-=sub find_not_cclass($class_name, $str, [:offset(#),] [:count(#)])
-
-Behaves like L<#find_cclass> except that the search is for the first
-character B<not> a member of C<$class_name>. Useful for skipping
-leading whitespace, etc.
-
-=cut
-
 sub find_not_cclass($class_name, $str, *%opts) {
+# Behaves like L<#find_cclass> except that the search is for the first
+# character B<not> a member of C<$class_name>. Useful for skipping
+# leading whitespace, etc.
+
 	my $offset	:= %opts<offset>;
 	
 	unless $offset {
@@ -230,7 +204,7 @@ sub is_cclass($class_name, $str, *%opts) {
 	my $offset	:= 0 + %opts<offset>;
 	my $class	:= 0 + %Cclass_id{$class_name};
 	
-	#NOTE("class = ", $class_name, "(", $class, "), offset = ", $offset, ", str = ", $str);
+	#say("class = ", $class_name, "(", $class, "), offset = ", $offset, ", str = ", $str);
 	
 	my $result := Q:PIR {
 		$P0 = find_lex '$class'
@@ -330,7 +304,7 @@ sub ltrim_indent($str, $indent) {
 			$prefix := $prefix + 8 - $prefix % 8;
 		}
 		else {
-			$prefix ++;
+			$prefix++;
 		}
 	}
 	
@@ -417,7 +391,7 @@ method trim() {
 		my $right := $len - 1;
 		
 		while is_cclass('WHITESPACE', self, :offset($right)) {
-			$right --;
+			$right--;
 		}
 		
 		#NOTE("$right: ", $right);

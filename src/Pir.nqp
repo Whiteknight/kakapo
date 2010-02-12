@@ -2,14 +2,12 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Pir;
-=module
-Provide helper methods for constructing and compiling PIR code.
-=end
+# Provide helper methods for constructing and compiling PIR code.
 
 sub _pre_initload() {
-	Global::use(Dumper,	);
-	Global::use(Opcode,	:tags('DEFAULT', 'TYPE'));
-	Global::use(Parrot,		:tags('NAMESPACE'));
+	use(	Dumper,	);
+	use(	Opcode,	:tags('DEFAULT', 'TYPE'));
+	use(	Parrot,	:tags('NAMESPACE'));
 }
 
 sub compile($string) {
@@ -38,6 +36,10 @@ sub compile_sub(:@body, :$name, :$namespace, :$method?, :@params?, :$vtable?) {
 	
 	if $vtable {
 		if $vtable.isa('String') {
+			if $vtable[0] ne "'" && $vtable[0] ne '"' {
+				$vtable := "'" ~ $vtable ~ "'";
+			}
+			
 			@sub_decl.push(":vtable(" ~ $vtable ~ ")");
 		}
 		else {
@@ -83,5 +85,3 @@ sub pir_namespace($nsp) {
 	$result := $result ~ " ]";	# space: [ ] or [ 'foo' ]
 	return $result;
 }
-	
-	

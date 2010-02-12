@@ -2,9 +2,7 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Dumper;
-=module 
-	Configurable module for generating debug output.
-=end
+# Configurable module for generating debug output.
 
 our %Bits;
 %Bits<NOTE>		:= 1;	
@@ -16,21 +14,7 @@ our %Dumper_config_cache;
 our $Kakapo_config;
 our $Prefix;
 
-sub _pre_initload() {
-=sub
-	Special sub called when the Kakapo library is loaded or initialized to guarantee this module 
-	is already initialized during :init and :load processing.
-=end
-
-	Opcode::load_bytecode('dumper.pbc');
-	
-	$Caller_depth := 0;
-
-	Global::export('ASSERT', 'DUMP', 'DUMP_', 'NOTE');
-	#Global::use(:symbols('$Kakapo_config'));		# FIXME: Parameterize this.
-}
-
-sub ASSERT($condition, *@message, :$caller_level?) {
+our sub ASSERT($condition, *@message, :$caller_level?) {
 	unless lock('ASSERT') { return 0; }
 	
 	my $message := +@message ?? @message.join !! 'ASSERTION FAILED';
@@ -41,7 +25,7 @@ sub ASSERT($condition, *@message, :$caller_level?) {
 	unlock('ASSERT');
 }
 
-sub DUMP(*@pos, :$caller_level?, :@info?, *%named) {
+our sub DUMP(*@pos, :$caller_level?, :@info?, *%named) {
 	unless lock('DUMP') { return 0; }
 
 	unless $caller_level {
@@ -72,13 +56,13 @@ sub DUMP(*@pos, :$caller_level?, :@info?, *%named) {
 	unlock('DUMP');
 }
 
-sub DUMP_(*@what, :$label?, :$prefix?) {
+our sub DUMP_(*@what, :$label?, :$prefix?) {
 	unless $label { $label := '$VAR'; }
 	print($prefix);
 	_dumper(@what, $label);
 }
 
-sub NOTE(*@parts, :$caller_level?, :@info?) {
+our sub NOTE(*@parts, :$caller_level?, :@info?) {
 	unless lock('NOTE') { return 0; }
 
 	unless $caller_level {
@@ -98,16 +82,12 @@ sub NOTE(*@parts, :$caller_level?, :@info?) {
 	unlock('NOTE');
 }
 
-=sub caller_depth_below($namespace, $name, :$limit?)
-
-Computes the number of "named" subs (name != '_blockNNN') between
-the caller and the sub identified by $namespace::$name on the current
-call stack. If more than $limit (default: 80) named subs are seen,
-$limit is returned.
-
-=cut
-
 sub caller_depth_below($namespace, $name, :$starting, :$limit?) {
+# Computes the number of "named" subs (name != '_blockNNN') between
+# the caller and the sub identified by $namespace::$name on the current
+# call stack. If more than $limit (default: 80) named subs are seen,
+# $limit is returned.
+
 	unless $limit {
 		$limit := 80;
 	}
@@ -278,6 +258,7 @@ sub get_caller($level?, :$attr?) {
 
 sub get_config(*@key) {
 	my $result;
+	our $Kakapo_config; # tt#1308
 
 	if $Kakapo_config {
 		$result := $Kakapo_config.query(@key.join('::'));
@@ -313,24 +294,17 @@ sub get_dumper_config($named_caller, :$starting) {
 	return @config;
 }
 
-=sub info
-
-Returns an array of:
-
-=item * [0] = proceed, either 0 or the flags set in config file for caller name
-
-=item * [1] = depth, the stack depth of the caller
-
-=item * [2] = caller full name:  Path::To::Class::sub
-
-=cut 
-
 our @Info_rejected := Array::new(0, -1, 'null');
 
 sub info(:$caller_level) {
+# Returns an array of:
+# [0] = proceed, either 0 or the flags set in config file for caller name
+# [1] = depth, the stack depth of the caller
+# [2] = caller full name:  Path::To::Class::sub
+
 	unless lock('info') { return @Info_rejected; }
 
-	$caller_level ++;
+	$caller_level++;
 	
 	our $Last_lexpad_addr;
 	our @Result;
@@ -382,7 +356,7 @@ sub make_bare_prefix($depth) {
 		$depth := 1;
 	}
 
-	$depth --;
+	$depth--;
 	my $prefix := String::repeat($Prefix_string, ($depth / $Prefix_string_len));
 	
 	$prefix := $prefix ~ String::substr($Prefix_string, 0, $depth % 3);
@@ -393,6 +367,18 @@ sub make_bare_prefix($depth) {
 sub make_named_prefix(@info) {
 	my $prefix := make_bare_prefix(@info[1]) ~ @info[2];
 	return $prefix;
+}
+
+sub _pre_initload() {
+# Special sub called when the Kakapo library is loaded or initialized to guarantee this module 
+# is already initialized during :init and :load processing.
+
+	Opcode::load_bytecode('dumper.pbc');
+	
+	$Caller_depth := 0;
+
+	Global::export('ASSERT', 'DUMP', 'DUMP_', 'NOTE');
+	#Global::use(:symbols('$Kakapo_config'));		# FIXME: Parameterize this.
 }
 
 sub reset_cache() {

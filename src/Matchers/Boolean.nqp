@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::Boolean;
-=module
-	Slathers a text label on another matcher.
-=end
+# Slathers a text label on another matcher.
 
-Global::use('Dumper');
+use('Dumper');
 Program::initload(:after('Matcher'));
 Matcher::Factory::export_sub(Matcher::Boolean::factory_true, :as('true'));
 Matcher::Factory::export_sub(Matcher::Boolean::factory_false, :as('false'));

@@ -2,32 +2,31 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::Factory;
-=module
-	Provides factory methods to facilitate constructing matchers.
-=end
+# Provides factory methods to facilitate constructing matchers.
 
-Global::use(Dumper);
-my $class_name := 'Matcher::Factory';
+INIT {
+	use(Dumper);
+	my $class_name := 'Matcher::Factory';
 
-# FIXME: The class is created only for the sake of multis, which I don't think require the class anymore. Check and if true get 
-# rid of the SUBCLASS call.
-NOTE("Creating class ", $class_name);
-Class::SUBCLASS($class_name,
-	'Class::HashBased',
-);
+	# FIXME: The class is created only for the sake of multis, which I don't think require the class anymore. Check and if true get 
+	# rid of the SUBCLASS call.
+	NOTE("Creating class ", $class_name);
+	Class::SUBCLASS($class_name,
+		'Class::HashBased',
+	);
 
-Class::multi_sub($class_name, 'equals', :starting_with('_equals_'));
-Class::multi_sub($class_name, 'make_matcher', :starting_with('_make_'));
-Class::multi_sub($class_name, 'returns', :starting_with('_returns_'));
-Global::export('assert_that', 'empty', 'equals', 'has', 'instance_of', 'null', 'returns', 'same_as');
-		
-NOTE("done");
+	Class::multi_sub($class_name, 'equals', :starting_with('_equals_'));
+	Class::multi_sub($class_name, 'make_matcher', :starting_with('_make_'));
+	Class::multi_sub($class_name, 'returns', :starting_with('_returns_'));
+	Global::export('assert_that', 'empty', 'equals', 'has', 'instance_of', 'null', 'returns', 'same_as');
+			
+	NOTE("done");
+}
 
 sub assert_that($item, $matcher) {
 	if ! $matcher.matches($item) {
 		my $explain := $matcher.describe_self("Expected: ")
 			~ $matcher.describe_failure($item, "\n     but: ");
-		say("assert: ", $explain);			
 		return 0;
 	}
 	
@@ -35,9 +34,7 @@ sub assert_that($item, $matcher) {
 }
 
 sub export_sub($sub, :$as, :$tags?) {
-=sub
-	Used to export a C< $sub > from a Matcher's namespace as a Factory method.
-=end
+# Used to export a C< $sub > from a Matcher's namespace as a Factory method.
 		
 	unless $tags {
 		$tags := 'DEFAULT';

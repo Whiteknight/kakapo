@@ -1,19 +1,12 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module Testcase;
-=module
-	An xUnit-like testcase class for NQP.
-	
-=SYNOPSIS
+=begin SYNOPSIS
 
 	# mytest.nqp
-	class My::Test;
+	class My::Test is Testcase;
 
-	Global::use(		'P6object' );
-	
-	My::Test.is(		'Testcase' );
-	# My::Test.has(	attrs ...);
+	use(		'P6object' );
 	
 	My::Test.run_all_tests();
 	
@@ -32,55 +25,159 @@ module Testcase;
 			that('Element [1]', @results[1], is( 'x2' )),
 		);		
 	}	
-=end
+=end SYNOPSIS
 
-Global::use(	'Dumper' );
-Global::use(	'P6object' );
+module Testcase;
+# An xUnit-like testcase class for NQP.
 	
-my $class_name := 'Testcase';
+INIT {
+	use(	'Dumper' );
+	use(	'P6metaclass' );
+	
+	my $class_name := 'Testcase';
 
-Class::SUBCLASS($class_name,
-	'Class::HashBased',
-);
-
-method after_methods(*@value)		{ self._ATTR_SETBY('after_methods', 'fetch_after_methods'); }	
-method after_prefix(*@value)		{ self._ATTR_DEFAULT('after_prefix', @value, 'after_'); }	
-method afterall_methods(*@value)	{ self._ATTR_SETBY('afterall_methods', 'fetch_afterall_methods'); }	
-method afterall_prefix(*@value)		{ self._ATTR_DEFAULT('afterall_prefix', @value, 'afterall_'); }	
-
-method assert_that($item_desc, *@item) {
-	unless +@item == 2 {
-		Opcode::die("You must provide 3 args: $item_desc, $item, $matcher");
-	}
+	has(	'_after_methods',
+		'_after_prefix',
+		'_afterall_methods',
+		'_afterall_prefix',
+		'_before_methods',
+		'_before_prefix',
+		'_beforeall_methods',
+		'_beforeall_prefix',
+	);
 	
-	my $matcher := @item[1];
-	my $description := $matcher.describe_self($item_desc ~ ' ');
-	my $result := $matcher.matches(@item[0]);
-	
-	self.ok($result, $description);
-	
-	unless $result {
-		my $explain := $matcher.describe_self("Expected: " ~ $item_desc ~ ' ')
-			~ $matcher.describe_failure(@item[0], "\n     but: ");
-		self.emit($explain);			
-	}		
-	
-	return $result;
+	say("Testcase init done");
+#	P6metaclass::dump_class(Testcase);
 }
 
-method before_methods(*@value)		{ self._ATTR_SETBY('before_methods', 'fetch_before_methods'); }	
-method before_prefix(*@value)		{ self._ATTR_DEFAULT('before_prefix', @value, 'before_'); }	
-method beforeall_methods(*@value)	{ self._ATTR_SETBY('beforeall_methods', 'fetch_beforeall_methods'); }	
-method beforeall_prefix(*@value)		{ self._ATTR_DEFAULT('beforeall_prefix', @value, 'beforeall_'); }	
+method after_methods() {
+	my @methods := self._after_methods;
+
+	unless @methods {
+		@methods := self.fetch_after_methods;
+		self._after_methods(@methods);
+	}
+	
+	return @methods;
+}
+
+method after_prefix(*@value) {
+	if +@value {
+		self._after_prefix(@value.shift);
+		return self;
+	}
+	
+	my $prefix := self._after_prefix;
+	
+	unless $prefix {
+		$prefix := 'after_';
+		self._after_prefix($prefix);
+	}
+	
+	return $prefix;
+}
+	
+method afterall_methods() {
+	my @methods := self._afterall_methods;
+	
+	unless @methods {
+		@methods := self.fetch_afterall_methods;
+		self._afterall_methods(@methods);
+	}
+	
+	return @methods;
+}
+
+method afterall_prefix(*@value) {
+	if +@value {
+		self._afterall_prefix(@value.shift);
+		return self;
+	}
+	
+	my $prefix := self._afterall_prefix;
+	
+	unless $prefix {
+		$prefix := 'afterall_';
+		self._afterall_prefix($prefix);
+	}
+	
+	return $prefix;
+}
+
+method before_methods() {
+	my @methods := self._before_methods;
+
+	unless @methods {
+		@methods := self.fetch_before_methods;
+		self._before_methods(@methods);
+	}
+	
+	return @methods;
+}
+
+method before_prefix(*@value) {
+	if +@value {
+		self._before_prefix(@value.shift);
+		return self;
+	}
+	
+	my $prefix := self._before_prefix;
+	
+	unless $prefix {
+		$prefix := 'before_';
+		self._before_prefix($prefix);
+	}
+	
+	return $prefix;
+}
+	
+method beforeall_methods() {
+	my @methods := self._beforeall_methods;
+	
+	unless @methods {
+		@methods := self.fetch_beforeall_methods;
+		self._beforeall_methods(@methods);
+	}
+	
+	return @methods;
+}
+
+method beforeall_prefix(*@value) {
+	if +@value {
+		self._beforeall_prefix(@value.shift);
+		return self;
+	}
+	
+	my $prefix := self._beforeall_prefix;
+	
+	unless $prefix {
+		$prefix := 'beforeall_';
+		self._beforeall_prefix($prefix);
+	}
+	
+	return $prefix;
+}
 
 method emit(*@parts)			{ say(@parts.join); }
 
-method note(*@message) {
-	self.emit(
-		"#\n",
-		"# NOTE: ", @message.join, "\n",
-		"#"
-	);
+method fetch_after_methods() {
+	return self.fetch_methods(:starting_with(self.after_prefix)); 
+}
+
+method fetch_afterall_methods() {
+	return self.fetch_methods(:starting_with(self.afterall_prefix)); 
+}
+
+method fetch_before_methods() {
+	return self.fetch_methods(:starting_with(self.before_prefix)); 
+}
+
+method fetch_beforeall_methods() {
+	return self.fetch_methods(:starting_with(self.beforeall_prefix)); 
+}
+
+method fetch_test_methods() {
+	return self.fetch_methods(:starting_with(self.test_prefix)); 
 }
 
 # FIXME: This doesn't get the methods from parents.
@@ -108,44 +205,39 @@ method fetch_methods(:$starting_with) {
 	return @list;
 }
 
-method fetch_after_methods()		{ self.fetch_methods(:starting_with(self.after_prefix)); }
-method fetch_afterall_methods()		{ self.fetch_methods(:starting_with(self.afterall_prefix)); }
-method fetch_before_methods()		{ self.fetch_methods(:starting_with(self.before_prefix)); }
-method fetch_beforeall_methods()		{ self.fetch_methods(:starting_with(self.beforeall_prefix)); }
-method fetch_test_methods()		{ self.fetch_methods(:starting_with(self.test_prefix)); }
-
 method init(@children, %attributes) {
+	say("Hello from Testcase::init");
 	Class::BaseBehavior::init(self, @children, %attributes);
 	self.test_counter(0);
 }
 
-method ok($result, $note?) {
-	my @output;
-
-	unless $result {
-		@output.push('not');
-	}
-	
-	@output.push('ok');
-	self.test_counter++;
-	@output.push(self.test_counter);
-	
-	if $note {
-		@output.push('-');
-		@output.push($note);
-	}
-	
-	self.emit(@output.join(' '));
+method note(*@message) {
+	self.emit(
+		"#\n",
+		"# NOTE: ", @message.join, "\n",
+		"#"
+	);
 }
 
 method run_all_tests() {
-	self.run_tests();
+	return self.run_tests();
 }
 
-method run_after_methods()		{ self.run_methods(self.after_methods); }
-method run_afterall_methods()		{ self.run_methods(self.afterall_methods); }
-method run_before_methods()		{ self.run_methods(self.before_methods); }
-method run_beforeall_methods()		{ self.run_methods(self.beforeall_methods); }
+method run_after_methods() {
+	return self.run_methods(self.after_methods); 
+}
+
+method run_afterall_methods() {
+	return self.run_methods(self.afterall_methods); 
+}
+
+method run_before_methods() {
+	return self.run_methods(self.before_methods);
+}
+
+method run_beforeall_methods() {
+	return self.run_methods(self.beforeall_methods); 
+}
 
 method run_methods(@methods, *@args, *%opts) {
 	NOTE("Running ", +@methods, " methods");
@@ -164,9 +256,9 @@ method run_test($method_name, :$after_prefix?, :$before_prefix?) {
 	self.run_after_methods;
 }
 
-method run_tests(*@names) {
+our method run_tests(*@names) {
 	NOTE("Creating new testcase");
-	my $testcase := self.new();
+	my $testcase := self.HOW.new();
 	
 	NOTE("Running 'beforeall' methods");
 	$testcase.run_beforeall_methods;
@@ -193,6 +285,50 @@ method run_tests(*@names) {
 	
 	NOTE("Done with tests. Running 'afterall' methods");
 	$testcase.run_afterall_methods;
+}
+
+
+
+
+
+		
+method assert_that($item_desc, *@item) {
+	unless +@item == 2 {
+		Opcode::die('You must provide 3 args: $item_desc, $item, $matcher');
+	}
+	
+	my $matcher := @item[1];
+	my $description := $matcher.describe_self($item_desc ~ ' ');
+	my $result := $matcher.matches(@item[0]);
+	
+	self.ok($result, $description);
+	
+	unless $result {
+		my $explain := $matcher.describe_self("Expected: $item_desc ")
+			~ $matcher.describe_failure(@item[0], "\n     but: ");
+		self.emit($explain);			
+	}		
+	
+	return $result;
+}
+
+method ok($result, $note?) {
+	my @output;
+
+	unless $result {
+		@output.push('not');
+	}
+	
+	@output.push('ok');
+	self.test_counter++;
+	@output.push(self.test_counter);
+	
+	if $note {
+		@output.push('-');
+		@output.push($note);
+	}
+	
+	self.emit(@output.join(' '));
 }
 
 method test_counter(*@value)		{ self._ATTR_CONST('test_counter', @value); }	

@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::Not;
-=module
-	Matcher that negates its single child.
-=end
+# Matcher that negates its single child.
 
-Global::use('Dumper');
+use('Dumper');
 Program::initload(:after('Matcher'));
 Class::multi_sub('Matcher::Not', 'factory', :starting_with('_factory_'));
 Matcher::Factory::export_sub(Matcher::Not::factory, :as('not'));

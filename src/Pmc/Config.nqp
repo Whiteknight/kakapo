@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Config;
-=module
-	Wrapper for config.pbc, a generated file containing Parrot configuration data.
-=cut 
+# Wrapper for config.pbc, a generated file containing Parrot configuration data.
 
-Global::use(Dumper);
+use(Dumper);
 
 sub _get_pmc() {
 	our $_Pmc;

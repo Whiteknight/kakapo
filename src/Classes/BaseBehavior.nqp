@@ -2,17 +2,13 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Class::BaseBehavior;
-#=module
 #	Common methods for Class::*Based
-#=cut 
 
 our @No_args;
 
 sub _pre_initload() {
-#=sub
-#	Special sub called when the Kakapo library is loaded or initialized. This is to guarantee 
-#	this module is available during :init and :load processing for other modules.
-#=end
+# Special sub called when the Kakapo library is loaded or initialized. This is to guarantee 
+# this module is available during :init and :load processing for other modules.
 
 	Global::use('Dumper');
 	
@@ -128,84 +124,4 @@ method new(*@children, *%attributes) {
 	# along flat args.
 	$new_object.init(@children, %attributes);
 	return $new_object;
-}
-
-module Kakapo::Object;
-#=module
-#Defines base object behavior usable by attribute-based classes.
-#=end
-
-method get_bool() {
-	return 1;
-}
-
-method get_string() {
-	return Class::name_of(self) ~ ' @' ~ Parrot::get_address_of(self);
-}
-
-method init_(@pos, %named) {
-	if +@pos {
-		Opcode::die("Don't know what to do with positional parameters. Define your own 'init_' method to handle them.");
-	}
-	
-	for %named {
-		my $name := ~ $_;
-		
-		if Opcode::can(self, $name) {
-			Parrot::call_method(self, $name, %named{$name});
-		}
-		else {
-			Opcode::die("No accessor defined for attribute '", $name, "'.");
-		}
-	}
-}
-
-method isa($type) {
-	return self.HOW.isa(self, $type);
-}
-
-method new(*@pos, *%named) {
-say("New!");
-Dumper::DUMP_(self, @pos, %named);
-	my $class := Opcode::getattribute(self.HOW, 'parrotclass');
-	my $new_object := Opcode::new($class);
-
-	# NB: I'm not flattening the params, because that forces
-	# everybody to do call_method or in-line pir to pass
-	# along flat args.
-	$new_object.init_(@pos, %named);
-	return $new_object;
-}
-
-our @No_args;
-
-sub _pre_initload() {
-#=sub
-#	Special sub called when the Kakapo library is loaded or initialized. This is to guarantee 
-#	this module is available during :init and :load processing for other modules.
-#=end
-
-	Global::use('Dumper');
-	Global::use('P6object');
-	
-	@No_args := Array::empty();
-
-	Pir::compile_sub(:name('__get_bool'), :vtable('get_bool'),
-		:namespace('Kakapo::Object'),
-		:body(
-			'$I0= self."get_bool"()',
-			'.return ($I0)',
-		),
-	);
-	
-	Pir::compile_sub(:name('__get_string'), :vtable('get_string'),
-		:namespace('Kakapo::Object'),
-		:body(
-			'$S0 = self."get_string"()',
-			'.return ($S0)',
-		),
-	);
-	
-	say("Declaring Kakapo::Object");
-	declare('Kakapo::Object');
 }

@@ -2,9 +2,7 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Hash;
-=module
-Provides some extra methods for Hash, plus some convenient creator subs.
-=cut 
+# Provides some extra methods for Hash, plus some convenient creator subs.
 
 method contains($key) {
 	my $result := Q:PIR {

@@ -2,9 +2,7 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Parrot;
-=module
-	Provides access to low-level functions of the Parrot VM.
-=end
+# Provides access to low-level functions of the Parrot VM.
 
 sub _pre_initload() {
 	Global::use('Dumper');
@@ -54,10 +52,8 @@ method call_method($method_name, *@args, *%opts) {
 }
 
 method call_method_($method_name, @args?, %opts?) {
-=method
-	Calls method C< $method_name > with flattened arglist C< @args > and flattened 
-	options C< %opts >. Returns the result of the method call.
-=end
+# Calls method C< $method_name > with flattened arglist C< @args > and flattened 
+# options C< %opts >. Returns the result of the method call.
 
 	unless Opcode::defined(@args)	{ @args := Array::empty(); }
 	unless Opcode::defined(%opts)	{ %opts := Hash::empty(); }
@@ -84,14 +80,12 @@ sub call_sub($sub_name, *@args, *%opts) {
 }
 
 sub call_sub_($sub_name, @args, %opts) {
-=sub
-	Calls sub C< $sub_name > with flattened arglist C< @args > and flattened options C< %opts >. 
-	Returns the result of the sub call.
-=end
+# Calls sub C< $sub_name > with flattened arglist C< @args > and flattened options C< %opts >. 
+# Returns the result of the sub call.
 
 	Q:PIR {
 		.local pmc sub, args, opts
-		sub	= find_lex '$sub'
+		sub	= find_lex '$sub_name'
 		args 	= find_lex '@args'
 		opts	= find_lex '%opts'
 		

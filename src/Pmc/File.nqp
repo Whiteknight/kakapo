@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module File;
-=module
-	Wrapper for File PMC type, providing a few extra functions. 
-=end
+# Wrapper for File PMC type, providing a few extra functions. 
 
-Global::use('Dumper');
+use('Dumper');
 	
 sub _get_pmc() {
 	our $_Pmc;

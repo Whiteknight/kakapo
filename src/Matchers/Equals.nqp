@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::Equals;
-=module
-TypeSafe matcher that matches if the target is the same as a preset value.
-=end
+# TypeSafe matcher that matches if the target is the same as a preset value.
 
-Global::use('Dumper');
+use('Dumper');
 Program::initload(:after('Matcher::TypeSafe'));
 Class::multi_sub('Matcher::Equals', 'factory', :starting_with('_factory_'));
 Matcher::Factory::export_sub(Matcher::Equals::factory, :as('is'));

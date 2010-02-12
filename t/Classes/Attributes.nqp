@@ -7,18 +7,18 @@ sub main() {
 }
 
 module Kakapo;
-
 sub library_name()		{ 'kakapo_test.pbc' }
 
-module Kakapo::Test::Class::Attributes;
+class Kakapo::Test::Class::Attributes
+	is Testcase;
 
-Global::use(	'P6object');
+INIT {
+	use(	'P6object');
+	use(	'Matcher::Factory');
+}
 
-extends(	'Testcase');
-
-Global::use(	'Matcher::Factory');
-
-method test_attribute_accessors() {
+method Xtest_attribute_accessors() {
+say("Test accessors");
 	my $obj := Kakapo::Test::Aclass.new();
 
 	$obj.a("apple");
@@ -30,16 +30,24 @@ method test_attribute_accessors() {
 }
 
 method test_initializer() {
-	my $obj := Kakapo::Test::Aclass.new(:a('albatross'), :b('byzantine'));
+	#my $obj := Kakapo::Test::Aclass.new(:a('albatross'), :b('byzantine'), :c('chrysanthemum'));
+	my %named := Hash::new(:a('albatross'), :b('byzantine'));
+	Dumper::DUMP_(%named);
+	%named := Hash::empty();
+	Dumper::DUMP_(%named);
+	%named<a> := 'albatross';
+	%named<b> := 'byzantine';
+	Dumper::DUMP_(%named);
+	my $obj := Parrot::call_method_(Kakapo::Test::Aclass, 'new', Array::empty(), %named);
 
-	# Doesn't work because of wrong 'new' method.
 	self.assert_that('test object.a', $obj.a, is("albatross"));
 	self.assert_that('test object.b', $obj.b, is("byzantine"));
 }
 
+module Kakapo::Test::Aclass;
 
-class Kakapo::Test::Aclass;
-
-Global::use(	'P6object');
-
-has('b a');
+INIT {
+	use(		'P6object');
+	extends(	 'Kakapo::Object');
+	has(		'b a');
+}

@@ -2,21 +2,22 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Kakapo;
-=module
-Organizing code for setting up the Kakapo framework.
-=cut
+# Organizing code for setting up the Kakapo framework.
+
+INIT {
+	if Opcode::isnull(Kakapo::krt0::main) {
+	}
+}
 
 sub is_loaded() {
 	return 1;
 }
 
 sub _pre_initload() {
-=sub
-	This sub is called directly by code in kakapo_top_pir.tmpl to perform 'very first thing' 
-	initialization. The intent is to (1) ensure that the environment is initialized, and (2) to 
-	directly initialize those modules that are prerequisites of just about every other module 
-	in the system.
-=end
+# This sub is called directly by code in kakapo_top_pir.tmpl to perform 'very first thing' 
+# initialization. The intent is to (1) ensure that the environment is initialized, and (2) to 
+# directly initialize those modules that are prerequisites of just about every other module 
+# in the system.
 
 	if our $_Pre_initload_done { return 0; }
 	$_Pre_initload_done := 1;
@@ -30,24 +31,31 @@ sub _pre_initload() {
 	}	
 	
 	# Note: Order is important, here.
+
 	
-	# Global::_pre_initload();	# No such sub. Not needed. :)
+	Global::_pre_initload();
 	Dumper::_pre_initload();
 	Opcode::_pre_initload();
-	Parrot::_pre_initload();
-	P6object::_pre_initload();
-	Pir::_pre_initload();
-	Class::_pre_initload();
 	Undef::_pre_initload();
+	String::_pre_initload();
+	Parrot::_pre_initload();
+	P6metaclass::_pre_initload();
+	Pir::_pre_initload();
+	P6object::_pre_initload();
+	Class::_pre_initload();
+	Exception::_pre_initload();
 	DependencyQueue::_pre_initload();
 	Program::_pre_initload(
 		'Global', 
 		'Dumper', 
 		'Opcode', 
+		'Undef',
 		'Parrot', 
+		'P6metaclass', 
+		'P6object', 
 		'Pir', 
 		'Class', 
-		'Undef',
+		'Exception',
 		'DependencyQueue', 
 		'Program',
 	);

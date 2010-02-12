@@ -1,25 +1,33 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
+INIT {
+	pir::load_bytecode('P6object.pir');
+}
+
 sub main() {
-	Kakapo::Test::Array.run_tests();
+
+	P6metaclass::dump_class(Kakapo::Test::Array);
+	my $tc := Kakapo::Test::Array.new();
+	$tc.run();
 	Program::exit(0);
 }
 
-module Kakapo;
+module Kakapo {
+	# Tell the Kakapo runtime which library file to load.	
+	sub library_name()		{ 'kakapo_test.pbc' }
+}
 
-sub library_name()		{ 'kakapo_test.pbc' }
+class Kakapo::Test::Array
+	is Testcase {
+}
 
-module Kakapo::Test::Array;
-=module
-Test cases for Array methods
-=end
+module NOT_BEING_USED;
 
-Class::SUBCLASS('Kakapo::Test::Array',
-	'Testcase',
-);	
-
-Global::use('Matcher::Factory');
+INIT {
+	Global::use('P6object');
+	Global::use('Matcher::Factory');
+}
 
 method test_bsearch() {
 	
@@ -77,9 +85,9 @@ method test_concat() {
 	
 	my @b := ('a', 'b');
 
-	my @t5 := Array::concat(@a, @b);
-	self.assert_that('a + b concat', @t5, is(instance_of('ResizablePMCArray')));
-	self.assert_that('a + b concat', @t5, has(elements(@a.elements + @b.elements)));
+	my @t9 := Array::concat(@a, @b);
+	self.assert_that('a + b concat', @t9, is(instance_of('ResizablePMCArray')));
+	self.assert_that('a + b concat', @t9, has(elements(@a.elements + @b.elements)));
 	
 	my @t6 := Array::concat(@b, @a);
 	self.assert_that('b + a concat', @t6, is(instance_of('ResizablePMCArray')));
@@ -93,21 +101,21 @@ method test_concat() {
 	my @c := ('', 0, $undef, No::such::symbol);
 	my $desc := 'a+b+c concat';
 	
-	my @t7 := Array::concat(@a, @b, @c);
-	self.assert_that($desc, @t7, is(instance_of('ResizablePMCArray')));
-	self.assert_that($desc, @t7, has(elements(@a.elements + @b.elements + @c.elements)));
+	my @t8 := Array::concat(@a, @b, @c);
+	self.assert_that($desc, @t8, is(instance_of('ResizablePMCArray')));
+	self.assert_that($desc, @t8, has(elements(@a.elements + @b.elements + @c.elements)));
 
-	self.assert_that($desc ~ ' element[0]', @t7[0], is(1));
-	self.assert_that($desc ~ ' element[1]', @t7[1], is(2));
-	self.assert_that($desc ~ ' element[2]', @t7[2], is('a'));
-	self.assert_that($desc ~ ' element[3]', @t7[3], is('b'));
-	self.assert_that($desc ~ ' element[4]', @t7[4], is(''));
-	self.assert_that($desc ~ ' element[5]', @t7[5], is(0));
-	self.assert_that($desc ~ ' element[6]', @t7[6], is(not(defined())));
+	self.assert_that($desc ~ ' element[0]', @t8[0], is(1));
+	self.assert_that($desc ~ ' element[1]', @t8[1], is(2));
+	self.assert_that($desc ~ ' element[2]', @t8[2], is('a'));
+	self.assert_that($desc ~ ' element[3]', @t8[3], is('b'));
+	self.assert_that($desc ~ ' element[4]', @t8[4], is(''));
+	self.assert_that($desc ~ ' element[5]', @t8[5], is(0));
+	self.assert_that($desc ~ ' element[6]', @t8[6], is(not(defined())));
 	
 	# This last test has to be not-defined, because NQP 'fixes' nulls in expression temps, 
 	# so I can't pass in a single-value null and have it stay null.
-	self.assert_that($desc ~ ' element[7]', @t7[7], is(not(defined())));
+	self.assert_that($desc ~ ' element[7]', @t8[7], is(not(defined())));
 }
 
 method test_contains() {

@@ -2,12 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::Empty;
-=module
-Matches if target is an instance of a pre-specified class.
-=end
+# Matches if target is an instance of a pre-specified class.
 
-	
-Global::use('Dumper');
+use('Dumper');
 Program::initload(:after('Matcher::TypeSafe'));
 Matcher::Factory::export_sub(Matcher::Empty::factory, :as('empty'));
 

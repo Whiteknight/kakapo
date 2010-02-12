@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::Defined;
-=module
-	Asserts that a value is not undef.
-=end
+# Asserts that a value is not undef.
 
-Global::use('Dumper');	
+use('Dumper');	
 Program::initload(:after('Matcher'));
 Matcher::Factory::export_sub(Matcher::Defined::factory, :as('defined'));
 
@@ -30,7 +28,7 @@ sub factory()				{ Matcher::Defined.new(); }
 
 method matches(*@value) {
 	unless +@value {
-		Opcode::die("A value must be passed to matches($item)");
+		Opcode::die('A value must be passed to matches($item)');
 	}
 
 	my $result := Opcode::defined(@value[0]);		

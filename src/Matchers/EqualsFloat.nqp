@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::EqualsFloat;
-=module
-TypeSafe matcher that matches if the target is the same as a preset value. This version compares floats with an approximation range.
-=end
-	
-Global::use('Dumper');
+# TypeSafe matcher that matches if the target is the same as a preset value. This version compares floats with an approximation range.
+
+use('Dumper');
 Program::initload(:after('Matcher::TypeSafe'));
 
 sub _initload() {

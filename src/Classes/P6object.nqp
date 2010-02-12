@@ -2,238 +2,157 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module P6object;
-=module
-Extends the P6object.pir class with helper functions for advanced class declaration.
+=begin
+
+=head1 P6object - the root of the P6/NQP class hierarchy.
+
+P6object is added automatically as the parent class of any class that is 
+set up using the C< P6metaclass > C< .register > method. (By default: all 
+classes.)
+
+Thus, methods on this class correspond roughly to the C< UNIVERSAL >
+methods from P5.
+
+=item sub onload()  I<(standard)>
+
+Sets up the C< P6protoobject >, C< P6object >, and 
+C< P6metaclass > classes. Creates protoobjects for 
+C< P6object > and C< P6metaclass >.
+
+=item method __ABSTRACT__()
+
+Sugar. Throws an AbstractMethodCalled exception.
+
 =end
 
-method _add_attributes($class, %attrs) {
-	my $parrotclass := self._declare_class($class);
-	
-	for %attrs {
-		my %attr_info := %attrs{$_};
-		
-		my $name := %attr_info<name>.defined ?? %attr_info<name> !! ~ $_;
-		
-		self.add_attribute($parrotclass, $name);
-		self._make_accessor($parrotclass, $name);		
-	}
+method __ABSTRACT__() {
+	Exception::AbstractMethodCalled.new().throw;
+	exit_code, message, severity, type
 }
 
-method _add_parents($class, @parents) {
-	@parents := _flatten_name_list(@parents);
+=begin
 
-	unless +@parents {
-		return 0;
-	}
-	
-	unless $class.defined {
-		die("Cannot add parents to undefined class.");
-	}
-	
-	my $parrotclass := self._declare_class($class, :parent(@parents.shift));
+=item method HOW()  I<(standard)>
 
-	for @parents {
-		self.add_parent($parrotclass, $_);
-	}
+Returns the L<P6metaclass> of the invocant. 
+
+=item PROTOOVERRIDES()  I<(standard)>
+
+Returns a list of methods to be overridden in the I< protoobjects > for 
+the class.  The methods defined (or imported) in the Foo::Bar namespace whose 
+names are returned in the C< PROTOOVERRIDES > list will replace any standard
+proto-object methods with the same name provided by the P6object library.
+
+By default, the list returned consists solely of the method C< new >. Thus,
+any C< new > method defined in the C< class > or C< module > block will
+supersede the default C< new > method provided by the P6object library.
+
+(Note that if you don't provide a replacement C< new > method, the default one 
+gets used. Returning a name in the C< PROTOOVERRIDES > list I< allows >, but 
+does not I< require > replacing a method.)
+
+=item method WHAT()  I<(standard)>
+
+Return the L<P6protoobject> for the invocant. The protoobject is the object 
+the lives under the C<Foo::Bar> class name . Calling C< Foo::Bar.new() >actually
+looks up the C< Foo::Bar > object (a protoobject) and runs it's C< .new > method.
+
+=item method WHERE()  I<(standard)>
+
+Returns the memory address of the invocant. (Useful for identity tests.)
+
+=item method WHO()  I<(standard)>
+
+Returns the package for the invocant. That is, the namespace where the 
+proto-object lives. For example, objects of class C< Foo::Bar > have a 
+protoobject C< Foo::Bar > (of type P6protoobject) that belongs to a 
+I<namespace> (a different PMC type) also called C< Foo::Bar >.
+
+=end
+
+method defined() {
+# returns true. (Overridden for the Undef PMC type.)
+	return 1;
 }
 
-method _declare_class($class, :$parent?) {
-	unless $class.defined {
-		die("Cannot declare undefined class - give me a string name or a namespace");
-	}
-	
-	my $parrotclass;
-	
-	if $class.isa('Class') {
-		return $class;
-	}
-	elsif $class.isa('NameSpace') {
-		$parrotclass := self.get_parrotclass($class);
-	}
-	else {
-		my $type := Opcode::typeof($class);
-		die("Don't know what to do with a $class of type ", $type);
-	}
+method get_bool() {
+# returns true.
+	return 1;
+}
 
-	# Already defined?
-	unless $parrotclass.defined {
-		if $parent.defined {
-			self.new_class($class, :parent($parent));
+method get_string() {
+# Returns a perl5-style object class+address.
+	return Class::name_of(self) ~ ' @' ~ self.WHERE;
+}
+
+method _init_(@pos, %named) {
+	# First, set up the default data
+	# ...
+	
+	# Accept args.
+	self._init_args_(@pos, %named);
+}
+
+method _init_args_(@pos, %named) {
+	self._init_named_(%named);
+	self._init_positional_(@pos);
+}
+
+method _init_named_(%named) {	
+	for %named {
+		my $name := ~ $_;
+		
+		if Opcode::can(self, $name) {
+			Parrot::call_method(self, $name, %named{$name});
 		}
 		else {
-			self.new_class($class);
-		}
-		
-		$parrotclass := self.get_parrotclass($class);
-	}
-	
-	return $parrotclass;
-}
-
-sub declare($class?, :@has?, :@is?) {
-	if ! @is.defined { @is := Array::empty(); }
-	elsif ! Opcode::does(@is, 'array') { @is := Array::new(@is); }
-	
-	my %attrs;
-
-	if @has.isa('Hash') {
-		%attrs := @has;
-	}
-	else {
-		
-	}
-		
-	unless $class.defined {
-		$class := caller_namespace(3);
-	}
-	
-	my $meta := _get_meta();
-	my $parrotclass := $meta._declare_class($class, @is.shift);
-
-	$meta._add_parents($parrotclass, @is);
-	$meta._add_attributes($parrotclass, @has);
-}
-
-sub _flatten_name_list(@list) {
-	my @merged := Array::empty();
-
-	for @list {
-		if does($_, 'array') {
-			@merged.append($_);
-		}
-		elsif $_.isa('String') {
-			for $_.split(' ') {
-				@merged.push($_);
-			}
-		}
-		else {
-			@merged.push($_);
+			Opcode::die("No accessor defined for attribute '", $name, "'.");
 		}
 	}
-	
-	return @merged;
 }
 
-method _get_classname($class) {
-	my $name := (~$class).split(';').join('::');
-	return $name;
-}
-
-sub _get_meta() {
-	our $_P6_Metaclass;
-	
-	unless Opcode::defined($_P6_Metaclass) {
-		$_P6_Metaclass := Opcode::new('P6metaclass');
+method _init_positional_(@pos) {
+	if +@pos {
+		Opcode::die("Don't know what to do with positional parameters. Define your own 'init_' method to handle them.");
 	}
-
-	return $_P6_Metaclass;
 }
 
-sub has(*@pos, :$class?, *%opts) {
-=method
-Declares attributes for a class. Note that the class may not be declared yet.
-=end
-
-	if ! %opts.defined { %opts := Hash::empty(); }
-
-	unless $class.defined {
-		$class := caller_namespace(3);
-	}
-	
-	while @pos {
-		my $next := @pos.shift;
-		my @words := $next.split(' ');
-		
-		for @words {
-			unless %opts{~ $_} {
-				%opts{~ $_} := Hash::new(:name(~$_));
-			}
-		}
-	}
-			
-	_get_meta()._add_attributes($class, %opts);
+method isa($type) {
+	return self.HOW.isa(self, $type);
 }
 
-sub has_vtable($name, &code, :$class?) {
-	my $meta		:= _get_meta();
-	my $parrot_class	:= $meta.get_parrotclass($class.defined ?? $class !! caller_namespace(2));
-	
-	unless $parrot_class.defined {
-		die("Undefined class '", $class, "'");
-	}
+method new(*@pos, *%named) {
+	my $class := Opcode::getattribute(self.HOW, 'parrotclass');
+	my $new_object := Opcode::new($class);
 
-	$parrot_class.add_vtable_override($name, &code);
-say("Adding vtable: ", $name, " to ", $parrot_class);
-DUMP_(Opcode::inspect($parrot_class, 'vtable_overrides'));
+	# NB: I'm not flattening the params, because that forces
+	# everybody to do call_method or in-line pir to pass
+	# along flat args.
+	$new_object._init_(@pos, %named);
+	return $new_object;
 }
 
-sub extends($first, *@args, :$class?) {
-=method
-Declares parent classes of the specified class. Note that the class may not be declared yet.
-=end
-
-	if ! @args.defined { @args := Array::new($first); }
-	elsif ! Opcode::does(@args, 'array') { @args := Array::new($first, @args); }
-	else { @args.unshift($first); }
-	
-	unless $class.defined {
-		$class := caller_namespace(3);
-	}
-	
-	_get_meta()._add_parents($class, @args);
-}
-
-method _make_accessor($parrot_class, $name) {
-	my $namespace := $parrot_class.get_namespace;
-	
-	Pir::compile_sub(
-		:namespace($namespace),
-		:name($name),
-		:method(1),
-		:params(
-			'.param pmc value :optional',
-			'.param int has_value :opt_flag',
-		),
-
-		:body(
-			"\t" ~ "if has_value goto set_value",
-			"\t" ~ "value = getattribute self, '" ~ $name ~ "'",
-			"\t" ~ "say 'Fetching attribute " ~ $name ~ "'",
-			"\t" ~ "$P0 = get_hll_global [ 'Dumper' ], 'DUMP_'",
-			"\t" ~ "$P0(value)",
-			"\t" ~ ".return (value)",
-			
-			"set_value:",
-			"\t" ~ "say 'Setting attribute " ~ $name ~ "'",
-			"\t" ~ "$P0 = get_hll_global [ 'Dumper' ], 'DUMP_'",
-			"\t" ~ "$P0(value)",
-			"\t" ~ "setattribute self, '" ~ $name ~ "', value",
-			"\t" ~ ".return (self)",
-		),
-	);
-}
+our @No_args;
 
 sub _pre_initload() {
-	Global::use(	Dumper	);
-	Global::use(	Opcode,	:tags('DEFAULT', 'TYPE'));
-	Global::use(	Parrot,	:tags('NAMESPACE'));
+# Special sub called when the Kakapo library is loaded or initialized. This is to guarantee 
+# this module is available during :init and :load processing for other modules.
 
-	Global::export('declare', 'extends', 'has', 'has_vtable');
-}
+	@No_args := Array::empty();
 
-module P6protoobject {
-
-	method new(*@pos, *%opt) {
-		my $parrotclass := Opcode::getattribute(self.HOW, 'parrotclass');
-		my $new_object := Opcode::new($parrotclass);
-
-		if Opcode::can($new_object, 'init_') {
-			$new_object.init_(@pos, %opt);
-		}
-		elsif Opcode::can($new_object, 'init') {
-			Parrot::call_method_($new_object, 'init', @pos, %opt);
-		}
-		
-		return $new_object;
-	}
+	Pir::compile_sub(:name('__get_bool'), :vtable('get_bool'),
+		:namespace('Kakapo::Object'),
+		:body(
+			'$I0= self."get_bool"()',
+			'.return ($I0)',
+		),
+	);
+	
+	Pir::compile_sub(:name('__get_string'), :vtable('get_string'),
+		:namespace('Kakapo::Object'),
+		:body(
+			'$S0 = self."get_string"()',
+			'.return ($S0)',
+		),
+	);
 }

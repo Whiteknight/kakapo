@@ -2,13 +2,10 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::Elements;
-=module
-	Matches when the C< .elements > of an object equal a given number.
-	
-	TODO: Create a Matcher variant, to allow C< elements(both(ge(0), lt(6))) >.
-=end
+# Matches when the C< .elements > of an object equal a given number.
+# TODO: Create a Matcher variant, to allow C< elements(both(ge(0), lt(6))) >.
 
-Global::use('Dumper');
+use('Dumper');
 Program::initload(:after('Matcher::TypeSafe'));
 Matcher::Factory::export_sub(Matcher::Elements::factory, :as('elements'));
 

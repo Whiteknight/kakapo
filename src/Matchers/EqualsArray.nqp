@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::EqualsArray;
-=module
-Matches if target is an array with specified contents.
-=end
-	
-Global::use('Dumper');
+# Matches if target is an array with specified contents.
+
+use('Dumper');
 Program::initload(:after('Matcher::TypeSafe'));
 
 sub _initload() {

@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::DescribedAs;
-=module
-	Slathers a text label on another matcher.
-=end
+# Slathers a text label on another matcher.
 
-Global::use('Dumper');
+use('Dumper');
 Program::initload(:after('Matcher'));
 
 sub _initload() {

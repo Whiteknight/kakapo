@@ -2,11 +2,9 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module ResizableStringArray;
-=module
-	Provides missing methods to RSA.
-=end
+# Provides missing methods to RSA.
 
-Global::use('Dumper');
+use('Dumper');
 
 method append(@other) {
 	for @other {

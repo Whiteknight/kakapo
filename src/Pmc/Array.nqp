@@ -2,14 +2,10 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Array;
-=module
+# A common dumping ground for methods added to RPA and RSA, plus a central 
+# point for convenience functions like ::new and ::empty.
 
-A common dumping ground for methods added to RPA and RSA, plus a central 
-point for convenience functions like ::new and ::empty.
-
-=end
-
-Global::use('Dumper');
+use(	'Dumper');
 
 our %Bsearch_compare_func;
 %Bsearch_compare_func{'<=>'}	:= Array::cmp_numeric;
@@ -19,39 +15,35 @@ our %Bsearch_compare_func;
 
 our @Empty := Array::empty();
 
-=sub bsearch(@array, $value, ...)
-
-Binary searches for C<$value> in C<@array>, using a selectable comparison 
-function. 
-
-The adverbs C<:low(#)> and C<:high(#)> may be specified to search within a subset
-of C<@array>.
-
-The adverb C<:cmp(val)> may be specified to select a comparison function. A
-user-provided function may be passed as the value to C<:cmp()>, or a string may
-be given to choose one of the following default comparison functions:
-
-=item C<< <=> >> - numeric ascending order
-
-=item C<< R<=> >> - numeric descending (reversed) order
-
-=item C<cmp> - string ascending order
-
-=item C<Rcmp> - string descending (reversed) order
-
-If a user-provided function is passed in, it must accept two arguments,
-and return some value less than zero if the first argument would appear earlier 
-in C<@array> than the second argument.
-
-If the C<$value> is found, returns the index corresponding to the 
-value. Otherwise, returns a negative value, V, such that (-V) - 1
-is the index where C<$value> would be inserted. These shenanigans
-are required because there is no "negative zero" to indicate insertion
-at the start of the array.
-
-=cut
-
 sub bsearch(@array, $value, *%opts) {
+# Binary searches for C<$value> in C<@array>, using a selectable comparison 
+# function. 
+
+# The adverbs C<:low(#)> and C<:high(#)> may be specified to search within a subset
+# of C<@array>.
+
+# The adverb C<:cmp(val)> may be specified to select a comparison function. A
+# user-provided function may be passed as the value to C<:cmp()>, or a string may
+# be given to choose one of the following default comparison functions:
+
+# =item C<< <=> >> - numeric ascending order
+
+# =item C<< R<=> >> - numeric descending (reversed) order
+
+# =item C<cmp> - string ascending order
+
+# =item C<Rcmp> - string descending (reversed) order
+
+# If a user-provided function is passed in, it must accept two arguments,
+# and return some value less than zero if the first argument would appear earlier 
+# in C<@array> than the second argument.
+
+# If the C<$value> is found, returns the index corresponding to the 
+# value. Otherwise, returns a negative value, V, such that (-V) - 1
+# is the index where C<$value> would be inserted. These shenanigans
+# are required because there is no "negative zero" to indicate insertion
+# at the start of the array.
+
 	my $cmp	:= %opts<cmp> ?? %opts<cmp> !! '<=>';
 	my $high	:= %opts<high> > 0 ?? %opts<high> !! @array.elements;
 	my $low	:= 0 + %opts<low>;
@@ -119,15 +111,11 @@ sub cmp_numeric_R($a, $b) { return $b - $a; }
 sub cmp_string($a, $b) { if $a lt $b { return -1; } else { return 1; } }
 sub cmp_string_R($a, $b) { if $b lt $a { return -1; } else { return 1; } }
 
-=sub concat(@a1, @a2, ...)
-
-Concatenates a list of zero or more arrays into one long array. Returns the 
-resulting array. Returns an empty array if no arrays are given, or if the given
-arrays have no elements.
-
-=cut 
-
 sub concat(*@sources) {
+# Concatenates a list of zero or more arrays into one long array. Returns the 
+# resulting array. Returns an empty array if no arrays are given, or if the given
+# arrays have no elements.
+
 	if +@sources == 0 {
 		return Array::empty();
 	}
@@ -163,6 +151,19 @@ method elements_(@value) {
 
 sub empty() {
 	return Opcode::new('ResizablePMCArray');
+}
+
+method is_sorted(:&compare?) {
+	my $index := 0;
+	my $limit := self.elements - 1;
+	
+	while $index < $limit {
+		if &compare(self[$index], self[$index + 1]) > 0 {
+			return 0;
+		}
+	}
+	
+	return 1;
 }
 
 sub new(*@elements) {

@@ -2,23 +2,14 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Class;
-=module 
-	Provides a class/subclass management library.
-	
-	Future:
-	Class::declare('My::Class',
-		:is('Parent::Class', 'Other::Class'));	
-	
-=end
+#	Provides a class/subclass management library.
 
 sub _pre_initload() {
-=sub
-Special sub called when the Kakapo library is loaded or initialized. This is to guarantee this 
-module is available during :init and :load processing for other modules.
-=end
+# Special sub called when the Kakapo library is loaded or initialized. This is to guarantee this 
+# module is available during :init and :load processing for other modules.
 
-	Global::use('Opcode');	# defined, die
-	Global::use('Dumper');
+	use(	'Opcode');	# defined, die
+	use(	'Dumper');
 	
 	Opcode::load_bytecode('P6object.pir');
 	
@@ -103,8 +94,8 @@ sub compile_default_multi($class_name, $multi_name, :$is_method) {
 	unless $default_method {
 		@actions := Array::new(
 			"say 'No method available that will accept the following arguments:'",
-			"$P0 = get_hll_global ['Dumper'], 'DUMP_'",
-			"$P0(pos)",
+			'$P0 = get_hll_global ["Dumper"], "DUMP_"',
+			'$P0(pos)',
 			"die 'No method available that will accept the arguments given'",
 		);
 	}
@@ -116,26 +107,26 @@ sub compile_default_multi($class_name, $multi_name, :$is_method) {
 	);
 }
 
-=sub compile_multi
+# =sub compile_multi
 
-Creates a multi-sub trampoline that invokes a given NQP function. When invoked 
-as `compile_multi('My::Class', 'foo', 'Parameter::Class', 'handler_method')` the
-generated trampoline looks like:
+# Creates a multi-sub trampoline that invokes a given NQP function. When invoked 
+# as `compile_multi('My::Class', 'foo', 'Parameter::Class', 'handler_method')` the
+# generated trampoline looks like:
 
-.namespace [ 'My' ; 'Class' ]
-.sub 'foo' :method :multi(_, [ 'Parameter' ; 'Class' ])
-.param pmc positionals :slurpy
-.param pmc named :named :slurpy
-.tailcall 'handler_method'(self, positionals :flat, named :named :flat)
-.end
+# .namespace [ 'My' ; 'Class' ]
+# .sub 'foo' :method :multi(_, [ 'Parameter' ; 'Class' ])
+# .param pmc positionals :slurpy
+# .param pmc named :named :slurpy
+# .tailcall 'handler_method'(self, positionals :flat, named :named :flat)
+# .end
 
-But multimethod names block inherited multimethods, so a "default" multi
-has to be created that forwards calls to any parent class multimethods. Per
-pmichaud, a multi() or multi(_) (on self) will do the trick. So first check if 
-the default exists already, and if not, then check if the parent(s*) name
-resolves. 
+# But multimethod names block inherited multimethods, so a "default" multi
+# has to be created that forwards calls to any parent class multimethods. Per
+# pmichaud, a multi() or multi(_) (on self) will do the trick. So first check if 
+# the default exists already, and if not, then check if the parent(s*) name
+# resolves. 
 
-=cut
+# =cut
 
 sub compile_multi($class_name, $multi_name, *@param_types,
 	:$target, :@actions?, :$is_method?) 
@@ -329,7 +320,7 @@ sub trampoline($namespace, $name, :$target,
 		
 			if $target_nsp ne $namespace {
 				my $load_p0 := "\t"
-					~ "$P0 = get_hll_global ";	
+					~ '$P0 = get_hll_global ';	
 				$load_p0 := $load_p0
 					~ "[ '" 
 					~ @parts.join(q<' ; '>)
@@ -388,4 +379,3 @@ sub get_meta() {
 
 	return $meta;
 }
-

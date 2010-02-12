@@ -2,9 +2,7 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Program;
-=module
-Provides a conventional framework for program execution. 
-=end
+# Provides a conventional framework for program execution. 
 
 =begin SYNOPSIS
 
@@ -49,20 +47,18 @@ our $Processing_load_queue;
 _pre_initload();
 
 sub add_call($queue, $call, %opts, $caller_nsp) {
-=sub	:INTERNAL
-	Adds a C< $call > with C< @prereqs > to C< $queue >, tagged with key C< $name >. When no call 
-	is specified, calculates a reasonable default using any of the C< @sub_names > defined in the 
-	C< $caller_nsp > namespace.
+# Adds a C< $call > with C< @prereqs > to C< $queue >, tagged with key C< $name >. When no call 
+# is specified, calculates a reasonable default using any of the C< @sub_names > defined in the 
+# C< $caller_nsp > namespace.
+
+# For example, when the caller calls:
+
+	# Program::init(:after('Dumper'));
 	
-	For example, when the caller calls:
-	
-		Program::init(:after('Dumper'));
-		
-	The value of C< $queue > is determined by it being a call to C< init >. The C< $call > will
-	be undef, because no Sub or name was given. The C< $name > will be undef because no
-	C< :name > was given. The C< @prereqs > will be ( 'Dumper' ), and C< $caller_nsp > will be 
-	captured by C< init >. The C< @sub_names > will be C< ( '_init' ) >.
-=end
+# The value of C< $queue > is determined by it being a call to C< init >. The C< $call > will
+# be undef, because no Sub or name was given. The C< $name > will be undef because no
+# C< :name > was given. The C< @prereqs > will be ( 'Dumper' ), and C< $caller_nsp > will be 
+# captured by C< init >. The C< @sub_names > will be C< ( '_init' ) >.
 
 	my $name := %opts<name> ?? %opts<name> !! Parrot::namespace_name($caller_nsp);
 	
@@ -82,12 +78,10 @@ sub add_call($queue, $call, %opts, $caller_nsp) {
 }
 
 sub determine_call($call, $caller_nsp, @sub_names) {
-=sub	:INTERNAL
-	Determines a sub to be called. If C< $call > is defined, it specifies the call -- either a sub
-	of some kind, or a String name to be resolved, or some other invokable object. Otherwise,
-	the C< $caller_nsp > is checked for any of the default C< @sub_names >. The first one
-	found is used.
-=end
+# Determines a sub to be called. If C< $call > is defined, it specifies the call -- either a sub
+# of some kind, or a String name to be resolved, or some other invokable object. Otherwise,
+# the C< $caller_nsp > is checked for any of the default C< @sub_names >. The first one
+# found is used.
 
 	my $nsp_name := Parrot::namespace_name($caller_nsp);
 	
@@ -111,10 +105,8 @@ sub determine_call($call, $caller_nsp, @sub_names) {
 }
 
 sub call($call) {
-=sub	:INTERNAL
-	Calls the Sub or MultiSub PMC passed as C<$call>, or, if C<$call> 
-	is a String, looks up the named symbol and calls that.
-=end
+# Calls the Sub or MultiSub PMC passed as C<$call>, or, if C<$call> 
+# is a String, looks up the named symbol and calls that.
 
 	if Opcode::isa($call, 'String') {
 		$call := Opcode::get_hll_global($call);
@@ -130,56 +122,45 @@ sub call($call) {
 }
 
 sub call_main() {
-=sub 	:INTERNAL
-	Executes the calls registered in the L<C< at_start >> queue, then
-	runs the C<main> sub registered via L<C< register_main >>. If the
-	C<main> sub returns, the result is passed to L<C< exit >>.
-=end
+# Executes the calls registered in the L<C< at_start >> queue, then
+# runs the C<main> sub registered via L<C< register_main >>. If the
+# C<main> sub returns, the result is passed to L<C< exit >>.
 
 	process_queue($At_start_queue);
 
-	my $status := call($Main);
-	exit($status);
+	call($Main);
+	exit(0);
 }
 
 sub exit($status) {
-=sub 
-	Exits the program, makes any calls registered with L<C<at_end>>, and 
-	causes the Parrot interpreter to exit with status C<$status>.
-=end
+# Exits the program, makes any calls registered with L<C<at_end>>, and 
+# causes the Parrot interpreter to exit with status C<$status>.
 
 	process_queue($At_end_queue);
 	_exit($status);
 }
 
 sub _exit($status) {
-=sub
-	Immediately exits the Parrot VM, returning C<$status>, without calling any of 
-	the registered L<C< at_end >> calls.
-=end
-say("Exiting with status: ", $status);
+# Immediately exits the Parrot VM, returning C<$status>, without calling any of 
+# the registered L<C< at_end >> calls.
+
 	Opcode::exit($status);
 }
 
 sub init($call?, *%opts) {
-=sub
-	Requests a call to the sub named by C< $call >, or to the sub object given in C< $call >, or
-	to a default sub (named '_load' or '_initload') in the caller's namespace. The call will take
-	place after all C< :load > subs in this library or program have been run. 
-	
-	The purpose of this routine is analogous to that of L<C< init >>, except for the (very 
-	significant!) difference between C< :init > and C< :load > processing. The argument values
-	and semantics are identical to those of C< init >.
-	
-=end
+# Requests a call to the sub named by C< $call >, or to the sub object given in C< $call >, or
+# to a default sub (named '_load' or '_initload') in the caller's namespace. The call will take
+# place after all C< :load > subs in this library or program have been run. 
+
+# The purpose of this routine is analogous to that of L<C< init >>, except for the (very 
+# significant!) difference between C< :init > and C< :load > processing. The argument values
+# and semantics are identical to those of C< init >.
 
 	add_call($Init_queue, $call, %opts, Parrot::caller_namespace(2));
 }
 
 sub initload($call?, *%opts) {
-=sub 
-	A shortcut routine. Equivalent to calling L<C< init >> and L<C< load >> with the same arguments.
-=end
+# A shortcut routine. Equivalent to calling L<C< init >> and L<C< load >> with the same arguments.
 
 	my $caller_nsp := Parrot::caller_namespace(2);
 	add_call($Init_queue, $call, %opts, $caller_nsp);
@@ -191,16 +172,13 @@ sub is_upgraded($queue) {
 }
 
 sub load($call?, *%opts) {
-=sub
-	Requests a call to the sub named by C< $call >, or to the sub object given in C< $call >, or
-	to a default sub (named '_load' or '_initload') in the caller's namespace. The call will take
-	place after all C< :load > subs in this library or program have been run. 
-	
-	The purpose of this routine is analogous to that of L<C< init >>, except for the (very 
-	significant!) difference between C< :init > and C< :load > processing. The argument values
-	and semantics are identical to those of C< init >.
-	
-=end
+# Requests a call to the sub named by C< $call >, or to the sub object given in C< $call >, or
+# to a default sub (named '_load' or '_initload') in the caller's namespace. The call will take
+# place after all C< :load > subs in this library or program have been run. 
+
+# The purpose of this routine is analogous to that of L<C< init >>, except for the (very 
+# significant!) difference between C< :init > and C< :load > processing. The argument values
+# and semantics are identical to those of C< init >.
 
 	add_call($Load_queue, $call, %opts, Parrot::caller_namespace(2));
 }
@@ -214,8 +192,8 @@ sub _pre_initload(*@modules_done) {
 	
 	$At_end_queue	:= DependencyQueue.new();
 	$At_start_queue	:= DependencyQueue.new();
-	$Init_queue		:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
-	$Load_queue		:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
+	$Init_queue	:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
+	$Load_queue	:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
 
 	if ! Opcode::defined($Main) {
 		$Main := 'main';
@@ -223,31 +201,25 @@ sub _pre_initload(*@modules_done) {
 }
 
 sub process_init_queue() {
-=sub
-	Removes each registered I< call > from the C< :init > queue, and invokes them in order.
-	If the queue is not already ordered according to the parameters given when the calls
-	were registered, the queue is first reordered.
-	
-	See L<C< init >> for how to add items to the queue.
+# Removes each registered I< call > from the C< :init > queue, and invokes them in order.
+# If the queue is not already ordered according to the parameters given when the calls
+# were registered, the queue is first reordered.
 
-	Returns nothing.
-=end
+# See L<C< init >> for how to add items to the queue.
+
+# Returns nothing.
 
 	process_queue($Init_queue);
 }
 
 sub process_load_queue() {
-=sub
-	Process the C<:load> queue. See L<C< process_init_queue >>.
-=end
+# Process the C<:load> queue. See L<C< process_init_queue >>.
 
 	process_queue($Load_queue);
 }
 
 sub process_queue($q) {
-=sub	:INTERNAL
-	Called to process any of the queues in this module. Pulls all of the calls out of the queue, in order, and invokes them.
-=end
+# Called to process any of the queues in this module. Pulls all of the calls out of the queue, in order, and invokes them.
 
 	while ! $q.is_empty {
 		my &call := $q.next;
@@ -258,11 +230,8 @@ sub process_queue($q) {
 }
 
 sub register_main($call) {
-=sub
-	Sets the C< main > function to call.
-	
-	FIXME: This should default to the namespace of the caller, and to 'main' in that nsp if not given.
-=end
+# Sets the C< main > function to call.
+# FIXME: This should default to the namespace of the caller, and to 'main' in that nsp if not given.
 
 	if Opcode::defined($call) {
 	say("Registering main routine: ", $call);
@@ -271,22 +240,20 @@ sub register_main($call) {
 }
 
 sub upgrade_queue($queue) {
-=sub	:INTERNAL
-	Upgrades a C< ResizablePMCArray >-based queue to a C< ManagedQueue >. 
-	
-	When Parrot loads bytecode, the ManagedQueue class has not been registered as a class, and so it is impossible to 
-	make new ManagedQueue objects. Because there is no guarantee of the order that C< :init > and C< :load > methods
-	are run, there is no way to ensure that ManagedQueue is registered before any other class tries to register a call.
-	
-	To deal with this uncertainty, the various registration functions (L<C< init >>, L<C< initload >>, and 
-	L<C< load >>) will create a simple ResizablePMCArray if no ManagedQueue exists. In this case, the entire request 
-	is bundled up and placed in the RPA.
-	
-	This function creates a new ManagedQueue, processes the RPA, unpacks the registration bundles and inserts the
-	calls according to the request in the bundle.
-	
-	Returns the new ManagedQueue.
-=end
+# Upgrades a C< ResizablePMCArray >-based queue to a C< ManagedQueue >. 
+
+# When Parrot loads bytecode, the ManagedQueue class has not been registered as a class, and so it is impossible to 
+# make new ManagedQueue objects. Because there is no guarantee of the order that C< :init > and C< :load > methods
+# are run, there is no way to ensure that ManagedQueue is registered before any other class tries to register a call.
+
+# To deal with this uncertainty, the various registration functions (L<C< init >>, L<C< initload >>, and 
+# L<C< load >>) will create a simple ResizablePMCArray if no ManagedQueue exists. In this case, the entire request 
+# is bundled up and placed in the RPA.
+
+# This function creates a new ManagedQueue, processes the RPA, unpacks the registration bundles and inserts the
+# calls according to the request in the bundle.
+
+# Returns the new ManagedQueue.
 
 	if ! Opcode::defined($queue) {
 		$queue := ManagedQueue.new();
