@@ -219,7 +219,7 @@ sub has(*@args, :$class?, *%opts) {
 				:accessor($base_name),
 				:default_type(%default_type{$sigil}),
 				:is_private($attr[0] eq '!' ?? 1 !! 0),
-				:name($attr), 
+				:name($sigil ~ $attr), 
 			); 
 		}
 	}
@@ -236,7 +236,7 @@ sub has_vtable($name, &code, :$class?) {
 
 	$parrot_class.add_vtable_override($name, &code);
 say("Adding vtable: ", $name, " to ", $parrot_class);
-DUMP_(Opcode::inspect($parrot_class, 'vtable_overrides'));
+DUMP_(Opcode::inspect_string($parrot_class, 'vtable_overrides'));
 }
 
 my method _make_accessor($parrot_class, %info) {

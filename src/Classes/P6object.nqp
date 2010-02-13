@@ -93,6 +93,37 @@ method defined() {
 	return 1;
 }
 
+method __dump($dumper, $label) {
+	my @results		:= Parrot::call_tuple_method($dumper, 'newIndent');
+	my $subindent	:= "\n" ~ @results.shift;
+	my $indent		:= @results.shift;
+	my $brace		:= '{';
+
+	my $class := Opcode::class(self);
+	my %attributes := $class.inspect('attributes');
+	
+	say("Attributes: ");
+	if +%attributes {
+		for %attributes {
+			print($brace, $subindent);
+			$brace := '';
+			
+			my $attr := ~ $_;
+			my $value := Opcode::getattribute(self, $attr);
+		
+			print($attr, ' => ');
+			$dumper.dump($label, $value);
+		}
+		
+		print("\n", $indent, '}');
+	}
+	else {
+		print("(no attributes set)");
+	} 
+	
+	$dumper.deleteIndent();
+}
+
 method get_bool() {
 # returns true.
 	return 1;
@@ -124,14 +155,14 @@ method _init_named_(%named) {
 			Parrot::call_method(self, $name, %named{$name});
 		}
 		else {
-			Opcode::die("No accessor defined for attribute '", $name, "'.");
+			Program::die("No accessor defined for attribute '", $name, "'.");
 		}
 	}
 }
 
 method _init_positional_(@pos) {
 	if +@pos {
-		Opcode::die("Don't know what to do with positional parameters. Define your own 'init_' method to handle them.");
+		Program::die("Don't know what to do with positional parameters. Define your own 'init_' method to handle them.");
 	}
 }
 
