@@ -189,11 +189,11 @@ method slice(:$from?, :$to?) {
 	if $to < 0	{ $to := $to + $elements; }
 	
 	if $from >= $elements {
-		Opcode::die("$from parameter out of range: ", $from, " exceeds # elements: ", $elements);
+		Program::die("$from parameter out of range: ", $from, " exceeds # elements: ", $elements);
 	}
 	
 	if $to >= $elements {
-		Opcode::die("$to parameter out of range: ", $from, " exceeds # elements: ", $elements);
+		Program::die("$to parameter out of range: ", $from, " exceeds # elements: ", $elements);
 	}
 
 	my @slice := self.clone;

@@ -140,7 +140,7 @@ sub new(*@pos, *%pairs) {
 		}
 
 		Dumper::DUMP_(@pos, 'positional args to Hash::new');
-		Opcode::die($message);
+		Program::die($message);
 	}
 
 	return %pairs;
