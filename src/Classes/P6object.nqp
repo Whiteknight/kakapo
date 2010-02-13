@@ -2,6 +2,28 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module P6object;
+
+sub _pre_initload() {
+# Special sub called when the Kakapo library is loaded or initialized. This is to guarantee 
+# this module is available during :init and :load processing for other modules.
+
+	Pir::compile_sub(:name('__get_bool'), :vtable('get_bool'),
+		:namespace('Kakapo::Object'),
+		:body(
+			'$I0= self."get_bool"()',
+			'.return ($I0)',
+		),
+	);
+	
+	Pir::compile_sub(:name('__get_string'), :vtable('get_string'),
+		:namespace('Kakapo::Object'),
+		:body(
+			'$S0 = self."get_string"()',
+			'.return ($S0)',
+		),
+	);
+}
+
 =begin
 
 =head1 P6object - the root of the P6/NQP class hierarchy.
@@ -179,29 +201,4 @@ method new(*@pos, *%named) {
 	# along flat args.
 	$new_object._init_(@pos, %named);
 	return $new_object;
-}
-
-our @No_args;
-
-sub _pre_initload() {
-# Special sub called when the Kakapo library is loaded or initialized. This is to guarantee 
-# this module is available during :init and :load processing for other modules.
-
-	@No_args := Array::empty();
-
-	Pir::compile_sub(:name('__get_bool'), :vtable('get_bool'),
-		:namespace('Kakapo::Object'),
-		:body(
-			'$I0= self."get_bool"()',
-			'.return ($I0)',
-		),
-	);
-	
-	Pir::compile_sub(:name('__get_string'), :vtable('get_string'),
-		:namespace('Kakapo::Object'),
-		:body(
-			'$S0 = self."get_string"()',
-			'.return ($S0)',
-		),
-	);
 }

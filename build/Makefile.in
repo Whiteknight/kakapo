@@ -60,6 +60,7 @@ BASE_LIB_PIRS = 		\
 	src/Parrot/Opcode.pir 	\
 	src/Pir.pir 			\
 	src/Pmc/Array.pir		\
+	src/Pmc/Class.pir		\
 	src/Pmc/Config.pir	\
 	src/Pmc/File.pir		\
 	src/Pmc/Namespace.pir	\

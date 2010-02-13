@@ -5,17 +5,17 @@ module Matcher::Factory;
 # Provides factory methods to facilitate constructing matchers.
 
 INIT {
-	# Class::SUBCLASS($class_name,
-		# 'Class::HashBased',
-	# );
-	
+	Program::initload(:after('Matcher'));
+}
+
+sub _initload() {
 	my $class_name := 'Matcher::Factory';
+	
 	Class::multi_sub($class_name, 'equals', :starting_with('_equals_'));
 	Class::multi_sub($class_name, 'make_matcher', :starting_with('_make_'));
 	Class::multi_sub($class_name, 'returns', :starting_with('_returns_'));
 	
 	export('assert_that', 'empty', 'equals', 'has', 'instance_of', 'null', 'returns', 'same_as');
-	
 	export('export_sub', :tags( 'INTERNAL' ));			
 }
 

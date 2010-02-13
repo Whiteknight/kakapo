@@ -1,10 +1,6 @@
 # Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-sub main() {
-	Test::UnitTest::Loader.suite.run;
-}
-
 module Kakapo {
 	# Tell the Kakapo runtime which library file to load.	
 	sub library_name()		{ 'kakapo_test.pbc' }
@@ -17,7 +13,14 @@ class Test::UnitTest::Loader
 		use(	'P6metaclass' );		# has
 		use(	'UnitTest::Testcase' );	# fail, etc.
 		
+
+		Program::register_main();
 		has(	'$!loader' );
+	}
+	
+	sub main() {
+		my $proto := Opcode::get_root_global(Opcode::get_namespace().get_name);
+		$proto.suite.run;
 	}
 
 	method set_up() {

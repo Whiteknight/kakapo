@@ -4,6 +4,27 @@
 module Program;
 # Provides a conventional framework for program execution. 
 
+sub _pre_initload(*@modules_done) {
+	use(	'Dumper' );
+	use(	'Opcode', :tags('DEFAULT', 'TYPE'));
+	
+# Don't initialize *anything,* here.    !IMPORTANT
+	our $At_end_queue;
+	our $At_start_queue;
+	our $Init_queue;
+	our $Load_queue;
+	our $Main;
+
+	$At_end_queue	:= DependencyQueue.new();
+	$At_start_queue	:= DependencyQueue.new();
+	$Init_queue	:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
+	$Load_queue	:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
+
+	if ! Opcode::defined($Main) {
+		$Main := '::main';
+	}
+}
+
 =begin SYNOPSIS
 
 	# At outmost scope of your module:
@@ -34,15 +55,6 @@ module Program;
 	}
 	
 =end SYNOPSIS
-
-# Don't initialize *anything,* here.    !IMPORTANT
-our $At_end_queue;
-our $At_start_queue;
-our $Init_queue;
-our $Load_queue;
-our $Main;
-our $Processing_init_queue;
-our $Processing_load_queue;
 
 sub add_call($queue, $call, %opts, $caller_nsp) {
 # Adds a C< $call > with C< @prereqs > to C< $queue >, tagged with key C< $name >. When no call 
@@ -124,9 +136,9 @@ sub call_main() {
 # runs the C<main> sub registered via L<C< register_main >>. If the
 # C<main> sub returns, the result is passed to L<C< exit >>.
 
-	process_queue($At_start_queue);
+	process_queue(our $At_start_queue);
 
-	call($Main);
+	call(our $Main);
 	exit(0);
 }
 
@@ -139,7 +151,7 @@ sub exit($status) {
 # Exits the program, makes any calls registered with L<C<at_end>>, and 
 # causes the Parrot interpreter to exit with status C<$status>.
 
-	process_queue($At_end_queue);
+	process_queue(our $At_end_queue);
 	_exit($status);
 }
 
@@ -159,15 +171,15 @@ sub init($call?, *%opts) {
 # significant!) difference between C< :init > and C< :load > processing. The argument values
 # and semantics are identical to those of C< init >.
 
-	add_call($Init_queue, $call, %opts, Parrot::caller_namespace(2));
+	add_call(our $Init_queue, $call, %opts, Parrot::caller_namespace(2));
 }
 
 sub initload($call?, *%opts) {
 # A shortcut routine. Equivalent to calling L<C< init >> and L<C< load >> with the same arguments.
 
 	my $caller_nsp := Parrot::caller_namespace(2);
-	add_call($Init_queue, $call, %opts, $caller_nsp);
-	add_call($Load_queue, $call, %opts, $caller_nsp);
+	add_call(our $Init_queue, $call, %opts, $caller_nsp);
+	add_call(our $Load_queue, $call, %opts, $caller_nsp);
 }
 
 sub is_upgraded($queue) {
@@ -183,24 +195,7 @@ sub load($call?, *%opts) {
 # significant!) difference between C< :init > and C< :load > processing. The argument values
 # and semantics are identical to those of C< init >.
 
-	add_call($Load_queue, $call, %opts, Parrot::caller_namespace(2));
-}
-
-sub _pre_initload(*@modules_done) {
-	if our $_Pre_initload_done { return 0; }
-	$_Pre_initload_done := 1;
-	
-	use(	'Dumper' );
-	use(	'Opcode', :tags('DEFAULT', 'TYPE'));
-	
-	$At_end_queue	:= DependencyQueue.new();
-	$At_start_queue	:= DependencyQueue.new();
-	$Init_queue	:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
-	$Load_queue	:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
-
-	if ! Opcode::defined($Main) {
-		$Main := '::main';
-	}
+	add_call(our $Load_queue, $call, %opts, Parrot::caller_namespace(2));
 }
 
 sub process_init_queue() {
@@ -212,13 +207,13 @@ sub process_init_queue() {
 
 # Returns nothing.
 
-	process_queue($Init_queue);
+	process_queue(our $Init_queue);
 }
 
 sub process_load_queue() {
 # Process the C<:load> queue. See L<C< process_init_queue >>.
 
-	process_queue($Load_queue);
+	process_queue(our $Load_queue);
 }
 
 sub process_queue($q) {
@@ -248,7 +243,7 @@ sub register_main($call?) {
 		$call := @parts.join('::') ~ '::' ~ $call;
 	}
 
-	$Main := $call;
+	our $Main := $call;
 }
 
 sub upgrade_queue($queue) {

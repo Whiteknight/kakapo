@@ -5,11 +5,11 @@ module Opcode;
 # Provides NQP-callable versions of various Parrot opcodes.
 
 sub _pre_initload() {
-# Kakapo startup function. Do the Global exports early, so that other modules can import these 
-# functions during their init processing.
+# Kakapo startup function. Do the global exports early, so that other modules 
+# can import these functions during their init processing.
 
 	export(:tags('DEFAULT'),	'defined');
-	export(:tags('TYPE'),		'can', 'does', 'get_class', 'isa', 'new', 'typeof');
+	export(:tags('TYPE'),	'can', 'does', 'get_class', 'isa', 'new', 'typeof');
 }
 
 sub backtrace()			{ pir::backtrace(); }
@@ -18,7 +18,7 @@ sub class($object)			{ pir::class__PP($object); }
 sub clone($object)			{ pir::clone($object); }
 sub defined($object)			{ pir::defined__IP($object); }
 
-# FIXME: I don't know the __PK syntax for a key type.
+# FIXME: Presently there is no pir:: syntax for delete_p_k, so have to do this.
 sub delete($object, $key) {
 	Q:PIR {
 		$P0 = find_lex '$object'
@@ -52,6 +52,8 @@ sub setattribute($object, $name, $value) { pir::setattribute__vPSP($object, $nam
 sub set_integer($object, $value)	{ pir::assign__vPI($object, $value); }
 sub throw($exception)		{ pir::throw($exception); }
 sub typeof($object)			{ pir::typeof__SP($object); }
+
+### FIXME: Move this to Parrot:: or something.
 
 sub get_hll_global($p1, $p2?) {
 # May be called with C< ('a::b') >, C< (@names) >, C< ('a::b', 'c') >, or C< (@nsp_names, 'c') >.

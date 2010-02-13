@@ -4,9 +4,35 @@
 module P6metaclass;
 # Extends the P6object.pir class with helper functions for advanced class declaration.
 
+sub _pre_initload() {
+	use(	Dumper	);
+
+	# NB: Can't import Opcode, because so many ops share names with class methods. (can, does, isa, etc.)
+	use(	Parrot,	:tags('NAMESPACE'));
+
+	our %default_type;
+	our %is_sigil;
+	our %is_twigil;
+
+	%default_type{'@'}	:= 'ResizablePMCArray';
+	%default_type{'$'}	:= 'Undef';
+	%default_type{'%'}	:= 'Hash';
+	%default_type{'&'}	:= 'Undef';
+
+	%is_sigil{'@'}	:= 1;
+	%is_sigil{'$'}		:= 1;
+	%is_sigil{'%'}		:= 1;
+	%is_sigil{'&'}		:= 1;
+	
+	%is_twigil{'!'}	:= 1;
+	%is_twigil{'.'}	:= 1;
+
+	export( 'declare', 'extends', 'has', 'has_vtable' );
+}
+
 my method _add_attributes($class, %attrs) {
 	my $parrotclass := self.declare_class($class);
-	
+
 	for %attrs {
 		my %attr_info := %attrs{$_};
 		
@@ -28,12 +54,19 @@ my method _add_parents($class, @parents) {
 		die("Cannot add parents to undefined class.");
 	}
 
-	my $parrotclass := self.declare_class($class);
+	my $parrotclass;
 
-	for @parents {
-	say("Adding parent: $_");
-	dump_class($_);
-		self.add_parent($parrotclass, $_);
+	if +@parents == 0 {
+		$parrotclass := self.declare_class($class);
+	}
+	else {
+		my $first := @parents.shift;
+		
+		$parrotclass := self.declare_class($class, :parent($first));
+		
+		for @parents {
+			self.add_parent($parrotclass, $_);
+		}
 	}
 }
 
@@ -83,66 +116,7 @@ method declare_class($class, $parent?) {
 }
 
 sub dump_class($class) {
-	my $parrotclass := P6metaclass.get_parrotclass($class);
-	
-	if Opcode::isa($parrotclass, 'PMCProxy') {
-		say("Namespace: ", $parrotclass.name);
-		DUMP_($parrotclass.inspect());
-		for $parrotclass.inspect()<parents> {
-			say("Parent: $_");
-		}
-	}
-	
-	DUMP_($parrotclass);
-	my $name := ~ $parrotclass;
-	DUMP_($name);
-	my $nsp := $parrotclass.get_namespace;
-	DUMP_($nsp);
-	unless Opcode::isnull($nsp) {
-		$name := $nsp.get_name.join('::');
-	}
-	
-	say("Dumping class: $name");
-
-	my %methods_seen;
-	my $prefix := '    ';
-	
-	_dump_class_methods($parrotclass, $prefix, %methods_seen);
-		
-	my @parents := $parrotclass.inspect('all_parents');
-	
-	if +@parents {
-		say("Parents:");
-
-		for @parents {
-			#unless $_ =:= $parrotclass {
-				$prefix := '    ';
-				my $pname := $_.get_namespace.get_name.join('::');
-				say($prefix, $_);
-				$prefix := '        ';
-				_dump_class_methods($_, $prefix, %methods_seen);
-			#}
-		}
-	}
-}
-
-sub _dump_class_methods($parrotclass, $prefix, %methods_seen) {
-	my @methods := $parrotclass.methods.keys;
-	
-	if @methods {
-		@methods.sort;
-		
-		for @methods {
-			my $name := ~ $_;
-			say($prefix, $name,
-				%methods_seen{$name}
-					?? ' (MASKED)' !! '');
-			%methods_seen{$name} := 1;
-		}
-	} 
-	else {
-		say($prefix, 'No methods.');
-	}
+	_dumper(P6metaclass.get_parrotclass($class), ~$class);
 }
 
 sub extends($first, *@args, :$class?) {
@@ -178,12 +152,12 @@ sub _flatten_name_list(@list) {
 	return @merged;
 }
 
-our %default_type;
-our %is_sigil;
-our %is_twigil;
-
 sub has(*@args, :$class?, *%opts) {
 # Declares attributes for a class. Note that the class may not be declared yet.
+
+	our %default_type;
+	our %is_sigil;
+	our %is_twigil;
 
 	unless %opts.defined { %opts := Hash::empty(); }
 	unless $class.defined { $class := caller_namespace(2); }
@@ -279,27 +253,6 @@ my method _make_accessor($parrot_class, %info) {
 	);
 	
 	Parrot::call_sub_(Pir::compile_sub, Array::empty(), %accessor_details);
-}
-
-sub _pre_initload() {
-	use(	Dumper	);
-	# NB: Can't import Opcode, because so many ops share names with class methods. (can, does, isa, etc.)
-	use(	Parrot,	:tags('NAMESPACE'));
-
-	%default_type{'@'}	:= 'ResizablePMCArray';
-	%default_type{'$'}	:= 'Undef';
-	%default_type{'%'}	:= 'Hash';
-	%default_type{'&'}	:= 'Undef';
-
-	%is_sigil{'@'}		:= 1;
-	%is_sigil{'$'}		:= 1;
-	%is_sigil{'%'}		:= 1;
-	%is_sigil{'&'}		:= 1;
-	
-	%is_twigil{'!'}		:= 1;
-	%is_twigil{'.'}		:= 1;
-
-	export( 'declare', 'extends', 'has', 'has_vtable' );
 }
 
 sub register_pmc_type($type) {

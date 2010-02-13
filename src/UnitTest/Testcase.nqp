@@ -51,7 +51,8 @@ sub assert_true($bool, $message?) {
 }
 
 my method default_loader() {
-	return UnitTest::Loader.new();
+say("Got type: ", pir::typeof__sp(UnitTest::Loader));
+	UnitTest::Loader.new;
 }
 
 my method default_result() {

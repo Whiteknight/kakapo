@@ -27,16 +27,6 @@ our method add_entry($name, $value, :@requires?) {
 }
 
 my method already_added($name) {
-	if self.already_done.contains($name) {
-		say("$name marked already done");
-		return 1;
-	}
-	
-	if self.added.contains($name) {
-		say("$name already marked as added");
-		return 1;
-	}
-	
 	return self.already_done.contains($name)
 		|| self.added.contains($name);
 }
@@ -79,32 +69,25 @@ method reset() {
 }
 
 method tsort_queue() {
-say("Tsort queue");
 	self.locked(1);
 	self.cycle_keys(Array::empty());
 	self.cycle(Hash::empty());
 	self.added(Hash::empty());
-Dumper::DUMP_(self.pending);
 	self.tsort_add_pending_entries(self.pending.keys);
 }
 
 my method tsort_add_pending_entries(@list) {
 # Visits a list of keys, adding the attached calls to the queue in topological order.
 
-say("Adding pending entries:");
-Dumper::DUMP_(@list);
-Dumper::DUMP_(self);
 	for @list {
 		my $key := $_;
 		
-		say("Considering $_");
 		unless self.already_added($key) {
 			## First, check for cycles in the graph.
 			my $next_index := self.cycle_keys.elements;
 			self.cycle_keys.push($key);
-say("pushed");
+
 			if self.cycle.contains($key) {
-			say("Stored at: ", self.cycle{$key});
 				my @slice := self.cycle_keys.slice(:from(self.cycle{$key}));
 
 				Program::die("Cycle detected in dependencies: ",
@@ -113,7 +96,7 @@ say("pushed");
 			}
 			
 			self.cycle{$key} := $next_index;
-say("Key is: ", $next_index);
+
 			## Put everything $key depends on ahead of $key
 			
 			if self.pending.contains($key) {
@@ -126,7 +109,8 @@ say("Key is: ", $next_index);
 				self.queue.push($node);
 			}
 			else {
-				say("$key is required, but not finished and not pending.");
+				Program::die("$key is a requirement, ",
+					"but is not marked done, and not in the pending queue.");
 			}
 		}
 	}

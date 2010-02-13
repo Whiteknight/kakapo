@@ -4,27 +4,25 @@
 module String;
 # Provides basic String functions, and adds some methods to the String PMC.
 
-our %Cclass_id;
-
 sub _pre_initload() {
-	%Cclass_id := Hash::new(
-		:NONE(				0),
+	our %Cclass_id := Hash::new(
+		:NONE(			0),
 		:ANY(				65535),
 
-		:UPPERCASE(			1),
-		:LOWERCASE(			2),
-		:ALPHABETIC(			4),
+		:UPPERCASE(		1),
+		:LOWERCASE(		2),
+		:ALPHABETIC(		4),
 		:NUMERIC(			8),
 		:HEXADECIMAL(		16),
-		:WHITESPACE(			32),
+		:WHITESPACE(		32),
 		:PRINTING(			64),
-		:GRAPHICAL(			128),
-		:BLANK(				256),
+		:GRAPHICAL(		128),
+		:BLANK(			256),
 		:CONTROL(			512),
 		:PUNCTUATION(		1024),
 		:ALPHANUMERIC(		2048),
 		:NEWLINE(			4096),
-		:WORD(				8192),
+		:WORD(			8192),
 	);
 }
 
@@ -111,6 +109,7 @@ sub find_cclass($class_name, $str, *%opts) {
 		$count := length($str) - $offset;
 	}
 	
+	our %Cclass_id;
 	my $cclass := 0 + %Cclass_id{$class_name};
 	
 	#NOTE("class = ", $class_name, "(", $cclass, "), offset = ", $offset, ", count = ", $count, ", str = ", $str);
@@ -154,6 +153,7 @@ sub find_not_cclass($class_name, $str, *%opts) {
 		$count := length($str) - $offset;
 	}
 	
+	our %Cclass_id;
 	my $class := 0 + %Cclass_id{$class_name};
 
 	#NOTE("class = ", $class_name, "(", $class, "), offset = ", $offset, ", count = ", $count, ", str = ", $str);
@@ -201,6 +201,7 @@ sub index($haystack, $needle, *%opts) {
 method isa($type)			{ Opcode::isa(self, $type); }
 
 sub is_cclass($class_name, $str, *%opts) {
+	our %Cclass_id;
 	my $offset	:= 0 + %opts<offset>;
 	my $class	:= 0 + %Cclass_id{$class_name};
 	

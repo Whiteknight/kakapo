@@ -3,13 +3,13 @@
 
 module Sub;
 
-our $Dump_detail;
-
 sub set_dump_detail($level) {
-	$Dump_detail := $level;
+	our $Dump_detail := $level;
 }
 
 sub get_dump_detail() {
+	our $Dump_detail;
+	
 	if Opcode::isnull($Dump_detail) {
 		$Dump_detail := 0;
 	}

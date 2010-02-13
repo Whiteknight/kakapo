@@ -36,6 +36,7 @@ sub _pre_initload() {
 	Global::_pre_initload();
 	Dumper::_pre_initload();
 	Kakapo::Pmc::COMMON::_pre_initload();
+	Array::_pre_initload();
 	String::_pre_initload();
 	Opcode::_pre_initload();
 	Parrot::_pre_initload();

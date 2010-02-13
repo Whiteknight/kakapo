@@ -4,15 +4,20 @@
 module Dumper;
 # Configurable module for generating debug output.
 
-our %Bits;
-%Bits<NOTE>		:= 1;	
-%Bits<DUMP>		:= 2;
-%Bits<ASSERT>		:= 4;
+sub _pre_initload() {
+# Special sub called when the Kakapo library is loaded or initialized to guarantee this module 
+# is already initialized during :init and :load processing.
 
-our $Caller_depth;
-our %Dumper_config_cache;
-our $Kakapo_config;
-our $Prefix;
+	Opcode::load_bytecode('dumper.pbc');
+	
+	our $Caller_depth := 0;
+	our $Prefix_string := ':..';
+	our $Prefix_string_len := String::length($Prefix_string);
+	our @Info_rejected := Array::new(0, -1, 'null');
+
+	Global::export('ASSERT', 'DUMP', 'DUMP_', 'NOTE');
+	#Global::use(:symbols('$Kakapo_config'));		# FIXME: Parameterize this.
+}
 
 our sub ASSERT($condition, *@message, :$caller_level?) {
 	unless lock('ASSERT') { return 0; }
@@ -38,7 +43,7 @@ our sub DUMP(*@pos, :$caller_level?, :@info?, *%named) {
 	}
 
 	if @info[0] && @info[0] % 4 > 1 {
-		$Prefix := make_bare_prefix(@info[1]);
+		our $Prefix := make_bare_prefix(@info[1]);
 		
 		if +@pos {
 			print($Prefix);
@@ -75,7 +80,7 @@ our sub NOTE(*@parts, :$caller_level?, :@info?) {
 	}
 
 	if @info[0] && @info[0] % 2 {
-		$Prefix := make_named_prefix(@info);
+		our $Prefix := make_named_prefix(@info);
 		say($Prefix, ': ', @parts.join);
 	}
 	
@@ -273,6 +278,7 @@ sub get_dumper_config($named_caller, :$starting) {
 	@parts.push(~ $named_caller);
 	
 	my $key := @parts.join('::');
+	our %Dumper_config_cache;
 	
 	unless my @config := %Dumper_config_cache{$key} {
 		@config := Array::new(
@@ -294,15 +300,15 @@ sub get_dumper_config($named_caller, :$starting) {
 	return @config;
 }
 
-our @Info_rejected := Array::new(0, -1, 'null');
-
 sub info(:$caller_level) {
 # Returns an array of:
 # [0] = proceed, either 0 or the flags set in config file for caller name
 # [1] = depth, the stack depth of the caller
 # [2] = caller full name:  Path::To::Class::sub
 
-	unless lock('info') { return @Info_rejected; }
+	our $Caller_depth;
+	
+	unless lock('info') { return our @Info_rejected; }
 
 	$caller_level++;
 	
@@ -348,14 +354,14 @@ sub lock($key) {
 	return 1;
 }
 
-our $Prefix_string := ':..';
-our $Prefix_string_len := String::length($Prefix_string);
-
 sub make_bare_prefix($depth) {
 	if $depth < 1 {
 		$depth := 1;
 	}
 
+	our $Prefix_string;
+	our $Prefix_string_len;
+	
 	$depth--;
 	my $prefix := String::repeat($Prefix_string, ($depth / $Prefix_string_len));
 	
@@ -369,20 +375,8 @@ sub make_named_prefix(@info) {
 	return $prefix;
 }
 
-sub _pre_initload() {
-# Special sub called when the Kakapo library is loaded or initialized to guarantee this module 
-# is already initialized during :init and :load processing.
-
-	Opcode::load_bytecode('dumper.pbc');
-	
-	$Caller_depth := 0;
-
-	Global::export('ASSERT', 'DUMP', 'DUMP_', 'NOTE');
-	#Global::use(:symbols('$Kakapo_config'));		# FIXME: Parameterize this.
-}
-
 sub reset_cache() {
-	%Dumper_config_cache := Hash::empty();
+	our %Dumper_config_cache := Hash::empty();
 }
 
 sub stack_depth(:$starting) {

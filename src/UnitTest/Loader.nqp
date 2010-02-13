@@ -6,6 +6,7 @@ INIT {
 	use(	'P6metaclass' );
 	
 	has(	'%!seen_methods' );
+	say("Loader init done");
 }
 
 method get_test_methods($class) {

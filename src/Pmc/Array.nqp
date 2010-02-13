@@ -5,15 +5,20 @@ module Array;
 # A common dumping ground for methods added to RPA and RSA, plus a central 
 # point for convenience functions like ::new and ::empty.
 
-use(	'Dumper');
+sub _pre_initload() {
+# Special sub called when the Kakapo library is loaded or initialized to guarantee this module 
+# is already initialized during :init and :load processing.
 
-our %Bsearch_compare_func;
-%Bsearch_compare_func{'<=>'}	:= Array::cmp_numeric;
-%Bsearch_compare_func{'R<=>'}	:= Array::cmp_numeric_R;
-%Bsearch_compare_func{'cmp'}	:= Array::cmp_string;
-%Bsearch_compare_func{'Rcmp'}	:= Array::cmp_string_R;
+	use(	'Dumper');
 
-our @Empty := Array::empty();
+	our %Bsearch_compare_func;
+	%Bsearch_compare_func{'<=>'}	:= Array::cmp_numeric;
+	%Bsearch_compare_func{'R<=>'}	:= Array::cmp_numeric_R;
+	%Bsearch_compare_func{'cmp'}	:= Array::cmp_string;
+	%Bsearch_compare_func{'Rcmp'}	:= Array::cmp_string_R;
+
+	our @Empty := Array::empty();
+}
 
 sub bsearch(@array, $value, *%opts) {
 # Binary searches for C<$value> in C<@array>, using a selectable comparison 
@@ -52,6 +57,7 @@ sub bsearch(@array, $value, *%opts) {
 	if $high > @array.elements { $high := @array.elements; }
 	if $low < 0 { $low := $low + @array; }
 
+	our %Bsearch_compare_func;
 	my &compare := %Bsearch_compare_func{$cmp};
 
 	if Opcode::isa($cmp, 'Sub') || Opcode::isa($cmp, 'MultiSub') {
@@ -150,7 +156,7 @@ method elements_(@value) {
 }
 
 sub empty() {
-	return Opcode::new('ResizablePMCArray');
+	Opcode::new('ResizablePMCArray');
 }
 
 method is_sorted(:&compare?) {
@@ -196,6 +202,7 @@ method slice(:$from?, :$to?) {
 		Program::die("$to parameter out of range: ", $from, " exceeds # elements: ", $elements);
 	}
 
+	our @Empty;
 	my @slice := self.clone;
 	@slice.splice(@Empty, :from(0), :replacing($from));
 	
