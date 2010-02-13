@@ -3,163 +3,56 @@
 
 module Opcode;
 # Provides NQP-callable versions of various Parrot opcodes.
-# (NOTE: A lot of the code here uses 'method' just to save a find_lex opcode. Don't take it personally.)
 
 sub _pre_initload() {
 # Kakapo startup function. Do the Global exports early, so that other modules can import these 
 # functions during their init processing.
 
-	export(:tags('DEFAULT'),	'defined', 'die');
+	export(:tags('DEFAULT'),	'defined');
 	export(:tags('TYPE'),		'can', 'does', 'get_class', 'isa', 'new', 'typeof');
 }
 
-sub backtrace() {
+sub backtrace()			{ pir::backtrace(); }
+sub can($object, $method)		{ pir::can($object, $method); }
+sub class($object)			{ pir::class__PP($object); }
+sub clone($object)			{ pir::clone($object); }
+sub defined($object)			{ pir::defined__IP($object); }
+
+# FIXME: I don't know the __PK syntax for a key type.
+sub delete($object, $key) {
 	Q:PIR {
-		backtrace
+		$P0 = find_lex '$object'
+		$P1 = find_lex '$key'
+		delete $P0[$P1]
 	};
 }
 
-method can($method_name) {
-	my $result := Q:PIR {
-		.local string method_name
-		$P0 = find_lex '$method_name'
-		method_name = $P0
-		
-		$I0 = can self, method_name
-		%r = box $I0
-	};
-	
-	return $result;
-}
+sub does($object, $role)		{ pir::does($object, $role); }
+sub elements($object)		{ pir::elements($object); }
+sub exit($status)			{ pir::exit($status); }
+sub get_addr($object)		{ pir::get_addr__IP($object); }
+sub getattribute($object, $name)	{ pir::getattribute__PPS($object, $name); }
+sub get_class($object)		{ pir::get_class__PP($object); }
+sub get_integer($object)		{ pir::set__IP($object); }
+sub get_global($name)		{ pir::get_global__PS($name); }
+sub getinterp()			{ pir::getinterp__P(); }
+sub get_root_namespace(@parts)	{ pir::get_root_namespace__PP(@parts); }
+sub inspect($object)			{ pir::inspect__PP($object); }
+sub inspect_string($object, $key)	{ pir::inspect__PPS($object, $key); }
+sub isnull($object)			{ pir::isnull($object); }
+sub isa($object, $class)		{ pir::isa__IPS($object, $class); }
+sub iseq($object, $other)		{ pir::iseq__IPP($object, $other); }
+sub join($object, $delim)		{ pir::join($delim, $object); }
+sub load_bytecode($path)		{ pir::load_bytecode__vS($path); }
+sub load_language($name)		{ pir::load_language__vS($name); }
+sub new($type)			{ pir::new__PS($type); }
+sub newclass($name)		{ pir::newclass__PP($name); }
+sub setattribute($object, $name, $value) { pir::setattribute__vPSP($object, $name, $value); }
+# FIXME: Not sure if this should be 'assign' or 'set'
+sub set_integer($object, $value)	{ pir::assign__vPI($object, $value); }
+sub throw($exception)		{ pir::throw($exception); }
+sub typeof($object)			{ pir::typeof__SP($object); }
 
-method clone() {
-	my $clone := Q:PIR {
-		%r = clone self
-	};
-		
-	return $clone;
-}
-
-method defined() {
-	my $result := Q:PIR {
-		$I0 = defined self
-		%r = box $I0
-	};
-	
-	return $result;
-}
-
-method delete($key) {
-	Q:PIR {
-		$P0 = find_lex '$key'
-		delete self[$P0]
-	};
-	
-	return self;
-}
-
-sub die(*@parts) {
-	my $message := @parts.join;
-	
-	Q:PIR {
-		$P0 = find_lex '$message'
-		$S0 = $P0
-		die $S0
-	};
-}
-
-method does($role) {
-	my $result := Q:PIR {
-		.local string role
-		$P0 = find_lex '$role'
-		role = $P0
-		
-		$I0 = does self, role
-		%r = box $I0
-	};
-
-	return $result;
-}
-
-method elements() {
-	my $result := Q:PIR {
-		$I0 = elements self
-		%r = box $I0
-	};
-
-	return $result;
-}
-
-sub exit($status?) {
-	Q:PIR {
-		$P0 = find_lex '$status'
-		$I0 = 0
-		if null $P0 goto have_status
-		
-		$I0 = $P0
-	have_status:
-		
-		exit $I0
-	};
-}
-
-method find_lex() {
-	my $result := Q:PIR {
-		$S0 = self
-		%r = find_lex $S0
-	};
-	
-	return $result;
-}
-
-method get_addr() {
-	my $result := Q:PIR {
-		$I0 = 0
-		if null self goto done
-		$I0 = get_addr self
-	done:
-		%r = box $I0
-	};
-	
-	return $result;
-}
-
-method getattribute($name) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$name'
-		$S0 = $P0
-		%r = getattribute self, $S0
-	};
-	
-	return $result;
-}
-
-method get_class() {
-	my $result := Q:PIR {
-		%r = get_class self
-	};
-	
-	return $result;
-}
-
-method get_integer() {
-	my $result := Q:PIR {
-		$I0 = self
-		%r = box $I0
-	};
-	
-	return $result;
-}
-
-method get_global() {
-	my $result := Q:PIR {
-		$S0 = self
-		%r = get_global $S0
-	};
-	
-	return $result;
-}
-		
 sub get_hll_global($p1, $p2?) {
 # May be called with C< ('a::b') >, C< (@names) >, C< ('a::b', 'c') >, or C< (@nsp_names, 'c') >.
 
@@ -201,14 +94,6 @@ sub get_hll_namespace($p1?) {
 			%r = get_hll_namespace
 		};
 	}
-	
-	return $result;
-}
-
-sub getinterp() {
-	my $result := Q:PIR {
-		%r = getinterp
-	};
 	
 	return $result;
 }
@@ -256,95 +141,6 @@ sub get_root_global($p1, $p2?) {
 	return $result;
 }
 
-sub get_root_namespace(@parts) {
-	my $namespace := Q:PIR {
-		$P0 = find_lex '@parts'
-		%r = get_root_namespace $P0
-	};
-	
-	return $namespace;
-}
-
-method inspect($key?) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$key'
-		$I0 = defined $P0
-		if $I0 goto inspect_string
-		
-		%r = inspect self
-		goto done
-		
-	inspect_string:
-		$S0 = $P0
-		%r = inspect self, $S0
-	
-	done:
-	};
-	
-	return $result;
-}
-
-sub isnull(*@what) {
-	my $result := Q:PIR {
-		$P0 = find_lex '@what'
-		$P0 = shift $P0
-		$I0 = isnull $P0
-		%r = box $I0
-	};
-	
-	return $result;
-}
-
-method isa($class) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$class'
-		$S0 = $P0
-		$I0 = isa self, $S0
-		%r = box $I0
-	};
-
-	return $result;
-}
-
-method iseq($other) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$other'
-		$I0 = iseq self, $P0
-		%r = box $I0
-	};
-	
-	return $result;
-}
-
-method join($delim?) {
-	unless defined($delim) { $delim := ''; }
-	my $result := Q:PIR {
-		$P0 = find_lex '$delim'
-		$S0 = $P0
-		$S1 = join $S0, self
-		%r = box $S1
-	};
-	
-	return $result;
-}
-
-sub load_bytecode($path) {
-	Q:PIR {
-		$P0 = find_lex '$path'
-		$S0 = $P0
-		load_bytecode $S0
-	};
-}
-
-method load_language() {
-	Q:PIR {
-		$S0 = self
-		load_language $S0
-	};
-	
-	return self;
-}
-
 sub make_root_namespace($p1) {
 	my $result;
 	
@@ -358,93 +154,5 @@ sub make_root_namespace($p1) {
 		die("Undefined namespace path");
 	}
 	
-	return $result;
-}
-
-sub new($type, $init?) {
-	my $result := Q:PIR {
-		.local pmc type, init
-		type = find_lex '$type'
-		init = find_lex '$init'
-		
-		$I0 = defined init
-		unless $I0 goto no_init
-		
-		%r = new type, init
-		goto done
-		
-	no_init:
-		%r = new type
-		
-	done:
-	};
-	
-	return $result;
-}
-
-sub newclass($p1) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$p1'
-		%r = newclass $P0
-	};
-	
-	return $result;
-}
-
-method setattribute($name, $value) {
-	Q:PIR {
-		$P0 = find_lex '$name'
-		$S0 = $P0
-		$P1 = find_lex '$value'
-		setattribute self, $S0, $P1
-	};
-}
-
-method set_integer($value) {
-	Q:PIR {
-		$P0 = find_lex '$value'
-		$I0 = $P0
-		self = $I0
-	};
-	
-	return $value;
-}
-
-method store_lex($value) {
-	Q:PIR {
-		$S0 = self
-		$P0 = find_lex '$value'
-		store_lex $S0, $P0
-	};
-	
-	return $value;
-}
-
-sub throw($exc) {
-	Q:PIR {
-		$P0 = find_lex '$exc'
-		throw $P0
-	};
-}
-
-our sub trace($value) {
-	Q:PIR {
-		$P0 = find_lex '$value'
-		$I0 = $P0
-		trace $I0
-	};
-}
-
-our sub typeof($what) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$what'
-		unless null $P0 goto get_type
-		say "typeof <null> is not a valid request"
-		backtrace
-	get_type:
-		$S0 = typeof $P0
-		%r = box $S0
-	};
-
 	return $result;
 }

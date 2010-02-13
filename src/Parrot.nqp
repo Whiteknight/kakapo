@@ -43,11 +43,11 @@ sub caller_namespace($index?) {
 	return $nsp;
 }
 
-method call_method($method_name, *@args, *%opts) {
-	return call_method_(self, $method_name, @args, %opts);
+sub call_method($object, $method_name, *@args, *%opts) {
+	call_method_($object, $method_name, @args, %opts);
 }
 
-method call_method_($method_name, @args?, %opts?) {
+sub call_method_($object, $method_name, @args?, %opts?) {
 # Calls method C< $method_name > with flattened arglist C< @args > and flattened 
 # options C< %opts >. Returns the result of the method call.
 
@@ -55,7 +55,8 @@ method call_method_($method_name, @args?, %opts?) {
 	unless Opcode::defined(%opts)	{ %opts := Hash::empty(); }
 	
 	Q:PIR {
-		.local pmc meth, args, opts
+		.local pmc object, meth, args, opts
+		object	= find_lex '$object'
 		meth	= find_lex '$method_name'
 		args	= find_lex '@args'
 		opts	= find_lex '%opts'
@@ -63,11 +64,42 @@ method call_method_($method_name, @args?, %opts?) {
 		$I0 = isa meth, 'Sub'
 		unless $I0 goto call_string
 		
-		.tailcall self.meth(args :flat, opts :named :flat)
+		.tailcall object.meth(args :flat, opts :named :flat)
 		
 	call_string:
 		$S0 = meth
-		.tailcall self.$S0(args :flat, opts :named :flat)
+		.tailcall object.$S0(args :flat, opts :named :flat)
+	};
+}
+
+sub call_tuple_method($object, $method, *@args, *%opts) {
+	call_tuple_method_($object, $method, @args, %opts);
+}
+
+sub call_tuple_method_($object, $method, @args?, %opts?) {
+# Calls method C< $method_name > with flattened arglist C< @args > and flattened 
+# options C< %opts >. Returns an RPA with the tuple returned by the method.
+
+	unless Opcode::defined(@args)	{ @args := Array::empty(); }
+	unless Opcode::defined(%opts)	{ %opts := Hash::empty(); }
+	
+	Q:PIR {
+		.local pmc object, meth, args, opts
+		object	= find_lex '$object'
+		meth	= find_lex '$method'
+		args	= find_lex '@args'
+		opts	= find_lex '%opts'
+		
+		$I0 = isa meth, 'Sub'
+		unless $I0 goto call_string
+		
+		( $P0 :slurpy ) = object.meth(args :flat, opts :named :flat)
+		.return ($P0)
+		
+	call_string:
+		$S0 = meth
+		( $P0 :slurpy ) = object.$S0(args :flat, opts :named :flat)
+		.return ($P0)
 	};
 }
 
@@ -86,14 +118,42 @@ sub call_sub_($sub_name, @args, %opts) {
 		opts	= find_lex '%opts'
 		
 		$I0 = isa sub, 'Sub'
-		unless $I0 goto call_string
+		if $I0 goto call_sub
 		
-		.tailcall sub(args :flat, opts :named :flat)
-		
-	call_string:
 		$S0 = sub
-		$P0 = find_sub_not_null $S0
-		.tailcall $P0(args :flat, opts :named :flat)
+		sub = find_sub_not_null $S0
+		
+	call_sub:
+		.tailcall sub(args :flat, opts :named :flat)
+	};
+}
+
+sub call_tuple_sub($sub, *@args, *%opts) {
+	call_tuple_sub_($sub, @args, %opts);
+}
+
+sub call_tuple_sub_($sub, @args?, %opts?) {
+# Calls sub C< $sub > with flattened arglist C< @args > and flattened 
+# options C< %opts >. Returns an RPA with the tuple returned by the sub.
+
+	unless Opcode::defined(@args)	{ @args := Array::empty(); }
+	unless Opcode::defined(%opts)	{ %opts := Hash::empty(); }
+	
+	Q:PIR {
+		.local pmc sub, args, opts
+		sub	= find_lex '$sub'
+		args	= find_lex '@args'
+		opts	= find_lex '%opts'
+		
+		$I0 = isa sub, 'Sub'
+		if $I0 goto call_sub
+		
+		$S0 = sub
+		sub = find_sub_not_null $S0
+	
+	call_sub:
+		( $P0 :slurpy ) = sub(args :flat, opts :named :flat)
+		.return ($P0)		
 	};
 }
 

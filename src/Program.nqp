@@ -130,6 +130,11 @@ sub call_main() {
 	exit(0);
 }
 
+sub die(*@message) {
+# General 'die' hook that supports argument catenation.
+	pir::die(@message.join);
+}
+
 sub exit($status) {
 # Exits the program, makes any calls registered with L<C<at_end>>, and 
 # causes the Parrot interpreter to exit with status C<$status>.

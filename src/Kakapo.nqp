@@ -11,7 +11,7 @@ INIT {
 }
 
 sub is_loaded() {
-	return 1;
+	1;
 }
 
 sub _pre_initload() {
@@ -45,6 +45,7 @@ sub _pre_initload() {
 	Class::_pre_initload();
 	Exception::_pre_initload();
 	DependencyQueue::_pre_initload();
+	return;
 	Program::_pre_initload(
 		'Global', 
 		'Dumper', 

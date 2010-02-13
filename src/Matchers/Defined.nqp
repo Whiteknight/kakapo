@@ -28,7 +28,7 @@ sub factory()				{ Matcher::Defined.new(); }
 
 method matches(*@value) {
 	unless +@value {
-		Opcode::die('A value must be passed to matches($item)');
+		Program::die('A value must be passed to matches($item)');
 	}
 
 	my $result := Opcode::defined(@value[0]);		

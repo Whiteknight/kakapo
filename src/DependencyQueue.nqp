@@ -4,18 +4,41 @@
 module DependencyQueue;
 # A queue that orders its entries according to their prerequisites.
 
+sub _pre_initload() {
+# Special sub called to initialize this module.
+
+	use(	'P6metaclass' );
+	
+	has(	'%!added',
+		'%!already_done',
+		'%!cycle',
+		'@!cycle_keys',
+		'$!locked',
+		'%!pending',
+		'@!queue'
+	);
+}
+		
 our method add_entry($name, $value, :@requires?) {
 	unless @requires { @requires := Array::new(); }
 	
 	my @entry := Array::new($name, $value, @requires);
-say("add_entry");
-Dumper::DUMP_(@entry);
-pir::backtrace();
 	self.pending{$name} := @entry;
 }
 
 my method already_added($name) {
-	return self.already_done{$name} || self.added{$name};
+	if self.already_done.contains($name) {
+		say("$name marked already done");
+		return 1;
+	}
+	
+	if self.added.contains($name) {
+		say("$name already marked as added");
+		return 1;
+	}
+	
+	return self.already_done.contains($name)
+		|| self.added.contains($name);
 }
 
 method _init_positional_(@pos) {
@@ -50,19 +73,6 @@ our method next() {
 	return Undef.new;
 }
 
-sub _pre_initload() {
-	use(	'P6metaclass' );
-	
-	has(	'%!added',
-		'%!already_done',
-		'%!cycle',
-		'@!cycle_keys',
-		'$!locked',
-		'%!pending',
-		'@!queue'
-	);
-}
-		
 method reset() {
 	self.locked(0);
 	self.pending(Hash::empty());
@@ -74,43 +84,50 @@ say("Tsort queue");
 	self.cycle_keys(Array::empty());
 	self.cycle(Hash::empty());
 	self.added(Hash::empty());
-
-	self.tsort_add_keys(self.pending.keys);
+Dumper::DUMP_(self.pending);
+	self.tsort_add_pending_entries(self.pending.keys);
 }
 
-method tsort_add_keys(@list) {
+my method tsort_add_pending_entries(@list) {
 # Visits a list of keys, adding the attached calls to the queue in topological order.
 
+say("Adding pending entries:");
 Dumper::DUMP_(@list);
+Dumper::DUMP_(self);
 	for @list {
-		my $key := $_;		
-say("key: $key");		
+		my $key := $_;
+		
+		say("Considering $_");
 		unless self.already_added($key) {
-	say("adding");
 			## First, check for cycles in the graph.
-			my $cycle_elts := self.cycle_keys.elements;
-	say("cycle checked");
+			my $next_index := self.cycle_keys.elements;
 			self.cycle_keys.push($key);
-			
-			if self.cycle.exists($key) {
+say("pushed");
+			if self.cycle.contains($key) {
+			say("Stored at: ", self.cycle{$key});
 				my @slice := self.cycle_keys.slice(:from(self.cycle{$key}));
 
-				Opcode::die("Cycle detected in dependencies: ",
+				Program::die("Cycle detected in dependencies: ",
 					@slice.join(', '),
 				);
 			}
 			
-			self.cycle{$key} := $cycle_elts;
-			
+			self.cycle{$key} := $next_index;
+say("Key is: ", $next_index);
 			## Put everything $key depends on ahead of $key
-			my $node := self.pending{$key};
 			
-			my @prerequisites := $node[2];
-			self.tsort_add_keys(@prerequisites);
+			if self.pending.contains($key) {
+				my $node := self.pending{$key};
+				my @prerequisites := $node[2];
+				self.tsort_add_pending_entries(@prerequisites);
 			
-			## Finally, it's my turn.
-			self.added{$key} := 1;
-			self.queue.push($node);
+				## Finally, it's my turn.
+				self.added{$key} := 1;
+				self.queue.push($node);
+			}
+			else {
+				say("$key is required, but not finished and not pending.");
+			}
 		}
 	}
 }

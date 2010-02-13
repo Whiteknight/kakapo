@@ -20,7 +20,7 @@ our sub ASSERT($condition, *@message, :$caller_level?) {
 	my $message := +@message ?? @message.join !! 'ASSERTION FAILED';
 
 	# This is a bit of a hack, but it shows ASSERT instead of _block99 in the stack trace.
-	$condition ?? 0 !! Opcode::die($message);
+	$condition ?? 0 !! Program::die($message);
 	
 	unlock('ASSERT');
 }

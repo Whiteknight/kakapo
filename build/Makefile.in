@@ -67,6 +67,7 @@ BASE_LIB_PIRS = 		\
 	src/Pmc/ResizablePMCArray.pir \
 	src/Pmc/ResizableStringArray.pir \
 	src/Pmc/String.pir	\
+	src/Pmc/Sub.pir		\
 	src/Program.pir		\
 	src/Classes/Class.pir	\
 	src/Classes/ArrayBased.pir	\

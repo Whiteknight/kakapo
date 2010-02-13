@@ -294,7 +294,7 @@ our method run_tests(*@names) {
 		
 method assert_that($item_desc, *@item) {
 	unless +@item == 2 {
-		Opcode::die('You must provide 3 args: $item_desc, $item, $matcher');
+		Program::die('You must provide 3 args: $item_desc, $item, $matcher');
 	}
 	
 	my $matcher := @item[1];

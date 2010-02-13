@@ -34,7 +34,7 @@ method init(@args, %opts) {
 	
 	unless self.described_as {
 		unless +@args {
-			Opcode::die("You must provide a description");
+			Program::die("You must provide a description");
 		}
 		
 		self.described_as(@args.shift);
@@ -42,7 +42,7 @@ method init(@args, %opts) {
 	
 	unless self.predicate {
 		unless +@args {
-			Opcode::die("You must provide a Matcher predicate");
+			Program::die("You must provide a Matcher predicate");
 		}
 		
 		self.predicate(@args.shift);

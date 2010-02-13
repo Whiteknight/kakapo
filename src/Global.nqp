@@ -99,8 +99,8 @@ our sub _pre_initload() {
 	my @parts := $nqp_root.split('::');
 	my $root_nsp := Opcode::get_root_namespace(@parts);
 	
-	inject_symbol(Global::use, $root_nsp);
-	inject_symbol(Global::export, $root_nsp);
+	inject_symbol(Global::use, :namespace($root_nsp));
+	inject_symbol(Global::export, :namespace($root_nsp));
 }
 
 our sub register_global($name, $object, :$namespace?) {

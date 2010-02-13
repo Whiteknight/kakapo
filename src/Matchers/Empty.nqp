@@ -43,5 +43,5 @@ method matches_typesafe($item) {
 		return $item.keys() == 0;
 	}
 	
-	Opcode::die("Don't know how to determine if this object is empty.");
+	Program::die("Don't know how to determine if this object is empty.");
 }

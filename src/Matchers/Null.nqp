@@ -24,7 +24,7 @@ module Matcher::Null {
 	
 	method matches(*@value) {
 		unless +@value {
-			Opcode::die("A value must be passed to matches($item)");
+			Program::die("A value must be passed to matches($item)");
 		}
 		
 		return Opcode::isnull(@value[0]);
