@@ -21,7 +21,7 @@ sub _pre_initload(*@modules_done) {
 	$Load_queue	:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
 
 	if ! Opcode::defined($Main) {
-		$Main := '::main';
+		register_main('::main');
 	}
 }
 
@@ -87,6 +87,45 @@ sub add_call($queue, $call, %opts, $caller_nsp) {
 	}
 }
 
+sub call($call) {
+# Calls the Sub or MultiSub PMC passed as C<$call>, or, if C<$call> 
+# is a String, looks up the named symbol and calls that.
+
+	if $call.isa('String') {
+		my @nsp := $call.split('::');
+		my $name := @nsp.pop;
+	
+		# Shenanigans to handle '::main' correctly as a hll-root object.
+		if @nsp[0] eq '' {
+			@nsp.shift;
+		}
+		
+		$call := Opcode::get_hll_global(@nsp, $name);
+	}
+
+	my $status := 0;
+	
+	if ! Opcode::isnull($call) && $call.defined {
+		$status := $call();
+	}
+	
+	return $status;
+}
+
+sub call_main() {
+# Executes the calls registered in the L<C< at_start >> queue, then
+# runs the C<main> sub registered via L<C< register_main >>. If the
+# C<main> sub returns, the result is passed to L<C< exit >>.
+
+	process_queue(our $At_start_queue);
+
+	our $Main;
+	
+	say("Calling $Main");
+	call($Main);
+	exit(0);
+}
+
 sub determine_call($call, $caller_nsp, @sub_names) {
 # Determines a sub to be called. If C< $call > is defined, it specifies the call -- either a sub
 # of some kind, or a String name to be resolved, or some other invokable object. Otherwise,
@@ -112,34 +151,6 @@ sub determine_call($call, $caller_nsp, @sub_names) {
 	}
 	
 	die("Cannot find any viable call (", @sub_names.join(', '), ") in ", $nsp_name);
-}
-
-sub call($call) {
-# Calls the Sub or MultiSub PMC passed as C<$call>, or, if C<$call> 
-# is a String, looks up the named symbol and calls that.
-
-	if $call.isa('String') {
-		$call := Opcode::get_hll_global($call);
-	}
-
-	my $status := 0;
-	
-	if $call {
-		$status := $call();
-	}
-	
-	return $status;
-}
-
-sub call_main() {
-# Executes the calls registered in the L<C< at_start >> queue, then
-# runs the C<main> sub registered via L<C< register_main >>. If the
-# C<main> sub returns, the result is passed to L<C< exit >>.
-
-	process_queue(our $At_start_queue);
-
-	call(our $Main);
-	exit(0);
 }
 
 sub die(*@message) {

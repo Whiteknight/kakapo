@@ -144,7 +144,7 @@ TEST_LIB_PIRS =			\
 
 # NOTE: Using "old sk00l" implicit rules here because Microsoft's Nmake supports those.
 .SUFFIXES: 
-.SUFFIXES: .pg .nqp .pira .pir .pbc .pbx
+.SUFFIXES: .pg .nqp .pira .pir .pbc .t.pbc
 .PRECIOUS: .pir
 
 .pg.pira:
@@ -162,6 +162,10 @@ TEST_LIB_PIRS =			\
 .pir.pbc:
 	@echo "*** Compiling to PBC: $<"
 	$(COMPILE_pir) --output=$@ $<
+	
+.pbc.t.pbc:
+	@echo "*** Linking to krt0: $<"
+	$(LINK) --output=$@  $(KRT0) $<
 	
 #######################################################################
 ##### Targets start here (asciibetical order)

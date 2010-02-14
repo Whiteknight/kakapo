@@ -9,7 +9,6 @@ This file assumes the program is being compiled with kakapo.pir or with kakapo_b
 kakapo.pir is loaded dynamically.
 
 =cut
-#NB: =cut above, not =end
 
 .namespace [ ]
 
@@ -27,7 +26,7 @@ kakapo.pir is loaded dynamically.
 	$S0 = $P0()
 have_kakapo_lib_name:
 
-	# This works if kakapo.pir is installed. If not installed, you will have to specify -Lpath 
+	# This works if libraries are installed. If not installed, you will have to specify -Lpath 
 	# on the parrot command line.
 
 	load_bytecode $S0

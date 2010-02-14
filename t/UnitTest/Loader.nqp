@@ -16,6 +16,8 @@ class Test::UnitTest::Loader
 
 		Program::register_main();
 		has(	'$!loader' );
+		
+		my $loader := UnitTest::Loader.new();
 	}
 	
 	sub main() {
