@@ -1,0 +1,4 @@
+# FIXME: Need some tests that check for correct failure modes.
+# 1. fails if no Program::call_main exists
+# 2. How does it fail if no kakapo library exists?
+# 3. Add tests for when user links kakapo library with no krt0
