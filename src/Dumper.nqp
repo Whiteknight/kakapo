@@ -335,7 +335,7 @@ sub info(:$caller_level) {
 
 sub lock($key) {
 	unless our %_Already_in {
-		%_Already_in := Hash::new(
+		%_Already_in := Hash.new(
 			:ASSERT(0),
 			:DIE(0),
 			:DUMP(0),

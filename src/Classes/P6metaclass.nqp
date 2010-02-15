@@ -5,8 +5,6 @@ module P6metaclass;
 # Extends the P6object.pir class with helper functions for advanced class declaration.
 
 sub _pre_initload() {
-	use(	Dumper	);
-
 	# NB: Can't import Opcode, because so many ops share names with class methods. (can, does, isa, etc.)
 	use(	Parrot,	:tags('NAMESPACE'));
 
@@ -189,7 +187,7 @@ sub has(*@args, :$class?, *%opts) {
 				die("Re-declaration of attribute '$base_name'");
 			}
 			
-			%opts{$base_name} := Hash::new(
+			%opts{$base_name} := Hash.new(
 				:accessor($base_name),
 				:default_type(%default_type{$sigil}),
 				:is_private($attr[0] eq '!' ?? 1 !! 0),
@@ -210,13 +208,13 @@ sub has_vtable($name, &code, :$class?) {
 
 	$parrot_class.add_vtable_override($name, &code);
 say("Adding vtable: ", $name, " to ", $parrot_class);
-DUMP_(Opcode::inspect_string($parrot_class, 'vtable_overrides'));
+_dumper(Opcode::inspect_string($parrot_class, 'vtable_overrides'));
 }
 
 my method _make_accessor($parrot_class, %info) {
 	my $namespace := $parrot_class.get_namespace;
 	
-	my %accessor_details := Hash::new(
+	my %accessor_details := Hash.new(
 		:name(%info<accessor>),
 		:namespace($parrot_class.get_namespace),
 		:method(1),

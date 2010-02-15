@@ -5,16 +5,17 @@ module Parrot;
 # Provides access to low-level functions of the Parrot VM.
 
 sub _pre_initload() {
-	Global::use('Dumper');
-
-	Global::export(
+	export(
 		'call_method',	'call_method_', 
 		'call_sub',		'call_sub_', 
+		'call_tuple_method',	'call_tuple_method_', 
+		'call_tuple_sub',	'call_tuple_sub_', 
 		:tags('CALL')
 	);
 	
-	Global::export(
+	export(
 		'caller_namespace', 
+		'get_hll_namespace',
 		'namespace_name', 
 		:tags('NAMESPACE')
 	);
@@ -161,7 +162,31 @@ sub get_address_of($what) {
 	return Opcode::get_addr($what);
 }
 
-# _get_interpreter cached the interp. Moved to Opcode and dumbed down. Recode your stuff.
+#! _get_interpreter cached the interp. Moved to Opcode and dumbed down. Recode your stuff.
+
+# Return a namespace relative to the HLL root namespace.
+#
+# If no C< $path > is specified, returns the HLL root namespace. Otherwise, fetches
+# the namespace identified by C< $path >, which can either be a string in A::B::C 
+# format, or a key. (See L< key() >, below.)
+
+sub get_hll_namespace($path?) {
+
+	my $result;
+	
+	if $path.defined {
+		if $path.isa('String') {
+			$path := key_($path.split('::'));
+		}
+		
+		$result := pir::get_hll_namespace__PP($path);
+	}
+	else {
+		$result := pir::get_hll_namespace__P();
+	}
+
+	$result;
+}
 
 sub get_sub($path, :$caller_nsp?) {
 	my @parts := $path.split('::');
@@ -189,8 +214,12 @@ sub get_sub($path, :$caller_nsp?) {
 
 sub key($first, *@parts) {
 	unless @parts { @parts := Array::empty(); }
-	
 	@parts.unshift($first);
+	key_(@parts);
+}
+
+sub key_(@parts) {
+	
 	my $key;
 	
 	while @parts {

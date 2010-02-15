@@ -63,10 +63,10 @@ sub SUBCLASS($class_name, *@parents) {
 }
 
 sub _class_info($class_name) {
-	unless our %Class_info { %Class_info := Hash::new(); }
+	unless our %Class_info { %Class_info := Hash.new(); }
 	
 	unless %Class_info{$class_name} {
-		%Class_info{$class_name} := Hash::new();
+		%Class_info{$class_name} := Hash.new();
 		my $info := %Class_info{$class_name};
 		
 		$info<multisubs> := Hash::empty();

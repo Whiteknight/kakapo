@@ -15,6 +15,7 @@ PERL          := @perl@
 CAT           := @cat@
 CHMOD         := @chmod@
 CP            := @cp@
+DUMP      := $(BIN_DIR)/pbc_dump@exe@
 LINK          := $(BIN_DIR)/pbc_merge@exe@
 MKPATH        := @mkpath@
 RM_F          := @rm_f@
@@ -43,76 +44,38 @@ ALL_TESTS =		\
 	t-unittest-suite	\
 	t-unittest-testcase	\
 
-BASE_LIB_PIRS = 		\
+BASE_LIB_PIRS = 			\
+	src/Global.pir			\
+	src/Internals/Base.pir		\
+	src/Parrot/Opcode.pir 		\
+	src/Parrot/Parrot.pir 		\
+	src/Parrot/Pir.pir 			\
+	src/Pmc/Array.pir			\
+	src/Pmc/COMMON.pir		\
+	src/Pmc/Exception.pir		\
+	src/Pmc/Hash.pir			\
+	src/Pmc/String.pir		\
+	src/Pmc/Sub.pir			\
+	src/Pmc/Undef.pir		\
+	
+
+COMPLETE_LIB_PIRS =		\
 	src/Classes/P6metaclass.pir	\
 	src/Classes/P6object.pir	\
-	src/Exceptions.pir		\
-	src/Pmc/COMMON.pir	\
-	src/Pmc/Exception.pir	\
-	src/Pmc/Hash.pir		\
-	src/Pmc/Undef.pir	\
+	src/Classes/Class.pir	\
+	src/Classes/ArrayBased.pir	\
+	src/Classes/BaseBehavior.pir	\
+	src/Classes/HashBased.pir	\
 	src/ConfigFile.pir		\
 	src/DependencyQueue.pir \
-	src/Dumper.pir		\
-	src/Global.pir		\
-	src/Kakapo.pir		\
-	src/Parrot.pir 		\
-	src/Parrot/Opcode.pir 	\
-	src/Pir.pir 			\
-	src/Pmc/Array.pir		\
+	src/Dumper.pir			\
+	src/Exceptions.pir			\
 	src/Pmc/Class.pir		\
 	src/Pmc/Config.pir	\
 	src/Pmc/File.pir		\
 	src/Pmc/Namespace.pir	\
 	src/Pmc/OS.pir		\
-	src/Pmc/ResizablePMCArray.pir \
-	src/Pmc/ResizableStringArray.pir \
-	src/Pmc/String.pir	\
-	src/Pmc/Sub.pir		\
 	src/Program.pir		\
-	src/Classes/Class.pir	\
-	src/Classes/ArrayBased.pir	\
-	src/Classes/BaseBehavior.pir	\
-	src/Classes/HashBased.pir	\
-
-GENERATED_FILES =		\
-	$(BASE_LIB_PIRS)	\
-	$(TEST_LIB_PIRS)	\
-	library/kakapo_base.pir	\
-	library/kakapo_test.pir	\
-	src/kakapo_bottom.pir	\
-	src/kakapo_top.pir	\
-	$(KRT0)			\
-	$(LIBRARY_PBCS)
-
-KRT0 = 				\
-	library/krt0.pbc
-	
-LIBRARY_PBCS =			\
-	library/kakapo_base.pbc	\
-	library/kakapo_test.pbc		\
-	$(KRT0)
-
-TEST_CLEANUPS =			\
-	t/Global.pir				\
-	t/Parrot.pir				\
-	t/Pmc/test-array.pbc		\
-	t/Pmc/test-array.pir		\
-	t/Pmc/Array.pir			\
-	t/Program.pir			\
-	t/Pmc/test-rpa.pbc		\
-	t/Pmc/test-rsa.pbc		\
-	t/Pmc/test-undef.pbc		\
-	t/Classes/test-Attributes.pbc	\
-	t/Sanity/test-P6object.pbc	\
-	t/Classes/Attributes.pbc		\
-	t/Pmc/Array.pbc			\
-	t/Pmc/ResizablePMCArray.pbc\
-	t/Pmc/ResizableStringArray.pbc\
-	t/Pmc/Undef.pbc			\
-	t/Sanity/P6object.pbc		
-
-TEST_LIB_PIRS =			\
 	src/Matchers/AllOf.pir		\
 	src/Matchers/AnyOne.pir	\
 	src/Matchers/Boolean.pir	\
@@ -138,13 +101,57 @@ TEST_LIB_PIRS =			\
 #	src/Matchers/Null.pir		\
 #	src/Matchers/True.pir		\
 
+
+GENERATED_FILES =				\
+	$(BASE_LIB_PIRS)			\
+	$(COMPLETE_LIB_PIRS)		\
+	library/kakapo_base.pir			\
+	library/kakapo_complete.pir		\
+	src/Internals/kakapo_bottom.pir	\
+	src/Internals/kakapo_top.pir		\
+	$(KRT0)					\
+	$(LIBRARY_PBCS)
+
+KRT0 = 					\
+	library/krt0.pbc
+	
+LIBRARY_COMMON_DEPS =			\
+	Makefile					\
+	src/Internals/kakapo_bottom.pir	\
+	src/Internals/kakapo_top.pir
+	
+LIBRARY_PBCS =			\
+	library/kakapo_base.pbc	\
+	library/kakapo_complete.pbc	\
+	$(KRT0)
+
+
+TEST_CLEANUPS =			\
+	t/Global.pir				\
+	t/Parrot.pir				\
+	t/Pmc/test-array.pbc		\
+	t/Pmc/test-array.pir		\
+	t/Pmc/Array.pir			\
+	t/Program.pir			\
+	t/Pmc/test-rpa.pbc		\
+	t/Pmc/test-rsa.pbc		\
+	t/Pmc/test-undef.pbc		\
+	t/Classes/test-Attributes.pbc	\
+	t/Sanity/test-P6object.pbc	\
+	t/Classes/Attributes.pbc		\
+	t/Pmc/Array.pbc			\
+	t/Pmc/ResizablePMCArray.pbc\
+	t/Pmc/ResizableStringArray.pbc\
+	t/Pmc/Undef.pbc			\
+	t/Sanity/P6object.pbc		
+
 #######################################################################
 ##### Implicit rules here 
 #######################################################################
 
 # NOTE: Using "old sk00l" implicit rules here because Microsoft's Nmake supports those.
 .SUFFIXES: 
-.SUFFIXES: .pg .nqp .pira .pir .pbc .t.pbc
+.SUFFIXES: .pg .nqp .pira .pir .pbc .t.pbc .dump
 .PRECIOUS: .pir
 
 .pg.pira:
@@ -166,6 +173,10 @@ TEST_LIB_PIRS =			\
 .pbc.t.pbc:
 	@echo "*** Linking to krt0: $<"
 	$(LINK) --output=$@  $(KRT0) $<
+	
+.pbc.dump:
+	@echo "*** Dumping binary: $<"
+	$(PBC_DUMP) -d $< > $@
 	
 #######################################################################
 ##### Targets start here (asciibetical order)
@@ -214,22 +225,29 @@ kakapo.cfg:
 #IF(win32):	IF NOT EXIST kakapo.cfg $(CP) kakapo_cfg.tmpl kakapo.cfg
 #IF(not(win32)):	if [ ! -f kakapo.cfg ]; then $(CP) kakapo_cfg.tmpl kakapo.cfg ; fi
 
-library/kakapo_base.pir: $(BASE_LIB_PIRS) src/kakapo_top.pir src/kakapo_bottom.pir Makefile
-	cat src/kakapo_top.pir $(BASE_LIB_PIRS) src/kakapo_bottom.pir > $@
+library/kakapo_base.pir: $(LIBRARY_COMMON_DEPS) $(BASE_LIB_PIRS) 
+	$(CAT) src/Internals/kakapo_top.pir		\
+		$(BASE_LIB_PIRS)			\
+		src/Internals/kakapo_bottom.pir	\
+	> $@
+	
+library/kakapo_complete.pir: $(LIBRARY_COMMON_DEPS) $(BASE_LIB_PIRS) $(COMPLETE_LIB_PIRS) 
+	$(CAT) src/Internals/kakapo_top.pir		\
+		$(BASE_LIB_PIRS)			\
+		$(COMPLETE_LIB_PIRS)		\
+		src/Internals/kakapo_bottom.pir	\
+	> $@
 
-library/kakapo_test.pir: $(BASE_LIB_PIRS) $(TEST_LIB_PIRS) src/kakapo_top.pir src/kakapo_bottom.pir Makefile
-	cat src/kakapo_top.pir $(BASE_LIB_PIRS) $(TEST_LIB_PIRS) src/kakapo_bottom.pir > $@
-
-library/krt0.pir: src/krt0_pir.tmpl
-	$(CP) src/krt0_pir.tmpl $@
+library/krt0.pir: src/Internals/krt0_pir.tmpl
+	$(CP) src/Internals/krt0_pir.tmpl $@
 
 install:
 	# install kakapo_base
 	$(CP) library/kakapo_base.pbc $(LIB_DIR)/library/kakapo_base.pbc
 	$(CHMOD) 0444 $(LIB_DIR)/library/kakapo_base.pbc
-	# install kakapo_test
-	$(CP) library/kakapo_test.pbc $(LIB_DIR)/library/kakapo_test.pbc
-	$(CHMOD) 0444 $(LIB_DIR)/library/kakapo_test.pbc
+	# install kakapo_complete
+	$(CP) library/kakapo_complete.pbc $(LIB_DIR)/library/kakapo_complete.pbc
+	$(CHMOD) 0444 $(LIB_DIR)/library/kakapo_complete.pbc
 	# install krt0
 	$(CP) library/krt0.pbc $(LIB_DIR)/library/krt0.pbc
 	$(CHMOD) 0444 $(LIB_DIR)/library/krt0.pbc
@@ -243,17 +261,20 @@ realclean: clean
 release: build
 	-$(MKPATH) released
 	$(CP) library/kakapo_base.pir released/kakapo_base.pir
-	$(CP) library/kakapo_test.pir released/kakapo_test.pir
+	$(CP) library/kakapo_complete.pir released/kakapo_complete.pir
 	$(CP) library/krt0.pir released/krt0.pir
 	
-src/kakapo_bottom.pir: src/kakapo_bottom_pir.tmpl
-	$(CP) src/kakapo_bottom_pir.tmpl $@
+src/Internals/kakapo_bottom.pir: src/Internals/kakapo_bottom_pir.tmpl
+	$(CP) src/Internals/kakapo_bottom_pir.tmpl $@
 	
-src/kakapo_top.pir: src/kakapo_top_pir.tmpl
-	$(CP) src/kakapo_top_pir.tmpl $@
+src/Internals/kakapo_top.pir: src/Internals/kakapo_top_pir.tmpl
+	$(CP) src/Internals/kakapo_top_pir.tmpl $@
 
 test: build $(ALL_TESTS)
 
+test-bootstrap: build
+	$(PERL) t/harness.pl  t/bootstrap
+	
 #----------------------------------------------------------------------
 # Individual test-foo targets 
 #----------------------------------------------------------------------
@@ -287,31 +308,6 @@ t-unittest-suite: build t/UnitTest/Suite.t.pbc
 
 t-unittest-testcase: build t/UnitTest/Testcase.t.pbc
 	$(PARROT) $(PARROT_FLAGS) -Llibrary t/UnitTest/Testcase.t.pbc
-
-# Need fixin
-t-pmc-array: build t/Pmc/test-array.pbc
-	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/test-array.pbc
-
-test-parrot: build t/Parrot.pir
-	$(PARROT) $(PARROT_FLAGS) t/Parrot.pir
-
-test-program: build t/Program.pir
-	$(PARROT) $(PARROT_FLAGS) t/Program.pir
-
-test-rpa: build t/Pmc/test-rpa.pbc
-	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/test-rpa.pbc
-
-test-rsa: build $(KRT0) t/Pmc/test-rsa.pbc
-	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/test-rsa.pbc
-
-test-undef: build t/Pmc/test-undef.pbc
-	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Pmc/test-undef.pbc
-
-test-attributes: build t/Classes/test-Attributes.pbc
-	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Classes/test-Attributes.pbc
-
-test-sanity-p6object: build t/Sanity/test-P6object.pbc
-	$(PARROT) $(PARROT_FLAGS) -Llibrary t/Sanity/test-P6object.pbc
 
 #----------------------------------------------------------------------
 # Compile rules that support the test-foo targets, above.
@@ -347,29 +343,10 @@ t/UnitTest/Suite.t.pbc: $(KRT0) t/UnitTest/Suite.pbc
 t/UnitTest/Testcase.t.pbc: $(KRT0) t/UnitTest/Testcase.pbc
 	$(LINK) --output=$@  $(KRT0) t/UnitTest/Testcase.pbc > $@
 
-# Need fixin
-t/Classes/test-Attributes.pbc: $(KRT0) t/Classes/Attributes.pbc
-	$(LINK) --output=$@ $(KRT0) t/Classes/Attributes.pbc
-	
-t/Pmc/test-array.pbc: $(KRT0) t/Pmc/Array.pbc
-	$(LINK) --output=$@  $(KRT0) t/Pmc/Array.pbc > $@
-
-t/Pmc/test-rpa.pbc: $(KRT0) t/Pmc/ResizablePMCArray.pbc
-	$(LINK) --output=$@ $(KRT0) t/Pmc/ResizablePMCArray.pbc
-
-t/Pmc/test-rsa.pbc: $(KRT0) t/Pmc/ResizableStringArray.pbc	
-	$(LINK) --output=$@ $(KRT0) t/Pmc/ResizableStringArray.pbc
-
-t/Pmc/test-undef.pbc: $(KRT0)  t/Pmc/Undef.pbc
-	$(LINK) --output=$@ $(KRT0) t/Pmc/Undef.pbc
-
-t/Sanity/test-P6object.pbc: $(KRT0) t/Sanity/P6object.pbc
-	$(LINK) --output=$@ $(KRT0) t/Sanity/P6object.pbc
-
 testclean:
 	$(RM_F) $(TEST_CLEANUPS)
 
 uninstall:
 	$(RM_F) $(LIB_DIR)/library/kakapo_base.pbc
-	$(RM_F) $(LIB_DIR)/library/kakapo_test.pbc
+	$(RM_F) $(LIB_DIR)/library/kakapo_complete.pbc
 	$(RM_RF) $(DOC_DIR)/kakapo

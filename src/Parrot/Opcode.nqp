@@ -1,12 +1,12 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module Opcode;
 # Provides NQP-callable versions of various Parrot opcodes.
+module Opcode;
 
-sub _pre_initload() {
 # Kakapo startup function. Do the global exports early, so that other modules 
 # can import these functions during their init processing.
+sub _pre_initload() {
 
 	export(:tags('DEFAULT'),	'defined');
 	export(:tags('TYPE'),	'can', 'does', 'get_class', 'isa', 'new', 'typeof');
@@ -36,6 +36,7 @@ sub get_class($object)		{ pir::get_class__PP($object); }
 sub get_integer($object)		{ pir::set__IP($object); }
 sub get_global($name)		{ pir::get_global__PS($name); }
 sub getinterp()			{ pir::getinterp__P(); }
+sub get_namespace($namespace)	{ pir::get_namespace__PP($namespace); }
 sub get_root_namespace(@parts)	{ pir::get_root_namespace__PP(@parts); }
 sub inspect($object)			{ pir::inspect__PP($object); }
 sub inspect_string($object, $key)	{ pir::inspect__PPS($object, $key); }
@@ -72,52 +73,6 @@ sub get_hll_global($p1, $p2?) {
 		$S1 = $P1
 		%r = get_hll_global [$P0], $S1
 	};
-	
-	return $result;
-}
-
-sub get_hll_namespace($p1?) {
-# Can be called C< () >, C< ('a::b') >, or C< (@parts) >.
-
-	my $result;
-	
-	if defined($p1) {
-		if isa($p1, 'String') {
-			$p1 := $p1.split('::');
-		}
-		
-		$result := Q:PIR {
-			$P0 = find_lex '$p1'
-			%r = get_hll_namespace $P0
-		};
-	}
-	else {
-		$result := Q:PIR {
-			%r = get_hll_namespace
-		};
-	}
-	
-	return $result;
-}
-
-sub get_namespace($p1?) {
-# Can be called C< () >, C< ('a::b') >, or C< (@parts) >.
-
-	my $result;
-	
-	if defined($p1) {
-		if isa($p1, 'String') {
-			$p1 := $p1.split('::');
-		}
-		
-		$result := Q:PIR {
-			$P0 = find_lex '$p1'
-			%r = get_namespace $P0
-		};
-	}
-	else {
-		$result := Parrot::caller_namespace(2);
-	}
 	
 	return $result;
 }

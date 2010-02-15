@@ -44,7 +44,7 @@ method __dump($dumper, $label) {
 		if ! Opcode::isnull($subid) && $subid { $flags := " subid('" ~ $subid ~ "')"; }
 		
 		my $outer := self.get_outer;
-		if ! Opcode::isnull($outer) && $outer { $flags := " subid('" ~ $outer ~ "')"; }
+		if ! Opcode::isnull($outer) && $outer { $flags := " outer('" ~ $outer ~ "')"; }
 		
 		print($subindent, "Flags     :", $flags ?? $flags !! '<none>');
 		

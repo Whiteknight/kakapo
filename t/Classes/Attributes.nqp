@@ -31,7 +31,7 @@ say("Test accessors");
 
 method test_initializer() {
 	#my $obj := Kakapo::Test::Aclass.new(:a('albatross'), :b('byzantine'), :c('chrysanthemum'));
-	my %named := Hash::new(:a('albatross'), :b('byzantine'));
+	my %named := Hash.new(:a('albatross'), :b('byzantine'));
 	Dumper::DUMP_(%named);
 	%named := Hash::empty();
 	Dumper::DUMP_(%named);

@@ -1,11 +1,11 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module String;
 # Provides basic String functions, and adds some methods to the String PMC.
 
 sub _pre_initload() {
-	our %Cclass_id := Hash::new(
+	our %Cclass_id := Hash.new(
 		:NONE(			0),
 		:ANY(				65535),
 
@@ -327,16 +327,7 @@ method repeat($times) {
 
 method split($delim?) {
 	unless $delim { $delim := ' '; }
-	
-	my @array := Q:PIR {
-		$P0 = find_lex '$delim'
-		$S0 = $P0
-		$P1 = find_lex 'self'
-		$S1 = $P1
-		%r = split $S0, $S1
-	};
-	
-	return @array;
+	pir::split__PSS($delim, self);
 }
 
 method substr($start, *@rest) {

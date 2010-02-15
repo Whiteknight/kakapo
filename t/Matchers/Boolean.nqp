@@ -21,7 +21,7 @@ class Test::Matcher::Boolean
 	}
 	
 	sub main() {
-		my $proto := Opcode::get_root_global(Opcode::get_namespace().get_name);
+		my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
 		$proto.suite.run;
 	}
 	

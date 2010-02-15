@@ -1,67 +1,125 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+=begin
+
+=NAME Hash - Adds subs and methods to the Hash PMC namespace.
+
+=DESCRIPTION
+
+This is a collection of subs and methods that add common functionality to 
+Hashes in NQP. In many cases, the code acts as a bridge between the NQP
+sub/method syntax and PIR opcodes. 
+
+
+=SYNOPSIS
+
+=begin code
+
+    %pies := Hash.new( :apple(1), :blueberry(2), :cherry(3) );
+
+    unless %pies.contains('rhubarb') { ... }	
+
+    if %pies.defined { ... }			
+
+    %pies.delete('cherry');			
+
+    $number_of_pies := %pies.elements;	
+
+    @pies := %pies.keys;
+
+    %all_pies := Hash.merge(%good_pies, %bad_pies);
+
+    %all_pies.merge(%more_pies);
+
+=end code
+=end
 
 module Hash;
-# Provides some extra methods for Hash, plus some convenient creator subs.
 
-method contains($key) {
-	my $result := Q:PIR {
+=begin
+=METHODS
+
+=item contains($key) returns Boolean
+
+The C< .contains > method returns true (1) if the key exists in the Hash, 
+fales (0) otherwise. Note that there is no guarantee about the value stored
+in the Hash - it may be any value, including C< null >.
+
+=for code
+	if %hash.contains('null') { ... }
+
+=end
+
+our method contains($key) {
+	Q:PIR {
 		$P0 = find_lex 'self'
 		$P1 = find_lex '$key'
 		$I0 = exists $P0[$P1]
 		%r = box $I0
 	};
-	
-	return $result;
 }
 
-method defined()			{ 1 }
+=begin
+=item delete($key) returns self
 
-method delete($key) {
+The C< delete > method deletes the C< $key > from the Hash. If C< $key > is
+not a valid entry, nothing happens. Returns C< self > for method chaining.
+
+=for code
+	%week.delete('Wednesday');
+
+=end
+
+our method delete($key) {
 	Q:PIR {
-		$P0 = find_lex 'self'
+		%r  = find_lex 'self'
 		$P1 = find_lex '$key'
-		delete $P0[$P1]
+		delete %r[$P1]
 	};
 }
 
-sub elements(%hash) {
-	my %results := Q:PIR {
-		$P0 = find_lex '%hash'
-		$I0 = elements $P0
-		%r = box $I0
-	};
+=begin
+=item elements() returns Integer
+
+The C< elements > method returns the count of keys stored in the Hash.
+
+=for code
+	$num_keys := %hash.elements;
 	
-	return %results;
+=end
+
+method elements() {
+	pir::elements__IP(self);
 }
 
-sub empty() {
-	my %empty;
-	return %empty;
-}
+=begin
+=item keys() returns Array
 
-sub exists(%hash, $key) {
-	my $result;
-	
-	if %hash {
-		$result := %hash.contains($key);
-	}
-	else {
-		$result := 0;
-	}
-	
-	return $result;	
-}
+The C< keys > method returns an array of the keys stored in the Hash. There is
+no guarantee that the order of keys is meaningful, or that the order will be the
+same from one call to the next. If order is important, sort the array.
 
-method keys() {
+=for code
+	my @names := %hash.keys.sort;
+	
+=end
+
+our method keys() {
 	my @keys := Array::empty();
 	
 	for self {
 		@keys.push(~ $_);
 	}
 	
-	return @keys;
+	@keys;
 }
+
+=begin
+=item merge
+
+FIXME: This becomes a synonym for .new.
+
+=end
 
 sub merge(%first, *@hashes, :%into?, :$use_last?) {
 	
@@ -71,7 +129,7 @@ sub merge(%first, *@hashes, :%into?, :$use_last?) {
 		%into := @hashes.shift();
 		
 		unless Opcode::defined(%into) {
-			%into := Hash::new();
+			%into := Hash.new();
 		}
 	}
 	
@@ -96,6 +154,13 @@ sub merge(%first, *@hashes, :%into?, :$use_last?) {
 	return %into;
 }
 
+=begin
+=item merge_keys
+
+FIXME: Merge this sub with .merge( :keys )
+
+=end
+
 sub merge_keys(%first, *@hashes, :@keys!, :%into?, :$use_last?) {
 	@hashes.unshift(%first);
 	
@@ -103,7 +168,7 @@ sub merge_keys(%first, *@hashes, :@keys!, :%into?, :$use_last?) {
 		%into := @hashes.shift();
 		
 		unless Opcode::defined(%into) {
-			%into := Hash::new();
+			%into := Hash.new();
 		}
 	}
 	
@@ -128,9 +193,24 @@ sub merge_keys(%first, *@hashes, :@keys!, :%into?, :$use_last?) {
 	return %into;
 }
 
-sub new(*@pos, *%pairs) {
+=begin
+=item new( [ %hash, ... ], [ :key(value), ... ] ) return Hash
+
+The new method creates and returns a Hash. If no arguments are specified, an
+empty hash is returned. If positional arguments are given, they must also be
+Hashes. The entries are merged from left to right (right-most values dominate)
+into the new hash. If named parameters are provided, they are added to the
+new hash I< after > the positional hashes are merged. Effectively, the 
+positional hashes are default values.
+
+=for code
+    my %dictionary := Hash.new(%defaults, :one('uno'), :two('dos'));
+
+=end
+
+our method new(*@pos, *%pairs) {
 	if +@pos {
-		my $message := 'Invalid call to Hash::new with positional args.';
+		my $message := 'Invalid call to Hash.new with positional args.';
 		
 		if Opcode::isa(@pos[0], 'NameSpace') {
 			$message := $message ~ ' '
@@ -139,13 +219,8 @@ sub new(*@pos, *%pairs) {
 				~ '.new() - before class was created';
 		}
 
-		Dumper::DUMP_(@pos, 'positional args to Hash::new');
-		Program::die($message);
+		pir::die($message);
 	}
 
-	return %pairs;
-}
-
-sub sorted_keys(%hash) {
-	return %hash.keys.sort;
+	%pairs;
 }

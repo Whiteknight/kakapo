@@ -22,7 +22,7 @@ class Test::Global
 	}
 	
 	sub main() {
-		my $proto := Opcode::get_root_global(Opcode::get_namespace().get_name);
+		my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
 		$proto.suite.run;
 	}
 	
@@ -30,7 +30,7 @@ class Test::Global
 	# be sure to allow for sub-namespaces, symbols, and names carrying over from test to test.
 	
 	method test_export() {
-		my $namespace := Opcode::get_namespace();
+		my $namespace := pir::get_namespace__P();
 		
 	}
 
@@ -38,7 +38,7 @@ method test_export() {
 	
 	self.note("Testing Global::export() function");
 	
-	my $nsp := Opcode::get_namespace();
+	my $nsp := pir::get_namespace__P();
 	
 	self.assert_that("Tag FOO namespace", $nsp<EXPORT><FOO>, is(not(defined())));
 	our $foo := 'oof';
@@ -100,7 +100,7 @@ method test_use() {
 	
 	self.note("Testing Global::use() function");
 	
-	my $nsp := Opcode::get_namespace();
+	my $nsp := pir::get_namespace__P();
 	GlobalTest::_ONLOAD();
 	
 	self.assert_that('Imported symbol', $nsp{'hamilton'}, is(not(defined())));

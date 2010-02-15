@@ -3,5 +3,5 @@
 
 module Undef;
 # Provides missing methods to Undef PMC. See also C< Kakapo::Pmc::COMMON >.
+
 method defined()			{ 0 }
-method does($role)			{ 0 }

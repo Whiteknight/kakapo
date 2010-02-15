@@ -1,8 +1,33 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
+=begin
+
+=NAME Global - provides global symbol manipulation functions.
+
+=DESCRIPTION
+
+This module exports (to the root namespace) a set of functions for perl-like management 
+of global symbols. 
+
+B<NOTE:> This module is the I< very first > module initialized in the Kakapo library. Because of 
+this, it must call no external functions that depend on being initialized. (In general, only calls to
+Opcode:: should be made.)
+
+=SYNOPSIS
+
+=begin code
+
+	use( 'Any::Module' );
+	use( 'Some::Other::Module', :tags('A', 'B'));
+
+	export('foo', 'bar', 'baz', :tags('SPECIAL', 'DEFAULT'));
+
+=end code
+
+=end
+
 module Global;
-# Provides cross-module import and export, and serves as a global symbol registry.
 
 our sub export($symbol, *@symbols, :$as?, :$namespace?, :@tags?) {
 # =signature	export($symbol [...], [ :namespace(_), ] [ :tags( [ string [...] ] ) ] )
@@ -122,7 +147,7 @@ our sub register_global($name, $object, :$namespace?) {
 	export($name, :namespace($nsp));
 }
 
-our sub use($module?, :@tags?, :@symbols?) {
+our sub use($module?, :@except?, :@tags?, :@symbols?) {
 # Imports global symbols into the caller's namespace. If neither C<:tags> nor
 # C<:symbols> are specified, C<:tags('DEFAULT')> is assumed.
 
@@ -135,14 +160,18 @@ our sub use($module?, :@tags?, :@symbols?) {
 # they are looked up. (This will normally be true, unless the same name has been
 # used for different exports in different TAGS. In which case, don't do that.)
 
-# If no C<$from> module is specified, the default is the Global:: module itself. 
+# If no source C< $module > is specified, the default is the Global:: module itself. 
 # This is a shortcut for defining global variables, in conjunction with the
 # C<register_global> function. (q.v.)
+
+# Any symbols listed in C< @except > will I< not > be imported, regardless of how the
+# symbol list is generated. This allows the caller to block certain symbols, perhaps 
+# in order to rename or override them.
 
 	if ! Opcode::defined($module)	{ $module	:= Parrot::caller_namespace(1); }
 	if Opcode::isa(@tags, 'String')	{ @tags	:= Array::new(@tags); }
 	if Opcode::isa(@symbols, 'String')	{ @symbols	:= Array::new(@symbols); }
-
+	
 	if Opcode::isa($module, 'P6object')	{ $module	:= Opcode::typeof($module); }
 	if Opcode::isa($module, 'String')	{ $module	:= Opcode::get_hll_namespace($module); }
 
@@ -153,12 +182,24 @@ our sub use($module?, :@tags?, :@symbols?) {
 	my $export_nsp := $module.make_namespace('EXPORT');
 	my $target_nsp := Parrot::caller_namespace(2);
 
+	my %except;
+	
+	for @except {
+		%except{$_} := 1;
+	}
+	
 	for @tags {
 		my $source_nsp := $export_nsp.make_namespace(~ $_);
-		my @symbols := $source_nsp.keys;
+		my @tag_symbols;
 		
-		if +@symbols {
-			$source_nsp.export_to($target_nsp, @symbols);
+		for $source_nsp.keys {
+			unless %except{$_} {
+				@tag_symbols.push(~ $_);
+			}
+		}
+			
+		if +@tag_symbols {
+			$source_nsp.export_to($target_nsp, @tag_symbols);
 		}
 	}
 	

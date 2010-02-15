@@ -202,3 +202,8 @@ method new(*@pos, *%named) {
 	$new_object._init_(@pos, %named);
 	return $new_object;
 }
+
+method say() {
+	say(~ self);
+	self;
+}

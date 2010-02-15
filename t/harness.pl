@@ -10,13 +10,6 @@ use Getopt::Long qw(:config pass_through);
 
 use TAP::Harness;
 
-GetOptions(
-	'comments'		=> \my $show_comments,
-	'failures'		=> \my $show_failures,
-	'jobs'			=> \my $jobs,
-	'verbosity=i'		=> \my $verbosity,
-);
-
 my ($slash, $sh_ext);
 
 if ($^O eq 'MSWin32') {
@@ -27,7 +20,15 @@ if ($^O eq 'MSWin32') {
 	$sh_ext = '.sh';
 }
 
-my $root_dir = $ENV{'HARNESS_ROOT_DIR'} || "$FindBin::Bin/..";
+GetOptions(
+	'comments'		=> \my $show_comments,
+	'failures'		=> \my $show_failures,
+	'jobs'			=> \my $jobs,
+	'root-dir'		=> \my $root_dir,
+	'verbosity=i'		=> \my $verbosity,
+);
+
+$root_dir = "$FindBin::Bin/.." unless $root_dir;
 $ENV{'HARNESS_ROOT_DIR'} = $root_dir;
 
 my $harness_nqp = $root_dir . '/t/harness-nqp.sh';
@@ -110,13 +111,24 @@ sub all_in {
 	return @hits;
 }
 
+sub exec_test {
+	my ($harness, $test_file) = @_;
+	
+	$test_file =~ /[.]t$/ 
+		&& do { return undef; };
+	
+	$test_file =~ m# \b bootstrap /#x
+		&& do { return [ qw( parrot-nqp ), $test_file ]; };
+	
+	return [ $harness_nqp, $test_file ];
+}
+
 my %args = (
 	comments	=> $show_comments,
-	exec		=> [ $harness_nqp ],
+	exec		=> \&exec_test,
 	failures	=> $show_failures,
 	jobs		=> $jobs,
 	verbosity	=> $verbosity,
 );
 
 my $harness  = TAP::Harness->new( \%args )->runtests(@test_files);
-

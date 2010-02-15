@@ -5,22 +5,13 @@ module Pir;
 # Provide helper methods for constructing and compiling PIR code.
 
 sub _pre_initload() {
-	use(	Dumper,	);
 	use(	Opcode,	:tags('DEFAULT', 'TYPE'));
 	use(	Parrot,	:tags('NAMESPACE'));
 }
 
 sub compile($string) {
-	my $result := Q:PIR {
-		.local pmc comp
-		comp = compreg 'PIR'
-		
-		$P0 = find_lex '$string'
-		%r = comp($P0)
-	};
-	
-#	say("Compiling sub:\n", $string);
-	return $result;
+	my $compiler := pir::compreg__PS('PIR');
+	$compiler($string);
 }
 
 sub compile_sub(:@body, :$name, :$namespace, :$method?, :@params?, :$vtable?) {
@@ -60,10 +51,9 @@ sub compile_sub(:@body, :$name, :$namespace, :$method?, :@params?, :$vtable?) {
 	
 	@sub_decl.append(@body);
 	@sub_decl.push(".end\n");
-	DUMP(@sub_decl);
 	
 	my $sub := @sub_decl.join("\n");
-	return compile($sub);
+	compile($sub);
 }
 
 sub pir_namespace($nsp) {
