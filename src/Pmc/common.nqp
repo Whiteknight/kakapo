@@ -52,6 +52,7 @@ sub _pre_initload() {
 	%pmcs<Hash>		:= <can clone defined does isa>;
 	%pmcs<ResizablePMCArray>	:= <can clone defined does isa new>;
 	%pmcs<ResizableStringArray>	:= <can clone defined does isa new>;
+	%pmcs<String>		:= <can clone does >; #! not new defined isa
 	%pmcs<Sub>		:= <can clone defined does isa>;
 	%pmcs<Undef>		:= <can clone does isa>; #! not defined
 	

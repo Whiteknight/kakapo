@@ -27,10 +27,6 @@ sub _pre_initload() {
 }
 
 
-sub char_at($str, $index) {
-	return $str[$index];
-}
-
 sub character_offset_of($string, *%opts) {
 	DUMP(:string($string), :options(%opts));
 
@@ -53,7 +49,20 @@ sub character_offset_of($string, *%opts) {
 	return $result;
 }
 
-method defined()			{ 1 }
+=begin
+=item defined() returns Boolean
+
+Returns C< true >, always. Every common PMC type is considered to be defined, except
+members of the C< Undef > type. That type does not import this method.
+
+=begin code
+	if $object.defined { ... }
+=end code
+=end
+
+method defined() {
+	1; 
+}
 
 sub display_width($str) {
 # Compute the display width of the C<$str>, assuming that tabs
@@ -198,8 +207,6 @@ sub index($haystack, $needle, *%opts) {
 	return $result;
 }
 
-method isa($type)			{ Opcode::isa(self, $type); }
-
 sub is_cclass($class_name, $str, *%opts) {
 	our %Cclass_id;
 	my $offset	:= 0 + %opts<offset>;
@@ -262,6 +269,21 @@ sub _init_line_number_info($string) {
 	%Line_number_info{$string} := @lines;
 	#NOTE("String parsed into ", +@lines, " lines");
 	#DUMP(@lines);
+}
+
+=begin
+=item isa( $type ) returns Boolean
+
+Returns C< true > if the invocant is a member of the class or PMC type named
+by the parameter. Returns C< false > otherwise.
+
+=begin code
+	if $object.isa( 'Undef' ) { ... }
+=end code
+=end
+
+method isa($type) {
+	pir::isa(self, $type);
 }
 
 sub line_number_of($string, *%opts) {

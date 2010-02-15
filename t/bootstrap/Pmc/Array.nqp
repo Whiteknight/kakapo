@@ -149,11 +149,9 @@ sub test_isa() {
 }
 
 sub test_new() {
-say("Test new:");
-_dumper(ResizablePMCArray);
-	my @rpa := ResizablePMCArray::new();
+	my @rpa := ResizablePMCArray.new();
 	ok(pir::isa__IPS(@rpa, 'ResizablePMCArray'), 'RPA Created correctly');
 	
 	my @rsa := ResizableStringArray.new();
-	ok(pir::isa__IPS(@rpa, 'ResizableStringArray'), 'RSA Created correctly');
+	ok(pir::isa__IPS(@rsa, 'ResizableStringArray'), 'RSA Created correctly');
 }

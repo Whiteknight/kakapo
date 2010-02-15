@@ -1,0 +1,35 @@
+Kakapo release 2
+
+Changes:
+
+Adds this release document (VERSION.txt), and the readme file (README.txt).
+
+Status:
+
+Kakapo is still in development - call it 'alpha'. Most of the advanced functions are effectively 
+cripped by segfaults. Hopefully, Parrot 2.1 will address this.
+ 
+At this point, the kakapo_base library, which consists mostly of PMC extensions, is usable. The
+tests in t/bootstrap pass ('make test-bootstrap'). 
+
+Note that the bootstrap tests are not exhaustive - they are intended to demonstrate that pieces work
+well enough to build larger pieces. Eventually, Kakapo's own UnitTest system will provide thorough
+testing.
+
+Currently, Kakapo augments these PMC types with extra methods:
+
+  - Exception (note: TT#1446)
+  - Float
+  - Hash
+  - ResizablePMCArray
+  - ResizableStringArray
+  - String
+  - Sub
+  - Undef
+
+In addition, the base library includes:
+
+  - Global.nqp - provides use, export commands
+  - Opcode.nqp - provides 'clean' names for pir opcodes
+  - Parrot.nqp - Provides some miscellaneous Parrot helper code.
+  - Pir.nqp - Routines to manipulate PIR, particularly to dynamically generate subs/methods.
