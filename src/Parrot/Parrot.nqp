@@ -174,9 +174,9 @@ sub get_hll_namespace($path?) {
 
 	my $result;
 	
-	if $path.defined {
-		if $path.isa('String') {
-			$path := key_($path.split('::'));
+	if pir::defined__IP($path) {
+		if pir::isa__IPS($path, 'String') {
+			$path := key_(pir::split__PSS('::', $path));
 		}
 		
 		$result := pir::get_hll_namespace__PP($path);

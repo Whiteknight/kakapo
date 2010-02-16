@@ -9,11 +9,12 @@ sub _pre_initload() {
 
 method _attr($name, @value) {
 	if +@value {
-		Opcode::setattribute(self, $name, @value.shift);
-		return self;
+		pir::setattribute__vPSP(self, $name, @value.shift);
+		self;
 	}
-	
-	Opcode::getattribute(self, $name);
+	else {
+		pir::getattribute__PPS(self, $name);
+	}
 }
 
 method backtrace_string() {

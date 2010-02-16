@@ -49,21 +49,6 @@ sub character_offset_of($string, *%opts) {
 	return $result;
 }
 
-=begin
-=item defined() returns Boolean
-
-Returns C< true >, always. Every common PMC type is considered to be defined, except
-members of the C< Undef > type. That type does not import this method.
-
-=begin code
-	if $object.defined { ... }
-=end code
-=end
-
-method defined() {
-	1; 
-}
-
 sub display_width($str) {
 # Compute the display width of the C<$str>, assuming that tabs
 # are 8 characters wide, and all other chars are 1 character wide. Thus, a 

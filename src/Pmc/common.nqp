@@ -45,50 +45,49 @@ Note that this method is compiled at run-time for each class. See L< install_sym
 =end
 
 sub _pre_initload() {
-	my %pmcs;
-
-	%pmcs<Exception>		:= <can clone defined does isa new>;
-	%pmcs<Float>		:= <can clone defined does isa>;
-	%pmcs<Hash>		:= <can clone defined does isa>;
-	%pmcs<ResizablePMCArray>	:= <can clone defined does isa new>;
-	%pmcs<ResizableStringArray>	:= <can clone defined does isa new>;
-	%pmcs<String>		:= <can clone does >; #! not new defined isa
-	%pmcs<Sub>		:= <can clone defined does isa>;
-	%pmcs<Undef>		:= <can clone does isa>; #! not defined
+	# List all the PMC types here, with the methods to export. I'll sort them out later.
+	my %methods_for;
+	%methods_for<Exception>		:= <can clone defined does isa new>;
+	%methods_for<Float>			:= <can clone defined does isa>;
+	%methods_for<Hash>			:= <can clone defined does isa>;
+	%methods_for<NameSpace>		:= <can clone defined does isa>;
+	%methods_for<ResizablePMCArray>	:= <can clone defined does isa new>;
+	%methods_for<ResizableStringArray>	:= <can clone defined does isa new>;
+	%methods_for<String>			:= <can clone defined does >; #! not new defined isa
+	%methods_for<Sub>			:= <can clone defined does isa>; #! not new
+	%methods_for<Undef>			:= <can clone does isa new>; #! not defined
 	
 	my $from_nsp := pir::get_namespace__P();
-	my %new_namespaces;
 
-	for %pmcs {
-		my %export_subs;
-		my $pmc_name := ~ $_;
-		my $to_nsp := Parrot::get_hll_namespace($pmc_name);
-		
-		# NB: Moving this line down causes strange failures.
-		P6metaclass.register($pmc_name);
-		
-		for %pmcs{$_} {
-			if $from_nsp.contains($_) {
-				%export_subs{$_} := $from_nsp{$_};
-			}
-			elsif $_ eq 'new' {
-				%new_namespaces{$pmc_name} := $to_nsp;
-			}
-			else {
-				pir::die("Request to export unknown COMMON method '$_'");
-			}
+	# Order counts
+	my @first_pmcs := <
+		Undef 
+		String 
+		Hash 
+		ResizablePMCArray 
+		ResizableStringArray
+	>;
 
-		}
-		
-		$from_nsp.export_to($to_nsp, %export_subs);
+	# Get the critical PMCs set up first (need .defined, etc., for building 'new' methods)
+	for @first_pmcs {
+		P6metaclass.register(~ $_);
+		my $namespace := Parrot::get_hll_namespace(~ $_);
+		install_methods($namespace, %methods_for{$_}, :skip_new(1));
 	}
-
-	# Build 'new' subs separately because the compile_sub routine needs some of the 
-	# methods we installed, above.
 	
-	for %new_namespaces {
-		unless %new_namespaces{$_}.contains('new') {
-			create_new_method(~ $_);
+	# Now build 'new' methods.
+	for @first_pmcs {
+		my $namespace := Parrot::get_hll_namespace(~ $_);
+		install_methods($namespace, %methods_for{$_});
+		%methods_for{$_} := my $undef;
+	}
+	
+	# Now process the rest of the PMCs
+	for %methods_for {
+		if %methods_for{~ $_} {
+			P6metaclass.register(~ $_);
+			my $namespace := Parrot::get_hll_namespace(~ $_);
+			install_methods($namespace, %methods_for{$_});
 		}
 	}
 }
@@ -128,6 +127,19 @@ method clone() {
 	pir::clone(self);
 }
 
+sub create_new_method($namespace) {
+	my $type := ~ $namespace;
+	my &new := Pir::compile_sub(
+		:name('new'),
+		:namespace($namespace),
+		:method(1),
+		:body( (
+			"\t" ~ '$P0 = ' ~ "new [ '$type' ]",
+			"\t" ~ '.return ($P0)',
+		) ),
+	);
+}
+
 =begin
 =item defined() returns Boolean
 
@@ -156,22 +168,31 @@ Returns C< false > otherwise.
 
 method does($role)				{ pir::does(self, $role); }
 
-sub import(:$into_namespace, :@except?, :@symbols?, :@tags?) {
-	my $new := create_new_method($into_namespace);
-	Global::inject($new, $into_namespace, :as('new'));
-}
+sub install_methods($namespace, @methods, :$skip_new?) {
+	my $from_nsp := pir::get_namespace__P();
 
-sub create_new_method($namespace) {
-	my $type := ~ $namespace;
-	my &new := Pir::compile_sub(
-		:name('new'),
-		:namespace($namespace),
-		:method(1),
-		:body( (
-			"\t" ~ '$P0 = ' ~ "new [ '$type' ]",
-			"\t" ~ '.return ($P0)',
-		) ),
-	);
+	my %export_subs;
+	my $pmc_name := ~ $namespace;
+	
+	for @methods {
+		unless $namespace{~ $_} {
+			if $from_nsp{~ $_} {
+				%export_subs{$_} := $from_nsp{~ $_};
+			}
+			elsif $_ eq 'new' {
+				unless $skip_new {
+					create_new_method(~ $_);
+				}
+			}
+			else {
+				pir::die("Request to export unknown COMMON method '$_'");
+			}
+		}
+	}
+	
+	if %export_subs {
+		$from_nsp.export_to($namespace, %export_subs);
+	}
 }
 
 =begin

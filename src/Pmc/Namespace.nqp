@@ -4,12 +4,9 @@
 module NameSpace;
 # Provides missing methods to NameSpace PMC.
 
-method can($method)		{ Opcode::can(self, $method); }
-method defined()			{ 1 }
-method does($role)			{ 0 }
-method isa($type)			{ Opcode::isa(self, $type); }
-method new()			{ Opcode::new('NameSpace'); }
+# FIXME: I'd like to add a 'new' that maps to make_namespace.
 
-sub _pre_initload() {
-	P6metaclass::register_pmc_type('NameSpace');
+method contains($name) {
+	! pir::isnull__IP(self.find_var($name))
+	|| !pir::isnull__IP(self.find_namespace($name));
 }

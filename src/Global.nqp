@@ -29,6 +29,18 @@ Opcode:: should be made.)
 
 module Global;
 
+our sub _pre_initload() {
+# Special sub called when the Kakapo library is loaded or initialized. This is to guarantee this 
+# module is available during :init and :load processing for other modules.
+
+	my $nqp_root := 'parrot';
+	my @parts := $nqp_root.split('::');
+	my $root_nsp := Opcode::get_root_namespace(@parts);
+	
+	inject_symbol(Global::use, :namespace($root_nsp));
+	inject_symbol(Global::export, :namespace($root_nsp));
+}
+
 our sub export($symbol, *@symbols, :$as?, :$namespace?, :@tags?) {
 # =signature	export($symbol [...], [ :namespace(_), ] [ :tags( [ string [...] ] ) ] )
 # =signature	export($symbol, :as(<name>), [:namespace(_), ] [ :tags( [ string [...]] ) ] )
@@ -116,18 +128,6 @@ our sub inject_symbol($object, :$namespace, :$as?, :$force?) {
 	$namespace.add_var($as, $object);
 }
 
-our sub _pre_initload() {
-# Special sub called when the Kakapo library is loaded or initialized. This is to guarantee this 
-# module is available during :init and :load processing for other modules.
-
-	my $nqp_root := 'parrot';
-	my @parts := $nqp_root.split('::');
-	my $root_nsp := Opcode::get_root_namespace(@parts);
-	
-	inject_symbol(Global::use, :namespace($root_nsp));
-	inject_symbol(Global::export, :namespace($root_nsp));
-}
-
 our sub register_global($name, $object, :$namespace?) {
 # Registers a symbol C< $name > in the C< Global:: > namespace, bound to C< $object >.
 
@@ -173,7 +173,7 @@ our sub use($module?, :@except?, :@tags?, :@symbols?) {
 	if Opcode::isa(@symbols, 'String')	{ @symbols	:= Array::new(@symbols); }
 	
 	if Opcode::isa($module, 'P6object')	{ $module	:= Opcode::typeof($module); }
-	if Opcode::isa($module, 'String')	{ $module	:= Opcode::get_hll_namespace($module); }
+	if Opcode::isa($module, 'String')	{ $module	:= Parrot::get_hll_namespace($module); }
 
 	if +@tags == 0 && +@symbols == 0 {
 		@tags.push('DEFAULT');

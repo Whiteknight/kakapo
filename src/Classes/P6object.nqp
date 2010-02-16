@@ -3,10 +3,11 @@
 
 module P6object;
 
-sub _pre_initload() {
 # Special sub called when the Kakapo library is loaded or initialized. This is to guarantee 
 # this module is available during :init and :load processing for other modules.
+sub _pre_initload() {
 
+say("Hello from P6object preinitload");
 	Pir::compile_sub(:name('__get_bool'), :vtable('get_bool'),
 		:namespace('Kakapo::Object'),
 		:body(
@@ -110,6 +111,10 @@ method TOMORROW() {
 method IDONTGIVEADARN() {
 }
 
+method clone() {
+	pir::clone__PP(self);
+}
+
 method defined() {
 # returns true. (Overridden for the Undef PMC type.)
 	return 1;
@@ -201,9 +206,4 @@ method new(*@pos, *%named) {
 	# along flat args.
 	$new_object._init_(@pos, %named);
 	return $new_object;
-}
-
-method say() {
-	say(~ self);
-	self;
 }

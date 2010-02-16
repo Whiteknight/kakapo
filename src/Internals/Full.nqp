@@ -34,6 +34,29 @@ sub _pre_initload() {
 	Kakapo::Pmc::COMMON::_pre_initload();
 	String::_pre_initload();
 	Exception::_pre_initload();
+
+	# Base / Complete divider
+
+	P6metaclass::_pre_initload();
+	P6object::_pre_initload();
+	#Class::_pre_initload();
+	#DependencyQueue::_pre_initload();
+	#Program::_pre_initload(
+		# 'Global', 
+		# 'Dumper', 
+		# 'Opcode', 
+		# 'Undef',
+		# 'Parrot', 
+		# 'P6metaclass', 
+		# 'P6object', 
+		# 'Pir', 
+		# 'Kakapo::Pmc::COMMON',
+		# 'Class', 
+		# 'Exception',
+		# 'DependencyQueue', 
+		# 'Program',
+	# );
+
 }
 
 sub library_init_done() {

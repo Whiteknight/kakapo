@@ -46,7 +46,6 @@ ALL_TESTS =		\
 
 BASE_LIB_PIRS = 			\
 	src/Global.pir			\
-	src/Internals/Base.pir		\
 	src/Parrot/Opcode.pir 		\
 	src/Parrot/Parrot.pir 		\
 	src/Parrot/Pir.pir 			\
@@ -54,65 +53,70 @@ BASE_LIB_PIRS = 			\
 	src/Pmc/COMMON.pir		\
 	src/Pmc/Exception.pir		\
 	src/Pmc/Hash.pir			\
+	src/Pmc/Namespace.pir		\
 	src/Pmc/String.pir		\
 	src/Pmc/Sub.pir			\
 	src/Pmc/Undef.pir		\
 	
 
-COMPLETE_LIB_PIRS =		\
+FULL_LIB_PIRS =			\
+	$(BASE_LIB_PIRS)		\
+	src/Classes/P6object.pir		\
 	src/Classes/P6metaclass.pir	\
-	src/Classes/P6object.pir	\
-	src/Classes/Class.pir	\
-	src/Classes/ArrayBased.pir	\
-	src/Classes/BaseBehavior.pir	\
-	src/Classes/HashBased.pir	\
-	src/ConfigFile.pir		\
-	src/DependencyQueue.pir \
-	src/Dumper.pir			\
-	src/Exceptions.pir			\
-	src/Pmc/Class.pir		\
-	src/Pmc/Config.pir	\
-	src/Pmc/File.pir		\
-	src/Pmc/Namespace.pir	\
-	src/Pmc/OS.pir		\
-	src/Program.pir		\
-	src/Matchers/AllOf.pir		\
-	src/Matchers/AnyOne.pir	\
-	src/Matchers/Boolean.pir	\
-	src/Matchers/Defined.pir	\
-	src/Matchers/DescribedAs.pir	\
-	src/Matchers/Elements.pir		\
-	src/Matchers/Empty.pir		\
-	src/Matchers/Equals.pir		\
-	src/Matchers/EqualsArray.pir		\
-	src/Matchers/EqualsFloat.pir		\
-	src/Matchers/Factory.pir		\
-	src/Matchers/InstanceOf.pir		\
-	src/Matchers/Matcher.pir		\
-	src/Matchers/Not.pir			\
-	src/Matchers/TypeSafe.pir		\
-	src/UnitTest/Listeners.pir		\
-	src/UnitTest/Loader.pir			\
-	src/UnitTest/Result.pir			\
-	src/UnitTest/Suite.pir			\
-	src/UnitTest/Testcase.pir		\
+
+	# src/Classes/Class.pir	\
+	# src/Classes/ArrayBased.pir	\
+	# src/Classes/BaseBehavior.pir	\
+	# src/Classes/HashBased.pir	\
+	# src/ConfigFile.pir		\
+	# src/DependencyQueue.pir \
+	# src/Dumper.pir			\
+	# src/Exceptions.pir			\
+	# src/Pmc/Class.pir		\
+	# src/Pmc/Config.pir	\
+	# src/Pmc/File.pir		\
+	# src/Pmc/OS.pir		\
+	# src/Program.pir		\
+	# src/Matchers/AllOf.pir		\
+	# src/Matchers/AnyOne.pir	\
+	# src/Matchers/Boolean.pir	\
+	# src/Matchers/Defined.pir	\
+	# src/Matchers/DescribedAs.pir	\
+	# src/Matchers/Elements.pir		\
+	# src/Matchers/Empty.pir		\
+	# src/Matchers/Equals.pir		\
+	# src/Matchers/EqualsArray.pir		\
+	# src/Matchers/EqualsFloat.pir		\
+	# src/Matchers/Factory.pir		\
+	# src/Matchers/InstanceOf.pir		\
+	# src/Matchers/Matcher.pir		\
+	# src/Matchers/Not.pir			\
+	# src/Matchers/TypeSafe.pir		\
+	# src/UnitTest/Listeners.pir		\
+	# src/UnitTest/Loader.pir			\
+	# src/UnitTest/Result.pir			\
+	# src/UnitTest/Suite.pir			\
+	# src/UnitTest/Testcase.pir		\
 	
 #	src/Matchers/IdenticalTo.pir	\	
 #	src/Matchers/Null.pir		\
 #	src/Matchers/True.pir		\
 
 
+# This list does not include Makefile because that is human-generated.
 GENERATED_FILES =				\
 	$(BASE_LIB_PIRS)			\
-	$(COMPLETE_LIB_PIRS)		\
+	$(FULL_LIB_PIRS)			\
 	library/kakapo_base.pir			\
-	library/kakapo_complete.pir		\
+	library/kakapo_full.pir			\
+	src/Internals/Base.pir			\
+	src/Internals/Full.pir			\
 	src/Internals/kakapo_bottom.pir	\
 	src/Internals/kakapo_top.pir		\
 	$(KRT0)					\
 	$(LIBRARY_PBCS)
 
-KRT0 = 					\
+KRT0 = 						\
 	library/krt0.pbc
 	
 LIBRARY_COMMON_DEPS =			\
@@ -120,9 +124,9 @@ LIBRARY_COMMON_DEPS =			\
 	src/Internals/kakapo_bottom.pir	\
 	src/Internals/kakapo_top.pir
 	
-LIBRARY_PBCS =			\
-	library/kakapo_base.pbc	\
-	library/kakapo_complete.pbc	\
+LIBRARY_PBCS =				\
+	library/kakapo_base.pbc		\
+	library/kakapo_full.pbc			\
 	$(KRT0)
 
 
@@ -190,7 +194,7 @@ Makefile: build/Makefile.in
 all: build
 
 build:	kakapo.cfg $(LIBRARY_PBCS)
-	@echo "Build complete"
+	@echo "Build FULL"
 
 CHANGES:	src/package.nqp
 	$(CP) src/package.nqp $@
@@ -225,16 +229,17 @@ kakapo.cfg:
 #IF(win32):	IF NOT EXIST kakapo.cfg $(CP) kakapo_cfg.tmpl kakapo.cfg
 #IF(not(win32)):	if [ ! -f kakapo.cfg ]; then $(CP) kakapo_cfg.tmpl kakapo.cfg ; fi
 
-library/kakapo_base.pir: $(LIBRARY_COMMON_DEPS) $(BASE_LIB_PIRS) 
+library/kakapo_base.pir: $(LIBRARY_COMMON_DEPS) $(BASE_LIB_PIRS) src/Internals/Base.pir
 	$(CAT) src/Internals/kakapo_top.pir		\
+		src/Internals/Base.pir			\
 		$(BASE_LIB_PIRS)			\
 		src/Internals/kakapo_bottom.pir	\
 	> $@
 	
-library/kakapo_complete.pir: $(LIBRARY_COMMON_DEPS) $(BASE_LIB_PIRS) $(COMPLETE_LIB_PIRS) 
+library/kakapo_full.pir: $(LIBRARY_COMMON_DEPS) $(FULL_LIB_PIRS) src/Internals/Full.pir
 	$(CAT) src/Internals/kakapo_top.pir		\
-		$(BASE_LIB_PIRS)			\
-		$(COMPLETE_LIB_PIRS)		\
+		src/Internals/Full.pir			\
+		$(FULL_LIB_PIRS)		\
 		src/Internals/kakapo_bottom.pir	\
 	> $@
 
@@ -245,9 +250,9 @@ install:
 	# install kakapo_base
 	$(CP) library/kakapo_base.pbc $(LIB_DIR)/library/kakapo_base.pbc
 	$(CHMOD) 0444 $(LIB_DIR)/library/kakapo_base.pbc
-	# install kakapo_complete
-	$(CP) library/kakapo_complete.pbc $(LIB_DIR)/library/kakapo_complete.pbc
-	$(CHMOD) 0444 $(LIB_DIR)/library/kakapo_complete.pbc
+	# install kakapo_full
+	$(CP) library/kakapo_full.pbc $(LIB_DIR)/library/kakapo_full.pbc
+	$(CHMOD) 0444 $(LIB_DIR)/library/kakapo_full.pbc
 	# install krt0
 	$(CP) library/krt0.pbc $(LIB_DIR)/library/krt0.pbc
 	$(CHMOD) 0444 $(LIB_DIR)/library/krt0.pbc
@@ -261,7 +266,7 @@ realclean: clean
 release: build
 	-$(MKPATH) released
 	$(CP) library/kakapo_base.pir released/kakapo_base.pir
-	$(CP) library/kakapo_complete.pir released/kakapo_complete.pir
+	$(CP) library/kakapo_full.pir released/kakapo_full.pir
 	$(CP) library/krt0.pir released/krt0.pir
 	
 src/Internals/kakapo_bottom.pir: src/Internals/kakapo_bottom_pir.tmpl
@@ -348,5 +353,5 @@ testclean:
 
 uninstall:
 	$(RM_F) $(LIB_DIR)/library/kakapo_base.pbc
-	$(RM_F) $(LIB_DIR)/library/kakapo_complete.pbc
+	$(RM_F) $(LIB_DIR)/library/kakapo_full.pbc
 	$(RM_RF) $(DOC_DIR)/kakapo

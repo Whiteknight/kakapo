@@ -19,18 +19,18 @@ sub MAIN() {
 	
 	pir::load_bytecode($root_dir ~ '/library/kakapo_base.pbc');
 	
-	plan(14 + 1);
+	plan(11 + 3);
 
-	# Common bits (14)
-	test_new();		# 3
-	test_can();		# 4
+	# Common bits (11)
+	test_new();		# 1
+	test_can();		# 3
 	test_clone();	# 4
 	test_defined();	# 1
 	test_does();		# 1
 	test_isa();		# 1
 	
-	test_type();
-	test_throw();	
+	test_type();		# 1
+	test_throw();	# 2
 }
 
 sub test_can() {

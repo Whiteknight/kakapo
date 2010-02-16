@@ -52,19 +52,11 @@ my method _add_parents($class, @parents) {
 		die("Cannot add parents to undefined class.");
 	}
 
-	my $parrotclass;
-
-	if +@parents == 0 {
-		$parrotclass := self.declare_class($class);
-	}
-	else {
-		my $first := @parents.shift;
-		
-		$parrotclass := self.declare_class($class, :parent($first));
-		
-		for @parents {
-			self.add_parent($parrotclass, $_);
-		}
+	my $first := @parents.shift;
+	my $parrotclass := self.declare_class($class, :parent($first));
+	
+	for @parents {
+		self.add_parent($parrotclass, $_);
 	}
 }
 
@@ -76,8 +68,6 @@ sub declare($class?, :@has?, :@is?) {
 		$class := caller_namespace(2);
 	}
 
-	say("Declare class: $class");
-	
 	my $parent;
 	
 	if +@is {
@@ -90,16 +80,15 @@ sub declare($class?, :@has?, :@is?) {
 	P6metaclass._add_attributes($parrotclass, @has);
 }
 
-method declare_class($class, $parent?) {
+method declare_class($class, :$parent) {
 	unless Opcode::defined($class) {
 		die("Cannot declare undefined class - give me a string name or a namespace");
 	}
 
 	my $parrotclass := self.get_parrotclass($class);
-	if Opcode::isnull($parrotclass) { $parrotclass := Undef.new(); }
 
 	# Already declared?
-	unless Opcode::isa($parrotclass, 'P6object') {
+	unless ! Opcode::isnull($parrotclass) && Opcode::isa($parrotclass, 'P6object') {
 		if Opcode::defined($parent) {
 			self.new_class($class, :parent($parent));
 		}
@@ -117,8 +106,8 @@ sub dump_class($class) {
 	_dumper(P6metaclass.get_parrotclass($class), ~$class);
 }
 
+# Declares parent classes of the specified class. Note that the child class may not be declared yet.
 sub extends($first, *@args, :$class?) {
-# Declares parent classes of the specified class. Note that the class may not be declared yet.
 	if ! @args.defined { @args := Array::new($first); }
 	elsif ! Opcode::does(@args, 'array') { @args := Array::new($first, @args); }
 	else { @args.unshift($first); }
