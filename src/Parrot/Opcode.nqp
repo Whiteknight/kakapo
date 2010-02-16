@@ -46,7 +46,7 @@ sub iseq($object, $other)		{ pir::iseq__IPP($object, $other); }
 sub join($object, $delim)		{ pir::join($delim, $object); }
 sub load_bytecode($path)		{ pir::load_bytecode__vS($path); }
 sub load_language($name)		{ pir::load_language__vS($name); }
-sub new($type)			{ pir::new__PS($type); }
+sub new($type)			{ pir::new__PP($type); } # FIXME: __PP or __PS
 sub newclass($name)		{ pir::newclass__PP($name); }
 sub setattribute($object, $name, $value) { pir::setattribute__vPSP($object, $name, $value); }
 # FIXME: Not sure if this should be 'assign' or 'set'

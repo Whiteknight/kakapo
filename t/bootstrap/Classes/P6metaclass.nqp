@@ -68,7 +68,6 @@ class Attributes is Base {
 		use(	'P6metaclass' );
 		
 		has(	'$!attr' );
-		say("Attributes init done");
 	}	
 }
 
@@ -91,7 +90,6 @@ module Deferred {
 		
 		extends( 'Attributes' );
 		has(	'@.list' );
-		say("Deferred init done");
 	}
 }
 

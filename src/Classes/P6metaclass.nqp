@@ -99,7 +99,7 @@ method declare_class($class, :$parent) {
 		$parrotclass := self.get_parrotclass($class);
 	}
 
-	return $parrotclass;
+	$parrotclass;
 }
 
 sub dump_class($class) {

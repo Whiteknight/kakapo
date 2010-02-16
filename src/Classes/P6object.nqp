@@ -7,7 +7,6 @@ module P6object;
 # this module is available during :init and :load processing for other modules.
 sub _pre_initload() {
 
-say("Hello from P6object preinitload");
 	Pir::compile_sub(:name('__get_bool'), :vtable('get_bool'),
 		:namespace('Kakapo::Object'),
 		:body(
@@ -199,7 +198,7 @@ method isa($type) {
 
 method new(*@pos, *%named) {
 	my $class := Opcode::getattribute(self.HOW, 'parrotclass');
-	my $new_object := Opcode::new($class);
+	my $new_object := pir::new__PP($class);
 
 	# NB: I'm not flattening the params, because that forces
 	# everybody to do call_method or in-line pir to pass
