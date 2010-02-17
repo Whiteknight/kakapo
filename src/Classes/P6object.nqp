@@ -173,15 +173,15 @@ method _init_args_(@pos, %named) {
 	self._init_positional_(@pos);
 }
 
-method _init_named_(%named) {	
+method _init_named_(%named) {
 	for %named {
 		my $name := ~ $_;
-		
+
 		if Opcode::can(self, $name) {
 			Parrot::call_method(self, $name, %named{$name});
 		}
 		else {
-			Program::die("No accessor defined for attribute '", $name, "'.");
+			pir::die("No accessor defined for attribute '$name'.");
 		}
 	}
 }
@@ -197,12 +197,13 @@ method isa($type) {
 }
 
 method new(*@pos, *%named) {
+	self.new_(@pos, %named);
+}
+
+method new_(@pos, %named) {
 	my $class := Opcode::getattribute(self.HOW, 'parrotclass');
 	my $new_object := pir::new__PP($class);
 
-	# NB: I'm not flattening the params, because that forces
-	# everybody to do call_method or in-line pir to pass
-	# along flat args.
 	$new_object._init_(@pos, %named);
-	return $new_object;
+	$new_object;
 }

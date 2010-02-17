@@ -9,6 +9,24 @@ INIT {
 	say("Loader init done");
 }
 
+method configure_suite($class, @tests, :$suite) {
+	unless $suite.defined {
+		$suite := self.default_suite;
+	}
+
+	my $proto := pir::getprop__PSP('metaclass', $class).WHAT();
+
+	for @tests {
+		$suite.add_test($proto.new(:name(~$_)));
+	}
+	
+	$suite;
+}
+
+method default_suite() {
+	return UnitTest::Suite.new();
+}
+
 method get_test_methods($class) {
 	my @mro := $class.inspect('all_parents');
 	my @test_methods := Array::empty();
@@ -51,18 +69,8 @@ method is_test_method($name) {
 	return 0;
 }
 
-method load_tests_from_testcase($testcase) {
-	my $class := P6metaclass.get_parrotclass($testcase);
-	my $suite := UnitTest::Suite.new;
-
-	for self.get_test_methods($class) {
-		my $metaclass := Q:PIR {
-			$P0 = find_lex '$class'
-			%r = getprop 'metaclass', $P0
-		};
-		
-		$suite.add_test( $metaclass.WHAT.new(:name(~ $_)) );
-	}
-	
-	return $suite;
+method load_tests_from_testcase($testcase, :$suite) {
+	my $class := P6metaclass.get_parrotclass($testcase);	
+	my @tests := self.get_test_methods($class);
+	self.configure_suite($class, @tests, :suite($suite));
 }

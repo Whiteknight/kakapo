@@ -13,7 +13,7 @@ sub _pre_initload() {
 }
 
 sub backtrace()			{ pir::backtrace(); }
-sub can($object, $method)		{ pir::can($object, $method); }
+sub can($object, $method)		{ pir::can__IPS($object, $method); }
 sub class($object)			{ pir::class__PP($object); }
 sub clone($object)			{ pir::clone($object); }
 sub defined($object)			{ pir::defined__IP($object); }
