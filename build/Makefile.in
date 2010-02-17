@@ -44,6 +44,8 @@ ALL_TESTS =		\
 	t-unittest-suite	\
 	t-unittest-testcase	\
 
+# NOTE: Ordering is important in this list, because there is no DepQ to arrange 
+# the startups, nor is P6 active to defer class creation.
 BASE_LIB_PIRS = 			\
 	src/Global.pir			\
 	src/Parrot/Opcode.pir 		\
@@ -52,16 +54,13 @@ BASE_LIB_PIRS = 			\
 	src/Pmc/Array.pir			\
 	src/Pmc/COMMON.pir		\
 	src/Pmc/Exception.pir		\
+	src/Exceptions.pir			\
 	src/Pmc/Hash.pir			\
 	src/Pmc/Namespace.pir		\
 	src/Pmc/String.pir		\
 	src/Pmc/Sub.pir			\
 	src/Pmc/Undef.pir		\
 
-
-	#src/Classes/P6object.pir		\
-	#src/Classes/P6metaclass.pir	\
-	
 
 FULL_LIB_PIRS =			\
 	$(BASE_LIB_PIRS)		\
@@ -72,7 +71,6 @@ FULL_LIB_PIRS =			\
 	src/UnitTest/Result.pir		\
 	src/UnitTest/Suite.pir		\
 	src/UnitTest/Testcase.pir	\
-	src/Exceptions.pir			\
 
 	# src/ConfigFile.pir		\
 	# src/DependencyQueue.pir \
