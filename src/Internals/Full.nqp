@@ -39,7 +39,7 @@ sub _pre_initload() {
 
 	P6metaclass::_pre_initload();
 	P6object::_pre_initload();
-	
+
 	#Class::_pre_initload();
 	#DependencyQueue::_pre_initload();
 	#Program::_pre_initload(

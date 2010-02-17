@@ -164,6 +164,22 @@ sub get_address_of($what) {
 
 #! _get_interpreter cached the interp. Moved to Opcode and dumbed down. Recode your stuff.
 
+# Return a global object by name.
+sub get_hll_global($path) {
+	if $path.isa('String') {
+		$path := $path.split('::');
+	}
+	
+	unless pir::does__IPS($path, 'array') {
+		die("$path parameter must be a ::string or array of strings, not: ", $path);
+	}
+	
+	my $name := $path.pop;
+	my $key := key_($path);
+	
+	pir::get_hll_global__PPS(key_($path), $name);
+}
+
 # Return a namespace relative to the HLL root namespace.
 #
 # If no C< $path > is specified, returns the HLL root namespace. Otherwise, fetches
@@ -221,9 +237,9 @@ sub key($first, *@parts) {
 sub key_(@parts) {
 	
 	my $key;
-	
-	while @parts {
-		my $element := @parts.shift;
+
+	for @parts {
+		my $element := $_;
 		Q:PIR {
 			.local pmc segment
 			segment = new [ 'Key' ]

@@ -64,6 +64,7 @@ FULL_LIB_PIRS =			\
 	src/Classes/P6object.pir		\
 	src/Classes/P6metaclass.pir	\
 	src/UnitTest/Result.pir		\
+	src/UnitTest/Testcase.pir	\
 
 	# src/Classes/Class.pir	\
 	# src/Classes/ArrayBased.pir	\
@@ -96,7 +97,6 @@ FULL_LIB_PIRS =			\
 	# src/UnitTest/Listeners.pir		\
 	# src/UnitTest/Loader.pir			\
 	# src/UnitTest/Suite.pir			\
-	# src/UnitTest/Testcase.pir		\
 	
 #	src/Matchers/IdenticalTo.pir	\	
 #	src/Matchers/Null.pir		\

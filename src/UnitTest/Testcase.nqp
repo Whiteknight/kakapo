@@ -11,47 +11,34 @@ INIT {
 	);
 	
 	export( 'assert_that', 'fail', 'verify_that' );
+	export( 'assert_false', 'assert_true', :tags('ASSERTS'));
 }
 
 my method assert_match($target, $matcher) {
 	unless $matcher.matches($target) {
 		my $explain := $matcher.describe_self("Expected: ")
-			~ $matcher.describe_failure($target, "\n     but: ");
-		
-		Exception::UnitTestFailure.new(
-			:message($explain),
-		).throw;
+			~ $matcher.describe_failure($target, "\n     but: ");		
+		self._fail($explain);
 	}
 }
 
 sub assert_that($target, $matcher) {
-	my $self := Q:PIR {
-		$P0 = find_dynamic_lex 'self'
-		unless null $P0 goto got_self
-	
-		die "Fatal: No 'self' lexical in any caller scope."
-		
-	got_self:
-		%r = $P0
-	};
-	
-	$self.assert_match($target, $matcher);
+	get_self().assert_match($target, $matcher);
 }
 
 sub assert_false($bool, $message?) {
 	if $bool {
-		self()._fail($message);
+		get_self()._fail($message);
 	}
 }
 
 sub assert_true($bool, $message?) {
 	unless $bool {
-		self()._fail($message);
+		get_self()._fail($message);
 	}
 }
 
 my method default_loader() {
-say("Got type: ", pir::typeof__sp(UnitTest::Loader));
 	UnitTest::Loader.new;
 }
 
@@ -66,17 +53,17 @@ my method _fail($why) {
 }
 
 sub fail($why) {
-	my $self := Q:PIR {
-		$P0 = find_dynamic_lex 'self'
-		unless null $P0 goto got_self
+	get_self()._fail($why);
+}
+
+sub get_self() {
+	my $self := pir::find_dynamic_lex__PS('self');
 	
-		die "Fatal: No 'self' lexical in any caller scope."
-		
-	got_self:
-		%r = $P0
-	};
+	if pir::isnull($self) {
+		pir::die("Fatal: No 'self' lexical in any caller scope");
+	}
 	
-	$self._fail($why);
+	return $self;
 }
 
 our method num_tests() {
@@ -141,16 +128,6 @@ method run_test() {
 	Parrot::call_method(self, self.name);
 }
 
-sub self() {
-	my $self := pir::find_dynamic_lex__PS('self');
-	
-	if pir::isnull($self) {
-		pir::die("Fatal: No 'self' lexical in any caller scope");
-	}
-	
-	return $self;
-}
-
 our method set_up() { }
 
 our method suite() {
@@ -160,15 +137,5 @@ our method suite() {
 our method tear_down() { }
 
 sub verify_that(*@text) {
-	my $self := Q:PIR {
-		$P0 = find_dynamic_lex 'self'
-		unless null $P0 goto got_self
-	
-		die "Fatal: No 'self' lexical in any caller scope."
-		
-	got_self:
-		%r = $P0
-	};
-	
-	$self.verify(@text.join);
+	get_self().verify(@text.join);
 }

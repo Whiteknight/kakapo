@@ -19,7 +19,7 @@ INIT {
 }
 
 sub MAIN() {	
-	plan(15);
+	plan(16);
 
 	test_base();
 	test_derived();
