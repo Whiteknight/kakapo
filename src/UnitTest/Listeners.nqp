@@ -8,60 +8,51 @@ class UnitTest::Listener {
 	method start_test($test)	{ }
 }
 
-class UnitTest::Listener::TAP;
+class UnitTest::Listener::TAP is UnitTest::Listener;
 INIT {
+	pir::load_bytecode('Test/Builder.pbc');
+	
 	use(	'P6metaclass' );
 	
-	has(	'$.plan',
-		'$.test_number',
-	);
+	has(	'$!test_builder', );
 }
 
-method add_error($fault)		{ self.handle_fault($fault); }
-method add_failure($fault)		{ self.handle_fault($fault); }
+method add_error($failure) {
+	self.add_failure($failure);	# Same for our purposes
+}
+
+method add_failure($failure) {
+	self.test_builder.ok(0, self.get_test_label($failure.test_case));
+	self.test_builder.diag( $failure.fault.message );
+	self;
+}
 
 method end_test($test) {
-	say(self.format_tap_report("ok", $test));
-}
-
-method format_tap_report($outcome, $test) {
-	my $comment := self.get_test_label($test);
-	
-	return $outcome
-		~ ' ' ~ self.test_number
-		~ ($comment ?? ' - ' ~ $comment !! '');
+	self.test_builder.ok(1, self.get_test_label($test));
+	self;
 }
 
 method get_test_label($test) {
 	if $test.verify {
-		return $test.verify;
+		$test.verify;
 	}
-	
-	if $test.name {
-		return $test.name;
+	elsif $test.name {
+		$test.name;
 	}
-	
-	return '';
+	else {
+		'';
+	}
 }
 
-method handle_fault($f) {
-	say(self.format_tap_report("not ok", $f.test_case));
-	say('# ' ~ $f.fault.message);
+method _init_(@pos, %named) {
+	self._init_args_(@pos, %named);
+
+	unless pir::defined(self.test_builder) {
+		my $tb := Q:PIR { %r = new [ 'Test'; 'Builder' ] };
+		self.test_builder($tb);
+	}
 }
 
 method plan_tests($num_tests) {
-	unless self.plan.defined {
-		if $num_tests > 0 {
-			self.plan($num_tests);
-			say("1..$num_tests");
-		}
-		else {
-			self.plan("no plan");
-			say("no plan");
-		}
-	}
-}
-
-method start_test($test) {
-	self.test_number(1 + self.test_number);
+	self.test_builder.plan($num_tests);
 }

@@ -289,7 +289,7 @@ sub key_(@parts) {
 		};
 	}
 	
-	return $key;
+	$key;
 }
 
 sub namespace_name($nsp) {

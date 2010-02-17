@@ -6,7 +6,6 @@ INIT {
 	use(	'P6metaclass' );
 	
 	has(	'%!seen_methods' );
-	say("Loader init done");
 }
 
 method configure_suite($class, @tests, :$suite) {
@@ -48,8 +47,8 @@ method get_test_methods($class) {
 	return @test_methods;
 }
 
-method is_test_method($name) {
 # Returns true for "test_foo" and "testFoo" names
+method is_test_method($name) {
 	if $name.length > 4
 		&& $name.substr(0, 4) eq 'test' {
 		
@@ -69,8 +68,9 @@ method is_test_method($name) {
 	return 0;
 }
 
-method load_tests_from_testcase($testcase, :$suite) {
+method load_tests_from_testcase($testcase, :$sort, :$suite) {
 	my $class := P6metaclass.get_parrotclass($testcase);	
 	my @tests := self.get_test_methods($class);
+	
 	self.configure_suite($class, @tests, :suite($suite));
 }

@@ -63,12 +63,13 @@ FULL_LIB_PIRS =			\
 	$(BASE_LIB_PIRS)		\
 	src/Classes/P6object.pir		\
 	src/Classes/P6metaclass.pir	\
-	src/UnitTest/Result.pir		\
-	src/UnitTest/Testcase.pir	\
+	src/UnitTest/Listeners.pir	\
 	src/UnitTest/Loader.pir		\
+	src/UnitTest/Result.pir		\
 	src/UnitTest/Suite.pir		\
+	src/UnitTest/Testcase.pir	\
+	src/Exceptions.pir			\
 
-	# src/UnitTest/Listeners.pir		\
 	# src/Classes/Class.pir	\
 	# src/Classes/ArrayBased.pir	\
 	# src/Classes/BaseBehavior.pir	\
@@ -76,7 +77,6 @@ FULL_LIB_PIRS =			\
 	# src/ConfigFile.pir		\
 	# src/DependencyQueue.pir \
 	# src/Dumper.pir			\
-	# src/Exceptions.pir			\
 	# src/Pmc/Class.pir		\
 	# src/Pmc/Config.pir	\
 	# src/Pmc/File.pir		\

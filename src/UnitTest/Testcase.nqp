@@ -70,6 +70,7 @@ our method num_tests() {
 	return 1;
 }
 
+# NOTE: Don't call this directly!! Call .suite.run instead.
 method run($result?) {
 	unless $result.defined {
 		$result := self.default_result;
@@ -81,47 +82,38 @@ method run($result?) {
 	try {
 		self.set_up();
 		self.run_test();
-		
+	
 		CATCH {
 			$exception := $!;
 			$!.handled(1);
-			
-			if $!.type == Exception::UnitTestFailure.type {
-				$result.add_failure(self, $!);
-			}
-			else {
-				$result.add_error(self, $!);
-			}
 		}
 	};
 	
 	try {
 		self.tear_down();
-		
+
 		CATCH {
 			$!.handled(1);
 			
 			unless $exception.defined {
 				$exception := $!;
-				
-				if $!.type == Exception::UnitTestFailure.type {
-					$result.add_failure(self, $!);
-				}
-				else {
-					$result.add_error(self, $!);
-				}
 			}
 		}
 	};
-	
-	unless $exception.defined {
-		# say("Caught: $exception");
-		# say($exception.backtrace_string);
-		
+
+	if $exception.defined {
+		if $exception.type == Exception::UnitTestFailure.type {
+			$result.add_failure(self, $exception);
+		}
+		else {
+			$result.add_error(self, $exception);
+		}
+	}
+	else {
 		$result.end_test(self);
 	}
 	
-	return $result;
+	$result;
 }
 
 method run_test() {
@@ -131,7 +123,7 @@ method run_test() {
 our method set_up() { }
 
 our method suite() {
-	return self.default_loader.load_tests_from_testcase(self);
+	self.default_loader.load_tests_from_testcase(self);
 }
 
 our method tear_down() { }

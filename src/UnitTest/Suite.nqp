@@ -6,6 +6,7 @@ INIT {
 	use(	'P6metaclass' );
 	
 	has(	'@!members',
+		'$.name',
 		'$.num_tests',
 	);
 }
@@ -46,10 +47,19 @@ method run($result?) {
 			$_.run($result);
 		}
 	}
+
+	$result;
+}
+
+sub sort_cmp($a, $b) {
+	$a.name lt $b.name ?? -1 !! 1;
+}
 	
-	return $result;
+method sort() {
+	self.members.sort(UnitTest::Suite::sort_cmp);
+	self;
 }
 
 method suite() {
-	return self.new;
+	self;
 }

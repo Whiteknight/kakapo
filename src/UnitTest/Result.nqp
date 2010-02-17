@@ -25,15 +25,11 @@ INIT {
 }
 
 method add_error($test, $error) {
-	self.add_fault($test, $error, 
-		:notify('add_error'), 
-		:queue(self.errors));
+	self.add_fault($test, $error, :notify('add_error'), :queue(self.errors));
 }
 
 method add_failure($test, $failure) {
-	self.add_fault($test, $failure, 
-		:notify('add_failure'), 
-		:queue(self.failures));
+	self.add_fault($test, $failure, :notify('add_failure'), :queue(self.failures));
 }
 
 my method add_fault($test, $exception, :$notify, :$queue) {

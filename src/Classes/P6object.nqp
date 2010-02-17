@@ -122,26 +122,46 @@ method defined() {
 method __dump($dumper, $label) {
 	my @results		:= Parrot::call_tuple_method($dumper, 'newIndent');
 	my $subindent	:= "\n" ~ @results.shift;
-	my $indent		:= @results.shift;
+	my $indent		:= "\n" ~ @results.shift;
 	my $brace		:= '{';
-
-	my $class := Opcode::class(self);
-	my %attributes := $class.inspect('attributes');
+	my $empty		:= '';
 	
-	say("Attributes: ");
-	if +%attributes {
-		for %attributes {
-			print($brace, $subindent);
-			$brace := '';
+	my $class := Opcode::class(self);
+	my @mro := $class.inspect('all_parents');
+	my $attributes_set := 0;
+	
+	for @mro {
+		my $parent := $_;
+		my @attributes := $parent.attributes.keys;
+		
+		if +@attributes {
+			print($brace);
+			$brace := $empty;
 			
-			my $attr := ~ $_;
-			my $value := Opcode::getattribute(self, $attr);
-		
-			print($attr, ' => ');
-			$dumper.dump($label, $value);
+			my $class_name := $parent.get_namespace.get_name.join('::');
+			unless $_ =:= $class {
+				print($subindent, '# -- from ', $class_name);
+			}
+			
+			$attributes_set := $attributes_set + +@attributes;
+			@attributes.sort;
+
+			for @attributes {
+				my $attr := ~ $_;
+				my $value := pir::getattribute__PPPS(self, $parent, $attr);
+				print($subindent, $attr, ' => ');
+				$dumper.dump($label, $value);
+				print(',');
+				
+				CATCH {
+					say("\n*** Bad attribute: $attr (from $class_name): $!");
+				}
+			}
 		}
-		
-		print("\n", $indent, '}');
+	}
+	
+	if $attributes_set {
+		print($indent, '}');
 	}
 	else {
 		print("(no attributes set)");
