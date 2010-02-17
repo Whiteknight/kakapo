@@ -57,7 +57,6 @@ sub _pre_initload() {
 		# 'DependencyQueue', 
 		# 'Program',
 	# );
-
 }
 
 sub library_init_done() {

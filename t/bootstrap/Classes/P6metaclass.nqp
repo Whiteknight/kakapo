@@ -27,6 +27,10 @@ sub MAIN() {
 	test_deferred();
 }
 
+INIT {
+	say("Declare base");
+}
+
 class Base {
 	method m1() {
 		17;
@@ -35,6 +39,10 @@ class Base {
 	method m2() {
 		19;
 	}
+}
+
+INIT {
+	say("Base done");
 }
 
 sub test_base() {

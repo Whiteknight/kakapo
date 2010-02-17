@@ -13,7 +13,7 @@ sub is_loaded() {
 # in the system.
 
 sub _pre_initload() {
-
+say("Base pre-initload");
 	if our $_Pre_initload_done { return 0; }
 	$_Pre_initload_done := 1;
 	
@@ -24,7 +24,7 @@ sub _pre_initload() {
 	unless Opcode::defined(P6object::HOW) {
 		Opcode::load_bytecode('P6object.pbc');
 	}	
-	
+
 	# Note: Order is crucial.
 	Global::_pre_initload();
 	Opcode::_pre_initload();
@@ -34,6 +34,10 @@ sub _pre_initload() {
 	Kakapo::Pmc::COMMON::_pre_initload();
 	String::_pre_initload();
 	Exception::_pre_initload();
+	
+	#P6metaclass::_pre_initload();
+	#P6object::_pre_initload();
+	
 }
 
 sub library_init_done() {

@@ -19,7 +19,7 @@ INIT {
 }
 
 sub MAIN() {	
-	plan(11);
+	plan(2);
 
 	our $Class_name := 'UnitTest::Loader';
 	

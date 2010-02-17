@@ -57,6 +57,10 @@ BASE_LIB_PIRS = 			\
 	src/Pmc/String.pir		\
 	src/Pmc/Sub.pir			\
 	src/Pmc/Undef.pir		\
+
+
+	#src/Classes/P6object.pir		\
+	#src/Classes/P6metaclass.pir	\
 	
 
 FULL_LIB_PIRS =			\
@@ -70,10 +74,6 @@ FULL_LIB_PIRS =			\
 	src/UnitTest/Testcase.pir	\
 	src/Exceptions.pir			\
 
-	# src/Classes/Class.pir	\
-	# src/Classes/ArrayBased.pir	\
-	# src/Classes/BaseBehavior.pir	\
-	# src/Classes/HashBased.pir	\
 	# src/ConfigFile.pir		\
 	# src/DependencyQueue.pir \
 	# src/Dumper.pir			\
@@ -96,11 +96,15 @@ FULL_LIB_PIRS =			\
 	# src/Matchers/InstanceOf.pir		\
 	# src/Matchers/Matcher.pir		\
 	# src/Matchers/Not.pir			\
-	# src/Matchers/TypeSafe.pir		\
-	
+	# src/Matchers/TypeSafe.pir		\	
 #	src/Matchers/IdenticalTo.pir	\	
 #	src/Matchers/Null.pir		\
 #	src/Matchers/True.pir		\
+
+	# src/Classes/Class.pir	\
+	# src/Classes/ArrayBased.pir	\
+	# src/Classes/BaseBehavior.pir	\
+	# src/Classes/HashBased.pir	\
 
 
 # This list does not include Makefile because that is human-generated.
