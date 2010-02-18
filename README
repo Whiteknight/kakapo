@@ -1,6 +1,8 @@
 This is the Kakapo library, a collection of runtime code for use on the Parrot VM.
 
-The current version information is described in VERSION.txt.
+Documentation and issue tracking are hosted at http://code.google.com/p/kakapo-parrot.
 
-Kakapo is hosted at www.gitorious.org/kakapo. 
+Kakapo source is hosted at http://www.gitorious.org/kakapo. 
+
+Released versions of the library are copied into the released/ directory.
 
