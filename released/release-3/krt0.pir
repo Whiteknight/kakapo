@@ -1,0 +1,59 @@
+# Copyright (C) 2009, Austin Hastings. See LICENSE distributed with this file or at 
+# http://www.opensource.org/licenses/artistic-license-2.0.php
+
+=module krt0.pir 
+
+Defines the Kakapo runtime startup sequence
+
+This file assumes the program is being compiled with kakapo.pir or with kakapo_base.pir. If not, 
+kakapo.pir is loaded dynamically.
+
+=cut
+
+.namespace [ ]
+
+.sub '_krt0_initload' :anon :init :load
+	# Test for kakapo being loaded.
+	
+	$P0 = get_hll_global [ 'Kakapo' ], 'is_loaded'
+	unless null $P0 goto kakapo_loaded
+	
+	$S0 = 'kakapo_base.pbc'
+	
+	$P0 = get_hll_global [ 'Kakapo' ], 'library_name'
+	if null $P0 goto have_kakapo_lib_name
+	
+	$S0 = $P0()
+have_kakapo_lib_name:
+
+	# This works if libraries are installed. If not installed, you will have to specify -Lpath 
+	# on the parrot command line.
+
+	load_bytecode $S0
+	
+kakapo_loaded:
+	# The pre-initload would normally have been called already because the load_bytecode, above, 
+	# is how kakapo gets into the VM. But if a user links (pbc_merge krt0 mycode kakapo) the 
+	# kakapo.pir library with the rest of her code, there is no assurance that kakapo_top will run 
+	# first. Call the sub directly to try to catch that case.
+	
+	$P0 = get_global '_kakapo_top_pre_initload'
+	if null $P0 goto no_top_load
+	
+	.tailcall $P0()
+no_top_load:
+.end
+
+.namespace [ 'Kakapo' ; 'krt0' ]
+
+.sub main :main
+	$P0 = get_hll_global [ 'Program' ], 'call_main'
+	unless null $P0 goto call_main
+	
+	die "Could not locate Program::call_main. Is kakapo library corrupt or missing?"
+
+call_main:
+	.tailcall $P0()
+.end
+
+##### Last line of KRT0.pir #####

@@ -1,0 +1,35 @@
+# Kakapo release-3 #
+
+
+## Changes ##
+
+Removed Configure.pl, Makefile, and associated stuff, plus the 'plumage/' directory. Replaced with setup.nqp, 
+generating the ports/plumage info via distutils.pir.
+
+Improved Exceptions, created Exception::Wrapper class with automatic type-number assignment.
+
+
+## Status ##
+
+Kakapo is still in development. At this point, it's "late alpha." The core functions in the base library are usable,
+and the infrastructure changes have reduced the installation/deployment footprint.
+
+ * * * * *
+
+Currently, Kakapo augments these PMC types with extra methods:
+
+  - Exception (note: TT#1446)
+  - Float
+  - Hash
+  - ResizablePMCArray
+  - ResizableStringArray
+  - String
+  - Sub
+  - Undef
+
+In addition, the base library includes:
+
+  - Global.nqp - provides use, export commands
+  - Opcode.nqp - provides 'clean' names for pir opcodes
+  - Parrot.nqp - Provides some miscellaneous Parrot helper code.
+  - Pir.nqp - Routines to manipulate PIR, particularly to dynamically generate subs/methods.
