@@ -10,7 +10,7 @@ sub _pre_initload() {
 #         has('payload'); etc.
 }
 
-method _attr($name, @value) {
+my method _attr($name, @value) {
 	if +@value {
 		pir::setattribute__vPSP(self, $name, @value.shift);
 		self;
