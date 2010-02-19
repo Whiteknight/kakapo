@@ -27,10 +27,6 @@ sub MAIN() {
 	test_deferred();
 }
 
-INIT {
-	say("Declare base");
-}
-
 class Base {
 	method m1() {
 		17;
@@ -39,10 +35,6 @@ class Base {
 	method m2() {
 		19;
 	}
-}
-
-INIT {
-	say("Base done");
 }
 
 sub test_base() {
@@ -110,4 +102,8 @@ sub test_deferred() {
 	is($obj.attr, 17, 'Deferred: inherited attr okay');
 	$obj.list.push(5);
 	is($obj.list, 1, 'Deferred: list attr okay');
+}
+
+sub test_global_export() {
+
 }

@@ -33,12 +33,8 @@ our sub _pre_initload() {
 # Special sub called when the Kakapo library is loaded or initialized. This is to guarantee this 
 # module is available during :init and :load processing for other modules.
 
-	my $nqp_root := 'parrot';
-	my @parts := $nqp_root.split('::');
-	my $root_nsp := Opcode::get_root_namespace(@parts);
-	
-	inject_symbol(Global::use, :namespace($root_nsp));
-	inject_symbol(Global::export, :namespace($root_nsp));
+	inject_root_symbol(Global::use);
+	inject_root_symbol(Global::export);
 }
 
 our sub export($symbol, *@symbols, :$as?, :$namespace?, :@tags?) {
@@ -104,6 +100,12 @@ our sub export($symbol, *@symbols, :$as?, :$namespace?, :@tags?) {
 		}
 	}
 }
+
+our sub inject_root_symbol($pmc, :$as, :$force) {
+	my $hll_namespace := pir::get_hll_namespace__P();
+	inject_symbol($pmc, :as($as), :namespace($hll_namespace), :force($force));
+}
+
 
 our sub inject_symbol($object, :$namespace, :$as?, :$force?) {
 # Injects a PMC C< $object > into a C< $namespace >, optionally C< $as > a certain name. For C< Sub > and 

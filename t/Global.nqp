@@ -1,52 +1,72 @@
+#! parrot-nqp
 # Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module Kakapo {
-	# Tell krt0 which file to load.	
-	sub library_name()		{ 'kakapo_test.pbc' }
+INIT {	
+	# Load the Kakapo library
+	pir::load_language('parrot');
+	my $env := pir::new__PS('Env');
+	my $root_dir := $env<HARNESS_ROOT_DIR> || '.';
+	say("Root dir is: ", $root_dir);
+	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
 }
+
+class Test::Global 
+	is UnitTest::Testcase ;
 
 INIT {
+	use(	'UnitTest::Testcase' );	
+	
+	has(	'$.namespace');
 }
 
-class Test::Global
-	is UnitTest::Testcase {
+MAIN();
 
-	INIT {
-		use(	'Dumper' );
-		use(	'Matcher::Factory' );
-		use(	'P6metaclass' );
-		use(	'UnitTest::Testcase' );
-		
-		Program::register_main();
-	}
-	
-	sub main() {
-		my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
-		$proto.suite.run;
-	}
-	
-	# NOTE: While Testcase runs these tests with a new object, the namespace is persistent. So
-	# be sure to allow for sub-namespaces, symbols, and names carrying over from test to test.
-	
-	method test_export() {
-		my $namespace := pir::get_namespace__P();
-		
-	}
+sub MAIN() {
+	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
+	$proto.suite.run;
+}
 
-method test_export() {
+method set_up() {
+	self.namespace(pir::get_namespace__P());
+}
+
+# NOTE: While Testcase runs these tests with a new object, the namespace is persistent. So
+# be sure to allow for sub-namespaces, symbols, and names carrying over from test to test.
+
+method test_export_adds_shared_object_to_correct_subnamespace() {
+	my $nsp := self.namespace;
+
+	if $nsp<EXPORT><test1>.defined {
+		fail("Did not expect 'test1' export namespace to be defined");
+	}
 	
-	self.note("Testing Global::export() function");
+	our $var1 := 'var-1';
+	Global::export('$var1', :tags('test1'));
 	
-	my $nsp := pir::get_namespace__P();
+	unless $nsp<EXPORT><test1>.defined {
+		fail("Export namespace 'test1' not created by export()");
+	}
 	
-	self.assert_that("Tag FOO namespace", $nsp<EXPORT><FOO>, is(not(defined())));
-	our $foo := 'oof';
-	Global::export('$foo', :tags('FOO'));
-	self.assert_that("Tag FOO namespace", $nsp<EXPORT><FOO>, is(defined()));
-	self.assert_that("Tag FOO namespace", $nsp<EXPORT><FOO>, is(instance_of('NameSpace')));
-	self.assert_that("Tag FOO's $foo", $nsp<EXPORT><FOO>{'$foo'}, is('oof'));
+	# Namespace doesn't get a good isa method, I think. Use pir
+	unless pir::isa__IPS($nsp<EXPORT><test1>, 'NameSpace') {
+		fail("Export namespace 'test1' is not a NameSpace");
+	}
 	
+	unless $nsp<EXPORT><test1><$var1> eq 'var-1' {
+		fail("Exported symbol $var1 has wrong value: wrong object?");
+	}
+}
+
+method test_() {
+	my $bar := 212;
+	
+	
+}
+
+method foo() {	
+	my $nsp;
+	my $foo;
 	self.assert_that("Tag DEFAULT nsp", $nsp<EXPORT><DEFAULT>, is(not(defined())));
 	our $bar := 212;
 	Global::export('$bar');
@@ -67,15 +87,15 @@ method test_export() {
 	
 	# Check that everything from above was copied into 'ALL'
 	
-	self.assert_that("ALL $foo", $nsp<EXPORT><ALL>{'$foo'}, is(same_as($foo)));
-	self.assert_that("ALL $bar", $nsp<EXPORT><ALL>{'$bar'}, is(same_as($bar)));
-	self.assert_that("ALL hamilton", $nsp<EXPORT><ALL>{'hamilton'},
+	self.assert_that('ALL $foo', $nsp<EXPORT><ALL>{'$foo'}, is(same_as($foo)));
+	self.assert_that('ALL $bar', $nsp<EXPORT><ALL>{'$bar'}, is(same_as($bar)));
+	self.assert_that('ALL hamilton', $nsp<EXPORT><ALL>{'hamilton'},
 		is(same_as(Kakapo::Test::Global::test_export)));
-	self.assert_that("ALL $x", $nsp<EXPORT><ALL>{'$x'}, is(same_as($x)));
-	self.assert_that("ALL $y", $nsp<EXPORT><ALL>{'$y'}, is(same_as($y)));
+	self.assert_that('ALL $x', $nsp<EXPORT><ALL>{'$x'}, is(same_as($x)));
+	self.assert_that('ALL $y', $nsp<EXPORT><ALL>{'$y'}, is(same_as($y)));
 }
 
-method test_register_global() {
+method Xtest_register_global() {
 	
 	self.note("Testing Global::register_global() function");
 	
@@ -96,7 +116,7 @@ method test_register_global() {
 	self.assert_that('Other global', OtherGlobal::Y, is('wye'));
 }
 
-method test_use() {
+method Xtest_use() {
 	
 	self.note("Testing Global::use() function");
 	

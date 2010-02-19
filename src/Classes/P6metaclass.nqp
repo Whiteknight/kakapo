@@ -25,7 +25,10 @@ sub _pre_initload() {
 	%is_twigil{'!'}	:= 1;
 	%is_twigil{'.'}	:= 1;
 
-	export( 'declare', 'extends', 'has', 'has_vtable' );
+
+	Global::inject_root_symbol(P6metaclass::extends);
+	Global::inject_root_symbol(P6metaclass::has);
+	Global::inject_root_symbol(P6metaclass::has_vtable);
 }
 
 my method _add_attributes($class, %attrs) {
@@ -245,4 +248,3 @@ my method _make_accessor($parrot_class, %info) {
 sub register_pmc_type($type) {
 	P6metaclass.register($type);
 }
-
