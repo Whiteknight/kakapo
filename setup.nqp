@@ -113,12 +113,14 @@ sub MAIN(@argv) {
 	
 	%kakapo<pbc_pir><library/kakapo_base.pbc>	:= <library/kakapo_base.pir>;
 	%kakapo<pbc_pir><library/kakapo_full.pbc>	:= <library/kakapo_full.pir>;
+	%kakapo<pbc_pir><library/krt0.pbc>		:= <library/krt0.pir>;
 
 	%kakapo<release_files><kakapo_base.pir> := <library/kakapo_base.pir>;
 	%kakapo<release_files><kakapo_base.pbc> := <library/kakapo_base.pbc>;
 	%kakapo<release_files><kakapo_full.pir>	:= <library/kakapo_full.pir>;
 	%kakapo<release_files><kakapo_full.pbc>	:= <library/kakapo_full.pbc>;
 	%kakapo<release_files><krt0.pir>		:= <library/krt0.pir>;
+	%kakapo<release_files><krt0.pbc>		:= <library/krt0.pbc>;
 	
 	register_step_before('build', Setup::Step::copy_templates);
 	register_step_before('clean', Setup::Step::clean_templates);
