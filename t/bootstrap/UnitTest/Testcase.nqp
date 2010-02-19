@@ -19,7 +19,7 @@ INIT {
 }
 
 sub MAIN() {	
-	plan(11);
+	plan(9);
 
 	our $Class_name := 'UnitTest::Testcase';
 	
@@ -86,14 +86,6 @@ class TestAsserts is UnitTest::Testcase {
 		has( '$.failure_count');
 	}
 	
-	method fail_assert_true() {
-		assert_true(0);
-	}
-	
-	method fail_assert_false() {
-		assert_false(1);
-	}
-	
 	method fail_assert_match() {
 		my $matcher := DummyMatcher.new();
 		assert_that(0, $matcher);
@@ -107,15 +99,9 @@ class TestAsserts is UnitTest::Testcase {
 sub test_asserts() {
 	my $obj := TestAsserts.new();
 	ok($obj.failure_count == 0, 'Asserts: setup okay');
-	
-	$obj.fail_assert_true();
-	ok($obj.failure_count == 1, 'Failing assert_true works');
-	
-	$obj.fail_assert_false();
-	ok($obj.failure_count == 2, 'Failing assert_false works');
-	
+		
 	$obj.fail_assert_match();
-	ok($obj.failure_count == 3, 'Failing assert_match works');
+	ok($obj.failure_count == 1, 'Failing assert_match works');
 }
 
 class TestStructure is UnitTest::Testcase {
