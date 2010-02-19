@@ -120,7 +120,9 @@ sub exec_test {
 	$test_file =~ m# \b bootstrap /#x
 		&& do { return [ qw( parrot-nqp ), $test_file ]; };
 	
-	return [ $harness_nqp, $test_file ];
+	# For now, all tests are run in -nqp. Need to deal later with testing linked files.
+	return [ qw( parrot-nqp ), $test_file ];
+	#return [ $harness_nqp, $test_file ];
 }
 
 my %args = (

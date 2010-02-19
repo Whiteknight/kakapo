@@ -5,21 +5,14 @@ module Syntax;
 # Syntax additions for NQP
 
 sub _pre_initload() {
-	#Global::inject_root_symbol(Syntax::break);
-	#Global::inject_root_symbol(Syntax::continue);
+	Global::inject_root_symbol(Syntax::die);
 	Global::inject_root_symbol(Syntax::last);
 	Global::inject_root_symbol(Syntax::next);
 	Global::inject_root_symbol(Syntax::redo);
 }
 
-# NB: Not supported by nqp.
-sub break() {
-	Control::Break.new.throw;
-}
-
-# NB: Not supported by nqp.
-sub continue() {
-	Control::Continue.new.throw;
+sub die(*@why) {
+	pir::die(@why.join);
 }
 
 sub last() {

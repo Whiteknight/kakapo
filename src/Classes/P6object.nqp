@@ -171,13 +171,12 @@ method __dump($dumper, $label) {
 }
 
 method get_bool() {
-# returns true.
-	return 1;
+	1;
 }
 
 method get_string() {
 # Returns a perl5-style object class+address.
-	return Class::name_of(self) ~ ' @' ~ self.WHERE;
+	Class::name_of(self) ~ ' @' ~ self.WHERE;
 }
 
 method _init_(@pos, %named) {

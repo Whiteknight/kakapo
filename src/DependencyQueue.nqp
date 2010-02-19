@@ -1,14 +1,14 @@
 # Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
+class Exception::DependencyQueue::AlreadyDone 
+	is Exception::Wrapper;
+	
 module DependencyQueue;
 # A queue that orders its entries according to their prerequisites.
 
 sub _pre_initload() {
-# Special sub called to initialize this module.
 
-	use(	'P6metaclass' );
-	
 	has(	'%!added',
 		'%!already_done',
 		'%!cycle',
@@ -18,10 +18,15 @@ sub _pre_initload() {
 		'@!queue'
 	);
 }
-		
+
 our method add_entry($name, $value, :@requires?) {
-	unless @requires { @requires := Array::new(); }
+	if self.already_done.contains($name) {
+		Exception::DependencyQueue::AlreadyDone.new(
+			:message("Added already-done $name to DependencyQueue")
+		).throw;
+	}
 	
+	if @requires.isa('String') { @requires := Array::new(@requires); }
 	my @entry := Array::new($name, $value, @requires);
 	self.pending{$name} := @entry;
 }
@@ -32,11 +37,11 @@ my method already_added($name) {
 }
 
 method _init_positional_(@pos) {
+	self.locked(0);
+	
 	for @pos {
 		self.mark_as_done(~ $_);
 	}
-	
-	self.locked(0);
 }
 
 our method is_empty() {
@@ -49,7 +54,7 @@ our method mark_as_done($label) {
 	self.already_done{$label} := 1;
 }
 
-our method next() {
+our method next_entry() {
 	unless self.locked {
 		self.tsort_queue();
 	}
@@ -57,13 +62,14 @@ our method next() {
 	if self.queue.elements {
 		my $node := self.queue.shift;
 		self.mark_as_done($node[0]);
-		return $node[1];
+		$node[1];
 	}
-	
-	return Undef.new;
+	else {
+		Undef.new;
+	}
 }
 
-method reset() {
+our method reset() {
 	self.locked(0);
 	self.pending(Hash::empty());
 }
@@ -71,8 +77,8 @@ method reset() {
 method tsort_queue() {
 	self.locked(1);
 	self.cycle_keys(Array::empty());
-	self.cycle(Hash::empty());
-	self.added(Hash::empty());
+	self.cycle(Hash.new());
+	self.added(Hash.new());
 	self.tsort_add_pending_entries(self.pending.keys);
 }
 
@@ -82,36 +88,39 @@ my method tsort_add_pending_entries(@list) {
 	for @list {
 		my $key := $_;
 		
-		unless self.already_added($key) {
-			## First, check for cycles in the graph.
-			my $next_index := self.cycle_keys.elements;
-			self.cycle_keys.push($key);
+		if self.already_added($key) {
+			next();
+		}
+		
+		## Check for cycles in the graph.
+		
+		my $next_index := self.cycle_keys.elements;
+		self.cycle_keys.push($key);
 
-			if self.cycle.contains($key) {
-				my @slice := self.cycle_keys.slice(:from(self.cycle{$key}));
+		if self.cycle.contains($key) {
+			my @slice := self.cycle_keys.slice(:from(self.cycle{$key}));
 
-				Program::die("Cycle detected in dependencies: ",
-					@slice.join(', '),
-				);
-			}
+			die("Cycle detected in dependencies: ", @slice.join(', '));
+		}
+		
+		self.cycle{$key} := $next_index;
+
+		## Put everything $key depends on ahead of $key
+		
+		if self.pending.contains($key) {
+			my $node := self.pending{$key};
+			my @prerequisites := $node[2];
 			
-			self.cycle{$key} := $next_index;
-
-			## Put everything $key depends on ahead of $key
-			
-			if self.pending.contains($key) {
-				my $node := self.pending{$key};
-				my @prerequisites := $node[2];
+			if +@prerequisites {
 				self.tsort_add_pending_entries(@prerequisites);
-			
-				## Finally, it's my turn.
-				self.added{$key} := 1;
-				self.queue.push($node);
 			}
-			else {
-				Program::die("$key is a requirement, ",
-					"but is not marked done, and not in the pending queue.");
-			}
+		
+			## Finally, it's my turn.
+			self.added{$key} := 1;
+			self.queue.push($node);
+		}
+		else {
+			die("$key is a requirement, but is not marked done, and not in the pending queue.");
 		}
 	}
 }

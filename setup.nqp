@@ -41,7 +41,7 @@ sub MAIN(@argv) {
 		:browser_uri(	'http://code.google.com/p/kakapo-parrot/' ),
 		:project_uri(	'git://gitorious.org/kakapo/kakapo.git' ),
 
-		:harness_files(	't/bootstrap' ),
+		:harness_files(	't/bootstrap t/Syntax.nqp' ),
 		
 		:release_id(		'release-3' ),
 		:release_dir_format(	'released/%s'),
