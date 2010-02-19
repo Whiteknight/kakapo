@@ -204,6 +204,16 @@ sub get_hll_namespace($path?) {
 	$result;
 }
 
+sub get_self() {
+	my $self := pir::find_dynamic_lex__PS('self');
+	
+	if pir::isnull($self) {
+		pir::die("Fatal: No 'self' lexical in any caller scope");
+	}
+	
+	return $self;
+}
+
 sub get_sub($path, :$caller_nsp?) {
 	my @parts := $path.split('::');
 	my $name := @parts.pop;

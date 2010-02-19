@@ -72,3 +72,31 @@ method test_redo() {
 	
 	fail_unless($x == 3 * @a, 'Redo should loop inside for');
 }
+
+class C1 {
+	method m1() {
+		'C1';
+	}
+}
+
+class C2 is C1 {
+	method m2() {
+		'C2';
+	}
+}
+
+class C3 is C2 {
+	method m1() {
+		'C3';
+	}
+	
+	method m2() {
+		super('m1');
+	}
+}
+
+method test_super() {
+	my $obj := C3.new;
+	say("Super gets: ", $obj.m2);
+	fail_unless($obj.m2 eq 'C1', 'Super should call C1::m1');
+}

@@ -30,7 +30,7 @@ method assert_match($target, $matcher) {
 }
 
 sub assert_that($target, $matcher) {
-	get_self().assert_match($target, $matcher);
+	Parrot::get_self().assert_match($target, $matcher);
 }
 
 my method default_loader() {
@@ -48,29 +48,19 @@ my method _fail($why) {
 }
 
 sub fail($why) {
-	get_self()._fail($why);
+	Parrot::get_self()._fail($why);
 }
 
 sub fail_if($condition, $why) {
 	if ($condition) {
-		get_self()._fail($why);
+		Parrot::get_self()._fail($why);
 	}
 }
 
 sub fail_unless($condition, $why) {
 	unless ($condition) {
-		get_self()._fail($why);
+		Parrot::get_self()._fail($why);
 	}
-}
-
-sub get_self() {
-	my $self := pir::find_dynamic_lex__PS('self');
-	
-	if pir::isnull($self) {
-		pir::die("Fatal: No 'self' lexical in any caller scope");
-	}
-	
-	return $self;
 }
 
 our method num_tests() {
@@ -136,5 +126,5 @@ our method suite() {
 our method tear_down() { }
 
 sub verify_that(*@text) {
-	get_self().verify(@text.join);
+	Parrot::get_self().verify(@text.join);
 }
