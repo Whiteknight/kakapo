@@ -272,4 +272,3 @@ class Control::LoopLast is Exception::Wrapper {
 class Control::LoopRedo is Exception::Wrapper {
 	method type()	{ 67; }
 }
-

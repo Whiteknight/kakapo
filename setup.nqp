@@ -44,7 +44,7 @@ sub MAIN(@argv) {
 		:harness_files(	't/bootstrap' ),
 		
 		:release_id(		'release-3' ),
-		:release_dir_format( 'released/%s'),
+		:release_dir_format(	'released/%s'),
 		:vdd_file(		'vdd.txt' ),
 	);
 
@@ -58,6 +58,7 @@ sub MAIN(@argv) {
 
 	my @base_pir_files := <
 		src/Global.pir
+		src/Syntax.pir
 		
 		src/Parrot/Opcode.pir
 		src/Parrot/Parrot.pir
@@ -88,6 +89,7 @@ sub MAIN(@argv) {
 	my @full_pir_files := <
 		src/Classes/P6object.pir
 		src/Classes/P6metaclass.pir
+		src/DependencyQueue.pir
 		src/UnitTest/Listeners.pir
 		src/UnitTest/Loader.pir
 		src/UnitTest/Result.pir

@@ -34,6 +34,7 @@ say("Base pre-initload");
 	Kakapo::Pmc::COMMON::_pre_initload();
 	String::_pre_initload();
 	Exception::_pre_initload();
+	Syntax::_pre_initload();
 	
 	#P6metaclass::_pre_initload();
 	#P6object::_pre_initload();
