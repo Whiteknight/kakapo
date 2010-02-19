@@ -106,6 +106,8 @@ sub MAIN(@argv) {
 	%kakapo<build_libs><library/kakapo_full.pir>.append( @base_pir_files );
 	%kakapo<build_libs><library/kakapo_full.pir>.append( @full_pir_files );
 	%kakapo<build_libs><library/kakapo_full.pir>.push( <src/Internals/kakapo_bottom.pir>);
+
+	%kakapo<strip_annotations> := %kakapo<build_libs>;
 	
 	%kakapo<pbc_pir><library/kakapo_base.pbc>	:= <library/kakapo_base.pir>;
 	%kakapo<pbc_pir><library/kakapo_full.pbc>	:= <library/kakapo_full.pir>;
@@ -119,7 +121,9 @@ sub MAIN(@argv) {
 	register_step_before('build', Setup::Step::copy_templates);
 	register_step_before('clean', Setup::Step::clean_templates);
 	
-	install_build_libs();
+	#install_build_libs();
+	install_substep('build', Setup::Step::build_libs, :before('_build_pbc_pir'));
+	install_substep('build', Setup::Step::strip_annotations, :before('_build_pbc_pir'));
 	register_step_before('clean', Setup::Step::clean_libs);
 	
 	register_step('release', Setup::Step::make_release);
@@ -144,27 +148,32 @@ sub get_args() {
 	$interp[2];
 }
 
-sub install_build_libs() {
-	our %step;
-	my @inches := %step<build>;
-	my $index := 0;
+sub install_substep($step, &func, :$before, :$after) {
+	my $target := $before // $after;
+	my @insert;
+	@insert.push(&func);
 	
-	for @inches {
-		if ~ $_ eq '_build_pbc_pir' {
-			my @new;
-			@new.push(Setup::Step::build_libs);
-			pir::splice__vppii(@inches, @new, $index, 0);
+	our %step;
+	my $index := ?$after;
+	for %step{$step} {
+		if ~ $_ eq $target {
+			pir::splice__vppii(%step{$step}, @insert, $index, 0);
 			return 0;
 		}
 		
 		$index++;
 	}
 	
-	pir::die("Unable to insert build_libs step into build - could not find _build_pbc_pir");
+	pir::die("Unable to insert substep &func into $step - could not find $target");
 }
 
-sub is_dir($path) {
-	pir::stat__ISI($path, 2);
+
+# distutils functions are not in a namespace, so Step:: methods can't address them 
+# directly.
+
+sub needs_update($src, $dst, :$verbose) {
+	
+	! file_exists($dst) ||newer(~$src, $dst, :verbose($verbose));
 }
 
 sub setup_(@steps, %config) {
@@ -178,15 +187,23 @@ sub setup_(@steps, %config) {
 module Setup::Step;
 
 sub build_libs(*%config) {
+	my $output_file;
+	my @inputs;
+	my $needs_update;
+	my $command;
+	
 	for %config<build_libs> {
-		my $output := ~ $_;
-		my @inputs := %config<build_libs>{$output};
-
-		my $command := 'cat ' 
-			~ pir::join(' ', @inputs)
-			~ ' > '
-			~ $output;
-		system($command, :verbose(1));
+		$output_file := ~ $_;
+		@inputs := %config<build_libs>{$output_file};
+		$needs_update := 0;
+		
+		unless newer(~$output_file, @inputs) {
+			$command := 'cat ' 
+				~ pir::join(' ', @inputs)
+				~ ' > '
+				~ $output_file;
+			system($command, :verbose(1));
+		}
 	}
 }
 
@@ -201,7 +218,12 @@ sub clean_templates(*%config) {
 sub copy_templates(*%config) {
 	my %cfg := %config<copy_templates>;
 	for %cfg {
-		cp(%cfg{$_}, ~$_, :verbose(1));
+		my $src := %cfg{$_};
+		my $dst := ~ $_;
+		
+		unless newer(~$dst, ~$src) {
+			cp($src, $dst, :verbose(1));
+		}
 	}
 }
 
@@ -250,4 +272,22 @@ sub make_release(*%config) {
 	}
 	
 	unlink($vdd, :verbose(1));
+}
+
+sub strip_annotations(*%config) {
+	for %config<strip_annotations> {
+		if file_exists(~$_) {
+			my $fh := pir::open__PSS(~$_, 'r');
+			my $body := $fh.readall();
+			$fh.close;
+
+			if pir::index__ISS($body, "\n.annotate ") >= 0 {
+				say("Removing  annotations from $_");
+				$body.replace("\n.annotate ", "\n# .annotate ");
+				$fh := pir::open__PSS(~$_, 'w');
+				$fh.puts($body);
+				$fh.close;
+			}				
+		}
+	}
 }

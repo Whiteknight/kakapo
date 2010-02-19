@@ -37,7 +37,6 @@ our sub _pre_initload() {
 	inject_root_symbol(Global::export);
 }
 
-our sub export($symbol, *@symbols, :$as?, :$namespace?, :@tags?) {
 # =signature	export($symbol [...], [ :namespace(_), ] [ :tags( [ string [...] ] ) ] )
 # =signature	export($symbol, :as(<name>), [:namespace(_), ] [ :tags( [ string [...]] ) ] )
 
@@ -66,7 +65,7 @@ our sub export($symbol, *@symbols, :$as?, :$namespace?, :@tags?) {
 # not specify any tags will import the C< DEFAULT > tag. The C< ALL > tag is automatically attached to 
 # every exported symbol. This is more to support L<C< use >>-ing a particular symbol than anything else,
 # but it is a valid import tag.
-
+our sub export($symbol, *@symbols, :$as?, :$namespace?, :@tags?) {
 	unless @symbols { @symbols := Array::empty(); }
 	@symbols.unshift($symbol);
 	if ! Opcode::isa(@tags, 'ResizablePMCArray') { @tags := Array::new(@tags); }
@@ -142,7 +141,7 @@ our sub register_global($name, $object, :$namespace?) {
 		$namespace := $namespace.split('::');
 	}
 	
-	my $nsp := Opcode::get_hll_namespace();
+	my $nsp := pir::get_hll_namespace__P();
 	$nsp := $nsp.make_namespace($namespace);
 	
 	$nsp{$name} := $object;	

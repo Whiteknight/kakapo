@@ -214,7 +214,7 @@ our method new(*@pos, *%pairs) {
 		
 		if Opcode::isa(@pos[0], 'NameSpace') {
 			$message := $message ~ ' '
-				~ 'Likely a call to ' 
+				~ 'Likely a call to (Hash-based) ' 
 				~ @pos[0].get_name.join('::')
 				~ '.new() - before class was created';
 		}

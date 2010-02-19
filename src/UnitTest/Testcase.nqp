@@ -8,17 +8,20 @@ class Exception::UnitTestFailure is Exception::Wrapper {
 module UnitTest::Testcase;
 
 INIT {
-	use(	'P6metaclass' );
-	
 	has(	'$.name',
 		'$!verify',
 	);
 	
-	export( 'assert_that', 'fail', 'verify_that' );
-	export( 'assert_false', 'assert_true', :tags('ASSERTS'));
+	export( 'assert_match',
+		'assert_that',
+		'fail',
+		'fail_if',
+		'fail_unless',
+		'verify_that'
+	);
 }
 
-my method assert_match($target, $matcher) {
+method assert_match($target, $matcher) {
 	unless $matcher.matches($target) {
 		my $explain := $matcher.describe_self("Expected: ")
 			~ $matcher.describe_failure($target, "\n     but: ");		
@@ -28,18 +31,6 @@ my method assert_match($target, $matcher) {
 
 sub assert_that($target, $matcher) {
 	get_self().assert_match($target, $matcher);
-}
-
-sub assert_false($bool, $message?) {
-	if $bool {
-		get_self()._fail($message);
-	}
-}
-
-sub assert_true($bool, $message?) {
-	unless $bool {
-		get_self()._fail($message);
-	}
 }
 
 my method default_loader() {
@@ -58,6 +49,18 @@ my method _fail($why) {
 
 sub fail($why) {
 	get_self()._fail($why);
+}
+
+sub fail_if($condition, $why) {
+	if ($condition) {
+		get_self()._fail($why);
+	}
+}
+
+sub fail_unless($condition, $why) {
+	unless ($condition) {
+		get_self()._fail($why);
+	}
 }
 
 sub get_self() {

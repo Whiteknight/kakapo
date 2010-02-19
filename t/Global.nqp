@@ -7,7 +7,6 @@ INIT {
 	pir::load_language('parrot');
 	my $env := pir::new__PS('Env');
 	my $root_dir := $env<HARNESS_ROOT_DIR> || '.';
-	say("Root dir is: ", $root_dir);
 	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
 }
 
@@ -35,132 +34,176 @@ method set_up() {
 # be sure to allow for sub-namespaces, symbols, and names carrying over from test to test.
 
 method test_export_adds_shared_object_to_correct_subnamespace() {
+	my $id := 'test1';
 	my $nsp := self.namespace;
 
-	if $nsp<EXPORT><test1>.defined {
-		fail("Did not expect 'test1' export namespace to be defined");
-	}
-	
 	our $var1 := 'var-1';
-	Global::export('$var1', :tags('test1'));
+	Global::export('$var1', :tags($id));
 	
-	unless $nsp<EXPORT><test1>.defined {
-		fail("Export namespace 'test1' not created by export()");
+	unless $nsp<EXPORT>{$id}.defined {
+		fail("Export namespace '$id' not created by export()");
 	}
 	
 	# Namespace doesn't get a good isa method, I think. Use pir
-	unless pir::isa__IPS($nsp<EXPORT><test1>, 'NameSpace') {
-		fail("Export namespace 'test1' is not a NameSpace");
+	unless pir::isa__IPS($nsp<EXPORT>{$id}, 'NameSpace') {
+		fail("Export namespace '$id' is not a NameSpace");
+	}
+
+	unless $nsp<EXPORT>{$id}.contains('$var1') {
+		fail("Symbol '$var1' not exported");
+	}
+}
+
+method test_export_gets_correct_object() {
+	my $id := 'test2';
+	my $nsp := self.namespace;
+	
+	our $var2 := 212;
+	Global::export('$var2', :tags($id));
+	
+	unless $nsp<EXPORT>{$id}<$var2> == $var2 {
+		fail("Exported wrong value");
 	}
 	
-	unless $nsp<EXPORT><test1><$var1> eq 'var-1' {
-		fail("Exported symbol $var1 has wrong value: wrong object?");
+	unless $nsp<EXPORT>{$id}<$var2> =:= $var2 {
+		fail("Exported wrong pmc");
+	}	
+}
+
+method test_export_to_default_tag() {
+	my $nsp := self.namespace;
+	
+	fail_if( $nsp<EXPORT><DEFAULT><bear>.defined,
+		"Default export symbol 'bear' already exists");
+		
+	my $pmc := 3.14;
+	Global::export($pmc, :as('pi'));
+	
+	fail_unless($nsp<EXPORT><DEFAULT><pi>.defined,
+		"Symbol not exported to correct name in DEFAULT");
+}
+
+method test_multiple_export_to_tag() {
+	my $id := 'test3';
+	my $nsp := self.namespace;
+
+	our $v31 := '3.1';
+	our $v32 := '3.2';
+	our $v33 := '3.3';
+	
+	Global::export('$v31', '$v32', '$v33',  :tags($id));
+	
+	for < $v31 $v32 $v33 > {
+		fail_unless( $nsp<EXPORT>{$id}{~ $_}.defined,
+			"Failed to export symbol $_");
+			
+		fail_unless( $nsp{ ~$_ } =:= $nsp<EXPORT>{$id}{~ $_},
+			"Exported wrong pmc: $_");
 	}
 }
 
-method test_() {
-	my $bar := 212;
+method test_exports_go_to_all() {
+	my $nsp := self.namespace;
 	
+	our $v41 := 41;
+	our $v42 := 42;
 	
+	Global::export('$v41');
+	fail_unless($nsp<EXPORT><ALL><$v41> =:= $v41,
+		"Default export not installed in all");
+	
+	Global::export('$v42', :tags('OTHER'));
+	fail_unless($nsp<EXPORT><ALL><$v42> =:= $v42,
+		"Tagged export not installed in all");
 }
 
-method foo() {	
-	my $nsp;
-	my $foo;
-	self.assert_that("Tag DEFAULT nsp", $nsp<EXPORT><DEFAULT>, is(not(defined())));
-	our $bar := 212;
-	Global::export('$bar');
-	self.assert_that("DEFAULT $bar", $nsp<EXPORT><DEFAULT>{'$bar'}, is(212));
-	
-	self.assert_that("DEFAULT hamilton", $nsp<EXPORT><DEFAULT><hamilton>, is(not(defined())));
-	Global::export(Kakapo::Test::Global::test_export, :as('hamilton'));
-	self.assert_that("Exported hamilton", $nsp<EXPORT><DEFAULT><hamilton>, 
-		is(same_as(Kakapo::Test::Global::test_export)));
-
-	self.assert_that("FOO $x", $nsp<EXPORT><FOO>{'$x'}, is(not(defined())));
-	self.assert_that("FOO $y", $nsp<EXPORT><FOO>{'$y'}, is(not(defined())));
-	our $x := 0;
-	our $y := 0;
-	Global::export('$x', '$y', :tags('FOO'));
-	self.assert_that("FOO $x", $nsp<EXPORT><FOO>{'$x'}, is(defined()));
-	self.assert_that("FOO $y", $nsp<EXPORT><FOO>{'$y'}, is(defined()));
-	
-	# Check that everything from above was copied into 'ALL'
-	
-	self.assert_that('ALL $foo', $nsp<EXPORT><ALL>{'$foo'}, is(same_as($foo)));
-	self.assert_that('ALL $bar', $nsp<EXPORT><ALL>{'$bar'}, is(same_as($bar)));
-	self.assert_that('ALL hamilton', $nsp<EXPORT><ALL>{'hamilton'},
-		is(same_as(Kakapo::Test::Global::test_export)));
-	self.assert_that('ALL $x', $nsp<EXPORT><ALL>{'$x'}, is(same_as($x)));
-	self.assert_that('ALL $y', $nsp<EXPORT><ALL>{'$y'}, is(same_as($y)));
-}
-
-method Xtest_register_global() {
-	
-	self.note("Testing Global::register_global() function");
-	
+method test_registering_global_from_constant() {
 	Global::register_global('ONE', 1);
 	
-	self.assert_that('Registered symbol', Global::ONE, is(1));
+	fail_unless(Global::ONE == 1,
+		"Constant 1 not globally registered");
+}
+
+method test_registering_global_from_var() {
+	my $x := 2;
+
+	Global::register_global('TWO', $x);
 	
-	our $x := '10';
-	Global::register_global('$X', $x);
+	$x++;
 	
-	our $X;
+	fail_unless(Global::TWO == 3,
+		"Variable not globally registered");
+}
+
+method test_using_registered_global() {
+	my $eleven := 10;
+	
+	Global::register_global('$X', $eleven);
+
 	Global::use(:symbols('$X'));
-	self.assert_that('Imported global', $X, is(10));
+
+	fail_unless(self.namespace.contains('$X'),
+		"Failed to import global variable");
+		
+	our $X;
+	fail_unless($X == 10,
+		"Imported global variable is wrong pmc");
 	
-	self.assert_that('Other global', OtherGlobal::Y, is(not(defined())));
+	$X++;
+	fail_unless($eleven == 11,
+		"Global variable no longer original pmc");
+}
+
+method test_registering_in_other_namespace() {
 	our $y := 'wye';
 	Global::register_global('Y', $y, :namespace('OtherGlobal'));
-	self.assert_that('Other global', OtherGlobal::Y, is('wye'));
+	
+	fail_unless(OtherGlobal::Y eq 'wye',
+		"Global not registered in target namespace");
 }
 
-method Xtest_use() {
+module Dummy {
+	INIT {
+		our $MMX := 2010;
+		export('$MMX', 'foo');
+		export('pooh', :as('edward'), :tags('BEAR'));
+		export('lucifer', :tags('NOT_USED'));
+	}
 	
-	self.note("Testing Global::use() function");
-	
-	my $nsp := pir::get_namespace__P();
-	GlobalTest::_ONLOAD();
-	
-	self.assert_that('Imported symbol', $nsp{'hamilton'}, is(not(defined())));
-	
-	Global::use(GlobalTest, :import('BEAR'));
-
-	self.assert_that('Imported function', hamilton(), returns("oh, bother"));
-	self.assert_that('External symbol', $nsp{'$x'}, is(not(defined())));
-	
-	Global::use(GlobalTest);
-	
-	self.assert_that('Imported var', $nsp{'$x'}, is(defined()));
-	
-	self.assert_that('Imported symbol', $nsp{'lucifer'}, is(not(defined())));
-	Global::use(GlobalTest, :symbols('lucifer'));
-	self.assert_that("Imported function", lucifer(), returns(true()));
-}
-
-module GlobalTest {
-
-	our $x;
-
 	sub foo() {
-		return 'oof';
-	}
-
-	sub pooh() {
-		return 'oh, bother';
-	}
-
-	sub lucifer() {
-		return "we don't need no stinking matchers!";
+		'bar';
 	}
 	
-	_ONLOAD();
-
-	sub _ONLOAD() {
-		$x := 1;
-		Global::export(GlobalTest::pooh, :as('hamilton'), :tags('BEAR'));
-		Global::export('lucifer', :tags('NONESUCH'));
-		Global::export('$x', 'foo');
+	sub lucifer() {
+		'smoking!';
 	}
+	
+	sub pooh() {
+		'oh, bother';
+	}
+}
+
+method test_use_with_tag() {
+	use( 'Dummy', :tags('BEAR'));
+	
+	fail_unless(edward() eq 'oh, bother',
+		"Use w/ tag gets wrong symbol");
+}
+
+method test_use_default() {
+	our $MMX;
+	
+	use('Dummy');
+	
+	fail_unless($MMX == 2010,
+		'Plain use did not import $MMX as part of DEFAULT set');
+	
+	fail_unless(foo() eq 'bar',
+		'Plain use did not import foo() correctly');
+}
+
+method test_use_by_name() {
+	use('Dummy', :symbols('lucifer'));
+	fail_unless(lucifer() eq 'smoking!',
+		'Use by name of lucifer did not work correctly');
 }

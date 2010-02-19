@@ -333,7 +333,6 @@ method repeat($times) {
 }
 
 method split($delim?) {
-	unless $delim { $delim := ' '; }
 	pir::split__PSS($delim, self);
 }
 
