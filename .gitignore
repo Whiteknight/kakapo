@@ -1,2 +1,4 @@
-/Makefile
-/kakapo.cfg
+replace_call
+test.nqp
+test.pir
+
