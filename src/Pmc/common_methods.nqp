@@ -50,6 +50,8 @@ sub _pre_initload() {
 	%methods_for<Exception>		:= <can clone defined does isa new>;
 	%methods_for<Float>			:= <can clone defined does isa>;
 	%methods_for<Hash>			:= <can clone defined does isa>;
+	%methods_for<Integer>			:= <can clone defined does isa>;
+	%methods_for<Key>			:= <can clone defined does isa>;
 	%methods_for<NameSpace>		:= <can clone defined does isa>;
 	%methods_for<ResizablePMCArray>	:= <can clone defined does isa new>;
 	%methods_for<ResizableStringArray>	:= <can clone defined does isa new>;

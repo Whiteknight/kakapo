@@ -68,6 +68,7 @@ sub MAIN(@argv) {
 		src/Pmc/common_methods.pir
 		src/Pmc/Exception.pir
 			src/Exceptions.pir
+		src/Pmc/Key.pir
 		src/Pmc/Hash.pir
 		src/Pmc/Namespace.pir
 		src/Pmc/String.pir
@@ -89,7 +90,10 @@ sub MAIN(@argv) {
 	my @full_pir_files := <
 		src/Classes/P6object.pir
 		src/Classes/P6metaclass.pir
+
 		src/DependencyQueue.pir
+		src/Program.pir
+
 		src/UnitTest/Listeners.pir
 		src/UnitTest/Loader.pir
 		src/UnitTest/Result.pir

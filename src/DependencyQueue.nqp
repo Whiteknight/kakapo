@@ -71,7 +71,7 @@ our method next_entry() {
 
 our method reset() {
 	self.locked(0);
-	self.pending(Hash::empty());
+	self.pending(Hash.new);
 }
 
 method tsort_queue() {

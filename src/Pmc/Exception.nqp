@@ -22,12 +22,14 @@ my method _attr($name, @value) {
 
 method backtrace_string() {
 	my @parts := Array::empty();
-
+	my $sub;
+	my $sub_name;
+	
 	for self.backtrace {
-		my $sub := $_<sub>;
+		$sub := $_<sub>;
 		
-		if ! Opcode::isnull($sub) && Opcode::defined($sub) {
-			my $sub_name := $sub.get_namespace.get_name.join('::')
+		if ! pir::isnull($sub) && pir::defined($sub) {
+			$sub_name := $sub.get_namespace.get_name.join('::')
 				~ '::' ~ $sub;
 			@parts.push($sub_name);
 		}
@@ -41,6 +43,7 @@ method handled(*@value)			{ self._attr('handled', @value); }
 method message(*@value)			{ self._attr('message', @value); }
 method payload(*@value)			{ self._attr('payload', @value); }
 
+method rethrow()				{ pir::rethrow(self); }
 method severity(*@value)			{ self._attr('severity', @value); }
 method throw()				{ pir::throw(self); }
 method type(*@value)			{ self._attr('type', @value); }
@@ -108,11 +111,12 @@ method new(*@pos, *%named) {
 	$new_object;
 }
 
+method rethrow()			{ self.exception.rethrow; }
 method severity() 			{ Exception::Severity.SEVERE; }
 method throw()			{ self.exception.throw; }
 
 method type() {
-	my $class := pir::class__PP(self);
+	my $class := P6metaclass.get_parrotclass(self);
 	my $type := pir::inspect__PPS($class, 'id');
 	return $type + 2000;
 }

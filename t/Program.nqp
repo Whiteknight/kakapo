@@ -1,90 +1,73 @@
-=file t/Program.nqp
+#! parrot-nqp
+# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-Test the Program component of the Kakapo library.
-
-=cut
-
-module Kakapo::Test::Program;
-
-our @results := Array::empty();
-
-_ONLOAD();
-
-#Kakapo::Test::Program.run_all_tests;
-Kakapo::Test::Program.run_tests('test_queue');
-
-sub _ONLOAD() {
-	if our $onload_done { return 0; }
-	$onload_done := 1;
-	
-	Global::use('Dumper');
-	Parrot::IMPORT('Matcher::Factory');
-	Program::_ONLOAD();
-	
-	my $class_name := 'Kakapo::Test::Program';
-	
-	NOTE("Creating class ", $class_name);
-	Class::SUBCLASS($class_name,
-		'Testcase',
-	);
+INIT {
+	# Load the Kakapo library
+	pir::load_language('parrot');
+	my $env := pir::new__PS('Env');
+	my $root_dir := $env<HARNESS_ROOT_DIR> || '.';
+	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
 }
 
-sub sub1() {
-	return 'foo';
+class Test::Program
+	is UnitTest::Testcase ;
+
+INIT {
+	use(	'UnitTest::Testcase' );	
 }
 
-sub sub2() {
-	return 3;
+MAIN();
+
+sub MAIN() {
+	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
+	$proto.suite.run;
 }
 
-method test_call() {
+class Test::Exit is Program {
+	method main(@args) {
+		foo();
+		exit(1);
+	}
 	
-	self.note("Testing Program::call() function");
+	method do_exit() {
+		self.exit_value;
+	}
 	
-	my $result := Program::call('Kakapo::Test::Program::sub1');
-	self.assert_that('Result of call to sub1', $result, is('foo'));
-	
-	$result := Program::call(Kakapo::Test::Program::sub2);
-	self.assert_that('Result of call to sub2', $result, is(3));
+	sub foo() {
+		exit(4);
+	}
 }
 
-sub q1() {
-	@results.push('x1');
+method test_exit() {
+	verify_that( 'Calling global exit() immediately ends program' );
+	
+	my $pgm := Test::Exit.new;
+	my $status := $pgm.run;
+	
+	fail_unless($status == 4, 'Exit 4 should have passed through');	
 }
 
-sub q2() {
-	@results.push('x2');
+class Test::InitQueue is Program {
+	INIT {
+		has( < $.a $.b $.c > );
+	}
+	
+	method do_exit() {	self.exit_value; }
+	
+	sub set_a($pgm) {	$pgm.a($pgm.b + 1); }
+	sub set_b($pgm) {	$pgm.b(3); }
+	sub set_c($pgm) {	$pgm.c($pgm.a + 5); }
 }
 
-sub q3() {
-	@results.push('x3');
-}
+method test_init_queue() {
+	verify_that( 'Program calls the entries in the init_queue correctly' );
 
-sub q4() {
-	@results.push('x4');
-}
+	my $pgm := Test::InitQueue.new;
+	
+	$pgm.at_init(Test::InitQueue::set_c, 'c', :requires('a'));
+	$pgm.at_init(Test::InitQueue::set_a, 'a', :requires('b'));
+	$pgm.at_init(Test::InitQueue::set_b, 'b');
 
-sub q5() {
-	@results.push('x5');
-}
-
-method test_queue() {
-	
-	self.note("Testing queue processing");
-	
-	Program::init('III', 'Kakapo::Test::Program::q3');
-	Program::init('V',  'Kakapo::Test::Program::q5');
-	Program::init('I', 'Kakapo::Test::Program::q1', :first(1));
-	Program::init('II',  'Kakapo::Test::Program::q2', :before('III'));
-	Program::init('IV',  'Kakapo::Test::Program::q4', :after('III', 'V'));
-	
-	self.assert_that('Results array', @results, is(empty()));
-	
-	Program::process_init_queue();
-	
-	self.assert_that('Results array[0]', @results[0], is('x1'));
-	self.assert_that('Results array[1]', @results[1], is('x2'));
-	self.assert_that('Results array[2]', @results[2], is('x3'));
-	self.assert_that('Results array[3]', @results[3], is('x5'));
-	self.assert_that('Results array[4]', @results[4], is('x4'));
+	$pgm.do_init();
 }

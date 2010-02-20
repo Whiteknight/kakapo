@@ -13,12 +13,19 @@ sub _pre_initload() {
 		:tags('CALL')
 	);
 	
+	export( 'caller', 'caller_namespace', :tags('CALLER'));
+	
 	export(
 		'caller_namespace', 
 		'get_hll_namespace',
 		'namespace_name', 
 		:tags('NAMESPACE')
 	);
+}
+
+sub caller($index? = 1) {
+	my $key := Key.new('sub', $index + 1);
+	my $sub := pir::getinterp__P(){$key};
 }
 
 
@@ -239,13 +246,11 @@ sub get_sub($path, :$caller_nsp?) {
 }
 
 sub key($first, *@parts) {
-	unless @parts { @parts := Array::empty(); }
 	@parts.unshift($first);
 	key_(@parts);
 }
 
 sub key_(@parts) {
-	
 	my $key;
 
 	for @parts {

@@ -152,6 +152,11 @@ sub has(*@args, :$class?, *%opts) {
 	unless %opts.defined { %opts := Hash::empty(); }
 	unless $class.defined { $class := caller_namespace(2); }
 
+	# Handle  has(< a b c >) - only arg is an RPA.
+	if +@args == 1 && ! @args[0].isa('String') {
+		@args := @args[0];
+	}
+	
 	while @args {
 		my $next	:= @args.shift;
 		my @words	:= $next.split(' ');

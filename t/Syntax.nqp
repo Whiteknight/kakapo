@@ -97,6 +97,5 @@ class C3 is C2 {
 
 method test_super() {
 	my $obj := C3.new;
-	say("Super gets: ", $obj.m2);
 	fail_unless($obj.m2 eq 'C1', 'Super should call C1::m1');
 }

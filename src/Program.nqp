@@ -1,60 +1,197 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
+class Exception::ProgramExit
+	is Exception::Wrapper {
+}
 
 module Program;
 # Provides a conventional framework for program execution. 
 
 sub _pre_initload(*@modules_done) {
-	use(	'Dumper' );
-	use(	'Opcode', :tags('DEFAULT', 'TYPE'));
+
+	has(<	@.args
+		$!at_exit_queue
+		$!at_init_queue
+		$!at_load_queue
+		%.env
+		$.executable
+		$.exit_value
+		$!_process_id
+	>);
 	
-# Don't initialize *anything,* here.    !IMPORTANT
-	our $At_end_queue;
-	our $At_start_queue;
-	our $Init_queue;
-	our $Load_queue;
-	our $Main;
+	our $_Instance := Program.new;	
+	
+	Global::inject_root_symbol(Program::exit);
+}
 
-	$At_end_queue	:= DependencyQueue.new();
-	$At_start_queue	:= DependencyQueue.new();
-	$Init_queue	:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
-	$Load_queue	:= Parrot::call_method_(DependencyQueue, 'new', @modules_done);
+my method add_call_($queue, @pos, %named) {
+	unless %named.contains('namespace') {
+		%named<namespace> := Parrot::caller_namespace(3);
+	}
+	
+	my $name;
+	my $sub := @pos.shift;
+	
+	if @pos.elements {
+		$name := @pos.shift;
+	}
+	elsif $sub.isa( 'String' ) {
+		$name := $sub;
+	}
+	elsif $sub.isa( 'Sub' ) {
+		$name := $sub.get_namespace.get_name.join('::') ~ '::' ~ $sub;
+	}
+	else {
+		Exception::InvalidArgument.new(
+			:message('Invalid $call argument. Must be Sub or String'),
+		).throw;		
+	}
+	
+	$queue.add_entry($name, $sub, %named<requires>);
+}
 
-	if ! Opcode::defined($Main) {
-		register_main('::main');
+my method at_exit(*@pos, *%named) {
+	self.add_call_(self.at_exit_queue, @pos, %named);
+}
+
+my method at_init(*@pos, *%named) {
+	self.add_call_(self.at_init_queue, @pos, %named);
+}
+
+my method at_load(*@pos, *%named) {
+	self.add_call_(self.at_load_queue, @pos, %named);
+}
+
+our method do_exit() {
+	self.process_queue(self.at_exit_queue, :name('exit'));
+	
+	my $code := self.exit_code;
+	pir::exit($code);
+}
+
+our method do_init() {
+	self.process_queue(self.at_init_queue, :name('init'));
+}
+
+our method do_load() {
+	self.process_queue(self.at_load_queue, :name('load'));
+}
+
+sub exit($status) {
+	Exception::ProgramExit.new(
+		:exit_code($status),
+		:message("exit($status)"), 
+		:payload($status)
+	).throw;
+}
+
+my method get_interp_info() {
+	my $interp := pir::getinterp__P();
+	
+	self.args($interp[2]);
+	self.executable($interp[9]);
+}
+
+our method _init_(@pos, %named) {
+	self.at_exit_queue(DependencyQueue.new);
+	self.at_init_queue(DependencyQueue.new);
+	self.at_load_queue(DependencyQueue.new);
+	
+	self.env(pir::new__PS('Env'));
+	
+	self._init_args_(@pos, %named);
+}
+
+method main(@args) {
+	my &main := pir::get_hll_global__PS('main');
+	
+	if pir::isnull(&main) {
+		die("You must override the '.main' method of your program class.");
+	}
+	
+	&main(@args);
+}
+
+our method process_id() {
+	if pir::isnull(self._process_id) {
+		my &getpid := pir::dlfunc__PPSS(pir::null__P(), 'getpid', 'I');
+		self._process_id( &getpid() );
+	}
+	
+	self._process_id;		
+}
+
+my method process_queue($queue, :$name!) {
+	my $callee;
+	
+	while ! $queue.is_empty {
+		$callee := $queue.next_entry;
+		$callee := Parrot::get_hll_global($callee)
+			if $callee.isa('String');
+		
+		die( "Got null callee while processing $name queue" )
+			if pir::isnull($callee);
+			
+		$callee(self);
+	}
+	
+	$queue.reset;
+}
+
+method run(@args?) {
+	my $exception;
+
+	try {	
+		self.main(@args);
+
+		CATCH {
+			$exception := $!;
+		}
+	};
+	
+	if $exception.defined {
+		unless $exception.type == Exception::ProgramExit.type {
+			$exception.rethrow;
+		}
+		
+		self.exit_value($exception.payload);
+	}
+	
+	self.do_exit;
+}
+
+my method stderr($value?) {
+	if $value.defined {
+		pir::setstderr($value);
+		self;
+	}
+	else {
+		pir::getstderr__P;
 	}
 }
 
-=begin SYNOPSIS
+my method stdin($value?) {
+	if $value.defined {
+		pir::setstdin($value);
+		self;
+	}
+	else {
+		pir::getstdin__P();
+	}
+}
 
-	# At outmost scope of your module:
-	Program::init(:after('Other::Module'));
-	
-	# Do what you can here:
-	our @Array := (1, 2, 3);
-	
-	sub _initload() {
-		# Do init stuff that requires Other::Module here
+my method stdout($value?) {
+	if $value.defined {
+		pir::setstdout($value);
+		self;
 	}
-	
-	Program::register_main('MyModule::main');
-	
-	sub main() {
-		Program::at_end('MyModule::finalize');
+	else {
+		pir::getstdout__P();
+	}
+}
 
-		if +@Array > 2 {
-			say("Too many items.");
-			Program::exit(1);
-		}
-		
-		say("Hello, world!");
-	}
-	
-	sub finalize() {
-		say("Hasta la vista, baby.");
-	}
-	
-=end SYNOPSIS
+##############################################
 
 sub add_call($queue, $call, %opts, $caller_nsp) {
 # Adds a C< $call > with C< @prereqs > to C< $queue >, tagged with key C< $name >. When no call 
@@ -112,20 +249,6 @@ sub call($call) {
 	return $status;
 }
 
-sub call_main() {
-# Executes the calls registered in the L<C< at_start >> queue, then
-# runs the C<main> sub registered via L<C< register_main >>. If the
-# C<main> sub returns, the result is passed to L<C< exit >>.
-
-	process_queue(our $At_start_queue);
-
-	our $Main;
-	
-	say("Calling $Main");
-	call($Main);
-	exit(0);
-}
-
 sub determine_call($call, $caller_nsp, @sub_names) {
 # Determines a sub to be called. If C< $call > is defined, it specifies the call -- either a sub
 # of some kind, or a String name to be resolved, or some other invokable object. Otherwise,
@@ -151,143 +274,4 @@ sub determine_call($call, $caller_nsp, @sub_names) {
 	}
 	
 	die("Cannot find any viable call (", @sub_names.join(', '), ") in ", $nsp_name);
-}
-
-sub die(*@message) {
-# General 'die' hook that supports argument catenation.
-	pir::die(@message.join);
-}
-
-sub exit($status) {
-# Exits the program, makes any calls registered with L<C<at_end>>, and 
-# causes the Parrot interpreter to exit with status C<$status>.
-
-	process_queue(our $At_end_queue);
-	_exit($status);
-}
-
-sub _exit($status) {
-# Immediately exits the Parrot VM, returning C<$status>, without calling any of 
-# the registered L<C< at_end >> calls.
-
-	Opcode::exit($status);
-}
-
-sub init($call?, *%opts) {
-# Requests a call to the sub named by C< $call >, or to the sub object given in C< $call >, or
-# to a default sub (named '_load' or '_initload') in the caller's namespace. The call will take
-# place after all C< :load > subs in this library or program have been run. 
-
-# The purpose of this routine is analogous to that of L<C< init >>, except for the (very 
-# significant!) difference between C< :init > and C< :load > processing. The argument values
-# and semantics are identical to those of C< init >.
-
-	add_call(our $Init_queue, $call, %opts, Parrot::caller_namespace(2));
-}
-
-sub initload($call?, *%opts) {
-# A shortcut routine. Equivalent to calling L<C< init >> and L<C< load >> with the same arguments.
-
-	my $caller_nsp := Parrot::caller_namespace(2);
-	add_call(our $Init_queue, $call, %opts, $caller_nsp);
-	add_call(our $Load_queue, $call, %opts, $caller_nsp);
-}
-
-sub is_upgraded($queue) {
-	return $queue.isa('ManagedQueue');
-}
-
-sub load($call?, *%opts) {
-# Requests a call to the sub named by C< $call >, or to the sub object given in C< $call >, or
-# to a default sub (named '_load' or '_initload') in the caller's namespace. The call will take
-# place after all C< :load > subs in this library or program have been run. 
-
-# The purpose of this routine is analogous to that of L<C< init >>, except for the (very 
-# significant!) difference between C< :init > and C< :load > processing. The argument values
-# and semantics are identical to those of C< init >.
-
-	add_call(our $Load_queue, $call, %opts, Parrot::caller_namespace(2));
-}
-
-sub process_init_queue() {
-# Removes each registered I< call > from the C< :init > queue, and invokes them in order.
-# If the queue is not already ordered according to the parameters given when the calls
-# were registered, the queue is first reordered.
-
-# See L<C< init >> for how to add items to the queue.
-
-# Returns nothing.
-
-	process_queue(our $Init_queue);
-}
-
-sub process_load_queue() {
-# Process the C<:load> queue. See L<C< process_init_queue >>.
-
-	process_queue(our $Load_queue);
-}
-
-sub process_queue($q) {
-# Called to process any of the queues in this module. Pulls all of the calls out of the queue, in order, and invokes them.
-
-	while ! $q.is_empty {
-		my &call := $q.next;
-		call(&call);
-	}
-	
-	$q.reset();
-}
-
-sub register_main($call?) {
-# Sets the C< main > function to call. If a name with no namespace is given, 
-# (like 'main') the caller's namespace is used. If no name is given at all,
-# the default name is 'main'.
-
-	unless $call.defined {
-		$call := 'main';
-	}
-	
-	if $call.isa('String') && $call.index('::') == -1 {
-		my $nsp := Parrot::caller_namespace(3);
-		my @parts := $nsp.get_name;
-		@parts.shift;	# Lose the 'parrot'
-		$call := @parts.join('::') ~ '::' ~ $call;
-	}
-
-	our $Main := $call;
-}
-
-sub upgrade_queue($queue) {
-# Upgrades a C< ResizablePMCArray >-based queue to a C< ManagedQueue >. 
-
-# When Parrot loads bytecode, the ManagedQueue class has not been registered as a class, and so it is impossible to 
-# make new ManagedQueue objects. Because there is no guarantee of the order that C< :init > and C< :load > methods
-# are run, there is no way to ensure that ManagedQueue is registered before any other class tries to register a call.
-
-# To deal with this uncertainty, the various registration functions (L<C< init >>, L<C< initload >>, and 
-# L<C< load >>) will create a simple ResizablePMCArray if no ManagedQueue exists. In this case, the entire request 
-# is bundled up and placed in the RPA.
-
-# This function creates a new ManagedQueue, processes the RPA, unpacks the registration bundles and inserts the
-# calls according to the request in the bundle.
-
-# Returns the new ManagedQueue.
-
-	if ! Opcode::defined($queue) {
-		$queue := ManagedQueue.new();
-	}
-	elsif $queue.isa('ResizablePMCArray') {
-		my @rpa := $queue;
-		$queue := ManagedQueue.new();
-		
-		while @rpa {
-			my $item := @rpa.shift;
-			my %opts := Opcode::isa($item, 'FixedPMCArray') ?? $item[1] !! $item.value;
-			my $pair := %opts<pair>;
-			$pair := make_pair($pair[0], $pair[1]);
-			enqueue_pair($queue, $pair, %opts);
-		}
-	}
-	
-	return $queue;
 }

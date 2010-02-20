@@ -1,6 +1,11 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
+# # Exceptions #
+# 
+# ## Built-in Exceptions ##
+#
+
 class Exception::BadBufferSize is Exception::Wrapper {
 	method type()	{ 0; }
 }
@@ -272,3 +277,9 @@ class Control::LoopLast is Exception::Wrapper {
 class Control::LoopRedo is Exception::Wrapper {
 	method type()	{ 67; }
 }
+#
+# ## Kakapo Exceptions ##
+#
+class Exception::AbstractMethodCalled is Exception::Wrapper;
+
+class Exception::InvalidArgument is Exception::Wrapper;

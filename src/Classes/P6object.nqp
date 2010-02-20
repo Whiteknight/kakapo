@@ -8,7 +8,7 @@ module P6object;
 sub _pre_initload() {
 
 	Pir::compile_sub(:name('__get_bool'), :vtable('get_bool'),
-		:namespace('Kakapo::Object'),
+		:namespace('P6object'),
 		:body(
 			'$I0= self."get_bool"()',
 			'.return ($I0)',
@@ -16,7 +16,7 @@ sub _pre_initload() {
 	);
 	
 	Pir::compile_sub(:name('__get_string'), :vtable('get_string'),
-		:namespace('Kakapo::Object'),
+		:namespace('P6object'),
 		:body(
 			'$S0 = self."get_string"()',
 			'.return ($S0)',
@@ -24,32 +24,27 @@ sub _pre_initload() {
 	);
 }
 
-=begin
-
-=head1 P6object - the root of the P6/NQP class hierarchy.
-
-P6object is added automatically as the parent class of any class that is 
-set up using the C< P6metaclass > C< .register > method. (By default: all 
-classes.)
-
-Thus, methods on this class correspond roughly to the C< UNIVERSAL >
-methods from P5.
-
-=item sub onload()  I<(standard)>
-
-Sets up the C< P6protoobject >, C< P6object >, and 
-C< P6metaclass > classes. Creates protoobjects for 
-C< P6object > and C< P6metaclass >.
-
-=item method __ABSTRACT__()
-
-Sugar. Throws an AbstractMethodCalled exception.
-
-=end
+# # P6object - the root of the P6/NQP class hierarchy. #
+#
+# P6object is added automatically as the parent class of any class that is set up using the 
+# `.register` method of `P6metaclass`. (By default: all classes.)
+#
+# Thus, methods on this class correspond roughly to the `UNIVERSAL` methods from P5.
+#
+#  * `sub onload()` _(standard)_
+#
+#   Sets up the `P6protoobject`, `P6object`, and `P6metaclass` classes. Creates protoobjects for 
+# `P6object` and `P6metaclass`.
+#
+#  * `__ABSTRACT__()`
+# 
+#    Sugar. Throws an AbstractMethodCalled exception.
 
 method __ABSTRACT__() {
-	Exception::AbstractMethodCalled.new().throw;
-	exit_code, message, severity, type
+	my $name := ~ Parrot::caller();
+	Exception::AbstractMethodCalled.new(
+		:message("Invalid call to abstract method '$name'"),
+	).throw;
 }
 
 =begin
@@ -182,7 +177,7 @@ method get_string() {
 method _init_(@pos, %named) {
 	# First, set up the default data
 	# ...
-	
+
 	# Accept args.
 	self._init_args_(@pos, %named);
 }
