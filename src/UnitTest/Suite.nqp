@@ -3,8 +3,6 @@
 
 module UnitTest::Suite;
 INIT {
-	use(	'P6metaclass' );
-	
 	has(	'@!members',
 		'$.name',
 		'$.num_tests',
