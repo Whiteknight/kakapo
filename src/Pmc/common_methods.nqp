@@ -56,7 +56,7 @@ sub _pre_initload() {
 	%methods_for<NameSpace>		:= <can clone defined does isa>;
 	%methods_for<ResizablePMCArray>	:= <can clone defined does isa new>;
 	%methods_for<ResizableStringArray>	:= <can clone defined does isa new>;
-	%methods_for<String>			:= <can clone defined does >; #! not new defined isa
+	%methods_for<String>			:= <can clone defined does >; #! not new isa
 #	%methods_for<StringHandle>		:= <can clone defined does isa new>;
 	%methods_for<Sub>			:= <can clone defined does isa>; #! not new
 	%methods_for<Undef>			:= <can clone does isa new>; #! not defined

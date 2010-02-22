@@ -78,14 +78,7 @@ sub display_width($str) {
 }
 
 sub downcase($str) {
-	my $result := Q:PIR {
-		$P0 = find_lex '$str'
-		$S0 = $P0
-		$S0 = downcase $S0
-		%r = box $S0
-	};
-	
-	return $result;
+	pir::downcase__SS($str);
 }
 
 sub find_cclass($class_name, $str, *%opts) {

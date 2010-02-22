@@ -10,18 +10,18 @@ module Program;
 
 sub _pre_initload(*@modules_done) {
 
-	has(<	@.args
+	has(<	@!args
 		$!at_exit_queue
 		$!at_init_queue
 		$!at_load_queue
-		%.env
-		$.executable
-		$.exit_value
-		$.process_id
-		$.stdin
-		$.stderr
-		$.stdout
-		$.uid
+		%!env
+		$!executable
+		$!exit_value
+		$!process_id
+		$!stdin
+		$!stderr
+		$!stdout
+		$!uid
 	>);
 	
 	Global::inject_root_symbol(Program::exit);
@@ -54,30 +54,30 @@ my method add_call_($queue, @pos, %named) {
 }
 
 my method at_exit(*@pos, *%named) {
-	self.add_call_(self.at_exit_queue, @pos, %named);
+	self.add_call_($!at_exit_queue, @pos, %named);
 }
 
 my method at_init(*@pos, *%named) {
-	self.add_call_(self.at_init_queue, @pos, %named);
+	self.add_call_($!at_init_queue, @pos, %named);
 }
 
 my method at_load(*@pos, *%named) {
-	self.add_call_(self.at_load_queue, @pos, %named);
+	self.add_call_($!at_load_queue, @pos, %named);
 }
 
 our method do_exit() {
-	self.process_queue(self.at_exit_queue, :name('exit'));
+	self.process_queue($!at_exit_queue, :name('exit'));
 	
-	my $code := self.exit_value;
+	my $code := $!exit_value;
 	pir::exit($code);
 }
 
 our method do_init() {
-	self.process_queue(self.at_init_queue, :name('init'));
+	self.process_queue($!at_init_queue, :name('init'));
 }
 
 our method do_load() {
-	self.process_queue(self.at_load_queue, :name('load'));
+	self.process_queue($!at_load_queue, :name('load'));
 }
 
 sub exit($status) {
@@ -90,24 +90,24 @@ sub exit($status) {
 
 # Copy fields from another instance.
 our method incorporate($other) {
-	self.args($other.args);
-	self.at_exit_queue($other.at_exit_queue);
-	self.at_init_queue($other.at_init_queue);
-	self.at_load_queue($other.at_load_queue);
-	self.env($other.env);
-	self.executable($other.executable);
-	self.exit_value($other.exit_value);
-	self.process_id($other.process_id);
-	self.stderr($other.stderr);
-	self.stdin($other.stdin);
-	self.stdout($other.stdout);
-	self.uid($other.uid);
+	@!args		:= $other.args;
+	$!at_exit_queue	:= $other.at_exit_queue;
+	$!at_init_queue	:= $other.at_init_queue;
+	$!at_load_queue	:= $other.at_load_queue;
+	%!env			:= $other.env;
+	$!executable		:= $other.executable;
+	$!exit_value		:= $other.exit_value;
+	$!process_id		:= $other.process_id;
+	$!stderr		:= $other.stderr;
+	$!stdin		:= $other.stdin;
+	$!stdout		:= $other.stdout;
+	$!uid			:= $other.uid;
 }
 
 our method _init_(@pos, %named) {
-	self.at_exit_queue(DependencyQueue.new);
-	self.at_init_queue(DependencyQueue.new);
-	self.at_load_queue(DependencyQueue.new);
+	$!at_exit_queue := DependencyQueue.new;
+	$!at_init_queue :=DependencyQueue.new;
+	$!at_load_queue := DependencyQueue.new;
 	
 	self._init_args_(@pos, %named);
 }
@@ -142,10 +142,10 @@ my method process_queue($queue, :$name!) {
 method run(@args?) {
 
 	if @args {
-		self.args(@args);
+		@!args := @args;
 	}
 	else {
-		@args := self.args;
+		@args := @!args;
 	}
 
 	@args := @args.clone;
@@ -153,14 +153,14 @@ method run(@args?) {
 	my $*PROGRAM_NAME := @args.elements
 		?? @args.shift
 		!! '<anonymous>';
-	my @*ARGS := @args;
-	#my $*CWD := '';
-	my %*ENV := self.env;
-	my $*EXECUTABLE_NAME := self.executable;
-	my $*PID := self.process_id;	# May be unset.
-	#my $*UID := self.uid;		# May be unset.
-	my $?PERL := 'nqp-rx';
-	my $?VM := 'parrot';
+	my @*ARGS		:= @args;
+	#my $*CWD		:= '';
+	my %*ENV		:= %!env;
+	my $*EXECUTABLE_NAME := $!executable;
+	my $*PID		:= $!process_id;	# May be unset.
+	#my $*UID		:= $!uid;		# May be unset.
+	my $?PERL		:= 'nqp-rx';
+	my $?VM		:= 'parrot';
 	# %*OPTS	# ??
 	# @*INC ??
 
@@ -168,21 +168,21 @@ method run(@args?) {
 	my %save_fh;
 
 	my $*ERR := pir::getstderr__P();
-	if pir::defined($fh := self.stderr) {
+	if pir::defined( $!stderr ) {
 		%save_fh<stderr> := $*ERR;
-		pir::setstderr($*ERR := $fh);
+		pir::setstderr( $*ERR := $!stderr );
 	}
 	
 	my $*IN := pir::getstdin__P();
-	if pir::defined($fh := self.stdin) {
+	if pir::defined( $!stdin ) {
 		%save_fh<stdin> := $*IN;
-		pir::setstdin($*IN := $fh);
+		pir::setstdin( $*IN := $!stdin );
 	}
 
 	my $*OUT := pir::getstdout__P();
-	if pir::defined($fh := self.stdout) {
+	if pir::defined( $!stdout ) {
 		%save_fh<stdout> := $*OUT;
-		pir::setstdout($*OUT := $fh);
+		pir::setstdout( $*OUT := $!stdout );
 	}
 	
 	my $exception;
@@ -191,7 +191,12 @@ method run(@args?) {
 		self.main(@args);
 		
 		CATCH {
-			$exception := $!;
+			if $!.type == Exception::ProgramExit.type {
+				$!exit_value := $!.payload;
+			}
+			else {
+				$!.rethrow;
+			}
 		}
 	};
 
@@ -199,17 +204,7 @@ method run(@args?) {
 	pir::setstdin(%save_fh<stdin>)   if %save_fh.contains( <stdin> );
 	pir::setstdout(%save_fh<stdout>) if %save_fh.contains( <stdout> );
 
-	if $exception.defined {
-		unless $exception.type == Exception::ProgramExit.type {
-			$exception.rethrow;
-		}
-		
-		self.exit_value($exception.payload);
-	}
-	
-	my $result := self.do_exit;
-	
-	$result;
+	$!exit_value := self.do_exit;
 }
 
 ##############################################

@@ -94,8 +94,12 @@ sub MAIN(@argv) {
 		src/Classes/P6metaclass.pir
 
 		src/DependencyQueue.pir
+		
+		src/Mimidae/Generis.pir
+		src/Mimidae/Maker.pir
+		
 		src/Program.pir
-
+		
 		src/UnitTest/Listeners.pir
 		src/UnitTest/Loader.pir
 		src/UnitTest/Result.pir

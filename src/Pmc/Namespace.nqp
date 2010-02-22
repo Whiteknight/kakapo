@@ -10,3 +10,9 @@ method contains($name) {
 	! pir::isnull__IP(self.find_var($name))
 	|| !pir::isnull__IP(self.find_namespace($name));
 }
+
+method string_name(:$hll) {
+	my @parts := self.get_name;	
+	@parts.shift unless $hll;
+	@parts.join('::');
+}
