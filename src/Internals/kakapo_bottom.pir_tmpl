@@ -27,5 +27,5 @@
 	die $S0
 
 notify:
-	$P0()
+	.tailcall $P0()
 .end

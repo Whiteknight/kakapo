@@ -17,10 +17,12 @@ sub _pre_initload(*@modules_done) {
 		%.env
 		$.executable
 		$.exit_value
-		$!_process_id
+		$.process_id
+		$.stdin
+		$.stderr
+		$.stdout
+		$.uid
 	>);
-	
-	our $_Instance := Program.new;	
 	
 	Global::inject_root_symbol(Program::exit);
 }
@@ -66,7 +68,7 @@ my method at_load(*@pos, *%named) {
 our method do_exit() {
 	self.process_queue(self.at_exit_queue, :name('exit'));
 	
-	my $code := self.exit_code;
+	my $code := self.exit_value;
 	pir::exit($code);
 }
 
@@ -86,19 +88,26 @@ sub exit($status) {
 	).throw;
 }
 
-my method get_interp_info() {
-	my $interp := pir::getinterp__P();
-	
-	self.args($interp[2]);
-	self.executable($interp[9]);
+# Copy fields from another instance.
+our method incorporate($other) {
+	self.args($other.args);
+	self.at_exit_queue($other.at_exit_queue);
+	self.at_init_queue($other.at_init_queue);
+	self.at_load_queue($other.at_load_queue);
+	self.env($other.env);
+	self.executable($other.executable);
+	self.exit_value($other.exit_value);
+	self.process_id($other.process_id);
+	self.stderr($other.stderr);
+	self.stdin($other.stdin);
+	self.stdout($other.stdout);
+	self.uid($other.uid);
 }
 
 our method _init_(@pos, %named) {
 	self.at_exit_queue(DependencyQueue.new);
 	self.at_init_queue(DependencyQueue.new);
 	self.at_load_queue(DependencyQueue.new);
-	
-	self.env(pir::new__PS('Env'));
 	
 	self._init_args_(@pos, %named);
 }
@@ -111,15 +120,6 @@ method main(@args) {
 	}
 	
 	&main(@args);
-}
-
-our method process_id() {
-	if pir::isnull(self._process_id) {
-		my &getpid := pir::dlfunc__PPSS(pir::null__P(), 'getpid', 'I');
-		self._process_id( &getpid() );
-	}
-	
-	self._process_id;		
 }
 
 my method process_queue($queue, :$name!) {
@@ -140,16 +140,65 @@ my method process_queue($queue, :$name!) {
 }
 
 method run(@args?) {
+
+	if @args {
+		self.args(@args);
+	}
+	else {
+		@args := self.args;
+	}
+
+	@args := @args.clone;
+
+	my $*PROGRAM_NAME := @args.elements
+		?? @args.shift
+		!! '<anonymous>';
+	my @*ARGS := @args;
+	#my $*CWD := '';
+	my %*ENV := self.env;
+	my $*EXECUTABLE_NAME := self.executable;
+	my $*PID := self.process_id;	# May be unset.
+	#my $*UID := self.uid;		# May be unset.
+	my $?PERL := 'nqp-rx';
+	my $?VM := 'parrot';
+	# %*OPTS	# ??
+	# @*INC ??
+
+	my $fh;
+	my %save_fh;
+
+	my $*ERR := pir::getstderr__P();
+	if pir::defined($fh := self.stderr) {
+		%save_fh<stderr> := $*ERR;
+		pir::setstderr($*ERR := $fh);
+	}
+	
+	my $*IN := pir::getstdin__P();
+	if pir::defined($fh := self.stdin) {
+		%save_fh<stdin> := $*IN;
+		pir::setstdin($*IN := $fh);
+	}
+
+	my $*OUT := pir::getstdout__P();
+	if pir::defined($fh := self.stdout) {
+		%save_fh<stdout> := $*OUT;
+		pir::setstdout($*OUT := $fh);
+	}
+	
 	my $exception;
 
 	try {	
 		self.main(@args);
-
+		
 		CATCH {
 			$exception := $!;
 		}
 	};
-	
+
+	pir::setstderr(%save_fh<stderr>) if %save_fh.contains( <stderr> );
+	pir::setstdin(%save_fh<stdin>)   if %save_fh.contains( <stdin> );
+	pir::setstdout(%save_fh<stdout>) if %save_fh.contains( <stdout> );
+
 	if $exception.defined {
 		unless $exception.type == Exception::ProgramExit.type {
 			$exception.rethrow;
@@ -158,71 +207,12 @@ method run(@args?) {
 		self.exit_value($exception.payload);
 	}
 	
-	self.do_exit;
-}
-
-my method stderr($value?) {
-	if $value.defined {
-		pir::setstderr($value);
-		self;
-	}
-	else {
-		pir::getstderr__P;
-	}
-}
-
-my method stdin($value?) {
-	if $value.defined {
-		pir::setstdin($value);
-		self;
-	}
-	else {
-		pir::getstdin__P();
-	}
-}
-
-my method stdout($value?) {
-	if $value.defined {
-		pir::setstdout($value);
-		self;
-	}
-	else {
-		pir::getstdout__P();
-	}
+	my $result := self.do_exit;
+	
+	$result;
 }
 
 ##############################################
-
-sub add_call($queue, $call, %opts, $caller_nsp) {
-# Adds a C< $call > with C< @prereqs > to C< $queue >, tagged with key C< $name >. When no call 
-# is specified, calculates a reasonable default using any of the C< @sub_names > defined in the 
-# C< $caller_nsp > namespace.
-
-# For example, when the caller calls:
-
-	# Program::init(:after('Dumper'));
-	
-# The value of C< $queue > is determined by it being a call to C< init >. The C< $call > will
-# be undef, because no Sub or name was given. The C< $name > will be undef because no
-# C< :name > was given. The C< @prereqs > will be ( 'Dumper' ), and C< $caller_nsp > will be 
-# captured by C< init >. The C< @sub_names > will be C< ( '_init' ) >.
-
-	my $name := %opts<name> ?? %opts<name> !! Parrot::namespace_name($caller_nsp);
-	
-	if %opts<done> {
-		$queue.mark_as_done($name);
-	}
-	else {
-		my @prereqs := %opts<after>;
-		
-		if isa(@prereqs, 'String') {
-			@prereqs := Array::new(@prereqs);
-		}
-
-		$call := determine_call($call, $caller_nsp, Array::new('_load', '_initload'));
-		$queue.add_entry($name, $call, @prereqs);
-	}
-}
 
 sub call($call) {
 # Calls the Sub or MultiSub PMC passed as C<$call>, or, if C<$call> 

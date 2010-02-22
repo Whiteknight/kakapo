@@ -29,25 +29,11 @@ sub redo() {
 	Control::LoopRedo.new(:message('Uncaught REDO control exception')).throw;
 }
 
-sub super($method, *@args, *%opts) {
-	super_($method, @args, %opts);
+sub super($method, *@pos, *%named) {
+	super_($method, @pos, %named);
 }
 
-sub super_($method, @args, %opts) {
+sub super_($method, @pos, %named) {
 	my $self := Parrot::get_self();
-	my $class := pir::class__PP($self);
-	my @mro := $class.inspect('all_parents');
-	
-	if @mro == 1 {
-		die("Call to 'super' on object with no parent classes");
-	}
-	
-	my $parent := @mro[1];
-	my &sub := $parent.find_method($method);
-
-	if pir::isnull(&sub) {
-		Exception::MethodNotFound.new(:message("Method '$method' not found")).throw;
-	}
-	
-	Parrot::call_method_($self, &sub, @args, %opts);
+	P6object::SUPER_($self, $method, @pos, %named);
 }

@@ -105,6 +105,30 @@ method TOMORROW() {
 method IDONTGIVEADARN() {
 }
 
+method SUPER($method, *@pos, *%named) {
+	self.SUPER_($method, @pos, %named);
+}
+
+method SUPER_($method, @pos, %named) {
+	#my $class := self.HOW.get_parrotclass;
+	my $class := pir::class__PP(self);
+	my @mro := $class.inspect('all_parents');
+	
+	if @mro == 1 {
+		die("Call to 'super' on object with no parent classes");
+	}
+	
+	my $parent := @mro[1];
+	my &sub := $parent.find_method($method);
+
+	if pir::isnull(&sub) {
+		Exception::MethodNotFound.new(:message("Method '$method' not found")).throw;
+	}
+	
+	Parrot::call_method_(self, &sub, @pos, %named);
+	
+}
+
 method clone() {
 	pir::clone__PP(self);
 }
@@ -195,7 +219,7 @@ method _init_named_(%named) {
 			Parrot::call_method(self, $name, %named{$name});
 		}
 		else {
-			pir::die("No accessor defined for attribute '$name'.");
+			pir::die("Accessor not found for attribute '$name'.");
 		}
 	}
 }

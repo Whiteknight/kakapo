@@ -48,6 +48,7 @@ sub _pre_initload() {
 	# List all the PMC types here, with the methods to export. I'll sort them out later.
 	my %methods_for;
 	%methods_for<Exception>		:= <can clone defined does isa new>;
+#	%methods_for<FileHandle>		:= <can clone defined does isa new>;
 	%methods_for<Float>			:= <can clone defined does isa>;
 	%methods_for<Hash>			:= <can clone defined does isa>;
 	%methods_for<Integer>			:= <can clone defined does isa>;
@@ -56,6 +57,7 @@ sub _pre_initload() {
 	%methods_for<ResizablePMCArray>	:= <can clone defined does isa new>;
 	%methods_for<ResizableStringArray>	:= <can clone defined does isa new>;
 	%methods_for<String>			:= <can clone defined does >; #! not new defined isa
+#	%methods_for<StringHandle>		:= <can clone defined does isa new>;
 	%methods_for<Sub>			:= <can clone defined does isa>; #! not new
 	%methods_for<Undef>			:= <can clone does isa new>; #! not defined
 	

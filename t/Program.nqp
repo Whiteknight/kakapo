@@ -20,6 +20,7 @@ INIT {
 MAIN();
 
 sub MAIN() {
+	
 	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
 	$proto.suite.run;
 }
@@ -70,4 +71,42 @@ method test_init_queue() {
 	$pgm.at_init(Test::InitQueue::set_b, 'b');
 
 	$pgm.do_init();
+}
+
+class Test::Streams is Program {
+	method main(@args) {
+		say("12345");
+	}
+	
+	method do_exit() {
+		self.exit_value;
+	}
+}
+
+method test_run_switches_streams() {
+	verify_that( "'run' swaps in its std* parameters" );
+	
+	my $original_stdout := pir::getstdout__P();
+	
+	my $new_stdout := Parrot::new('StringHandle');
+	$new_stdout.open('any value', 'w');
+	
+	my $sut := Test::Streams.new(
+		:stdout($new_stdout)
+	);
+	
+	fail_unless( $sut.stdout =:= $new_stdout,
+		'Ctor should stash stdout value');
+	
+	$sut.run();
+
+	fail_unless(pir::getstdout__p() =:= $original_stdout,
+		'Original file should have been restored');
+	fail_if($sut.stdout =:= $original_stdout,
+		'Program should keep its own');
+		
+	$new_stdout.open('different name');
+
+	fail_unless( $new_stdout.readall eq "12345\n",
+		'Should be able to read back stdout');
 }

@@ -7,47 +7,27 @@ sub is_loaded() {
 	1;
 }
 
-# This sub is called directly by code in kakapo_top_pir.tmpl to perform 'very first thing' 
-# initialization. The intent is to (1) ensure that the environment is initialized, and (2) to 
-# directly initialize those modules that are prerequisites of just about every other module 
-# in the system.
-
-sub _pre_initload() {
-say("Base pre-initload");
-	if our $_Pre_initload_done { return 0; }
-	$_Pre_initload_done := 1;
-	
-	unless Opcode::defined(say) {
-		Opcode::load_language('nqp');
-	}
-	
-	unless Opcode::defined(P6object::HOW) {
-		Opcode::load_bytecode('P6object.pbc');
-	}	
+sub get_preinit_subs() {
 
 	# Note: Order is crucial.
-	Global::_pre_initload();
-	Opcode::_pre_initload();
-	Parrot::_pre_initload();
-	Pir::_pre_initload();
-	Array::_pre_initload();	# Compiling 'new' wants 'join'
-	Kakapo::Pmc::COMMON::_pre_initload();
-	String::_pre_initload();
-	Exception::_pre_initload();
-	Syntax::_pre_initload();
 	
-	#P6metaclass::_pre_initload();
-	#P6object::_pre_initload();
-	
+	<	Global
+		Opcode
+		Parrot
+		Pir
+		Array
+		Kakapo::Pmc::COMMON
+		String
+		Exception
+		Syntax
+	>;
 }
 
 sub library_init_done() {
-	say("Library init done");
-	# Base does nothing.
+	# Nothing.
 }
 
 sub library_load_done() {
-	say("Library load done");
-	# Base does nothing.
+	# Nothing.
 }
 

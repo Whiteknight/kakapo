@@ -40,3 +40,14 @@ method test_caller() {
 	fail_unless( ~$tc.a(2) eq 'a', 'caller(2) should return a');
 	fail_unless( ~$tc.a(3) eq 'test_caller', 'caller(3) should return this method');
 }
+
+class Test::New {
+	method x() { return 10; }
+}
+
+method test_new() {
+	my $test := Parrot::new('Test::New');
+	
+	fail_if( pir::isnull($test), 'Parrot::new should return new object' );
+	fail_unless( $test.x == 10, 'New object should be of correct pmc type' );
+}

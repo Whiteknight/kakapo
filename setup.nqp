@@ -53,12 +53,14 @@ sub MAIN(@argv) {
 	%kakapo<copy_templates><src/Internals/kakapo_top.pir>		:= <src/Internals/kakapo_top.pir_tmpl>;
 	
 
-	%kakapo<pir_nqp-rx><src/Internals/Base.pir>				:= <src/Internals/Base.nqp>;
-	%kakapo<pir_nqp-rx><src/Internals/Full.pir>				:= <src/Internals/Full.nqp>;
+	%kakapo<pir_nqp-rx><src/Internals/Base.pir>	:= <src/Internals/Base.nqp>;
+	%kakapo<pir_nqp-rx><src/Internals/Full.pir>	:= <src/Internals/Full.nqp>;
 
 	my @base_pir_files := <
 		src/Global.pir
 		src/Syntax.pir
+
+		src/Internals/Kakapo.pir 
 		
 		src/Parrot/Opcode.pir
 		src/Parrot/Parrot.pir

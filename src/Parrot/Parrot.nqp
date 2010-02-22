@@ -316,3 +316,11 @@ sub namespace_name($nsp) {
 	@parts.shift;
 	return @parts.join('::');
 }
+
+sub new($pmc, %args?) {
+	my $key := Key.new_($pmc.split('::'));
+	
+	%args.elements == 0
+		?? pir::new__PP($key)
+		!! pir::new__PPP($key, %args);
+}
