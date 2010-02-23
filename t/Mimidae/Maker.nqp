@@ -69,3 +69,10 @@ method test_mock_new_class() {
 	fail_if( pir::isnull($mc), 'Result must not be null');
 	fail_unless( $mc.isa('P6object'), 'Result must be of the correct class');
 }
+
+method test_named_mock() {
+	my $mc := $!sut.mock('MockString', :of('String'));
+	
+	fail_unless( pir::typeof__SP($mc.new) eq 'MockString', 
+		'Given name should be class name');
+}

@@ -11,7 +11,7 @@ method next_id() {
 	$!next_id++;
 }
 
-our method mock(:$of) {
+our method mock($name?, :$of) {
 	my $parent_class := 'P6object';
 	
 	for <Class NameSpace PMCProxy String> {
@@ -23,8 +23,10 @@ our method mock(:$of) {
 
 	$parent_class := P6metaclass.get_parrotclass($of);
 	
-	my $name := 'Mock::' ~ self.next_id ~ '::' 
+	unless $name {
+		$name := 'Mock::' ~ self.next_id ~ '::' 
 		~ (pir::isnull($parent_class) ?? '<anonymous>' !! ~$parent_class);
+	}
 		
 	my $mock := P6metaclass.new_class($name, :parent('Mimus::SuiGeneris'));
 	P6metaclass.add_parent($mock, $parent_class);
