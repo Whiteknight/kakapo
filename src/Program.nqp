@@ -164,6 +164,23 @@ method run(@args?) {
 	# %*OPTS	# ??
 	# @*INC ??
 
+	my $i := 0;
+	my %*VM;
+	my $interp := pir::getinterp__P();
+	
+	for <	classname 
+		compreg
+		argv
+		nci_funcs
+		interpreter
+		dyn_libs
+		config
+		lib_paths
+		pbc_libs
+		executable> {
+		%*VM<~$_> := $interp[$i++];
+	}
+	
 	my $fh;
 	my %save_fh;
 

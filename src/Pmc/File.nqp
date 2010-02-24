@@ -74,16 +74,6 @@ sub rename($from, $to) {
 }
 
 sub slurp($path) {
-	NOTE("Slurping contents of file: ", $path);
-	
-	my $data := Q:PIR {
-		$P0 = new 'FileHandle'
-		$P1 = find_lex '$path'
-		$S0 = $P0.'readall'($P1)
-		%r = box $S0
-	};
-	
-	NOTE("done");
-	DUMP($data);
-	return $data;
+	my $fh := pir::new__PS('FileHandle');
+	my $data := $fh.readall($path);
 }

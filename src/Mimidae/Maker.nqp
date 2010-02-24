@@ -3,12 +3,10 @@
 
 class Mimus::Maker;
 
-has $!next_id;
-
 method next_id() {
-	$!next_id := 0
-		unless $!next_id;
-	$!next_id++;
+	our $_Next_id := 0
+		unless $_Next_id;
+	$_Next_id++;
 }
 
 our method mock($name?, :$of) {
@@ -28,6 +26,7 @@ our method mock($name?, :$of) {
 		~ (pir::isnull($parent_class) ?? '<anonymous>' !! ~$parent_class);
 	}
 		
+	say("Creating class: $name");
 	my $mock := P6metaclass.new_class($name, :parent('Mimus::SuiGeneris'));
 	P6metaclass.add_parent($mock, $parent_class);
 

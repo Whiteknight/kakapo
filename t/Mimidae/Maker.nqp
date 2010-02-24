@@ -1,4 +1,4 @@
-#! parrot-nqp
+#! /usr/bin/env parrot-nqp
 # Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
@@ -24,8 +24,7 @@ MAIN();
 sub MAIN() {
 	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
 	$proto.set_up;
-	$proto.test_mock_logs_calls;
-	#$proto.suite.run;
+	$proto.suite.run;
 }
 
 method set_up() {
@@ -75,4 +74,15 @@ method test_named_mock() {
 	
 	fail_unless( pir::typeof__SP($mc.new) eq 'MockString', 
 		'Given name should be class name');
+}
+
+method test_named_mock_gets_protoobject() {
+	verify_that( 'A protoobject is added to the namespace tree for a named mock' );
+	
+	$!sut.mock('NamedMock::ProtoObject');
+	fail_if( pir::isnull(NamedMock::ProtoObject), 'Protoobject must be created');
+	fail_unless( pir::isa(NamedMock::ProtoObject, 'P6protoobject'),
+		'Protoobject must be installed into namespace');
+	fail_unless(NamedMock::ProtoObject.new().isa('NamedMock::ProtoObject'),
+		'Created objects must report correct type');
 }

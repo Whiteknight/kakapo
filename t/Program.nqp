@@ -88,7 +88,7 @@ method test_run_switches_streams() {
 	
 	my $original_stdout := pir::getstdout__P();
 	
-	my $new_stdout := Parrot::new('StringHandle');
+	my $new_stdout := Parrot.new('StringHandle');
 	$new_stdout.open('any value', 'w');
 	
 	my $sut := Test::Streams.new(

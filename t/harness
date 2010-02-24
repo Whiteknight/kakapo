@@ -66,49 +66,68 @@ for (@ARGV) {
 	}
 }
 
-# Turn directories into expanded trees.
-my @test_files = map { all_in($_) } sort @files;
+my @include = map qr/$_/, (
+	qr{ \. nqp $ }x,
+);
 
-# adapted to return only sub-files ending in '.nqp'
-my $ext = 'nqp';
+sub take_file {
+	my $path = shift;
+	my @blocks = map { $path =~ m/$_/ } @include;
+	
+	return +@blocks;
+}
+	
+our @exclude = map { qr/\Q$_\E/; } (
+	qw(
+		/.
+		/..
+		.svn
+		CVS
+		.git
+	),
+);
+
+sub skip_file {
+	my $path = shift;
+
+	if (! -r $path) { 
+		return 1;
+	}
+	
+	my @blocks = map { $path =~ m/$_/ } @exclude;	
+	return +@blocks;
+}
 
 sub all_in {
 	my $start = shift;
 	
-	if (! -r $start) {
-		warn "Bad test: $start - $!";
-		return ();
+	my @files = ();
+
+	if ( $start =~ /^!(.*)/ ) {
+		push @exclude, qr{\Q$1\E};
+		return @files;
 	}
 	
-	return $start unless -d $start;
-
-	my @skip = ( File::Spec->updir, File::Spec->curdir, qw( .svn CVS .git ) );
-	my %skip = map {($_,1)} @skip;
-
-	my @hits = ();
-
-	if ( opendir( my $dh, $start ) ) {
-		my @dir_files = sort readdir $dh;
-		closedir $dh or die $!;
+	if ( skip_file($start) ) {
+		return @files;
+	}
+	
+	if ( -d $start ) {
+		if ( opendir(my $dh, $start) ) {
+			my @dir_files = sort readdir $dh;
+			closedir $dh or die $!;
 		
-		for my $file ( @dir_files ) {
-			next if $skip{$file};
-			my $currfile = File::Spec->catfile( $start, $file );
-			
-			if ( -d $currfile ) {
-				push( @hits, all_in( $currfile ) );
-			}
-			else {
-				push( @hits, $currfile ) 
-					if $currfile =~ /\.nqp$/;
+			for my $name ( @dir_files ) {
+				my $path = File::Spec->catfile( $start, $name );
+				push( @files, all_in( $path ));
 			}
 		}
 	}
-	else {
-		warn "$start: $!\n";
+	elsif ( take_file( $start )) {
+		push( @files, $start );
 	}
 
-	return @hits;
+	return @files;
 }
 
 sub exec_test {
@@ -133,4 +152,8 @@ my %args = (
 	verbosity	=> $verbosity,
 );
 
+# Turn directories into expanded trees.
+my @test_files = map { all_in($_) } sort @files;
+
 my $harness  = TAP::Harness->new( \%args )->runtests(@test_files);
+

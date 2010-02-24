@@ -1,7 +1,7 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module Parrot;
+class Parrot;
 # Provides access to low-level functions of the Parrot VM.
 
 sub _pre_initload() {
@@ -317,7 +317,7 @@ sub namespace_name($nsp) {
 	return @parts.join('::');
 }
 
-sub new($pmc, %args?) {
+method new($pmc, %args?) {
 	my $key := Key.new_($pmc.split('::'));
 	
 	%args.elements == 0
