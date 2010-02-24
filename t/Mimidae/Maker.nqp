@@ -23,8 +23,9 @@ MAIN();
 
 sub MAIN() {
 	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
-	$proto.set_up;
 	$proto.suite.run;
+#~ $proto.set_up;
+#~ $proto.test_mock_gets_parent_methods();
 }
 
 method set_up() {
@@ -85,4 +86,22 @@ method test_named_mock_gets_protoobject() {
 		'Protoobject must be installed into namespace');
 	fail_unless(NamedMock::ProtoObject.new().isa('NamedMock::ProtoObject'),
 		'Created objects must report correct type');
+}
+
+class Test::Mock::Parent {
+	method a() { 1; }
+	method b() { 1; }
+	method c() { 1; }
+}
+
+class Test::Mock::Child is Test::Mock::Parent {
+	method d() { 1; }
+	method e() { 1; }
+}
+
+method test_mock_gets_parent_methods() {
+	verify_that( 'Inherited methods are also mocked' );
+	
+	$!sut.mock('Mock::Child', :of(Test::Mock::Child));
+	my $class := P6metaclass.get_parrotclass('Mock::Child');
 }

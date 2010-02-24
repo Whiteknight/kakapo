@@ -29,14 +29,12 @@ our method mock($name?, :$of) {
 		~ (pir::isnull($parent_class) ?? '<anonymous>' !! ~$parent_class);
 	}
 		
-	say("Creating class: $name");
 	my $mock := P6metaclass.new_class($name, :parent('Mimus::SuiGeneris'));
 	P6metaclass.add_parent($mock, $parent_class);
 
 	my $parrotclass := P6metaclass.get_parrotclass($mock);
 	
 	my @methods := self.find_methods_of($parent_class);
-	say("Mocking methods: ", @methods.join(', '));
 	
 	for self.find_methods_of($parent_class) -> $method {
 		self.mock_method($parrotclass, $method);
@@ -57,17 +55,33 @@ my method find_methods_of($class, :$root = 'P6object') {
 	die( '$root parameter must be a classname or a class object' )
 		unless ! pir::isnull($root) && $root.isa('Class');
 	
-	my %parent_methods := $root.methods;
-	my %class_methods :=$class.methods;
+	my %root_methods := $root.methods;
+	my %mock_methods;
+
+	my @mro := $class.inspect('all_parents');
 	
-	my @methods;
+	my %parent_methods;
+	my $parent;
 	
-	for %class_methods {
-		@methods.push(~ $_)
-			unless %parent_methods.contains(~ $_);
+	while @mro {
+		$parent := @mro.shift;
+		
+		last() if $parent =:= $root;
+		%parent_methods := $parent.methods;
+		
+		for %parent_methods {
+			if %mock_methods.contains( ~ $_ )
+				|| %parent_methods{ $_ } =:= %root_methods{ $_ }
+				{
+				next();
+			}
+			
+			%mock_methods{ ~$_ } := %parent_methods{ ~ $_ };
+		}
+		
 	}
 	
-	@methods;
+	%mock_methods.keys;
 }
 
 my method mock_method($parrotclass, $method) {
