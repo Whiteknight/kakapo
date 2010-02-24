@@ -66,9 +66,14 @@ our sub _pre_initload() {
 # every exported symbol. This is more to support L<C< use >>-ing a particular symbol than anything else,
 # but it is a valid import tag.
 our sub export($symbol, *@symbols, :$as?, :$namespace?, :@tags?) {
-	unless @symbols { @symbols := Array::empty(); }
-	@symbols.unshift($symbol);
-	if ! Opcode::isa(@tags, 'ResizablePMCArray') { @tags := Array::new(@tags); }
+	if pir::isa__IPS($symbol, 'String') {
+		@symbols.unshift($symbol);
+	}
+	else {
+		@symbols := $symbol;	# Array: <name name name>
+	}
+
+	if ! pir::isa__IPS(@tags, 'ResizablePMCArray') { @tags := Array::new(@tags); }
 	elsif +@tags == 0 { @tags.push('DEFAULT'); }
 
 	my $source_nsp := Opcode::defined($namespace)
