@@ -11,8 +11,15 @@ method contains($name) {
 	|| !pir::isnull__IP(self.find_namespace($name));
 }
 
-method string_name(:$hll) {
-	my @parts := self.get_name;	
-	@parts.shift unless $hll;
-	@parts.join('::');
+method string_name(:$format, :$with_hll) {
+	$format := $format // 'perl6';
+	
+	my @parts := self.get_name;
+	my $delim := ($format eq 'pir') ?? "'; '" !! '::';
+
+	@parts.shift unless $with_hll;
+	
+	($format eq 'pir') 
+		?? "['" ~ @parts.join($delim) ~ "']"
+		!! @parts.join('::');
 }

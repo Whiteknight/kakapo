@@ -139,7 +139,12 @@ my method process_queue($queue, :$name!) {
 	$queue.reset;
 }
 
-method run(@args?) {
+method run(*@args) {
+	if @args.elements == 1
+		&& ! @args[0].isa('String')
+		&& @args[0].does('array') {
+		@args := @args.shift;
+	}
 
 	if @args {
 		@!args := @args;
@@ -178,7 +183,7 @@ method run(@args?) {
 		lib_paths
 		pbc_libs
 		executable> {
-		%*VM<~$_> := $interp[$i++];
+		%*VM{~$_} := $interp[$i++];
 	}
 	
 	my $fh;

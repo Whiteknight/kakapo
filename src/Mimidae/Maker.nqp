@@ -10,8 +10,11 @@ method next_id() {
 }
 
 our method mock($name?, :$of) {
-	my $parent_class := 'P6object';
+	die( 'Error: :of(null) - Attempting to create mock of uninitialized class?' )
+		if pir::isnull($of);
 	
+	my $parent_class := 'P6object';
+
 	for <Class NameSpace PMCProxy String> {
 		if $of.isa(~ $_) {
 			$parent_class := $of;
@@ -31,6 +34,9 @@ our method mock($name?, :$of) {
 	P6metaclass.add_parent($mock, $parent_class);
 
 	my $parrotclass := P6metaclass.get_parrotclass($mock);
+	
+	my @methods := self.find_methods_of($parent_class);
+	say("Mocking methods: ", @methods.join(', '));
 	
 	for self.find_methods_of($parent_class) -> $method {
 		self.mock_method($parrotclass, $method);

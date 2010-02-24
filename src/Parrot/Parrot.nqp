@@ -5,22 +5,23 @@ class Parrot;
 # Provides access to low-level functions of the Parrot VM.
 
 sub _pre_initload() {
-	export(
-		'call_method',	'call_method_', 
-		'call_sub',		'call_sub_', 
-		'call_tuple_method',	'call_tuple_method_', 
-		'call_tuple_sub',	'call_tuple_sub_', 
-		:tags('CALL')
-	);
+	export(<
+		call_method		call_method_
+		call_sub		call_sub_
+		call_tuple_method	call_tuple_method_
+		call_tuple_sub	call_tuple_sub_
+		>,  :tags('CALL'));
 	
-	export( 'caller', 'caller_namespace', :tags('CALLER'));
+	export(<
+		caller 
+		caller_namespace
+		>, :tags('CALLER'));
 	
-	export(
-		'caller_namespace', 
-		'get_hll_namespace',
-		'namespace_name', 
-		:tags('NAMESPACE')
-	);
+	export(<
+		caller_namespace 
+		get_hll_namespace
+		namespace_name
+		>, :tags('NAMESPACE'));
 }
 
 sub caller($index? = 1) {
@@ -308,13 +309,9 @@ sub key_(@parts) {
 }
 
 sub namespace_name($nsp) {
-	if Opcode::isa($nsp, 'String') {
-		return $nsp;
-	}
-	
-	my @parts := $nsp.get_name;
-	@parts.shift;
-	return @parts.join('::');
+	pir::isa($nsp, 'String') 
+		?? $nsp
+		!! $nsp.string_name;
 }
 
 method new($pmc, %args?) {

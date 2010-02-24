@@ -110,3 +110,50 @@ method test_run_switches_streams() {
 	fail_unless( $new_stdout.readall eq "12345\n",
 		'Should be able to read back stdout');
 }
+
+class Test::Dynamic is Program {
+	method main(@args) {
+		my %results;
+		
+		for @args {
+			%results{~ $_} := pir::find_dynamic_lex__PS(~ $_);
+		}
+		
+		exit(%results);
+	}
+	
+	method do_exit() {
+		self.exit_value;
+	}
+}
+
+method test_dynamic_vars() {
+	verify_that( 'The various $*DYNAMIC_VARS get set when running' );
+	
+	my $fetch := Test::Dynamic.new;
+	
+	my @args := <
+		thisProgram
+		$*PROGRAM_NAME
+		@*ARGS
+		%*ENV
+		$*EXECUTABLE_NAME
+		$*PID
+		$?PERL
+		$?VM
+		%*VM
+	>;
+	my %value := $fetch.run(@args);
+	
+	fail_unless( %value<$*PROGRAM_NAME> eq @args.shift,
+		'Program name should be this script.');
+	fail_unless( %value<@*ARGS>.join(' ') eq @args.join(' '),
+		'Program @*ARGS should be the list, minus program name.');
+	#fail_unless( %value<%*ENV><PATH> ne '', 'Path must be in env' );
+	#fail_unless( %value<$*EXECUTABLE_NAME> ne '', 'Executable name must be set' );
+	#fail_unless( %value<$*PID> ne '', 'Process id must be set' );
+	fail_unless( %value<$?PERL> eq 'nqp-rx', 'Perl should be nqp' );
+	fail_unless( %value<$?VM> eq 'parrot', 'VM should be parrot' );
+	fail_unless( %value<%*VM><lib_paths> == 5, '%*VM<lib_paths> should have 5 entries' );
+		
+}
