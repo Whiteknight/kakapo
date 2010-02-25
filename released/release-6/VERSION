@@ -1,0 +1,29 @@
+# Kakapo release-6 #
+
+
+## Status ##
+
+Kakapo is in 'beta' status. Both the base and full libraries are usable, although the full 
+library is still missing the Matcher functions.
+
+More detailed status is available on the Google Code page: http://code.google.com/p/kakapo-parrot/
+
+## Changes ##
+
+ * release-6 (25 Feb, 2010)
+
+   * Replaced '.elements' with '.elems'.
+   * Added many standard subs and methods in Array. (map, reduce, grep, cat, etc.)
+   * Added Mimidae library, a mock generator.
+
+ * release-5 (20 Feb, 2010)
+ 
+   * Added Global::inject_root_symbol(). 
+   * Created a set of syntax helpers in Syntax.nqp, including 'last()', 'next()', and 'redo()'.
+   * Added syntax subs in P6meta so that 'has()', 'has_vtable()' and 'extends()' are global keywords.
+   * Added krt0.pbc to build targets in setup.nqp.
+   * Added 'super()' and 'super_()' functions.
+   * Added 'caller' in Parrot (:tags('CALLER') with caller_namespace)
+   * Redesigned Program to be a class instead of a module.
+   * Added tests for Program, Parrot.
+
