@@ -198,36 +198,28 @@ method get_string() {
 	Class::name_of(self) ~ ' @' ~ self.WHERE;
 }
 
-method _init_(@pos, %named) {
-	# First, set up the default data
-	# ...
-
-	# Accept args.
-	self._init_args_(@pos, %named);
+method _init_obj(*@pos, *%named) {
+	self._init_args(|@pos, |%named);
 }
 
-method _init_args_(@pos, %named) {
-	self._init_named_(%named);
-	self._init_positional_(@pos);
-}
-
-method _init_named_(%named) {
+method _init_args(*@pos, *%named) {
+	if +@pos {
+		die("Default _init_obj cannot handle position parameters.");
+	}
+	
 	for %named {
-		my $name := ~ $_;
-
-		if Opcode::can(self, $name) {
-			Parrot::call_method(self, $name, %named{$name});
+		if pir::can__IPS(self, $_.key) {
+			Parrot::call_method(self, $_.key, $_.value);
 		}
 		else {
-			pir::die("Accessor not found for attribute '$name'.");
+			die("No accessor method '" ~ $_.key ~ "' for class "
+				~ pir::class__PP(self).get_namespace.string_name
+			);
 		}
 	}
-}
-
-method _init_positional_(@pos) {
-	if +@pos {
-		Program::die("Don't know what to do with positional parameters. Define your own 'init_' method to handle them.");
-	}
+	
+	# IMPORTANT!
+	self;
 }
 
 method isa($type) {
@@ -235,13 +227,8 @@ method isa($type) {
 }
 
 method new(*@pos, *%named) {
-	self.new_(@pos, %named);
-}
-
-method new_(@pos, %named) {
 	my $class := Opcode::getattribute(self.HOW, 'parrotclass');
 	my $new_object := pir::new__PP($class);
 
-	$new_object._init_(@pos, %named);
-	$new_object;
+	$new_object._init_obj(|@pos, |%named);
 }

@@ -36,12 +36,14 @@ my method already_added($name) {
 		|| self.added.contains($name);
 }
 
-method _init_positional_(@pos) {
+method _init_obj(*@pos, *%named) {
 	self.locked(0);
-	
-	for @pos {
-		self.mark_as_done(~ $_);
+
+	while @pos {
+		self.mark_as_done: @pos.shift;
 	}
+	
+	self._init_args(|@pos, |%named);
 }
 
 our method is_empty() {

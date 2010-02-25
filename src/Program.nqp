@@ -104,12 +104,12 @@ our method incorporate($other) {
 	$!uid			:= $other.uid;
 }
 
-our method _init_(@pos, %named) {
+our method _init_obj(*@pos, *%named) {
 	$!at_exit_queue := DependencyQueue.new;
 	$!at_init_queue :=DependencyQueue.new;
 	$!at_load_queue := DependencyQueue.new;
 	
-	self._init_args_(@pos, %named);
+	self._init_args(|@pos, |%named);
 }
 
 method main(@args) {

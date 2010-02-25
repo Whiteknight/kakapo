@@ -3,18 +3,18 @@
 
 class UnitTest::Listener {
 	method add_error($failure)	{ }
-	method add_failure($failure) { }
-	method end_test($test)	{ }
-	method start_test($test)	{ }
+	method add_failure($failure)	{ }
+	method end_test($test)		{ }
+	method start_test($test)		{ }
 }
 
-class UnitTest::Listener::TAP is UnitTest::Listener;
+class UnitTest::Listener::TAP 
+	is UnitTest::Listener;
+
+has	$!test_builder;
+
 INIT {
 	pir::load_bytecode('Test/Builder.pbc');
-	
-	use(	'P6metaclass' );
-	
-	has(	'$!test_builder', );
 }
 
 method add_error($failure) {
@@ -22,37 +22,36 @@ method add_error($failure) {
 }
 
 method add_failure($failure) {
-	self.test_builder.ok(0, self.get_test_label($failure.test_case));
-	self.test_builder.diag( $failure.fault.message );
+	$!test_builder.ok(0, self.get_test_label($failure.test_case));
+	$!test_builder.diag( $failure.fault.message );
 	self;
 }
 
 method end_test($test) {
-	self.test_builder.ok(1, self.get_test_label($test));
+	$!test_builder.ok(1, self.get_test_label($test));
 	self;
 }
 
 method get_test_label($test) {
-	if $test.verify {
-		$test.verify;
-	}
-	elsif $test.name {
-		$test.name;
-	}
-	else {
-		'';
-	}
+	$test.verify || $test.name || '';
 }
 
-method _init_(@pos, %named) {
-	self._init_args_(@pos, %named);
-
-	unless pir::defined(self.test_builder) {
-		my $tb := Q:PIR { %r = new [ 'Test'; 'Builder' ] };
-		self.test_builder($tb);
-	}
+method _init_obj(*@pos, *%named) {
+	%named<test_builder> := Parrot.new('Test::Builder')
+		unless %named.contains(<test_builder>);
+	self._init_args(|@pos, |%named);
 }
 
 method plan_tests($num_tests) {
-	self.test_builder.plan($num_tests);
+	$!test_builder.plan($num_tests);
+}
+
+method test_builder($tb?) {
+	if pir::defined($tb) {
+		$!test_builder := $tb;
+		self;
+	}
+	else {
+		$!test_builder;
+	}
 }
