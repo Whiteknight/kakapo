@@ -20,7 +20,6 @@ sub _pre_initload() {
 	# NB: This one doesn't get 'append'
 	%pmcs<ResizablePMCArray>	:= <
 		bsearch
-		concat
 		contains 
 		delete 
 		elements 
@@ -33,7 +32,6 @@ sub _pre_initload() {
 	%pmcs<ResizableStringArray>	:= <
 		append 
 		bsearch
-		concat
 		contains 
 		delete 
 		elements 

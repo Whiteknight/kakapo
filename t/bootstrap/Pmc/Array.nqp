@@ -19,7 +19,7 @@ sub MAIN() {
 	
 	pir::load_bytecode($root_dir ~ '/library/kakapo_base.pbc');
 	
-	plan(14 + 28);
+	plan(14 + 26);
 
 	# Common bits (14)
 	test_new();
@@ -32,7 +32,6 @@ sub MAIN() {
 	# Specific bits
 	test_append();
 	test_bsearch();
-	test_concat();
 	test_contains();
 }
 
@@ -101,15 +100,6 @@ sub test_clone() {
 	my @a2 := @a1.clone;
 	
 	ok(pir::isa__IPS(@a2, 'ResizablePMCArray'), 'clone works');
-}
-
-sub test_concat() {
-	my @a1 := (1, 2);
-	my @a2 := (3, 4);
-	
-	is(@a1.concat(@a2), (1, 2, 3, 4), 'Concat does append');
-	is(@a1.elements, 2, 'Original unchanged');
-	
 }
 
 sub test_contains() {
