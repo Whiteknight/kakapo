@@ -78,31 +78,9 @@ our method delete($key) {
 	};
 }
 
-=begin
-=item elements() returns Integer
-
-The C< elements > method returns the count of keys stored in the Hash.
-
-=for code
-	$num_keys := %hash.elements;
-	
-=end
-
-method elements() {
+our method elements() {
 	pir::elements__IP(self);
 }
-
-=begin
-=item keys() returns Array
-
-The C< keys > method returns an array of the keys stored in the Hash. There is
-no guarantee that the order of keys is meaningful, or that the order will be the
-same from one call to the next. If order is important, sort the array.
-
-=for code
-	my @names := %hash.keys.sort;
-	
-=end
 
 our method keys() {
 	my @keys := Array::empty();

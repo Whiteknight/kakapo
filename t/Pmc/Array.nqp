@@ -1,187 +1,162 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+#! parrot-nqp
+# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 INIT {
-	pir::load_bytecode('P6object.pir');
+	# Load the Kakapo library
+	pir::load_language('parrot');
+	my $env := pir::new__PS('Env');
+	my $root_dir := $env<HARNESS_ROOT_DIR> || '.';
+	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
 }
 
-sub main() {
-
-	P6metaclass::dump_class(Kakapo::Test::Array);
-	my $tc := Kakapo::Test::Array.new();
-	$tc.run();
-	Program::exit(0);
-}
-
-module Kakapo {
-	# Tell the Kakapo runtime which library file to load.	
-	sub library_name()		{ 'kakapo_test.pbc' }
-}
-
-class Kakapo::Test::Array
-	is Testcase {
-}
-
-module NOT_BEING_USED;
+class Test::Program
+	is UnitTest::Testcase ;
 
 INIT {
-	Global::use('P6object');
-	Global::use('Matcher::Factory');
+	use(	'UnitTest::Testcase' );	
 }
 
-method test_bsearch() {
-	
-	self.note("Testing Array::bsearch() function");
-	
-	my @dense := (3, 4, 5, 6, 7, 8, 9);
-	
-	self.assert_that('Bsearching 3', Array::bsearch(@dense, 3), returns(0));
-	self.assert_that('Bsearching 4', Array::bsearch(@dense, 4), returns(1));
-	self.assert_that('Bsearching 5', Array::bsearch(@dense, 5), returns(2));
-	self.assert_that('Bsearching 6', Array::bsearch(@dense, 6), returns(3));
-	self.assert_that('Bsearching 7', Array::bsearch(@dense, 7), returns(4));
-	self.assert_that('Bsearching 8', Array::bsearch(@dense, 8), returns(5));
-	self.assert_that('Bsearching 9', Array::bsearch(@dense, 9), returns(6));
-	
-	my @sparse := (11, 13, 15, 17, 19, 21, 23, 25);
-	self.assert_that('Bsearching 10', Array::bsearch(@sparse, 10), returns(-1));
-	self.assert_that('Bsearching 12', Array::bsearch(@sparse, 12), returns(-2));
-	self.assert_that('Bsearching 14', Array::bsearch(@sparse, 14), returns(-3));
-	self.assert_that('Bsearching 16', Array::bsearch(@sparse, 16), returns(-4));
-	self.assert_that('Bsearching 18', Array::bsearch(@sparse, 18), returns(-5));
-	self.assert_that('Bsearching 20', Array::bsearch(@sparse, 20), returns(-6));
-	self.assert_that('Bsearching 22', Array::bsearch(@sparse, 22), returns(-7));
-	self.assert_that('Bsearching 24', Array::bsearch(@sparse, 24), returns(-8));
-	self.assert_that('Bsearching 26', Array::bsearch(@sparse, 26), returns(-9));
-}
+MAIN();
 
-method test_concat() {
-	
-	self.note("Testing Array::concat() function");
-
-	my @test := Array::concat();
-	self.assert_that('No args concat', @test, is(instance_of('ResizablePMCArray')));
-	self.assert_that('No args concat', @test, has(elements(0)));
-	
-	my @empty := Array::empty();
-	my @t2 := Array::concat(@empty);
-	self.assert_that('1 Empty concat', @t2, is(instance_of('ResizablePMCArray')));
-	self.assert_that('1 Empty concat', @t2, has(elements(@empty.elements)));
-	
-	my @a := (1, 2);
-
-	my @t3 := Array::concat(@a);
-	self.assert_that('1 full concat', @t3, is(instance_of('ResizablePMCArray')));
-	self.assert_that('1 full concat', @t3, has(elements(@a.elements)));
-	self.assert_that('original array', @a, has(elements(2)));
-	
-	my @t4 := Array::concat(@empty, @a);
-	self.assert_that('empty + full concat', @t4, is(instance_of('ResizablePMCArray')));
-	self.assert_that('empty + full concat', @t4, has(elements(@empty.elements + @a.elements)));
-	
-	my @t5 := Array::concat(@a, @empty);
-	self.assert_that('full + empty concat', @t5, is(instance_of('ResizablePMCArray')));
-	self.assert_that('full + empty concat', @t5, has(elements(@a.elements + @empty.elements)));
-	
-	my @b := ('a', 'b');
-
-	my @t9 := Array::concat(@a, @b);
-	self.assert_that('a + b concat', @t9, is(instance_of('ResizablePMCArray')));
-	self.assert_that('a + b concat', @t9, has(elements(@a.elements + @b.elements)));
-	
-	my @t6 := Array::concat(@b, @a);
-	self.assert_that('b + a concat', @t6, is(instance_of('ResizablePMCArray')));
-	self.assert_that('b + a concat', @t6, has(elements(@a.elements + @b.elements)));
-	
-	my @t7 := Array::concat(@a, @a);
-	self.assert_that('a + a concat', @t7, is(instance_of('ResizablePMCArray')));
-	self.assert_that('a + a concat', @t7, has(elements(@a.elements + @a.elements)));
-
-	my $undef;
-	my @c := ('', 0, $undef, No::such::symbol);
-	my $desc := 'a+b+c concat';
-	
-	my @t8 := Array::concat(@a, @b, @c);
-	self.assert_that($desc, @t8, is(instance_of('ResizablePMCArray')));
-	self.assert_that($desc, @t8, has(elements(@a.elements + @b.elements + @c.elements)));
-
-	self.assert_that($desc ~ ' element[0]', @t8[0], is(1));
-	self.assert_that($desc ~ ' element[1]', @t8[1], is(2));
-	self.assert_that($desc ~ ' element[2]', @t8[2], is('a'));
-	self.assert_that($desc ~ ' element[3]', @t8[3], is('b'));
-	self.assert_that($desc ~ ' element[4]', @t8[4], is(''));
-	self.assert_that($desc ~ ' element[5]', @t8[5], is(0));
-	self.assert_that($desc ~ ' element[6]', @t8[6], is(not(defined())));
-	
-	# This last test has to be not-defined, because NQP 'fixes' nulls in expression temps, 
-	# so I can't pass in a single-value null and have it stay null.
-	self.assert_that($desc ~ ' element[7]', @t8[7], is(not(defined())));
-}
-
-method test_contains() {
-	self.note("**NOT** testing Array::contains - it gets called from RPA and RSA, and tested by them");
+sub MAIN() {	
+	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
+	$proto.suite.run;
 }
 
 method test_elements() {
+	my @a1 := Array::new();
 	
-	self.note("Testing Array::elements function");
-	
-	my @array := Array::empty();
-	self.assert_that('New array', @array, is(instance_of('ResizablePMCArray')));
-	self.assert_that('The elements count', @array.elements, is(0));
-	self.assert_that('The Array::elements count', Array::elements(@array), is(0));
-	
-	Array::elements(@array, 4);
-	self.assert_that('The elements count', @array.elements, is(4));
-	self.assert_that('The Array::elements count', Array::elements(@array), is(4));
-}
-	
-method test_empty() {
-	
-	self.note("Testing Array::empty() factory");
-	
-	my @array := Array::empty();
-	self.assert_that('New array', @array, is(instance_of('ResizablePMCArray')));
-	self.assert_that('The elements count', @array.elements, is(0));
-	
-	@array := Array::empty(1, 2, 3);
-	self.assert_that('New array', @array, is(instance_of('ResizablePMCArray')));
-	self.assert_that('The elements count', @array.elements, is(0));
-	
+	fail_unless( @a1.elements == 0,
+		'New = empty = 0 elements');
+		
+	@a1.push(1);
+	fail_unless( @a1.elements == 1,
+		'One element test');
+		
+	@a1.elements(0);
+	my $x := @a1.shift;
+	fail_unless( pir::isnull($x),
+		'0 elements should fail to shift');
 }
 
 method test_new() {
+	my @a1 := Array::new();
 	
-	self.note("Testing Array::new() factory");
-	
-	my @array := Array::new();	
-	self.assert_that('New array', @array, is(instance_of('ResizablePMCArray')));
-	self.assert_that('The elements count', @array.elements, is(0));
-	
-	@array := Array::new(1, 2, 3);
-	self.assert_that('New array', @array, is(instance_of('ResizablePMCArray')));
-	self.assert_that('The elements count', @array.elements, is(3));
+	fail_unless( @a1.isa('ResizablePMCArray'),
+		'Array::new should return RPA');
+		
+	@a1 := ResizablePMCArray.new();
+	fail_unless( @a1.isa('ResizablePMCArray'),
+		'RPA.new should return RPA');
+		
+	@a1 := ResizableStringArray.new();
+	fail_unless( @a1.isa('ResizableStringArray'),
+		'RSA.new should return RSA');
+		
+	@a1 := Array::new(1, 2, 3, 4);
+	fail_unless( @a1.elements == 4,
+		'New should create an array from its args');
 }
+
+#~ method test_new() {
+	
+	#~ self.note("Testing Array::new() factory");
+	
+	#~ my @array := Array::new();	
+	#~ self.assert_that('New array', @array, is(instance_of('ResizablePMCArray')));
+	#~ self.assert_that('The elements count', @array.elements, is(0));
+	
+	#~ @array := Array::new(1, 2, 3);
+	#~ self.assert_that('New array', @array, is(instance_of('ResizablePMCArray')));
+	#~ self.assert_that('The elements count', @array.elements, is(3));
+#~ }
 
 method test_reverse() {
+	my @a1 := <A B C D E F>;
 	
-	self.note("Testing Array::reverse() function");
+	my $s := @a1.reverse.join;
+	fail_unless( $s eq 'FEDCBA',
+		'Reverse even array should be fedcba');
 	
-	my @forwards := Array::new(1, 2, 3, 4, 5);
-	my @backwards := Array::new(5, 4, 3, 2, 1);
+	@a1 := <L M N O P Q R>;
+	$s := @a1.reverse.join;
+	fail_unless( $s eq 'RQPONML',
+		'Reverse odd array should be rqponml');
 	
-	self.assert_that('Forwards array, reversed', Array::reverse(@forwards), equals(@backwards));
+	@a1 := <X Y>;
+	$s := @a1.reverse.join;
+	fail_unless( $s eq 'YX',
+		'Reverse short even should by yx');
+	
+	@a1 := <N N>;
+	@a1.pop;
+	$s := @a1.reverse.join;
+	fail_unless( $s eq 'N',
+		'Reverse singleton array should be n');
+	
+	@a1 := <z z>;
+	@a1.pop;
+	@a1.pop;
+	$s := @a1.reverse.join;
+	fail_unless( $s eq '',
+		'Reverse empty array is empty');
 }
 
-method test_unique() {
+method test_slice() {
+	my @a1 := (1, 2, 3, 4, 5);
 	
-	self.note("Testing Array::unique");
+	my $s := @a1.slice(:to(2)).join;
+	fail_unless( $s eq '12',
+		'Slice up to [2] should be 12' );
+	
+	$s := @a1.slice(:from(1)).join;
+	fail_unless( $s eq '2345',
+		'Slice from [1] should be 2345');
+	
+	$s := @a1.slice(:from(-3), :to(-1)).join;
+	fail_unless( $s eq '34',
+		'Slice from [-3 .. -1] should be 34');
+}
 
-	my @array := Array::new('foo', 'bar');
-	my @uniq := Array::unique(@array);
-	self.assert_that('Unique array', @uniq, equals(@array));
+method test_splice() {
+	my @a1 := (1, 2, 3, 4, 5);
+	my @a2 := <A B C D E>;
 	
-	@array.push('foo');
-	@uniq := Array::unique(@array);
-	self.assert_that('Unique array', @uniq, not(equals(@array)));
+	my $s := @a1.clone.splice(@a2.clone, :replacing(5)).join;
+	fail_unless( $s eq 'ABCDE', 
+		'Unset origin, replacing all should be ABCDE');
+
+	$s := @a1.clone.splice(@a2.clone, :from(5)).join;
+	fail_unless( $s eq '12345ABCDE', 
+		'Splice at end appends');
+	
+	$s := @a1.clone.splice(@a2.clone, :from(4), :replacing(1)).join;
+	fail_unless( $s eq '1234ABCDE',
+		'Replacing 1 at end');
+	
+	$s := @a1.clone.splice(@a2.clone, :replacing(2)).join;
+	fail_unless( $s eq 'ABCDE345',
+		'Replacing first 2 elements');
+}
+
+method test_unsort() {
+	my @array := Array::new('a', 'b', 'c', 'd');
+	my @yaarr := @array.clone.unsort;
+
+	fail_unless(@yaarr.elements == @array.elements,
+		'Should have the same # elements');
+
+	my $same := 0;
+	
+	my $index := 0;
+	while $index < @array.elements {
+		$same++
+			if @array[$index] eq @yaarr[$index];
+		$index++;
+	}
+	
+	fail_if($same == 4,
+		'Result should not be the same array (unlikely, not impossible!)');
+		
 }

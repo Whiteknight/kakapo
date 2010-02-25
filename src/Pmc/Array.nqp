@@ -1,44 +1,11 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
-=begin
-
-=NAME Array - Common subs and methods for array PMC types.
-
-=DESCRIPTION
-
-This is a collection of subs and methods that add functionality to the various 
-*Array PMC types in NQP. In many cases, the code acts as a bridge between the 
-NQP sub/method syntax and PIR opcodes. 
-
-=SYNOPSIS
-
-=begin code
-
-    %pies := Hash.new( :apple(1), :blueberry(2), :cherry(3) );
-
-    unless %pies.contains('rhubarb') { ... }	
-
-    if %pies.defined { ... }			
-
-    %pies.delete('cherry');			
-
-    $number_of_pies := %pies.elements;	
-
-    @pies := %pies.keys;
-
-    %all_pies := Hash.merge(%good_pies, %bad_pies);
-
-    %all_pies.merge(%more_pies);
-
-=end code
-=end
 
 module Array;
 
 # Special sub called when the Kakapo library is loaded or initialized to 
 # guarantee this module is already initialized during :init and :load 
 # processing.
-
 sub _pre_initload() {
 
 	our %Bsearch_compare_func;
@@ -63,6 +30,7 @@ sub _pre_initload() {
 		join
 		slice 
 		splice
+		unsort
 	>;
 	%pmcs<ResizableStringArray>	:= <
 		append 
@@ -75,6 +43,7 @@ sub _pre_initload() {
 		join
 		slice 
 		splice
+		unsort
 	>;
 	
 	my $from_nsp := pir::get_namespace__P();
@@ -98,60 +67,54 @@ sub _pre_initload() {
 	}
 }
 
-=begin
-
-=METHODS
-
-=end
-
 method append(@other) {
 	for @other {
-		self.push(~ $_);
+		self.push($_);
 	}
 }
 
-=begin 
-
-=item bsearch($value, :cmp($)?, :low($)?, :high($)?) returns Integer
-
-Binary search for C< $value > in the invocant array. The array must be sorted
-in the order implied by the comparison function used.
-
-By default, bsearch uses the "natural" ascending order of the array -- string order
-for PMC and String array types, numeric order for numeric arrays. The caller may 
-specify an alternate comparator using the C< :cmp() > option.
-
-The string labels C<< '<=>' >> and C<< 'R<=>' >> are defined aliases for the
-ascending and descending ('R' for reversed) numeric comparators. Likewise,
-the labels C< cmp > and C< Rcmp > are defined aliases for the string comparators.
-
-A user-provided function may be passed to C< :cmp() > -- just pass the Sub PMC.
-As you might expect, the function must accept two parameters and return an 
-integer value less than zero when the first parameter should appear earlier in
-the array than the second parameter.
-
-The C< :low() > and C< :high() > options may be specified to artificially restrict 
-the range of the search. By default, C< bsearch > assumes values of C< :low(0) >
-and C< :high( self.elements ) >. 
-
-If C< $value > is stored in the array, C< bsearch > returns the index where the 
-value can be found. If C< $value > is I< not > in the array, the return value is
-(-V) - 1, where V is the index where C< $value > would be inserted in order. This
-avoids trying to deal with "negative zero" indices for values that would be inserted
-at the start of the array. The mapping (-V) - 1 reverses itself.
-
-=begin code
-	my $index := @a.bsearch('needle');
-	
-	if $index < 0 {
-		insert_record(@a, -$index - 1);
-	}
-	else {
-		say("Found it at index: $index");
-	}
-=end code
-
-=end
+#=begin 
+#
+#=item bsearch($value, :cmp($)?, :low($)?, :high($)?) returns Integer
+#
+#Binary search for C< $value > in the invocant array. The array must be sorted
+#in the order implied by the comparison function used.
+#
+#By default, bsearch uses the "natural" ascending order of the array -- string order
+#for PMC and String array types, numeric order for numeric arrays. The caller may 
+#specify an alternate comparator using the C< :cmp() > option.
+#
+#The string labels C<< '<=>' >> and C<< 'R<=>' >> are defined aliases for the
+#ascending and descending ('R' for reversed) numeric comparators. Likewise,
+#the labels C< cmp > and C< Rcmp > are defined aliases for the string comparators.
+#
+#A user-provided function may be passed to C< :cmp() > -- just pass the Sub PMC.
+#As you might expect, the function must accept two parameters and return an 
+#integer value less than zero when the first parameter should appear earlier in
+#the array than the second parameter.
+#
+#The C< :low() > and C< :high() > options may be specified to artificially restrict 
+#the range of the search. By default, C< bsearch > assumes values of C< :low(0) >
+#and C< :high( self.elements ) >. 
+#
+#If C< $value > is stored in the array, C< bsearch > returns the index where the 
+#value can be found. If C< $value > is I< not > in the array, the return value is
+#(-V) - 1, where V is the index where C< $value > would be inserted in order. This
+#avoids trying to deal with "negative zero" indices for values that would be inserted
+#at the start of the array. The mapping (-V) - 1 reverses itself.
+#
+#=begin code
+#	my $index := @a.bsearch('needle');
+#	
+#	if $index < 0 {
+#		insert_record(@a, -$index - 1);
+#	}
+#	else {
+#		say("Found it at index: $index");
+#	}
+#=end code
+#
+#=end
 
 method bsearch($value, *%opts) {
 	our %Bsearch_compare_func;
@@ -209,19 +172,6 @@ method bsearch($value, *%opts) {
 	$result;
 }
 
-# FIXME: Legacy implementation that permits undef/null original. This must die.
-sub clone(@original) {
-	my @clone := Array::empty();
-	
-	if +@original {
-		for @original {
-			@clone.push($_);
-		}
-	}
-	
-	return @clone;
-}
-
 sub cmp_numeric($a, $b) { return $a - $b; }
 sub cmp_numeric_R($a, $b) { return $b - $a; }
 sub cmp_string($a, $b) { if $a lt $b { return -1; } else { return 1; } }
@@ -239,7 +189,7 @@ method concat(*@sources) {
 	
 	@result;
 }
-	
+
 method contains($item) {
 	for self {
 		if pir::iseq__IPP($item, $_) {
@@ -251,7 +201,27 @@ method contains($item) {
 }
 
 method delete($key) {
-	Opcode::delete(self, $key); 
+	Opcode::delete(self, $key);	# NB: Needs special key reference
+	self;
+}
+
+method distinct(:&cmp = Array::cmp_string) {
+	my $elements := self.elements;
+	my $i := 0;
+	my $j;
+	my $array_i;
+	
+	while $i < $elements {
+		$array_i := self[$i];
+		$i++;
+		
+		while $i < $elements && &cmp($array_i, self[$i]) == 0 {
+			self.delete($i);
+			$elements--;
+		}
+	}
+	
+	self;
 }
 
 method elements(*@value) {
@@ -260,14 +230,12 @@ method elements(*@value) {
 
 method elements_(@value) {
 	if +@value {
-		Opcode::set_integer(self, @value.shift);
+		pir::assign__vPI(self, @value.shift);
+		self;
 	}
-
-	Opcode::elements(self);
-}
-
-sub empty() {
-	Opcode::new('ResizablePMCArray');
+	else {
+		pir::elements__IP(self);
+	}
 }
 
 method is_sorted(:&compare?) {
@@ -283,88 +251,82 @@ method is_sorted(:&compare?) {
 	return 1;
 }
 
-method join($delim?) {
-	unless $delim.defined {
-		$delim := '';
-	}
-
+method join($delim? = '') {
 	pir::join__SSP($delim, self);
 }
 
 sub new(*@elements) {
-	return @elements;
+	@elements;
 }
 
-sub reverse(@original) {
-	my @result := empty();
-	
-	for @original {
-		@result.unshift($_);
+method reverse(:$from = 0, :$to) {
+	$to := self.elements unless $to.defined;
+	my $temp;
+	if $from > $to {
+		$temp := $from;
+		$from := $to;
+		$to := $temp;
+	}
+
+	while $from < $to {
+		$temp := self[$from];
+		self[$from] := self[$to];
+		self[$to] := $temp;
+		$from++;
+		$to--;
 	}
 	
-	return @result;
+	self;
 }
 
-method slice(:$from?, :$to?) {
+method slice(:$from = 0, :$to) {
 	my $elements := self.elements;
-	unless $from.defined { $from := 0; }
-	unless $to.defined { $to := $elements; }
-	
+	$to := $elements unless $to.defined;
+
 	if $from < 0	{ $from := $from + $elements; }
 	if $to < 0	{ $to := $to + $elements; }
 	
 	if $from >= $elements {
-		Program::die('$from parameter out of range: ', $from, ' exceeds # elements: ', $elements);
+		die('$from parameter out of range: ', $from, ' exceeds # elements: ', $elements);
 	}
 	
-	if $to >= $elements {
-		Program::die('$to parameter out of range: ', $from, ' exceeds # elements: ', $elements);
+	if $to > $elements {
+		die('$to parameter out of range: ', $from, ' exceeds # elements: ', $elements);
 	}
 
 	our @Empty;
 	my @slice := self.clone;
+	@slice.splice(@Empty, :from($to + 1), :replacing($elements - $to));
 	@slice.splice(@Empty, :from(0), :replacing($from));
-	
-	$to := $to - $from;
-	$to++;
-	@slice.splice(@Empty, :from($to), :replacing(@slice.elements - $to));
-	return @slice;
+	@slice;
 }
 
-# Found some kind of bug with named args in 1.7, but since pcc branch is landing,
-# there's no hope of a fix. So move all the opts to %opts, and DIY.
-method splice(@value, *%opts) {
-	my $from := %opts.contains('from') ?? %opts<from> !! 0;
-	my $replacing := %opts.contains('replacing') ?? %opts<replacing> !! 0;
-
+method splice(@value, :$from = 0, :$replacing = 0) {
 	pir::splice__vPPII(self, @value, $from, $replacing);
 	self;
 }
 
-sub unique(@original) {
-	my @result := Array::empty();
+method unsort() {
+	our &Parrot_range_rand;
 	
-	for @original {
-		my $o := $_;
-		my $found := 0;
-		
-		for @result {
-			my $match := Q:PIR {
-				
-				$P0 = find_lex '$_'
-				$P1 = find_lex '$o'
-				$I0 = cmp $P0, $P1
-				not $I0
-				%r = box $I0
-			};
-			
-			$found := $found || $match;
-		}
-		
-		unless $found {
-			@result.push($o);
-		}
+	if ! pir::defined( &Parrot_range_rand ) {
+		#$_Math_lib := pir::loadlib__PS('math_ops');
+		my $lib := pir::loadlib__PS(pir::null__S);
+		&Parrot_range_rand := pir::dlfunc__PPSS($lib, 'Parrot_range_rand', 'iiii');
 	}
 	
-	return @result;
+	my $bound := self.elements - 1;
+	my $swap;
+	my $temp;
+
+	while $bound > 0 {
+		$swap := &Parrot_range_rand(0, $bound + 1, 0);	# +1: see TT#1479
+		$swap-- if $swap > $bound;	# Rare but possible
+		$temp := self[$bound];
+		self[$bound] := self[$swap];
+		self[$swap] := $temp;
+		$bound--;
+	}
+	
+	self;
 }
