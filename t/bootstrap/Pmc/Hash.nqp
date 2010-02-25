@@ -81,13 +81,13 @@ sub test_delete() {
 
 sub test_elements() {
 	my $object := Hash.new(:a(1), :b(2), :c(3));
-	is($object.elements, 3, '3 items in hash');
+	is($object.elems, 3, '3 items in hash');
 	
 	$object<z> := 'zzz';
-	is($object.elements, 4);
+	is($object.elems, 4);
 	
 	$object.delete('a');
-	is($object.elements, 3);
+	is($object.elems, 3);
 }
 
 sub test_keys() {

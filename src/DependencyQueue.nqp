@@ -46,8 +46,8 @@ method _init_positional_(@pos) {
 
 our method is_empty() {
 	return self.locked
-		?? self.queue.elements == 0
-		!! self.pending.elements == 0;
+		?? self.queue.elems == 0
+		!! self.pending.elems == 0;
 }
 
 our method mark_as_done($label) {
@@ -59,7 +59,7 @@ our method next_entry() {
 		self.tsort_queue();
 	}
 
-	if self.queue.elements {
+	if self.queue.elems {
 		my $node := self.queue.shift;
 		self.mark_as_done($node[0]);
 		$node[1];
@@ -94,7 +94,7 @@ my method tsort_add_pending_entries(@list) {
 		
 		## Check for cycles in the graph.
 		
-		my $next_index := self.cycle_keys.elements;
+		my $next_index := self.cycle_keys.elems;
 		self.cycle_keys.push($key);
 
 		if self.cycle.contains($key) {

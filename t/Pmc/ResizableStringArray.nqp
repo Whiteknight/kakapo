@@ -27,11 +27,11 @@ method test_rsa_append() {
 	my @strings := ResizableStringArray::new('a', 'b');
 	my @extras := ResizableStringArray::new('c', 'd', 'e');
 	
-	self.assert_that("The elements count", @strings.elements, is(2));
+	self.assert_that("The elements count", @strings.elems, is(2));
 	
 	@strings.append(@extras);
 	
-	self.assert_that("The elements count", @strings.elements, is(5));
+	self.assert_that("The elements count", @strings.elems, is(5));
 	self.assert_that("Element 0", @strings[0], is('a'));
 	self.assert_that("Element 1", @strings[1], is('b'));
 	self.assert_that("Element 2", @strings[2], is('c'));
@@ -39,14 +39,14 @@ method test_rsa_append() {
 	self.assert_that("Element 4", @strings[4], is('e'));
 	
 	@strings := ResizableStringArray::new();
-	self.assert_that("The elements count", @strings.elements, is(0));
+	self.assert_that("The elements count", @strings.elems, is(0));
 	
 	my $ary := (0, 1, 2);
 	@strings.append( $ary );
-	self.assert_that("The elements count", @strings.elements, is(3));
+	self.assert_that("The elements count", @strings.elems, is(3));
 	
 	@strings.append( Array::new('dog', 'cow'));
-	self.assert_that("The elements count", @strings.elements, is(5));
+	self.assert_that("The elements count", @strings.elems, is(5));
 }
 
 method test_rsa_clone() {
@@ -56,7 +56,7 @@ method test_rsa_clone() {
 	my @strings := ResizableStringArray::new('a', 'z');
 	my @str2	:= @strings.clone;
 	
-	self.assert_that("The elements count", @str2.elements, is(@strings.elements));
+	self.assert_that("The elements count", @str2.elems, is(@strings.elems));
 	self.assert_that("Element 0", @str2[0], is('a'));
 	self.assert_that("Element 1", @str2[1], is('z'));
 	
@@ -64,7 +64,7 @@ method test_rsa_clone() {
 	self.assert_that("The element 0", @str2[0], is('a'));
 	
 	@strings.shift;
-	self.assert_that("The elements count", @str2.elements, is(2));
+	self.assert_that("The elements count", @str2.elems, is(2));
 }
 
 method test_rsa_contains() {
@@ -83,15 +83,15 @@ method test_rsa_contains() {
 
 method test_rsa_elements() {
 
-	self.note("Testing RSA.elements() method");
+	self.note("Testing RSA.elems() method");
 	
 	my @strings := ResizableStringArray::new();
-	self.assert_that("The elements count", @strings.elements, is(0));
+	self.assert_that("The elements count", @strings.elems, is(0));
 
 	my $count := 0;
 	for "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16".split(' ') {
 		@strings.push($_);
-		self.assert_that("The elements count", @strings.elements, is(+$_));
+		self.assert_that("The elements count", @strings.elems, is(+$_));
 	}
 	
 }
@@ -116,5 +116,5 @@ method test_rsa_new() {
 	@strings := ResizableStringArray::new("foo");
 	self.assert_that("A new RSA", @strings, is(instance_of('ResizableStringArray')));
 	self.assert_that("The ResizableStringArray", @strings, is(not(empty())));
-	self.assert_that("The elements count", @strings.elements, is(1));	
+	self.assert_that("The elements count", @strings.elems, is(1));	
 }

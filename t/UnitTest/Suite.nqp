@@ -45,9 +45,9 @@ class Test::UnitTest::Suite
 		self.the_suite.add_test($testcase);
 		self.the_suite.add_test($testcase);
 
-		unless self.the_suite.members.elements == 3 { fail("Expected 3 tests added"); }
-		unless self.the_suite.num_tests == self.the_suite.members.elements {
-			fail("Expected num_tests() == members.elements");
+		unless self.the_suite.members.elems == 3 { fail("Expected 3 tests added"); }
+		unless self.the_suite.num_tests == self.the_suite.members.elems {
+			fail("Expected num_tests() == members.elems");
 		}
 	}
 	
@@ -71,7 +71,7 @@ class Test::UnitTest::Suite
 	
 	method test_new() {
 		unless self.the_suite.members.defined { fail("Undef @!members"); }
-		unless self.the_suite.members.elements == 0 { fail("Expected empty @!members"); }
+		unless self.the_suite.members.elems == 0 { fail("Expected empty @!members"); }
 		unless self.the_suite.num_tests == 0 { fail("Expected num_tests == 0"); }
 	}
 	

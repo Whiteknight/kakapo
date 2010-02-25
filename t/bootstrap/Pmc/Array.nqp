@@ -52,10 +52,10 @@ sub test_append() {
 	is(+@a2, 2, 'Second still has 2');
 	
 	my @rsa1 := make_rsa();
-	is(@rsa1.elements, 3, 'RSA has 3 elements');
+	is(@rsa1.elems, 3, 'RSA has 3 elements');
 	my $str := 'd::e::f::g';
 	@rsa1.append($str.split('::'));
-	is(@rsa1.elements, 7, 'RSA has 7 elements');
+	is(@rsa1.elems, 7, 'RSA has 7 elements');
 }
 
 sub test_bsearch() {

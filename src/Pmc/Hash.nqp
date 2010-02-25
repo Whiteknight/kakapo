@@ -23,7 +23,7 @@ sub/method syntax and PIR opcodes.
 
     %pies.delete('cherry');			
 
-    $number_of_pies := %pies.elements;	
+    $number_of_pies := %pies.elems;	
 
     @pies := %pies.keys;
 
@@ -78,8 +78,12 @@ our method delete($key) {
 	};
 }
 
-our method elements() {
+our method elems() {
 	pir::elements__IP(self);
+}
+
+our method exists($key) {
+	self.contains($key);
 }
 
 our method keys() {

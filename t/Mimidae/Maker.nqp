@@ -57,10 +57,10 @@ method test_mock_logs_calls() {
 	$mo.repeat(:a, :b, :c('zero'));
 	
 	my @log :=  pir::getattribute__PPS($mo, '@!MIMUS_CALLS');
-	fail_unless( @log.elements == 3, '@log should record 3 calls');
+	fail_unless( @log.elems == 3, '@log should record 3 calls');
 	fail_unless( @log[0][0] eq 'length', 'First entry should be length');
-	fail_unless( @log[1][1].elements == 2, 'Second entry, two positional args' );
-	fail_unless( @log[2][2].elements == 3, 'Third entry, 3 named args' );
+	fail_unless( @log[1][1].elems == 2, 'Second entry, two positional args' );
+	fail_unless( @log[2][2].elems == 3, 'Third entry, 3 named args' );
 }
 
 method test_mock_new_class() {

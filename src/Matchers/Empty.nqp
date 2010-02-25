@@ -34,7 +34,7 @@ method matches_typesafe($item) {
 		return $item.is_empty();
 	}
 	elsif Opcode::can($item, 'elements') {
-		return $item.elements() == 0;
+		return $item.elems() == 0;
 	}
 	elsif Opcode::does($item, 'array') {
 		return Opcode::elements($item) == 0;

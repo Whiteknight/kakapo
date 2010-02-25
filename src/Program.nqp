@@ -35,7 +35,7 @@ my method add_call_($queue, @pos, %named) {
 	my $name;
 	my $sub := @pos.shift;
 	
-	if @pos.elements {
+	if @pos.elems {
 		$name := @pos.shift;
 	}
 	elsif $sub.isa( 'String' ) {
@@ -140,7 +140,7 @@ my method process_queue($queue, :$name!) {
 }
 
 method run(*@args) {
-	if @args.elements == 1
+	if @args.elems == 1
 		&& ! @args[0].isa('String')
 		&& @args[0].does('array') {
 		@args := @args.shift;
@@ -155,7 +155,7 @@ method run(*@args) {
 
 	@args := @args.clone;
 
-	my $*PROGRAM_NAME := @args.elements
+	my $*PROGRAM_NAME := @args.elems
 		?? @args.shift
 		!! '<anonymous>';
 	my @*ARGS		:= @args;

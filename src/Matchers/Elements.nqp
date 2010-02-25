@@ -2,7 +2,7 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::Elements;
-# Matches when the C< .elements > of an object equal a given number.
+# Matches when the C< .elems > of an object equal a given number.
 # TODO: Create a Matcher variant, to allow C< elements(both(ge(0), lt(6))) >.
 
 use('Dumper');
@@ -25,7 +25,7 @@ sub _initload() {
 
 method describe_failure_typesafe($item, $description) {
 	return $description 
-		~ $item.elements ~ " elements";
+		~ $item.elems ~ " elements";
 }
 
 method describe_self($description) {
@@ -46,7 +46,7 @@ method init(@children, %attributes) {
 }
 
 method match_array($item) {
-	return $item.elements == self.value;
+	return $item.elems == self.value;
 }
 
 method _match_FixedPMCArray($item)		{ self.match_array($item); }

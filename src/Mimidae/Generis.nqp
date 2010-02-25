@@ -15,6 +15,10 @@ sub log_call($self, *@tuple) {
 	@log.push(@tuple);
 }
 
+sub get_log($mock) {
+	pir::getattribute__PPS($mock, '@!MIMUS_CALLS');
+}
+
 class Mimus::SuiGeneris;
 
 has @!MIMUS_CALLS;

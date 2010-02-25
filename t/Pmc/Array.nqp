@@ -24,18 +24,28 @@ sub MAIN() {
 	$proto.suite.run;
 }
 
-method test_elements() {
+method test_elems() {
 	my @a1 := Array::new();
 	
-	fail_unless( @a1.elements == 0,
+	fail_unless( @a1.elems == 0,
 		'New = empty = 0 elements');
 		
 	@a1.push(1);
-	fail_unless( @a1.elements == 1,
+	fail_unless( @a1.elems == 1,
 		'One element test');
-		
-	@a1.elements(0);
+}
+
+method test_set_size() {
 	
+	my @a1 := (1, 2, 3);
+	
+	fail_unless( @a1.elems == 3,
+		'Size should be 3');
+		
+	@a1.set_size(0);
+	fail_unless( @a1.elems == 0,
+		'New size should be 0');
+		
 	try {
 		my $x := @a1.shift;
 		fail( '0 element array should die on shift' );
@@ -46,25 +56,25 @@ method test_elements() {
 
 method test_grep() {
 	my @a1 := grep( -> $x { $x > 3 }, 1, 2, 3, 4, 5 ,6, 7, 8, 9);
-	fail_unless( @a1.elements == 6,
+	fail_unless( @a1.elems == 6,
 		'Grep should remove first 3 elements');
 		
 	my @a2 := @a1.grep: -> $n { $n % 2; };
-	fail_unless( @a2.elements == 3,
+	fail_unless( @a2.elems == 3,
 		'Grep odd should have 3 elements');
 }
 
 method test_map() {
 	
 	my @a1 := map( -> $x { $x * 2; }, 1, 2, 3, 4);
-	fail_unless( @a1.elements == 4,
+	fail_unless( @a1.elems == 4,
 		'Map should return similar list');
 	fail_unless( @a1[0] == 2 && @a1[3] == 8,
 		'Map should double items in list');
 		
 	my @a2 := <a b c>;
 	my @a3 := @a2.map: -> $w { $w ~ '_foo'; };
-	fail_unless( @a3.elements == 3,
+	fail_unless( @a3.elems == 3,
 		'Map should return similar list');
 	fail_unless( @a3.join eq 'a_foob_fooc_foo',
 		'Map should append _foo');
@@ -85,7 +95,7 @@ method test_new() {
 		'RSA.new should return RSA');
 		
 	@a1 := Array::new(1, 2, 3, 4);
-	fail_unless( @a1.elements == 4,
+	fail_unless( @a1.elems == 4,
 		'New should create an array from its args');
 }
 
@@ -180,13 +190,13 @@ method test_unsort() {
 	my @array := Array::new('a', 'b', 'c', 'd');
 	my @yaarr := @array.clone.unsort;
 
-	fail_unless(@yaarr.elements == @array.elements,
+	fail_unless(@yaarr.elems == @array.elems,
 		'Should have the same # elements');
 
 	my $same := 0;
 	
 	my $index := 0;
-	while $index < @array.elements {
+	while $index < @array.elems {
 		$same++
 			if @array[$index] eq @yaarr[$index];
 		$index++;

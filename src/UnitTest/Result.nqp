@@ -52,11 +52,11 @@ method end_test($test) {
 }
 
 method error_count() {
-	self.errors.elements;
+	self.errors.elems;
 }
 
 method failure_count() {
-	self.failures.elements;
+	self.failures.elems;
 }
 
 my method notify_listeners($method, *@pos, *%named) {
@@ -74,7 +74,7 @@ method plan_tests($num_tests) {
 method remove_listener($listener) {
 	my $index := 0;
 
-	while $index < self.listeners.elements {
+	while $index < self.listeners.elems {
 		if self.listeners[$index] =:= $listener {
 			self.listeners.delete($index);
 		}

@@ -20,7 +20,7 @@ sub _pre_initload() {
 		contains 
 		delete 
 		distinct
-		elements 
+		elems 
 		grep
 		is_sorted
 		keys
@@ -105,7 +105,7 @@ method append(@other) {
 #
 #The C< :low() > and C< :high() > options may be specified to artificially restrict 
 #the range of the search. By default, C< bsearch > assumes values of C< :low(0) >
-#and C< :high( self.elements ) >. 
+#and C< :high( self.elems ) >. 
 #
 #If C< $value > is stored in the array, C< bsearch > returns the index where the 
 #value can be found. If C< $value > is I< not > in the array, the return value is
@@ -130,11 +130,11 @@ method bsearch($value, *%opts) {
 	our %Bsearch_compare_func;
 	
 	my $cmp	:= %opts<cmp> ?? %opts<cmp> !! '<=>';
-	my $high	:= %opts<high> > 0 ?? %opts<high> !! self.elements;
+	my $high	:= %opts<high> > 0 ?? %opts<high> !! self.elems;
 	my $low	:= 0 + %opts<low>;
 	my $top	:= $high;
 
-	my $elts	:= self.elements;
+	my $elts	:= self.elems;
 	
 	if $high > $elts { $high := $elts; }
 	if $low < 0 { $low := $low + $elts; }
@@ -216,36 +216,30 @@ method delete($key) {
 }
 
 method distinct(:&cmp = Array::cmp_string) {
-	my $elements := self.elements;
+	my $elems := self.elems;
 	my $i := 0;
 	my $j;
 	my $array_i;
 	
-	while $i < $elements {
+	while $i < $elems {
 		$array_i := self[$i];
 		$i++;
 		
-		while $i < $elements && &cmp($array_i, self[$i]) == 0 {
+		while $i < $elems && &cmp($array_i, self[$i]) == 0 {
 			self.delete($i);
-			$elements--;
+			$elems--;
 		}
 	}
 	
 	self;
 }
 
-method elements(*@value) {
-	elements_(self, @value); 
+method elements() {
+	die("No more elements! Use .elems");
 }
 
-method elements_(@value) {
-	if +@value {
-		pir::assign__vPI(self, @value.shift);
-		self;
-	}
-	else {
-		pir::elements__IP(self);
-	}
+method elems() {
+	pir::elements__IP(self);
 }
 
 sub grep_args(&match, *@values) {
@@ -265,7 +259,7 @@ method grep(&match) {
 
 method is_sorted(:&cmp) {
 	my $index := 0;
-	my $limit := self.elements - 1;
+	my $limit := self.elems - 1;
 	
 	while $index < $limit {
 		if &cmp(self[$index], self[$index + 1]) > 0 {
@@ -280,7 +274,7 @@ method keys() {
 	my @result;
 	
 	my $i := 0;
-	my $limit := self.elements;
+	my $limit := self.elems;
 	
 	while $i < $limit {
 		if self.exists($i) {
@@ -336,7 +330,7 @@ method reduce(&expression) {
 	my $result;
 	my $first := 1;
 	
-	if self.elements {
+	if self.elems {
 		for self {
 			if $first {
 				$first--;
@@ -352,7 +346,7 @@ method reduce(&expression) {
 }
 
 method reverse(:$from = 0, :$to) {
-	$to := self.elements unless $to.defined;
+	$to := self.elems unless $to.defined;
 	my $temp;
 	if $from > $to {
 		$temp := $from;
@@ -380,7 +374,7 @@ sub roundrobin(*@sources) {
 		$done := 1;
 		
 		for @sources -> @a {
-			if @a.elements > $i {
+			if @a.elems > $i {
 				$done := 0;
 				@result.push(@a[$i]);
 			}
@@ -390,24 +384,29 @@ sub roundrobin(*@sources) {
 	@result;			
 }
 
-method slice(:$from = 0, :$to) {
-	my $elements := self.elements;
-	$to := $elements unless $to.defined;
+method set_size($size) {
+	pir::assign__vPI(self, $size);
+	self;
+}
 
-	if $from < 0	{ $from := $from + $elements; }
-	if $to < 0	{ $to := $to + $elements; }
+method slice(:$from = 0, :$to) {
+	my $elems := self.elems;
+	$to := $elems unless $to.defined;
+
+	if $from < 0	{ $from := $from + $elems; }
+	if $to < 0	{ $to := $to + $elems; }
 	
-	if $from >= $elements {
-		die('$from parameter out of range: ', $from, ' exceeds # elements: ', $elements);
+	if $from >= $elems {
+		die('$from parameter out of range: ', $from, ' exceeds # elements: ', $elems);
 	}
 	
-	if $to > $elements {
-		die('$to parameter out of range: ', $from, ' exceeds # elements: ', $elements);
+	if $to > $elems {
+		die('$to parameter out of range: ', $from, ' exceeds # elements: ', $elems);
 	}
 
 	our @Empty;
 	my @slice := self.clone;
-	@slice.splice(@Empty, :from($to + 1), :replacing($elements - $to));
+	@slice.splice(@Empty, :from($to + 1), :replacing($elems - $to));
 	@slice.splice(@Empty, :from(0), :replacing($from));
 	@slice;
 }
@@ -426,7 +425,7 @@ method unsort() {
 		&Parrot_range_rand := pir::dlfunc__PPSS($lib, 'Parrot_range_rand', 'iiii');
 	}
 	
-	my $bound := self.elements - 1;
+	my $bound := self.elems - 1;
 	my $swap;
 	my $temp;
 
@@ -446,13 +445,13 @@ sub zip(*@sources) {
 	my @result;
 	my $limit := 0;
 	
-	if @sources.elements {
-		$limit := @sources[0].elements;
+	if @sources.elems {
+		$limit := @sources[0].elems;
 	}
 	
 	for @sources -> @a {
-		$limit := @a.elements 
-			if @a.elements < $limit;
+		$limit := @a.elems 
+			if @a.elems < $limit;
 	}
 	
 	my $i := 0;

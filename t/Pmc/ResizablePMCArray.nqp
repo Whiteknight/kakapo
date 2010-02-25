@@ -30,7 +30,7 @@ method test_rpa_append() {
 	
 	@a1.append(@a2);
 	
-	self.assert_that("The elements count", @a1.elements, is(4));
+	self.assert_that("The elements count", @a1.elems, is(4));
 }
 
 method test_rpa_clone() {
@@ -40,7 +40,7 @@ method test_rpa_clone() {
 	my @strings := ResizablePMCArray::new('a', 'z');
 	my @str2	:= @strings.clone;
 	
-	self.assert_that("The elements count", @str2.elements, is(@strings.elements));
+	self.assert_that("The elements count", @str2.elems, is(@strings.elems));
 	self.assert_that("Element 0", @str2[0], is('a'));
 	self.assert_that("Element 1", @str2[1], is('z'));
 	
@@ -48,7 +48,7 @@ method test_rpa_clone() {
 	self.assert_that("The element 0", @str2[0], is('a'));
 	
 	@strings.shift;
-	self.assert_that("The elements count", @str2.elements, is(2));
+	self.assert_that("The elements count", @str2.elems, is(2));
 }
 
 method test_rpa_contains() {
@@ -67,15 +67,15 @@ method test_rpa_contains() {
 
 method test_rpa_elements() {
 
-	self.note("Testing RPA.elements() method");
+	self.note("Testing RPA.elems() method");
 	
 	my @strings := ResizablePMCArray::new();
-	self.assert_that("The elements count", @strings.elements, is(0));
+	self.assert_that("The elements count", @strings.elems, is(0));
 
 	my $count := 0;
 	for "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16".split(' ') {
 		@strings.push($_);
-		self.assert_that("The elements count", @strings.elements, is(+$_));
+		self.assert_that("The elements count", @strings.elems, is(+$_));
 	}
 	
 }
@@ -99,13 +99,13 @@ method test_rpa_new() {
 
 	@strings.push("foo");
 	self.assert_that("The ResizablePMCArray", @strings, is(not(empty())));
-	self.assert_that("The elements count", @strings.elements, is(1));
+	self.assert_that("The elements count", @strings.elems, is(1));
 
 	@strings.push(1);
-	self.assert_that("The elements count", @strings.elements, is(2));
+	self.assert_that("The elements count", @strings.elems, is(2));
 	
 	@strings := ResizablePMCArray::new('foo', 'bar', 'baz');
 	self.assert_that("A new RPA", @strings, is(instance_of('ResizablePMCArray')));
-	self.assert_that("The elements count", @strings.elements, is(3));
+	self.assert_that("The elements count", @strings.elems, is(3));
 	self.assert_that("The 2nd element", @strings[1], is("bar"));
 }

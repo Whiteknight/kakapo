@@ -315,7 +315,7 @@ sub namespace_name($nsp) {
 method new($pmc, %args?) {
 	my $key := Key.new_($pmc.split('::'));
 	
-	%args.elements == 0
+	%args.elems == 0
 		?? pir::new__PP($key)
 		!! pir::new__PPP($key, %args);
 }
