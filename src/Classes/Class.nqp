@@ -310,7 +310,7 @@ sub trampoline($namespace, $name, :$target,
 	NOTE("With adverbs: ", $adverbs);
 
 	unless +@actions {
-		@actions := Array::empty();
+		@actions := Array::new();
 		my $target_nsp := $namespace;
 		
 		if ! Opcode::isa($target, 'String') {

@@ -21,7 +21,7 @@ my method _attr($name, @value) {
 }
 
 method backtrace_string() {
-	my @parts := Array::empty();
+	my @parts := Array::new();
 	my $sub;
 	my $sub_name;
 	

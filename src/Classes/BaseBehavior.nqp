@@ -12,7 +12,7 @@ sub _pre_initload() {
 
 	Global::use('Dumper');
 	
-	@No_args := Array::empty();
+	@No_args := Array::new();
 
 	my $get_bool := '
 .namespace [ "Class" ; "BaseBehavior" ]
@@ -45,7 +45,7 @@ method _ATTR_ARRAY($name, @value) {
 	
 	if ! Opcode::defined($result) {
 		$result := self._ATTR($name, 
-			Array::new(Array::empty())
+			Array::new(Array::new())
 		);
 	}
 	

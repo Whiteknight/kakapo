@@ -28,7 +28,7 @@ method default_suite() {
 
 method get_test_methods($class) {
 	my @mro := $class.inspect('all_parents');
-	my @test_methods := Array::empty();
+	my @test_methods := Array::new();
 	
 	for @mro {
 		my %methods := $_.inspect('methods');

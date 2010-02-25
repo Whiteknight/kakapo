@@ -60,7 +60,7 @@ sub call_method_($object, $method_name, @args?, %opts?) {
 # Calls method C< $method_name > with flattened arglist C< @args > and flattened 
 # options C< %opts >. Returns the result of the method call.
 
-	unless Opcode::defined(@args)	{ @args := Array::empty(); }
+	unless Opcode::defined(@args)	{ @args := Array::new(); }
 	unless Opcode::defined(%opts)	{ %opts := Hash::empty(); }
 	
 	Q:PIR {
@@ -89,7 +89,7 @@ sub call_tuple_method_($object, $method, @args?, %opts?) {
 # Calls method C< $method_name > with flattened arglist C< @args > and flattened 
 # options C< %opts >. Returns an RPA with the tuple returned by the method.
 
-	unless Opcode::defined(@args)	{ @args := Array::empty(); }
+	unless Opcode::defined(@args)	{ @args := Array::new(); }
 	unless Opcode::defined(%opts)	{ %opts := Hash::empty(); }
 	
 	Q:PIR {
@@ -145,7 +145,7 @@ sub call_tuple_sub_($sub, @args?, %opts?) {
 # Calls sub C< $sub > with flattened arglist C< @args > and flattened 
 # options C< %opts >. Returns an RPA with the tuple returned by the sub.
 
-	unless Opcode::defined(@args)	{ @args := Array::empty(); }
+	unless Opcode::defined(@args)	{ @args := Array::new(); }
 	unless Opcode::defined(%opts)	{ %opts := Hash::empty(); }
 	
 	Q:PIR {

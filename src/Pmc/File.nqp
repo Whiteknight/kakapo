@@ -28,7 +28,7 @@ sub exists($path) {
 
 sub find_all($path, @search_list) {
 	NOTE("Finding all paths matching '", $path, "' in ", +@search_list, " directories");
-	my @results := Array::empty();
+	my @results := Array::new();
 	
 	if String::char_at($path, 0) eq '/' {
 		NOTE("Path is rooted - not using search paths");

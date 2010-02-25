@@ -15,8 +15,6 @@ sub _pre_initload() {
 	%Bsearch_compare_func{'cmp'}	:= Array::cmp_string;
 	%Bsearch_compare_func{'Rcmp'}	:= Array::cmp_string_R;
 
-	our @Empty := Array::empty();
-	
 	my %pmcs;
 	
 	# NB: This one doesn't get 'append'
@@ -65,6 +63,13 @@ sub _pre_initload() {
 		
 		$from_nsp.export_to($to_nsp, %export_subs);
 	}
+	
+	# Put some helper functions in the global namespace.
+	for <cat grep map reduce roundrobin zip> {
+		Global::inject_root_symbol($from_nsp{$_});
+	}
+	
+	Global::inject_root_symbol(Array::reduce_args, :as('reduce'));
 }
 
 method append(@other) {
@@ -180,14 +185,14 @@ sub cmp_string_R($a, $b) { if $b lt $a { return -1; } else { return 1; } }
 # Concatenates a list of zero or more arrays into one long array. Returns the 
 # resulting array. Returns an empty array if no arrays are given, or if the given
 # arrays have no elements.
-method concat(*@sources) {
-	my @result := self.isa('P6protoobject') ?? self.new !! self.clone;
+sub cat(*@sources) {
+	my @cat;
 	
 	for @sources {
-		@result.append($_);
+		@cat.append($_);
 	}
 	
-	@result;
+	@cat;
 }
 
 method contains($item) {
@@ -238,6 +243,17 @@ method elements_(@value) {
 	}
 }
 
+sub grep(&match, @array) {
+	my @matches;
+	
+	for @array {
+		@matches.push($_)
+			if &match($_);
+	}
+	
+	@matches;
+}
+
 method is_sorted(:&compare?) {
 	my $index := 0;
 	my $limit := self.elements - 1;
@@ -251,12 +267,75 @@ method is_sorted(:&compare?) {
 	return 1;
 }
 
+method keys() {
+	my @result;
+	
+	my $i := 0;
+	my $limit := self.elements;
+	
+	while $i < $limit {
+		if self.exists($i) {
+			@result.push($i.clone);
+		}
+		
+		$i++;
+	}
+	
+	@result;
+}
+
+method kv() {
+	my @result;
+	
+	my $i := 0;
+	
+	for self {
+		@result.push($i.clone);
+		@result.push($_);
+	}
+	
+	@result;
+}
+
 method join($delim? = '') {
 	pir::join__SSP($delim, self);
 }
 
+sub map(&func, @array) {
+	my @result;
+	
+	for @array {
+		@result.push(&func($_));
+	}
+	
+	@result;
+}
+
 sub new(*@elements) {
 	@elements;
+}
+
+sub reduce_args(&expression, *@values) {
+	@values.reduce(&expression);
+}
+
+method reduce(&expression) {
+	my $result;
+	my $first := 1;
+	
+	if self.elements {
+		for self {
+			if $first {
+				$first--;
+				$result := $_;
+			}
+			else {
+				$result := &expression($result, $_);
+			}
+		}
+	}
+	
+	$result;
 }
 
 method reverse(:$from = 0, :$to) {
@@ -277,6 +356,25 @@ method reverse(:$from = 0, :$to) {
 	}
 	
 	self;
+}
+
+sub roundrobin(*@sources) {
+	my @result;
+	my $i := 0;
+	my $done;
+	
+	until $done {
+		$done := 1;
+		
+		for @sources -> @a {
+			if @a.elements > $i {
+				$done := 0;
+				@result.push(@a[$i]);
+			}
+		}
+	}
+	
+	@result;			
 }
 
 method slice(:$from = 0, :$to) {
@@ -329,4 +427,30 @@ method unsort() {
 	}
 	
 	self;
+}
+
+sub zip(*@sources) {
+	my @result;
+	my $limit := 0;
+	
+	if @sources.elements {
+		$limit := @sources[0].elements;
+	}
+	
+	for @sources -> @a {
+		$limit := @a.elements 
+			if @a.elements < $limit;
+	}
+	
+	my $i := 0;
+	
+	while $i < $limit {
+		for @sources -> @a {
+			@result.push(@a[$i]);
+		}
+		
+		$i++;
+	}
+	
+	@result;
 }

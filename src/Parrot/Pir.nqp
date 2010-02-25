@@ -15,7 +15,7 @@ sub compile($string) {
 }
 
 sub compile_sub(:@body, :$name, :$namespace, :$method?, :@params?, :$vtable?) {
-	if ! @params.defined { @params := Array::empty(); }
+	if ! @params.defined { @params := Array::new(); }
 	elsif ! does(@params, 'array') { @params := Array::new(@params); }
 	unless does(@body, 'array') { @body := Array::new(@body); }
 	

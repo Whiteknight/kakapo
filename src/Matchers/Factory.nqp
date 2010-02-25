@@ -55,7 +55,7 @@ sub _make_Matcher($matcher)	{ return $matcher; }
 sub _make_String($value)		{ return equals($value); }
 
 sub make_matcher_list(@list) {
-	my @matchers := Array::empty();
+	my @matchers := Array::new();
 	
 	while @list {
 		@matchers.push(make_matcher(@list.shift));

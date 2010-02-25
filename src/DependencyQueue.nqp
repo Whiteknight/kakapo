@@ -76,7 +76,7 @@ our method reset() {
 
 method tsort_queue() {
 	self.locked(1);
-	self.cycle_keys(Array::empty());
+	self.cycle_keys(Array::new());
 	self.cycle(Hash.new());
 	self.added(Hash.new());
 	self.tsort_add_pending_entries(self.pending.keys);

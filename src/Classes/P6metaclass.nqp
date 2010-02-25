@@ -64,7 +64,7 @@ my method _add_parents($class, @parents) {
 }
 
 sub declare($class?, :@has?, :@is?) {
-	if ! @is.defined { @is := Array::empty(); }
+	if ! @is.defined { @is := Array::new(); }
 	elsif ! Opcode::does(@is, 'array') { @is := Array::new(@is); }
 	
 	unless Opcode::defined($class) {
@@ -123,7 +123,7 @@ sub extends($first, *@args, :$class?) {
 }
 
 sub _flatten_name_list(@list) {
-	my @merged := Array::empty();
+	my @merged := Array::new();
 
 	for @list {
 		if Opcode::does($_, 'array') {
@@ -247,7 +247,7 @@ my method _make_accessor($parrot_class, %info) {
 		"\t" ~ '.return (self)',
 	);
 	
-	Parrot::call_sub_(Pir::compile_sub, Array::empty(), %accessor_details);
+	Parrot::call_sub_(Pir::compile_sub, Array::new(), %accessor_details);
 }
 
 sub register_pmc_type($type) {

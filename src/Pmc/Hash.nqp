@@ -83,13 +83,24 @@ our method elements() {
 }
 
 our method keys() {
-	my @keys := Array::empty();
+	my @keys;
 	
 	for self {
-		@keys.push(~ $_);
+		@keys.push($_.key);
 	}
 	
 	@keys;
+}
+
+our method kv() {
+	my @kv;
+	
+	for self {
+		@kv.push($_.key);
+		@kv.push($_.value);
+	}
+	
+	@kv;
 }
 
 =begin
@@ -201,4 +212,14 @@ our method new(*@pos, *%pairs) {
 	}
 
 	%pairs;
+}
+
+our method values() {
+	my @values;
+	
+	for self {
+		@values.push($_.value);
+	}
+	
+	@values;
 }
