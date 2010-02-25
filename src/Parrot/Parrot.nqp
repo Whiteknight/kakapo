@@ -170,8 +170,6 @@ sub get_address_of($what) {
 	return Opcode::get_addr($what);
 }
 
-#! _get_interpreter cached the interp. Moved to Opcode and dumbed down. Recode your stuff.
-
 # Return a global object by name.
 sub get_hll_global($path) {
 	if $path.isa('String') {
@@ -181,7 +179,7 @@ sub get_hll_global($path) {
 	unless pir::does__IPS($path, 'array') {
 		die("$path parameter must be a ::string or array of strings, not: ", $path);
 	}
-	
+
 	my $name := $path.pop;
 	my $key := key_($path);
 	

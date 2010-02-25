@@ -208,6 +208,7 @@ our method new(*@pos, *%pairs) {
 				~ '.new() - before class was created';
 		}
 
+		_dumper(@pos, %pairs);
 		pir::die($message);
 	}
 

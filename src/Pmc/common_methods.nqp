@@ -1,35 +1,6 @@
 # Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-=begin
-
-=NAME Kakapo::Pmc::COMMON - Shared methods exported to many PMC types.
-
-=DESCRIPTION
-
-This module serves as a repository for common methods that Kakapo inserts into the namespaces
-of many PMC types.
-
-=SYNOPSIS
-
-=begin code
-
-	$pmc := CommonPmcType.new();
-	
-	if $pmc.can( $method_name ) { ... }
-	
-	$pmc2 := $pmc.clone();
-	
-	if $pmc.defined { ... }
-	
-	if $pmc.does( $role ) { ... }
-	
-	if $pmc.isa( $type ) { ... }
-	
-=end code
-
-=end
-
 module Kakapo::Pmc::COMMON;
 
 =begin
@@ -76,13 +47,13 @@ sub _pre_initload() {
 	for @first_pmcs {
 		P6metaclass.register(~ $_);
 		my $namespace := Parrot::get_hll_namespace(~ $_);
-		install_methods($namespace, %methods_for{$_}, :skip_new(1));
+		install_methods($namespace, %methods_for{$_}, :skip_new);
 	}
 	
 	# Now build 'new' methods.
 	for @first_pmcs {
 		my $namespace := Parrot::get_hll_namespace(~ $_);
-		install_methods($namespace, %methods_for{$_});
+		install_methods($namespace, %methods_for{$_}); # no :skip_new here
 		%methods_for{$_} := my $undef;
 	}
 	

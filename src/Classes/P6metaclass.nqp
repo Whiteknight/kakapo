@@ -64,8 +64,7 @@ my method _add_parents($class, @parents) {
 }
 
 sub declare($class?, :@has?, :@is?) {
-	if ! @is.defined { @is := Array::new(); }
-	elsif ! Opcode::does(@is, 'array') { @is := Array::new(@is); }
+	if ! Opcode::does(@is, 'array') { @is := Array::new(@is); }
 	
 	unless Opcode::defined($class) {
 		$class := caller_namespace(2);

@@ -3,6 +3,10 @@
 
 module Key;
 
+sub _pre_initload() {
+	P6metaclass.register('Key');
+}
+
 method __dump($dumper, $label) {
 	print( pir::get_repr__SP(self) );
 }
@@ -22,9 +26,14 @@ method new_(@parts, %opts?) {
 		elsif $_.isa( 'Float' ) {	pir::assign__vPN($segment, $_); }
 		elsif $_.isa( 'String' ) {	pir::assign__vPS($segment, $_); }
 		else {
-			Exception::InvalidArgument.new(
-				:message('Arguments to Key.new must be Integer, String, or Float'),
-			).throw;
+			if pir::isa(Exception::InvalidArgument, 'P6protoobject') {
+				Exception::InvalidArgument.new(
+					:message('Arguments to Key.new must be Integer, String, or Float'),
+				).throw;
+			}
+			else {
+				pir::die('Arguments to Key.new must be Integer, String, or Float');
+			}
 		}
 		
 		if $key.defined {

@@ -15,33 +15,32 @@ sub _pre_initload() {
 	%Bsearch_compare_func{'cmp'}	:= Array::cmp_string;
 	%Bsearch_compare_func{'Rcmp'}	:= Array::cmp_string_R;
 
+	my @methods := <
+		bsearch
+		contains 
+		delete 
+		distinct
+		elements 
+		grep
+		is_sorted
+		keys
+		kv
+		join
+		map
+		reduce
+		reverse
+		slice 
+		splice
+		unsort
+	>;	
+	
 	my %pmcs;
 	
-	# NB: This one doesn't get 'append'
-	%pmcs<ResizablePMCArray>	:= <
-		bsearch
-		contains 
-		delete 
-		elements 
-		is_sorted
-		join
-		slice 
-		splice
-		unsort
-	>;
-	%pmcs<ResizableStringArray>	:= <
-		append 
-		bsearch
-		contains 
-		delete 
-		elements 
-		is_sorted
-		join
-		slice 
-		splice
-		unsort
-	>;
-	
+	%pmcs<ResizablePMCArray>	:= @methods;
+
+	%pmcs<ResizableStringArray>	:= pir::clone__PP(@methods); # No common yet
+	%pmcs<ResizableStringArray>.push( <append> );
+
 	my $from_nsp := pir::get_namespace__P();
 
 	for %pmcs {
@@ -61,13 +60,21 @@ sub _pre_initload() {
 		
 		$from_nsp.export_to($to_nsp, %export_subs);
 	}
-	
+
 	# Put some helper functions in the global namespace.
-	for <cat grep map reduce roundrobin zip> {
+	
+	# These are "list-of-list" subs, and have no corresponding methods.
+	for <cat roundrobin zip> {
 		Global::inject_root_symbol($from_nsp{$_});
 	}
-	
-	Global::inject_root_symbol(Array::reduce_args, :as('reduce'));
+
+	# These have corresponding methods.
+	for <grep map reduce> {
+		Global::inject_root_symbol(
+			Parrot::get_hll_global('Array::' ~ $_ ~ '_args'),
+			:as($_),
+		);
+	}
 }
 
 method append(@other) {
@@ -241,10 +248,14 @@ method elements_(@value) {
 	}
 }
 
-sub grep(&match, @array) {
+sub grep_args(&match, *@values) {
+	@values.grep: &match;
+}
+
+method grep(&match) {
 	my @matches;
 	
-	for @array {
+	for self {
 		@matches.push($_)
 			if &match($_);
 	}
@@ -252,12 +263,12 @@ sub grep(&match, @array) {
 	@matches;
 }
 
-method is_sorted(:&compare?) {
+method is_sorted(:&cmp) {
 	my $index := 0;
 	my $limit := self.elements - 1;
 	
 	while $index < $limit {
-		if &compare(self[$index], self[$index + 1]) > 0 {
+		if &cmp(self[$index], self[$index + 1]) > 0 {
 			return 0;
 		}
 	}
@@ -299,10 +310,14 @@ method join($delim? = '') {
 	pir::join__SSP($delim, self);
 }
 
-sub map(&func, @array) {
+sub map_args(&func, *@args) {
+	@args.map: &func;
+}
+
+method map(&func) {
 	my @result;
 	
-	for @array {
+	for self {
 		@result.push(&func($_));
 	}
 	

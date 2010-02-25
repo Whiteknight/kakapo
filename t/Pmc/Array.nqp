@@ -35,10 +35,40 @@ method test_elements() {
 		'One element test');
 		
 	@a1.elements(0);
-	my $x := @a1.shift;
-	fail_unless( pir::isnull($x),
-		'0 elements should fail to shift');
+	
+	try {
+		my $x := @a1.shift;
+		fail( '0 element array should die on shift' );
+		
+		CATCH {}
+	};
 }
+
+method test_grep() {
+	my @a1 := grep( -> $x { $x > 3 }, 1, 2, 3, 4, 5 ,6, 7, 8, 9);
+	fail_unless( @a1.elements == 6,
+		'Grep should remove first 3 elements');
+		
+	my @a2 := @a1.grep: -> $n { $n % 2; };
+	fail_unless( @a2.elements == 3,
+		'Grep odd should have 3 elements');
+}
+
+method test_map() {
+	
+	my @a1 := map( -> $x { $x * 2; }, 1, 2, 3, 4);
+	fail_unless( @a1.elements == 4,
+		'Map should return similar list');
+	fail_unless( @a1[0] == 2 && @a1[3] == 8,
+		'Map should double items in list');
+		
+	my @a2 := <a b c>;
+	my @a3 := @a2.map: -> $w { $w ~ '_foo'; };
+	fail_unless( @a3.elements == 3,
+		'Map should return similar list');
+	fail_unless( @a3.join eq 'a_foob_fooc_foo',
+		'Map should append _foo');
+}	
 
 method test_new() {
 	my @a1 := Array::new();
@@ -59,18 +89,24 @@ method test_new() {
 		'New should create an array from its args');
 }
 
-#~ method test_new() {
+method test_reduce() {
+	my &min := -> $a, $b { $a > $b ?? $b !! $a };
+	my &max := -> $a, $b { $a <  $b ?? $b !! $a };
 	
-	#~ self.note("Testing Array::new() factory");
+	my $x := reduce(&min, 10, 9, 4, 100, 3, 11, 22, 1, 15, 9);
+	my $y := reduce(&max, 10, 9, 4, 100, 3, 11, 22, 1, 15, 9);
 	
-	#~ my @array := Array::new();	
-	#~ self.assert_that('New array', @array, is(instance_of('ResizablePMCArray')));
-	#~ self.assert_that('The elements count', @array.elements, is(0));
+	fail_unless( $x == 1,
+		'Min should reduce to 1');
+	fail_unless( $y == 100,
+		'Max should reduce to 100');
+		
+	my @a1 := <a b c d e f>;
 	
-	#~ @array := Array::new(1, 2, 3);
-	#~ self.assert_that('New array', @array, is(instance_of('ResizablePMCArray')));
-	#~ self.assert_that('The elements count', @array.elements, is(3));
-#~ }
+	my $cat := @a1.reduce: -> $l, $r { "$l$r" };
+	fail_unless( $cat eq 'abcdef',
+		'Cat should reduce to join');	
+}
 
 method test_reverse() {
 	my @a1 := <A B C D E F>;

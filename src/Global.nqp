@@ -118,10 +118,9 @@ our sub inject_symbol($object, :$namespace, :$as?, :$force?) {
 # C< $force > is specified, any pre-existing symbol is overwritten. Otherwise, if a name collision occurs
 # FIXME: an exception should be thrown, but currently isn't.
 
-	# Subs carry their name, so try stringifying it
-	unless Opcode::defined($as) { $as := ~ $object; }	
-	
-	if ! Opcode::isa($namespace, 'NameSpace') {
+	$as := $as // ~$object;	# Subs carry their name.
+
+	unless pir::isa($namespace, 'NameSpace') {
 		$namespace := Opcode::get_hll_namespace($namespace);
 	}
 
