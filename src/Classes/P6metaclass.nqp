@@ -67,7 +67,7 @@ sub declare($class?, :@has?, :@is?) {
 	if ! Opcode::does(@is, 'array') { @is := Array::new(@is); }
 	
 	unless Opcode::defined($class) {
-		$class := caller_namespace(2);
+		$class := caller_namespace();
 	}
 
 	my $parent;
@@ -115,7 +115,7 @@ sub extends($first, *@args, :$class?) {
 	else { @args.unshift($first); }
 	
 	unless $class.defined {
-		$class := caller_namespace(2);
+		$class := caller_namespace();
 	}
 	
 	P6metaclass._add_parents($class, @args);
@@ -141,15 +141,14 @@ sub _flatten_name_list(@list) {
 	return @merged;
 }
 
-sub has(*@args, :$class?, *%opts) {
 # Declares attributes for a class. Note that the class may not be declared yet.
+sub has(*@args, :$class?, *%opts) {
 
 	our %default_type;
 	our %is_sigil;
 	our %is_twigil;
 
-	unless %opts.defined { %opts := Hash::empty(); }
-	unless $class.defined { $class := caller_namespace(2); }
+	unless $class.defined { $class := caller_namespace(); }
 
 	# Handle  has(< a b c >) - only arg is an RPA.
 	if +@args == 1 && ! @args[0].isa('String') {
@@ -196,7 +195,7 @@ sub has(*@args, :$class?, *%opts) {
 }
 
 sub has_vtable($name, &code, :$class?) {
-	my $parrot_class	:= P6metaclass.get_parrotclass($class.defined ?? $class !! caller_namespace(2));
+	my $parrot_class	:= P6metaclass.get_parrotclass($class.defined ?? $class !! caller_namespace());
 	
 	unless $parrot_class.defined {
 		die("Undefined class '", $class, "'");

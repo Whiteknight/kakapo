@@ -1,77 +1,53 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module Matcher::InstanceOf;
 # Matches if target is an instance of a pre-specified class.
+module Matcher::InstanceOf;
 
-use('Dumper');
-Program::initload(:after('Matcher'));
-Matcher::Factory::export_sub(Matcher::InstanceOf::factory, :as('instance_of'));
+has $!type_name;
+
+INIT {
+	Kakapo::depends_on('Matcher');
+}
 
 sub _initload() {
-	if our $_Initload_done { return 0; }
-	$_Initload_done := 1;
-			
-	my $class_name := 'Matcher::InstanceOf';
-	
-	NOTE("Creating class ", $class_name);
-	Class::SUBCLASS($class_name,
-		'Matcher'
-	);
+	extends(Matcher);
+
+	#Matcher::Factory::export_sub(Matcher::InstanceOf::factory, :as('instance_of'));
 }
 
 method describe_failure($item, $description) {
-	if Opcode::isnull($item) {
-		return $description ~ 'was null';
-	}
-
-	return $description ~ 'had type: ' ~ Opcode::typeof($item);
+	$description
+		~ ( is_null($item)
+			?? 'was null'
+			!! 'had type: ' ~ Opcode::typeof($item));
 }
 
 method describe_self($description) {
-	return $description 
-		~ "an instance of type '" ~ self.type_name ~ "'";
+	$description ~ qq<an instance of type '$!type_name'>;
 }
 
-method factory(*@type) {
-	my $matcher := Matcher::InstanceOf.new();
-	
-	if +@type {
-		$matcher.type(@type.shift);
+method factory($type?, *%named) {
+	if $type.defined {
+		%named<type> := $type;
 	}
 	
-	return $matcher;
-}
-		
-method init(@args, %opts) {
-	Matcher::init(self, @args, %opts);
-	
-	if +@args {
-		self.type(@args.shift);
-	}
+	my $matcher := Matcher::InstanceOf.new(|%named);	
 }
 
 method matches($item) {
-	if Opcode::isnull($item) {
-		return 0;
-	}
-	
-	if Opcode::isa($item, self.type) {
-		return 1;
-	}
-	
-	return 0;
+	! is_null($item) 
+		&& pir::isa__IPP($item, $!type_name);
 }
 
-method type(*@value)		{ self._ATTR('type', @value); }
-
-method type_name() {
-	my $type := self.type;
-	my $type_name := $type;
-	
-	unless Opcode::isa($type, 'String') {
-		$type_name := Opcode::typeof($type);
+method type($value?) {
+	if $value {
+		$!type_name := ($value.isa('String')
+			?? $value
+			!! $value.get_namespace.string_name);
+		self;
 	}
-	
-	return $type_name;
+	else {
+		$!type_name;
+	}
 }

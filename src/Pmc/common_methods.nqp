@@ -58,11 +58,14 @@ sub _pre_initload() {
 	}
 	
 	# Now process the rest of the PMCs
-	for %methods_for {
-		if %methods_for{~ $_} {
-			P6metaclass.register(~ $_);
-			my $namespace := Parrot::get_hll_namespace(~ $_);
-			install_methods($namespace, %methods_for{$_});
+	for %methods_for.kv -> $pmc_type, @methods {
+		if @methods {
+			if pir::typeof__SP(Parrot::get_hll_global($pmc_type)) eq 'NameSpace' {
+				P6metaclass.register($pmc_type);
+			}
+			
+			my $namespace := Parrot::get_hll_namespace($pmc_type);
+			install_methods($namespace, @methods);
 		}
 	}
 }
@@ -152,7 +155,7 @@ sub install_methods($namespace, @methods, :$skip_new?) {
 	for @methods {
 		unless $namespace{~ $_} {
 			if $from_nsp{~ $_} {
-				%export_subs{$_} := $from_nsp{~ $_};
+				%export_subs{~ $_} := $from_nsp{~ $_};
 			}
 			elsif $_ eq 'new' {
 				unless $skip_new {
@@ -164,22 +167,11 @@ sub install_methods($namespace, @methods, :$skip_new?) {
 			}
 		}
 	}
-	
+
 	if %export_subs {
 		$from_nsp.export_to($namespace, %export_subs);
 	}
 }
-
-=begin
-=item isa( $type ) returns Boolean
-
-Returns C< true > if the invocant is a member of the class or PMC type named
-by the parameter. Returns C< false > otherwise.
-
-=begin code
-	if $object.isa( 'Undef' ) { ... }
-=end code
-=end
 
 method isa($type) {
 	pir::isa(self, $type);

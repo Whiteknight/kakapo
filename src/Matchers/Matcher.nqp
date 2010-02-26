@@ -5,13 +5,12 @@ class Matcher;
 
 INIT {
 	# No more work is need for this class.
-	Program::initload(:done(1));
+	Kakapo::initload_done();
 }
 
 method describe_failure($item, $previous) {
-	return $previous
-		~ "was '$item'";
+	$previous ~ "was '$item'";
 }
 
-method describe_self($previous)		{ self._ABSTRACT_METHOD; }
-method matches($item)			{ self._ABSTRACT_METHOD; }
+method describe_self($previous)		{ self.__ABSTRACT__ }
+method matches($item)			{ self.__ABSTRACT__ }

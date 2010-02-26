@@ -10,12 +10,6 @@ INIT {
 	}
 }
 
-# This sub is called directly by code in kakapo_top_pir.tmpl to perform 'very first thing' 
-# initialization. The intent is to (1) ensure that the environment is initialized, and (2) to 
-# directly initialize those modules that are prerequisites of just about every other module 
-# in the system.
-
-
 sub call_preinit_subs(@list) {
 	
 	my $nsp;
@@ -38,6 +32,10 @@ sub is_loaded() {
 	1;
 }
 
+# This sub is called directly by code in kakapo_top_pir.tmpl to perform 'very first thing' 
+# initialization. The intent is to (1) ensure that the environment is initialized, and (2) to 
+# directly initialize those modules that are prerequisites of just about every other module 
+# in the system.
 sub _pre_initload() {
 
 	if our $_Pre_initload_done { return 0; }

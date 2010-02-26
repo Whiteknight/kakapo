@@ -22,34 +22,22 @@ sub _pre_initload() {
 		get_hll_namespace
 		namespace_name
 		>, :tags('NAMESPACE'));
+	
+	Global::inject_root_symbol(Parrot::is_null);
 }
 
+# NB: index defaults to 1, and create_key adds 1, for '2', because the default is 1 higher than
+# the sub that *called* this sub. (foo() calls bar() calls caller(), caller returns 'foo')
 sub caller($index? = 1) {
-	my $key := Key.new('sub', $index + 1);
-	my $sub := pir::getinterp__P(){$key};
+	my $key := Key::create_key('sub', $index + 1);
+	my &sub := pir::getinterp__P(){$key};
 }
 
-
-sub caller_namespace($index?) {
-	unless $index {
-		$index := 1;
-	}
-	
-	my $nsp := Q:PIR {
-		.local pmc key
-		key = new 'Key'
-		key = 'namespace'
-		$P0 = find_lex '$index'
-		$S0 = $P0
-		$P1 = new 'Key'
-		$P1 = $S0
-		push key, $P1
-		
-		$P0 = getinterp
-		%r = $P0[ key ]
-	};
-	
-	return $nsp;
+# NB: index defaults to 1, and create_key adds 1, for '2', because the default is 1 higher than
+# the sub that *called* this sub. (foo() calls bar() calls caller(), caller returns 'foo')
+sub caller_namespace($index? = 1) {
+	my $key := Key::create_key('namespace', $index + 1);
+	my $nsp := pir::getinterp__P(){$key};
 }
 
 sub call_method($object, $method_name, *@args, *%opts) {
@@ -183,7 +171,9 @@ sub get_hll_global($path) {
 	my $name := $path.pop;
 	my $key := key_($path);
 	
-	pir::get_hll_global__PPS(key_($path), $name);
+	$key.defined 
+		?? pir::get_hll_global__PPS($key, $name)
+		!! pir::get_hll_global__PS($name);
 }
 
 # Return a namespace relative to the HLL root namespace.
@@ -242,6 +232,10 @@ sub get_sub($path, :$caller_nsp?) {
 	}
 	
 	return &sub;
+}
+
+sub is_null($obj) {
+	pir::isnull__IP($obj);
 }
 
 sub key($first, *@parts) {
@@ -313,7 +307,7 @@ sub namespace_name($nsp) {
 }
 
 method new($pmc, %args?) {
-	my $key := Key.new_($pmc.split('::'));
+	my $key := Key.new(|$pmc.split('::'));
 	
 	%args.elems == 0
 		?? pir::new__PP($key)

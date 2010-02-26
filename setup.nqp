@@ -100,6 +100,10 @@ sub MAIN(@argv) {
 		src/Classes/P6metaclass.pir
 
 		src/DependencyQueue.pir
+		src/Library.pir
+
+		src/Matchers/InstanceOf.pir
+		src/Matchers/Matcher.pir
 		
 		src/Mimidae/Generis.pir
 		src/Mimidae/Maker.pir

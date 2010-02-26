@@ -4,11 +4,30 @@
 module NameSpace;
 # Provides missing methods to NameSpace PMC.
 
-# FIXME: I'd like to add a 'new' that maps to make_namespace.
+# TODO: I'd like to add a 'new' that maps to make_namespace.
 
 method contains($name) {
 	! pir::isnull__IP(self.find_var($name))
 	|| !pir::isnull__IP(self.find_namespace($name));
+}
+
+method __dump($dumper, $label) {
+	my @results		:= Parrot::call_tuple_method($dumper, 'newIndent');
+	my $subindent	:= "\n" ~ @results.shift;
+	my $indent		:= "\n" ~ @results.shift;
+
+	my $name := self.string_name(:format('pir'), :with_hll);
+	
+	print($name, ' {');
+
+	for self {
+		print($subindent, $_.key);
+		$dumper.dump($label, $_.value);
+		print(',');
+	}
+	
+	print($indent, '}');
+	$dumper.deleteIndent;
 }
 
 method string_name(:$format, :$with_hll) {

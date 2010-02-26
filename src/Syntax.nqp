@@ -10,7 +10,6 @@ sub _pre_initload() {
 	Global::inject_root_symbol(Syntax::next);
 	Global::inject_root_symbol(Syntax::redo);
 	Global::inject_root_symbol(Syntax::super);
-	Global::inject_root_symbol(Syntax::super_);
 }
 
 sub die(*@why) {
@@ -29,11 +28,35 @@ sub redo() {
 	Control::LoopRedo.new(:message('Uncaught REDO control exception')).throw;
 }
 
-sub super($method, *@pos, *%named) {
-	super_($method, @pos, %named);
-}
-
-sub super_($method, @pos, %named) {
+sub super(*@pos, *%named) {
 	my $self := Parrot::get_self();
-	P6object::SUPER_($self, $method, @pos, %named);
+	my $class := pir::class__PP($self);
+	my @mro := $class.inspect('all_parents');
+	
+	if @mro == 1 {
+		die("Call to 'super' on object with no parent classes");
+	}
+
+	my &caller := Parrot::caller();
+	my $caller_name := ~ &caller;
+	my $found_myself := 0;
+	my &super;	
+
+	while @mro {
+		my $parent := @mro.shift;
+		&super := $parent.find_method($caller_name);
+
+		if $found_myself {
+			unless &super =:= &caller {
+				return &super($self, |@pos, |%named); # This is it.
+			}
+		}
+		else {
+			$found_myself := (&super =:= &caller);
+		}
+	}
+
+	Exception::MethodNotFound.new(
+		:message("Could not find superclass method '$caller_name'"),
+	).throw;
 }

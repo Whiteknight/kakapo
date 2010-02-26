@@ -5,6 +5,21 @@
 
 module Kakapo;
 
+sub depends_on(*@list, :$method) {
+	my $namespace := Parrot::caller_namespace();
+	my $name := $namespace.string_name;
+	
+	unless $method.defined {
+		unless Parrot::caller_namespace().contains(<_initload>) {
+			die("Could not locate (default) '_initload' method in namespace $name");
+		}
+		
+		$method := $namespace<_initload>;
+	}
+
+	Kakapo::Full::library_instance().at_initload($method, $name, :requires(@list));
+}
+
 sub get_preinit_subs() {
 
 	# Note: Order is crucial.
@@ -22,40 +37,34 @@ sub get_preinit_subs() {
 		P6metaclass
 		P6object
 		DependencyQueue
+		Library
 		Program
+		Kakapo::Full
 	>;
 }
 
-sub program_instance($value?) {
-	$value.defined
-		?? (our $_Program_instance := $value)
-		!! $_Program_instance;
+sub initload_done($name?) {
+	$name := $name // Parrot::caller_namespace().string_name;
+	Kakapo::Full::library_instance().module_initload_done($name);
 }
 
 sub library_init_done() {
-	library_initload_done();
+	Kakapo::Full::library_instance().do_init();
 }
 
 sub library_load_done() {
-	library_initload_done();
+	Kakapo::Full::library_instance().do_load();
 }
 
-sub library_initload_done() {
-	my $interp := pir::getinterp__P();
-	
-	my &getpid := pir::dlfunc__PPSS(pir::null__P(), 'getpid', 'i');
-	my &getuid := pir::dlfunc__PPSS(pir::null__P(), 'getuid', 'i');
-	
-	program_instance(
-		Program.new(
-			:args(		$interp[2] ),
-			:env(		pir::new__PS('Env') ),
-			:executable(	$interp[9] ),
-			:process_id(	&getpid() ),
-			:uid(		&getuid() ),
-			:stdin(	pir::getstdin__P() ),
-			:stderr(	pir::getstderr__P() ),
-			:stdout(	pir::getstdout__P() ),
-		)
-	);
+module Kakapo::Full;
+
+sub _pre_initload() {
+	library_instance(Library.new);
 }
+
+sub library_instance($value?) {
+	$value.defined
+		?? (our $_library_instance := $value)
+		!! $_library_instance;
+}
+

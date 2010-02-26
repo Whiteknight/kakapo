@@ -11,20 +11,21 @@ method __dump($dumper, $label) {
 	print( pir::get_repr__SP(self) );
 }
 
-method new(*@parts) {
-	self.new_(@parts);
+method new(*@parts, *%named) {
+	create_key(|@parts, |%named);
 }
 
-method new_(@parts, %opts?) {
+# NB: This sub called before Key class is registered. DO NOT try to merge with the method, above.
+sub create_key(*@parts, *%opts) {
 	my $key;
 	my $segment;
 
 	for @parts {
 		$segment := pir::new__PS('Key');
 		
-		if pir::isa($_, 'Integer' ) {	pir::assign__vPI($segment, $_); }
-		elsif $_.isa( 'Float' ) {	pir::assign__vPN($segment, $_); }
-		elsif $_.isa( 'String' ) {	pir::assign__vPS($segment, $_); }
+		if pir::isa($_, 'Integer' )	{ pir::assign__vPI($segment, $_); }
+		elsif pir::isa($_, 'Float' )	{ pir::assign__vPN($segment, $_); }
+		elsif pir::isa($_, 'String' )	{ pir::assign__vPS($segment, $_); }
 		else {
 			if pir::isa(Exception::InvalidArgument, 'P6protoobject') {
 				Exception::InvalidArgument.new(
@@ -36,7 +37,7 @@ method new_(@parts, %opts?) {
 			}
 		}
 		
-		if $key.defined {
+		if pir::defined($key) {
 			$key.push: $segment;
 		}
 		else {

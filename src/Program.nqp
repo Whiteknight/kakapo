@@ -9,11 +9,11 @@ module Program;
 # Provides a conventional framework for program execution. 
 
 sub _pre_initload(*@modules_done) {
-
+	
+	extends( 'Library' );
+	
 	has(<	@!args
 		$!at_exit_queue
-		$!at_init_queue
-		$!at_load_queue
 		%!env
 		$!executable
 		$!exit_value
@@ -25,44 +25,11 @@ sub _pre_initload(*@modules_done) {
 	>);
 	
 	Global::inject_root_symbol(Program::exit);
+	say("Program init load done");
 }
 
-my method add_call_($queue, @pos, %named) {
-	unless %named.contains('namespace') {
-		%named<namespace> := Parrot::caller_namespace(3);
-	}
-	
-	my $name;
-	my $sub := @pos.shift;
-	
-	if @pos.elems {
-		$name := @pos.shift;
-	}
-	elsif $sub.isa( 'String' ) {
-		$name := $sub;
-	}
-	elsif $sub.isa( 'Sub' ) {
-		$name := $sub.get_namespace.get_name.join('::') ~ '::' ~ $sub;
-	}
-	else {
-		Exception::InvalidArgument.new(
-			:message('Invalid $call argument. Must be Sub or String'),
-		).throw;		
-	}
-	
-	$queue.add_entry($name, $sub, %named<requires>);
-}
-
-my method at_exit(*@pos, *%named) {
-	self.add_call_($!at_exit_queue, @pos, %named);
-}
-
-my method at_init(*@pos, *%named) {
-	self.add_call_($!at_init_queue, @pos, %named);
-}
-
-my method at_load(*@pos, *%named) {
-	self.add_call_($!at_load_queue, @pos, %named);
+our method at_exit(*@pos, *%named) {
+	self.add_call($!at_exit_queue, |@pos, |%named);
 }
 
 our method do_exit() {
@@ -70,14 +37,6 @@ our method do_exit() {
 	
 	my $code := $!exit_value;
 	pir::exit($code);
-}
-
-our method do_init() {
-	self.process_queue($!at_init_queue, :name('init'));
-}
-
-our method do_load() {
-	self.process_queue($!at_load_queue, :name('load'));
 }
 
 sub exit($status) {
@@ -106,10 +65,7 @@ our method incorporate($other) {
 
 our method _init_obj(*@pos, *%named) {
 	$!at_exit_queue := DependencyQueue.new;
-	$!at_init_queue :=DependencyQueue.new;
-	$!at_load_queue := DependencyQueue.new;
-	
-	self._init_args(|@pos, |%named);
+	super(|@pos, |%named);
 }
 
 method main(@args) {
@@ -120,23 +76,6 @@ method main(@args) {
 	}
 	
 	&main(@args);
-}
-
-my method process_queue($queue, :$name!) {
-	my $callee;
-	
-	while ! $queue.is_empty {
-		$callee := $queue.next_entry;
-		$callee := Parrot::get_hll_global($callee)
-			if $callee.isa('String');
-		
-		die( "Got null callee while processing $name queue" )
-			if pir::isnull($callee);
-			
-		$callee(self);
-	}
-	
-	$queue.reset;
 }
 
 method run(*@args) {
@@ -227,58 +166,4 @@ method run(*@args) {
 	pir::setstdout(%save_fh<stdout>) if %save_fh.contains( <stdout> );
 
 	$!exit_value := self.do_exit;
-}
-
-##############################################
-
-sub call($call) {
-# Calls the Sub or MultiSub PMC passed as C<$call>, or, if C<$call> 
-# is a String, looks up the named symbol and calls that.
-
-	if $call.isa('String') {
-		my @nsp := $call.split('::');
-		my $name := @nsp.pop;
-	
-		# Shenanigans to handle '::main' correctly as a hll-root object.
-		if @nsp[0] eq '' {
-			@nsp.shift;
-		}
-		
-		$call := Opcode::get_hll_global(@nsp, $name);
-	}
-
-	my $status := 0;
-	
-	if ! Opcode::isnull($call) && $call.defined {
-		$status := $call();
-	}
-	
-	return $status;
-}
-
-sub determine_call($call, $caller_nsp, @sub_names) {
-# Determines a sub to be called. If C< $call > is defined, it specifies the call -- either a sub
-# of some kind, or a String name to be resolved, or some other invokable object. Otherwise,
-# the C< $caller_nsp > is checked for any of the default C< @sub_names >. The first one
-# found is used.
-
-	my $nsp_name := Parrot::namespace_name($caller_nsp);
-	
-	if defined($call) {
-		if isa($call, 'String') {
-			if +$call.split('::') == 1 {
-				$call := $nsp_name ~ '::' ~ $call;
-			}
-		}
-		
-		return $call;
-	}
-	
-	for @sub_names {
-		if $call := $caller_nsp{~$_} {
-			return $call;
-		}
-	}
-	
-	die("Cannot find any viable call (", @sub_names.join(', '), ") in ", $nsp_name);
 }

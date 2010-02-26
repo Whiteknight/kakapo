@@ -325,7 +325,7 @@ method repeat($times) {
 	return $result;
 }
 
-method split($delim?) {
+method split($delim? = '') {
 	pir::split__PSS($delim, self);
 }
 
