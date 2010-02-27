@@ -111,6 +111,7 @@ sub MAIN(@argv) {
 		
 		src/Program.pir
 		
+		src/UnitTest/Assertions.pir
 		src/UnitTest/Listeners.pir
 		src/UnitTest/Loader.pir
 		src/UnitTest/Result.pir

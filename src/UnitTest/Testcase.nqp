@@ -12,25 +12,14 @@ INIT {
 		'$!verify',
 	);
 	
-	export( 'assert_match',
-		'assert_that',
-		'fail',
-		'fail_if',
-		'fail_unless',
-		'verify_that'
-	);
-}
-
-method assert_match($target, $matcher) {
-	unless $matcher.matches($target) {
-		my $explain := $matcher.describe_self("Expected: ")
-			~ $matcher.describe_failure($target, "\n     but: ");		
-		self._fail($explain);
-	}
-}
-
-sub assert_that($target, $matcher) {
-	Parrot::get_self().assert_match($target, $matcher);
+	export(<
+		fail
+		fail_if
+		fail_unless
+		verify_that
+	>);
+	
+	Kakapo::initload_done();
 }
 
 my method default_loader() {
@@ -43,24 +32,16 @@ my method default_result() {
 	return $result;
 }
 
-my method _fail($why) {
+sub fail($why) {
 	Exception::UnitTestFailure.new(:message($why)).throw;
 }
 
-sub fail($why) {
-	Parrot::get_self()._fail($why);
-}
-
 sub fail_if($condition, $why) {
-	if ($condition) {
-		Parrot::get_self()._fail($why);
-	}
+	fail($why) if $condition;
 }
 
 sub fail_unless($condition, $why) {
-	unless ($condition) {
-		Parrot::get_self()._fail($why);
-	}
+	fail($why) unless $condition;
 }
 
 our method num_tests() {
