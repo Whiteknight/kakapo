@@ -41,7 +41,7 @@ sub super(*@pos, *%named) {
 	my $caller_name := ~ &caller;
 	my $found_myself := 0;
 	my &super;	
-
+	
 	while @mro {
 		my $parent := @mro.shift;
 		&super := $parent.find_method($caller_name);

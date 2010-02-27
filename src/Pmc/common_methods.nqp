@@ -16,6 +16,9 @@ Note that this method is compiled at run-time for each class. See L< install_sym
 =end
 
 sub _pre_initload() {
+	# Make these available for import by other modules.
+	export(< can clone defined does isa >);
+	
 	# List all the PMC types here, with the methods to export. I'll sort them out later.
 	my %methods_for;
 	%methods_for<Exception>		:= <can clone defined does isa new>;

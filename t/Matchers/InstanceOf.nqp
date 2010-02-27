@@ -12,8 +12,6 @@ INIT {
 
 class Test::Matcher::InstanceOf
 	is UnitTest::Testcase ;
-
-	has $!sut;
 	
 INIT {
 	use(	'UnitTest::Testcase' );	
@@ -24,7 +22,6 @@ MAIN();
 sub MAIN() {
 	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
 	$proto.suite.run;
-#~ $proto.test_mock_gets_parent_methods();
 }
 
 method test_new() {
@@ -33,4 +30,53 @@ method test_new() {
 	my $sut := Matcher::InstanceOf.new();
 	fail_unless( $sut.isa('Matcher::InstanceOf'),
 		'Matcher should be of correct type.' );
+}
+
+method test_match() {
+	my $sut := Matcher::InstanceOf.new(:type('String'));
+	
+	fail_unless( $sut.matches('foo'),
+		'Should match string constant as String');
+}
+
+method test_nonmatch() {
+	my $sut := Matcher::InstanceOf.new(:type('Matcher'));
+	
+	fail_if( $sut.matches('bar'),
+		'Should not match string');
+}
+
+method test_null_type() {
+	my $sut := Matcher::InstanceOf.new();
+	
+	fail_if( $sut.matches('baz'),
+		'Should not match any type' );
+}
+
+method test_null_match() {
+	my $sut := Matcher::InstanceOf.new(:type('String'));
+	
+	fail_if( $sut.matches(NoSuchAnimal),
+		'Should match null - could be anything');
+}
+
+class Test::Factory::InstanceOf {
+	method a() {
+		use( 'Matcher::Factory' );
+		
+		instance_of('String');
+	}
+}
+
+method test_instance_of() {
+	verify_that( 'The Factory namespace includes an instance_of sub that returns M::IO objects' );
+	
+	my $sut := Test::Factory::InstanceOf.new();
+	
+	my $matcher := $sut.a();
+	
+	fail_unless( $matcher.isa('Matcher::InstanceOf'),
+		'Should create M::IO object');
+	fail_unless( $matcher.matches('foo'),
+		'Should match a string');
 }

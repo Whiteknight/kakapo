@@ -12,8 +12,9 @@ INIT {
 
 sub _initload() {
 	extends(Matcher);
-
-	#Matcher::Factory::export_sub(Matcher::InstanceOf::factory, :as('instance_of'));
+	has( <$!type_name> );
+	
+	Matcher::Factory::export_sub(Matcher::InstanceOf::factory, :as('instance_of'));
 }
 
 method describe_failure($item, $description) {
@@ -27,12 +28,9 @@ method describe_self($description) {
 	$description ~ qq<an instance of type '$!type_name'>;
 }
 
-method factory($type?, *%named) {
-	if $type.defined {
-		%named<type> := $type;
-	}
-	
-	my $matcher := Matcher::InstanceOf.new(|%named);	
+sub factory($type, *%named) {
+	%named<type> := $type;
+	my $matcher := Matcher::InstanceOf.new(|%named);
 }
 
 method matches($item) {

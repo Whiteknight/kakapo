@@ -48,6 +48,9 @@ sub create_key(*@parts, *%opts) {
 	$key;
 }
 
+# The startup code needs this before common runs.
+method defined() { 1 }
+
 method push($obj) {
 	pir::push__vPP(self, $obj);
 	self;

@@ -102,6 +102,7 @@ sub MAIN(@argv) {
 		src/DependencyQueue.pir
 		src/Library.pir
 
+		src/Matchers/Factory.pir
 		src/Matchers/InstanceOf.pir
 		src/Matchers/Matcher.pir
 		
