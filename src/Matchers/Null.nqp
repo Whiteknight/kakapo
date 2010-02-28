@@ -1,32 +1,21 @@
-module Matcher::Null {
+# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-	_ONLOAD();
-	
-	sub _ONLOAD() {
-		if our $onload_done { return 0; }
-		$onload_done := 1;
-				
-		Global::use('Dumper');
-		
-		my $class_name := 'Matcher::Null';
-		
-		NOTE("Creating class ", $class_name);
-		Class::SUBCLASS($class_name,
-			'Matcher'
-		);
-				
-		NOTE("done");
-	}
-	
-	method describe_self($description) {
-		return $description ~ "a null value";
-	}
-	
-	method matches(*@value) {
-		unless +@value {
-			Program::die("A value must be passed to matches($item)");
-		}
-		
-		return Opcode::isnull(@value[0]);
-	}
+# Matcher that negates its single child.
+module Matcher::Null;
+
+INIT {
+	Kakapo::depends_on('Matcher');
+}
+
+sub _initload() {
+	extends(	'Matcher' );
+}
+
+method describe_self($description) {
+	$description ~ "a null value";
+}
+
+method matches($subject) {
+	pir::isnull($subject);
 }

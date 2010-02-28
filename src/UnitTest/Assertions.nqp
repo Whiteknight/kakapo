@@ -21,6 +21,8 @@ sub _initload() {
 		assert_not_instance_of	
 		assert_isa
 		assert_not_isa
+		assert_match
+		assert_no_match
 		assert_null
 		assert_not_null
 		assert_same
@@ -28,6 +30,8 @@ sub _initload() {
 		assert_throws
 		assert_throws_nothing	
 		assert_within_delta
+		want_fail
+		want_pass
 	>);
 }
 
@@ -69,6 +73,22 @@ sub assert_isa($obj, $class, $message) {
 
 sub assert_not_isa($obj, $class, $message) {
 	fail($message) if pir::isa__iPP($obj, P6metaclass.get_parrotclass($class));
+}
+
+sub assert_match($obj, $matcher, $message) {
+	unless $matcher.matches($obj) {
+		my $explain := $matcher.describe_self('\nExpected: ')
+			~ $matcher.describe_failure("\n    but: ", $obj);
+		fail($message ~ $explain);
+	}
+}
+
+sub assert_no_match($obj, $matcher, $message) {
+	if $matcher.matches($obj) {
+		my $explain := $matcher.describe_self('\nExpected: ')
+			~ $matcher.describe_failure("\n    but: ", $obj);
+		fail($message ~ $explain);
+	}
 }
 
 sub assert_null($obj, $message) {
@@ -118,16 +138,11 @@ sub assert_within_delta($o1, $o2, $delta, $message) {
 	
 #~ assert_like(obj, regex, message)
 #~ assert_not_like
-
-method assert_match($target, $matcher) {
-	unless $matcher.matches($target) {
-		my $explain := $matcher.describe_self("Expected: ")
-			~ $matcher.describe_failure($target, "\n     but: ");		
-		self._fail($explain);
-	}
+	
+sub want_fail($message, &block) {
+	assert_throws(Exception::UnitTestFailure, $message, &block);
 }
 
-sub assert_that($target, $matcher) {
-	Parrot::get_self().assert_match($target, $matcher);
+sub want_pass($message, &block) {
+	assert_throws_nothing($message, &block);
 }
-

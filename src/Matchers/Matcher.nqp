@@ -8,7 +8,7 @@ INIT {
 	Kakapo::initload_done();
 }
 
-method describe_failure($item, $previous) {
+method describe_failure($previous, $item) {
 	$previous ~ "was '$item'";
 }
 

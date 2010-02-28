@@ -273,12 +273,3 @@ method test_not_instance_of_fails() {
 	my $obj := Test::AssertIsa.new();
 	want_fail("is instance of assert-isa", { assert_not_instance_of($obj, Test::AssertIsa, 'assert-isa'); });
 }
-
-	
-sub want_fail($message, &block) {
-	assert_throws(Exception::UnitTestFailure, $message, &block);
-}
-
-sub want_pass($message, &block) {
-	assert_throws_nothing($message, &block);
-}

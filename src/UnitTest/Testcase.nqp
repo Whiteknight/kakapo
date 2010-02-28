@@ -36,10 +36,12 @@ sub fail($why) {
 	Exception::UnitTestFailure.new(:message($why)).throw;
 }
 
+# DEPRECATED
 sub fail_if($condition, $why) {
 	fail($why) if $condition;
 }
 
+# DEPRECATED
 sub fail_unless($condition, $why) {
 	fail($why) unless $condition;
 }

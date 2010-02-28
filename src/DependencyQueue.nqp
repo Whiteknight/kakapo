@@ -4,8 +4,16 @@
 class Exception::DependencyQueue::AlreadyDone 
 	is Exception::Wrapper;
 	
-module DependencyQueue;
 # A queue that orders its entries according to their prerequisites.
+module DependencyQueue;
+
+has %!added;
+has %!already_done;
+has %!cycle;
+has @!cycle_keys;
+has $!locked;
+has %!pending;
+has @!queue;
 
 sub _pre_initload() {
 

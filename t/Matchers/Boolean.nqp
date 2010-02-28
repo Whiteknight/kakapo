@@ -1,54 +1,81 @@
 # Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module Kakapo {
-	# Tell krt0 which file to load.	
-	sub library_name()		{ 'kakapo_test.pbc' }
-}
-
 INIT {
+	# Load the Kakapo library
+	pir::load_language('parrot');
+	my $env := pir::new__PS('Env');
+	my $root_dir := $env<HARNESS_ROOT_DIR> || '.';
+	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
 }
 
 class Test::Matcher::Boolean
-	is UnitTest::Testcase {
+	is UnitTest::Testcase ;
 	
+INIT {
+	use(	'UnitTest::Testcase' );
+	use(	'UnitTest::Assertions' );	
+}
+
+MAIN();
+
+sub MAIN() {
+	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
+	$proto.suite.run;
+	#$proto.test_factory_true;
+}
+
+method test_match() {
+	my $sut := Matcher::Boolean.new(:true);	
+	assert_match( 1, $sut, 'True value should match');
+}
+
+method test_nonmatch() {
+	my $sut := Matcher::Boolean.new(:false);
+	want_fail( 'Boolean match should fail', { assert_match( 1, $sut, 'should fail'); });
+}
+
+method test_new() {
+	my $sut := Matcher::Boolean.new();
+	assert_isa($sut, 'Matcher::Boolean', 'Matcher should be of correct type.' );
+}
+
+method test_describe_self_true() {
+	my $sut := Matcher::Boolean.new(:true);
+	assert_equal( $sut.describe_self, 'a true value', 'True matcher should have true message');
+}
+
+method test_describe_self_false() {
+	my $sut := Matcher::Boolean.new(:false);
+	assert_equal( $sut.describe_self, 'a false value', 'False matcher should have false message');
+}
+
+class Test::BooleanFactory {
 	INIT {
-		use(	'P6metaclass' );
-		use(	'UnitTest::Testcase' );
-		
-		has(	'$!matcher' );
-		Program::register_main();
+		use( 'Matcher::Factory');
 	}
 	
-	sub main() {
-		my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
-		$proto.suite.run;
+	method t() {
+		true();
 	}
 	
-	method test_describe_false() {
-		verify_that( "Generated description of false is correct" );
+	method f() {
+		false();
+	}
+}
 
-		my $m := Matcher::Boolean.new( :expected(0) );
-		unless $m.describe_self('') eq 'a false value' { fail( "Bad formatting" ); }
-	}
+method test_factory_true() {
+	my $obj := Test::BooleanFactory.new;
 	
-	method test_describe_true() {
-		verify_that( "Generated description of true is correct" );
-		my $m := Matcher::Boolean.new( :expected(1) );
-		unless $m.describe_self('') eq 'a true value' { fail( "Bad formatting" ); }
-	}
-	
-	method test_constructor_true() {
-		verify_that( "True expectation is passed through ctor");
-		
-		my $m := Matcher::Boolean.new( :expected(100) );
-		unless $m.expected { fail("Bad expectation set"); }
-	}
+	my $t := $obj.t;
+	assert_isa( $t, Matcher::Boolean, 'Should return a configured matcher.' );
+	fail('Should be configured true') unless $t.expected;
+}
 
-	method test_constructor_false() {
-		verify_that( "False expectation is passed through ctor");
-		
-		my $m := Matcher::Boolean.new( :expected(0) );
-		if $m.expected { fail("Bad expectation set"); }
-	}
+method test_factory_false() {
+	my $obj := Test::BooleanFactory.new;
+	
+	my $f := $obj.f;
+	assert_isa( $f, Matcher::Boolean, 'Should return a configured matcher' );
+	fail('Should be configured false') if $f.expected;
 }

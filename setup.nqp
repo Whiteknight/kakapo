@@ -42,7 +42,6 @@ sub MAIN(@argv) {
 		:project_uri(	'git://gitorious.org/kakapo/kakapo.git' ),
 
 		:harness_files(	pir::join(' ', < 
-			!t/Matchers
 			!t/Pmc
 			!t/Structure
 			!t/UnitTest
@@ -102,9 +101,12 @@ sub MAIN(@argv) {
 		src/DependencyQueue.pir
 		src/Library.pir
 
+		src/Matchers/Boolean.pir
 		src/Matchers/Factory.pir
 		src/Matchers/InstanceOf.pir
 		src/Matchers/Matcher.pir
+		src/Matchers/Not.pir
+		src/Matchers/Null.pir
 		
 		src/Mimidae/Generis.pir
 		src/Mimidae/Maker.pir

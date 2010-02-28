@@ -1,4 +1,6 @@
 #! parrot-nqp
+# Copyright 2010, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 MAIN();
 
@@ -19,13 +21,12 @@ INIT {
 }
 
 sub MAIN() {	
-	plan(9);
+	plan(7);
 
 	our $Class_name := 'UnitTest::Testcase';
 	
 	test_attrs();
 	test_exports();
-	test_asserts();
 	test_structure();
 }
 
@@ -76,32 +77,6 @@ class DummyMatcher {
 	method matches(*@args) { 0; }
 	method describe_self(*@args) { '' }
 	method describe_failure(*@args) { '' }
-}
-
-class TestAsserts is UnitTest::Testcase {
-	INIT {
-		use( 'P6metaclass' );
-		use( 'UnitTest::Testcase', :tags('DEFAULT', 'ASSERTS'));
-		
-		has( '$.failure_count');
-	}
-	
-	method fail_assert_match() {
-		my $matcher := DummyMatcher.new();
-		assert_that(0, $matcher);
-	}
-	
-	method _fail($why) {
-		self.failure_count(1 + self.failure_count);
-	}
-}
-	
-sub test_asserts() {
-	my $obj := TestAsserts.new();
-	ok($obj.failure_count == 0, 'Asserts: setup okay');
-		
-	$obj.fail_assert_match();
-	ok($obj.failure_count == 1, 'Failing assert_match works');
 }
 
 class TestStructure is UnitTest::Testcase {

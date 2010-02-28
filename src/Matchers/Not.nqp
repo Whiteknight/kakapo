@@ -1,32 +1,33 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module Matcher::Not;
 # Matcher that negates its single child.
+module Matcher::Not;
 
-use('Dumper');
-Program::initload(:after('Matcher'));
-Class::multi_sub('Matcher::Not', 'factory', :starting_with('_factory_'));
-Matcher::Factory::export_sub(Matcher::Not::factory, :as('not'));
+has $!child;
+
+INIT {
+	Kakapo::depends_on('Matcher');
+}
 
 sub _initload() {
-	if our $_Initload_done { return 0; }
-	$_Initload_done := 1;
+	extends(	'Matcher' );
 	
-	my $class_name := 'Matcher::Not';
+	has(	'$!child' );
 	
-	NOTE("Creating class ", $class_name);
-	Class::SUBCLASS($class_name,
-		'Matcher'
-	);
+#~ Class::multi_sub('Matcher::Not', 'factory', :starting_with('_factory_'));
+#~ Matcher::Factory::export_sub(Matcher::Not::factory, :as('not'));
+
 }
 
+# Pass through - the "reason for failure" will be the same, only the failure itself is reversed.
 method describe_failure($item, $description) {
-	return self.predicate.describe_failure($item, $description);
+	$!child.describe_failure($item, $description);
 }
 
-method describe_self($description) {
-	return self.predicate.describe_self($description ~ "not ");
+# Pass through with just a "not" prepended.
+method describe_self($description? = '') {
+	$!child.describe_self($description ~ "not ");
 }
 
 sub _factory_Float($value)			{ factory(Matcher::factory::is($value)); }
@@ -34,18 +35,11 @@ sub _factory_Integer($value)		{ factory(Matcher::factory::is($value)); }
 sub _factory_Matcher($matcher)		{ Matcher::Not.new($matcher); }
 sub _factory_String($value)		{ factory(Matcher::factory::is($value)); }
 
-method init(@args, %opts) {
-	unless +@args {
-		DIE("You must provide a predicate Matcher for Match::Not");
-	}
+method _init_obj($child?, *%named) {
+	$!child := $child;
+	self;
+}
 	
-	self.predicate(@args.shift);
-	Matcher::init(self, @args, %opts);
-}
-
 method matches($item) {
-	my $result := ! self.predicate.matches($item);
-	return $result;
+	! $!child.matches($item);
 }
-
-method predicate(*@value)			{ self._ATTR('predicate', @value); }
