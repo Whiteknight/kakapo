@@ -72,7 +72,7 @@ sub MAIN(@argv) {
 		src/Parrot/Pir.pir
 		
 		src/Pmc/Array.pir
-		src/Pmc/common_methods.pir
+		src/Pmc/common-methods.pir
 		src/Pmc/Exception.pir
 			src/Exceptions.pir
 		src/Pmc/Key.pir
@@ -145,6 +145,9 @@ sub MAIN(@argv) {
 	%kakapo<release_files><kakapo_full.pbc>	:= <library/kakapo_full.pbc>;
 	%kakapo<release_files><krt0.pir>		:= <library/krt0.pir>;
 	%kakapo<release_files><krt0.pbc>		:= <library/krt0.pbc>;
+
+	# This test file needs compiling so the others can load it.
+	%kakapo<pir_nqp-rx><t/Pmc/common-methods.pir> := <t/Pmc/common-methods.nqp>;
 	
 	register_step_before('build', Setup::Step::copy_templates);
 	register_step_before('clean', Setup::Step::clean_templates);

@@ -1,22 +1,15 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module Matcher::TypeSafe;
 # Abstract class that handles type-safety and null/undef checking of its args.
-	
-use('Dumper');
-Program::initload(:after('Matcher'));
+module Matcher::TypeSafe;
+
+INIT {
+	Kakapo::depends_on('Matcher');
+}
 
 sub _initload() {
-	if our $_Initload_done { return 0; }
-	$_Initload_done := 1;			
-	
-	my $class_name := 'Matcher::TypeSafe';
-	
-	NOTE("Creating class ", $class_name);
-	Class::SUBCLASS($class_name,
-		'Matcher'
-	);
+	extends( 'Matcher' );	
 }
 
 method describe_failure($item, $description) {
