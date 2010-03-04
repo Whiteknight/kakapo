@@ -15,6 +15,7 @@ class Test::Program
 
 INIT {
 	use(	'UnitTest::Testcase' );	
+	use(	'UnitTest::Assertions' );	
 }
 
 MAIN();
@@ -121,8 +122,8 @@ method test_reduce() {
 method test_reverse() {
 	my @a1 := <A B C D E F>;
 	
-	my $s := @a1.reverse.join;
-	fail_unless( $s eq 'FEDCBA',
+	my $s := @a1.reverse.join('|');
+	fail_unless( $s eq 'F|E|D|C|B|A',
 		'Reverse even array should be fedcba');
 	
 	@a1 := <L M N O P Q R>;
@@ -205,4 +206,12 @@ method test_unsort() {
 	fail_if($same == 4,
 		'Result should not be the same array (unlikely, not impossible!)');
 		
+}
+
+method test_zip() {
+	my @a1 := (1, 2, 3);
+	my @a2 := <a b c>;
+	
+	assert_equal( zip(@a1, @a2).join, '1a2b3c',
+		'Zip should interweave the values');
 }

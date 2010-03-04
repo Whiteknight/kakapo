@@ -46,8 +46,8 @@ class Test::New {
 }
 
 method test_new() {
-	my $test := Parrot.new('Test::New');
+	my $test := Parrot::new('Test::New');
 	
-	fail_if( pir::isnull($test), 'Parrot.new should return new object' );
+	fail_if( pir::isnull($test), 'Parrot::new should return new object' );
 	fail_unless( $test.x == 10, 'New object should be of correct pmc type' );
 }

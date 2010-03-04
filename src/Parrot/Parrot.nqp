@@ -44,13 +44,10 @@ sub call_method($object, $method_name, *@args, *%opts) {
 	call_method_($object, $method_name, @args, %opts);
 }
 
-sub call_method_($object, $method_name, @args?, %opts?) {
 # Calls method C< $method_name > with flattened arglist C< @args > and flattened 
 # options C< %opts >. Returns the result of the method call.
+sub call_method_($object, $method_name, @args?, %opts?) {
 
-	unless Opcode::defined(@args)	{ @args := Array::new(); }
-	unless Opcode::defined(%opts)	{ %opts := Hash::empty(); }
-	
 	Q:PIR {
 		.local pmc object, meth, args, opts
 		object	= find_lex '$object'
@@ -73,13 +70,10 @@ sub call_tuple_method($object, $method, *@args, *%opts) {
 	call_tuple_method_($object, $method, @args, %opts);
 }
 
-sub call_tuple_method_($object, $method, @args?, %opts?) {
 # Calls method C< $method_name > with flattened arglist C< @args > and flattened 
 # options C< %opts >. Returns an RPA with the tuple returned by the method.
+sub call_tuple_method_($object, $method, @args?, %opts?) {
 
-	unless Opcode::defined(@args)	{ @args := Array::new(); }
-	unless Opcode::defined(%opts)	{ %opts := Hash::empty(); }
-	
 	Q:PIR {
 		.local pmc object, meth, args, opts
 		object	= find_lex '$object'
@@ -306,7 +300,7 @@ sub namespace_name($nsp) {
 		!! $nsp.string_name;
 }
 
-method new($pmc, %args?) {
+sub new($pmc, %args?) {
 	my $key := Key.new(|$pmc.split('::'));
 	
 	%args.elems == 0

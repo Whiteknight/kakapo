@@ -346,22 +346,25 @@ method reduce(&expression) {
 }
 
 method reverse(:$from = 0, :$to) {
-	$to := self.elems unless $to.defined;
+	$to := self.elems - 1 unless $to.defined;
 	my $temp;
+	
 	if $from > $to {
 		$temp := $from;
 		$from := $to;
 		$to := $temp;
 	}
 
-	while $from < $to {
-		$temp := self[$from];
-		self[$from] := self[$to];
-		self[$to] := $temp;
-		$from++;
-		$to--;
+	if $from >= 0 {
+		while $from < $to {
+			$temp := self[$from];
+			self[$from] := self[$to];
+			self[$to] := $temp;
+			$from++;
+			$to--;
+		}
 	}
-	
+
 	self;
 }
 

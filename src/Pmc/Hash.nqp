@@ -86,6 +86,17 @@ our method exists($key) {
 	self.contains($key);
 }
 
+our method grep(&match) {
+	my %matches;
+	
+	for self {
+		%matches{$_.key} := $_.value
+			if &match($_);
+	}
+	
+	%matches;
+}
+
 our method keys() {
 	my @keys;
 	
@@ -105,6 +116,16 @@ our method kv() {
 	}
 	
 	@kv;
+}
+
+our method map(&match) {
+	my %result;
+	
+	for self {
+		%result{$_.key} := &match($_);
+	}
+	
+	%result;
 }
 
 =begin
@@ -202,14 +223,12 @@ positional hashes are default values.
 =end
 
 our method new(*@pos, *%pairs) {
-	if +@pos {
+	if @pos.elems {
 		my $message := 'Invalid call to Hash.new with positional args.';
-		
-		if Opcode::isa(@pos[0], 'NameSpace') {
-			$message := $message ~ ' '
-				~ 'Likely a call to (Hash-based) ' 
-				~ @pos[0].get_name.join('::')
-				~ '.new() - before class was created';
+
+		if pir::isa__IPS(@pos[0], 'NameSpace') {
+			$message := $message
+				~ ' Likely a call to {@pos[0].string_name}.new() - before class was created';
 		}
 
 		_dumper(@pos, %pairs);

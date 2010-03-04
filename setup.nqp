@@ -72,6 +72,7 @@ sub MAIN(@argv) {
 		src/Parrot/Pir.pir
 		
 		src/Pmc/Array.pir
+		src/Pmc/Class.pir
 		src/Pmc/common-methods.pir
 		src/Pmc/Exception.pir
 			src/Exceptions.pir
@@ -107,9 +108,14 @@ sub MAIN(@argv) {
 		src/Matchers/Matcher.pir
 		src/Matchers/Not.pir
 		src/Matchers/Null.pir
+		src/Matchers/PassFail.pir
 		
-		src/Mimidae/Generis.pir
+		src/Mimidae/Antiphon.pir
+		src/Mimidae/CallSignature.pir
+		src/Mimidae/Cuculus.pir
 		src/Mimidae/Maker.pir
+		src/Mimidae/Ovum.pir
+		src/Mimidae/Species.pir
 		
 		src/Program.pir
 		

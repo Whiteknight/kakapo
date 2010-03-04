@@ -273,3 +273,19 @@ method test_not_instance_of_fails() {
 	my $obj := Test::AssertIsa.new();
 	want_fail("is instance of assert-isa", { assert_not_instance_of($obj, Test::AssertIsa, 'assert-isa'); });
 }
+
+method test_assert_true() {
+	want_pass("true should pass", { assert_true(1, 'true'); });
+}
+
+method test_assert_true_fails() {
+	want_fail("false should fail", { assert_true(0, 'false'); });
+}
+
+method test_assert_false() {
+	want_pass("false should pass", { assert_false(0, 'false'); });
+}
+
+method test_assert_false_fails() {
+	want_fail("true should fail", { assert_false(1, 'true'); });
+}

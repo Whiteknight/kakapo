@@ -21,19 +21,19 @@ sub _pre_initload() {
 	
 	# List all the PMC types here, with the methods to export. I'll sort them out later.
 	my %methods_for;
-	%methods_for<Exception>		:= <can clone defined does isa new>;
-#	%methods_for<FileHandle>		:= <can clone defined isa new>; # not does
-	%methods_for<Float>			:= <can clone defined does isa>;
-	%methods_for<Hash>			:= <can clone defined does isa>;
-	%methods_for<Integer>			:= <can clone defined does isa>;
-	%methods_for<Key>			:= <can clone defined does isa>;
-	%methods_for<NameSpace>		:= <can clone defined does isa>;
-	%methods_for<ResizablePMCArray>	:= <can clone defined does isa new>;
-	%methods_for<ResizableStringArray>	:= <can clone defined does isa new>;
-	%methods_for<String>			:= <can clone defined does >; #! not new isa
-#	%methods_for<StringHandle>		:= <can clone defined does isa new>;
-	%methods_for<Sub>			:= <can clone defined does isa>; #! not new
-	%methods_for<Undef>			:= <can clone does isa new>; #! not defined
+	%methods_for<Exception>		:= <can clone defined does isa is_equal new>;
+#	%methods_for<FileHandle>		:= <can clone defined isa is_equal new>; # not does
+	%methods_for<Float>			:= <can clone defined does isa is_equal>;
+	%methods_for<Hash>			:= <can clone defined does isa is_equal>;
+	%methods_for<Integer>			:= <can clone defined does isa is_equal>;
+	%methods_for<Key>			:= <can clone defined does isa is_equal>;
+	%methods_for<NameSpace>		:= <can clone defined does isa is_equal>;
+	%methods_for<ResizablePMCArray>	:= <can clone defined does isa is_equal new>;
+	%methods_for<ResizableStringArray>	:= <can clone defined does isa is_equal new>;
+	%methods_for<String>			:= <can clone defined does is_equal>; #! not new isa
+#	%methods_for<StringHandle>		:= <can clone defined does isa is_equalnew>;
+	%methods_for<Sub>			:= <can clone defined does isa is_equal>; #! not new
+	%methods_for<Undef>			:= <can clone does isa is_equal new>; #! not defined
 	
 	my $from_nsp := pir::get_namespace__P();
 
@@ -178,4 +178,8 @@ sub install_methods($namespace, @methods, :$skip_new?) {
 
 method isa($type) {
 	pir::isa(self, $type);
+}
+
+method is_equal($other) {
+	pir::iseq__IPP(self, $other);
 }

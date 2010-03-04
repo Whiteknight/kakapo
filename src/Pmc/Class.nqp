@@ -13,7 +13,8 @@ method __dump($dumper, $label) {
 	my $name := ~ self;
 	my $nsp := self.get_namespace;
 	
-	unless Opcode::isnull($nsp) {
+	unless pir::isnull($nsp) {
+	say("Namespace is legit");
 		$name := Parrot::namespace_name($nsp);
 	}
 
@@ -22,7 +23,7 @@ method __dump($dumper, $label) {
 	my $comma := '';
 	my @attributes := self.inspect('attributes').keys;
 	
-	if +@attributes {
+	if @attributes {
 		print($subindent, "---- Attributes");
 		
 		@attributes.sort;

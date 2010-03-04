@@ -22,13 +22,15 @@ sub _initload() {
 		assert_isa
 		assert_not_isa
 		assert_match
-		assert_no_match
+		assert_not_match
 		assert_null
 		assert_not_null
 		assert_same
 		assert_not_same
 		assert_throws
-		assert_throws_nothing	
+		assert_throws_nothing
+		assert_true
+		assert_false
 		assert_within_delta
 		want_fail
 		want_pass
@@ -83,7 +85,7 @@ sub assert_match($obj, $matcher, $message) {
 	}
 }
 
-sub assert_no_match($obj, $matcher, $message) {
+sub assert_not_match($obj, $matcher, $message) {
 	if $matcher.matches($obj) {
 		my $explain := $matcher.describe_self('\nExpected: ')
 			~ $matcher.describe_failure("\n    but: ", $obj);
@@ -128,6 +130,14 @@ sub assert_throws_nothing($message, &block) {
 	};
 	
 	fail($message) unless $ok;
+}
+
+sub assert_true($bool, $message) {
+	fail($message) unless $bool;
+}
+
+sub assert_false($bool, $message) {
+	fail($message) if $bool;
 }
 
 sub assert_within_delta($o1, $o2, $delta, $message) {

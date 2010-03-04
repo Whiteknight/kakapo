@@ -110,5 +110,5 @@ class C3 is C2 {
 method test_super() {
 	my $obj := C3.new;
 	fail_unless($obj.m2 eq 'C2', 'Super should call C2::m2');
-        fail_unless($obj.m3 eq 'C1', 'Super should call C1::m3');
+	fail_unless($obj.m3 eq 'C1', 'Super should call C1::m3');
 }

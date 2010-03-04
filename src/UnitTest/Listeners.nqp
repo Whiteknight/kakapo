@@ -37,7 +37,7 @@ method get_test_label($test) {
 }
 
 method _init_obj(*@pos, *%named) {
-	%named<test_builder> := Parrot.new('Test::Builder')
+	%named<test_builder> := Parrot::new('Test::Builder')
 		unless %named.contains(<test_builder>);
 	self._init_args(|@pos, |%named);
 }

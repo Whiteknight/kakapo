@@ -42,24 +42,21 @@ my method _add_attributes($class, %attrs) {
 	}
 }
 
-my method _add_parents($class, @parents) {
 # Do the work of actually adding parents. Called from C< declare > and C< extends >.
+my method _add_parents($class, @parents) {
 
-	@parents := _flatten_name_list(@parents);
-
-	unless +@parents {
-		return 0;
-	}
-	
 	unless $class.defined {
 		die("Cannot add parents to undefined class.");
 	}
-
-	my $first := @parents.shift;
-	my $parrotclass := self.declare_class($class, :parent($first));
 	
-	for @parents {
-		self.add_parent($parrotclass, $_);
+	if @parents {
+		my $first := @parents.shift;
+		my $parrotclass := self.declare_class($class, :parent($first));
+
+		for @parents {
+			self.add_parent($parrotclass, $_);
+		}
+
 	}
 }
 
@@ -83,12 +80,9 @@ sub declare($class?, :@has?, :@is?) {
 }
 
 method declare_class($class, :$parent) {
-	unless Opcode::defined($class) {
-		die("Cannot declare undefined class - give me a string name or a namespace");
-	}
-
+	$class := $class // die("Cannot declare undefined class - give me a string name or a namespace");
 	my $parrotclass := self.get_parrotclass($class);
-
+	
 	# Already declared?
 	unless ! Opcode::isnull($parrotclass) && Opcode::isa($parrotclass, 'P6object') {
 		if Opcode::defined($parent) {
@@ -109,36 +103,16 @@ sub dump_class($class) {
 }
 
 # Declares parent classes of the specified class. Note that the child class may not be declared yet.
-sub extends($first, *@args, :$class?) {
-	if ! @args.defined { @args := Array::new($first); }
-	elsif ! Opcode::does(@args, 'array') { @args := Array::new($first, @args); }
-	else { @args.unshift($first); }
-	
-	unless $class.defined {
-		$class := caller_namespace();
+sub extends($first, *@parents, :$class?) {
+	if Opcode::does($first, <array> ) {
+		@parents := $first;
 	}
-	
-	P6metaclass._add_parents($class, @args);
-}
-
-sub _flatten_name_list(@list) {
-	my @merged := Array::new();
-
-	for @list {
-		if Opcode::does($_, 'array') {
-			@merged.append($_);
-		}
-		elsif $_.isa('String') {
-			for $_.split(' ') {
-				@merged.push($_);
-			}
-		}
-		else {
-			@merged.push($_);
-		}
+	else {
+		@parents.unshift: $first;
 	}
-	
-	return @merged;
+
+	$class := $class // caller_namespace().string_name;
+	P6metaclass._add_parents($class, @parents);
 }
 
 # Declares attributes for a class. Note that the class may not be declared yet.
@@ -195,15 +169,14 @@ sub has(*@args, :$class?, *%opts) {
 }
 
 sub has_vtable($name, &code, :$class?) {
-	my $parrot_class	:= P6metaclass.get_parrotclass($class.defined ?? $class !! caller_namespace());
+	$class := $class // caller_namespace().get_class;	
+	my $parrot_class	:= P6metaclass.get_parrotclass($class);
 	
-	unless $parrot_class.defined {
+	if pir::isnull__IP($parrot_class) {
 		die("Undefined class '", $class, "'");
 	}
 
 	$parrot_class.add_vtable_override($name, &code);
-say("Adding vtable: ", $name, " to ", $parrot_class);
-_dumper(Opcode::inspect_string($parrot_class, 'vtable_overrides'));
 }
 
 my method _make_accessor($parrot_class, %info) {
