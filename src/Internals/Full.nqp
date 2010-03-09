@@ -38,7 +38,6 @@ sub get_preinit_subs() {
 		P6object
 		DependencyQueue
 		Library
-		Program
 		Kakapo::Full
 	>;
 }
@@ -60,6 +59,10 @@ module Kakapo::Full;
 
 sub _pre_initload() {
 	library_instance(Library.new);
+	
+	for Kakapo::get_preinit_subs() -> $module_name {
+		Kakapo::initload_done($module_name);
+	}
 }
 
 sub library_instance($value?) {
