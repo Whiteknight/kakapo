@@ -3,12 +3,14 @@
 
 module Library;
 
+has $!at_init_queue;
+has $!at_load_queue;
+
 sub _pre_initload(*@modules_done) {
 	has(<	
 		$!at_init_queue
 		$!at_load_queue
 	>);
-	say("Library initload done");
 }
 
 my method add_call($queue, $sub, $name?, *%named) {
