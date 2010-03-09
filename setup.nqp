@@ -28,36 +28,35 @@ sub new_hash(*%hash) {
 sub MAIN(@argv) {
 	
 	my %kakapo := new_hash(
-		:name(	'Kakapo' ),
-		:abstract(	'Run-time library for NQP programs on the Parrot VM' ),
-		:authority(	'http://gitorious.org/austin' ),
-		:copyright_holder( 'Austin Hastings' ),
-		:doc_files(	<README CREDITS> ),
-		:keywords( 	< library  nqp  parrot  runtime  stand alone  xunit 
-				unit  testing  matcher  pmc  methods  >),
+		:name(		'Kakapo' ),
+		:abstract(		'Run-time library for NQP programs on the Parrot VM' ),
+		:authority(		'http://gitorious.org/austin' ),
+		:copyright_holder(	'Austin Hastings' ),
+		:doc_files(		<README CREDITS> ),
+		:keywords( 		< library  nqp  parrot  runtime  stand alone  xunit 
+					unit testing  matcher  pmc  methods  >),
 		:license_type(	'Artistic License 2.0' ),
-		:license_uri(	'http://www.perlfoundation.org/artistic_license_2_0' ),
+		:license_uri(		'http://www.perlfoundation.org/artistic_license_2_0' ),
 		:checkout_uri(	'git://gitorious.org/kakapo/kakapo.git' ),
 		:browser_uri(	'http://code.google.com/p/kakapo-parrot/' ),
-		:project_uri(	'git://gitorious.org/kakapo/kakapo.git' ),
+		:project_uri(		'git://gitorious.org/kakapo/kakapo.git' ),
 
-		:harness_files(	pir::join(' ', < 
+		:harness_files(		pir::join(' ', < 
 			!t/Pmc
 			!t/Structure
 			!t/UnitTest
 			t
 		>) ),
 		
-		:release_id(		'release-7' ),
+		:release_id(			'release-8' ),
 		:release_dir_format(	'released/%s'),
-		:vdd_file(		'vdd.txt' ),
+		:vdd_file(			'vdd.txt' ),
 	);
 
-	%kakapo<copy_templates><library/krt0.pir>				:= <src/Internals/krt0.pir_tmpl>;
-	%kakapo<copy_templates><src/Internals/kakapo_bottom.pir>	:= <src/Internals/kakapo_bottom.pir_tmpl>;
-	%kakapo<copy_templates><src/Internals/kakapo_top.pir>		:= <src/Internals/kakapo_top.pir_tmpl>;
+	%kakapo<copy_templates><library/krt0.pir>			:= <src/Internals/krt0.pir_tmpl>;
+	%kakapo<copy_templates><src/Internals/kakapo_bottom.pir> := <src/Internals/kakapo_bottom.pir_tmpl>;
+	%kakapo<copy_templates><src/Internals/kakapo_top.pir>	:= <src/Internals/kakapo_top.pir_tmpl>;
 	
-
 	%kakapo<pir_nqp-rx><src/Internals/Base.pir>	:= <src/Internals/Base.nqp>;
 	%kakapo<pir_nqp-rx><src/Internals/Full.pir>	:= <src/Internals/Full.nqp>;
 
@@ -148,11 +147,11 @@ sub MAIN(@argv) {
 	%kakapo<pbc_pir><library/kakapo_full.pbc>	:= <library/kakapo_full.pir>;
 	%kakapo<pbc_pir><library/krt0.pbc>		:= <library/krt0.pir>;
 
-	%kakapo<release_files><kakapo_base.pir> := <library/kakapo_base.pir>;
-	%kakapo<release_files><kakapo_base.pbc> := <library/kakapo_base.pbc>;
+	%kakapo<release_files><kakapo_base.pir>	:= <library/kakapo_base.pir>;
+	%kakapo<release_files><kakapo_base.pbc>	:= <library/kakapo_base.pbc>;
 	%kakapo<release_files><kakapo_full.pir>	:= <library/kakapo_full.pir>;
 	%kakapo<release_files><kakapo_full.pbc>	:= <library/kakapo_full.pbc>;
-	%kakapo<release_files><krt0.pir>		:= <library/krt0.pir>;
+	%kakapo<release_files><krt0.pir>			:= <library/krt0.pir>;
 	%kakapo<release_files><krt0.pbc>		:= <library/krt0.pbc>;
 
 	# This test file needs compiling so the others can load it.

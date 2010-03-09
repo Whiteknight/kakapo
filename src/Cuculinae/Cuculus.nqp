@@ -25,7 +25,6 @@ sub _initload() {
 }
 
 method add_antiphon($callsig) {
-say("   Adding antiphon for callsig: ", $callsig.method);
 
 	my $antiphon := new_antiphon($callsig);
 	@!antiphons.push($antiphon);
@@ -42,7 +41,6 @@ method class(*@value) {
 		die( 'Cannot reset $!class attribute: already points to ' ~ "'$!class'" )
 			if pir::defined(pir::getattribute__PPS(self, '$!class'));
 		$!class := P6metaclass.get_parrotclass(@value.shift);
-#say("   Class set to: $!class");
 	}
 
 	$!class;
@@ -112,7 +110,6 @@ sub get_rootclass_methods() {
 method init_egg( $egg, :&behavior = Cuculus::Canorus::mock_execute ) {
 	die( "Must be called with a Cuckoo's egg." )
 		unless isa($egg, 'Cuculus::Canorus::Ovum');
-#say("   init_egg");
 	Opcode::setattribute($egg, '$!CUCULUS_CANORUS', self);
 	Opcode::setattribute($egg, '&!CUCULUS_BEHAVIOR', &behavior);
 
@@ -120,13 +117,11 @@ method init_egg( $egg, :&behavior = Cuculus::Canorus::mock_execute ) {
 }
 
 method _init_obj(*@pos, *%named) {
-#say("   Init_obj: new cuckoo");
 	@!antiphons := @!antiphons;	# Null -> empty
 	@!call_log := @!call_log;		# Null -> empty
 
 	self._init_args(|@pos, |%named);
 
-#say("   Init_obj done");
 	self;
 }
 
@@ -164,21 +159,17 @@ sub mock_class_name($parent) {
 }
 
 method mock_execute($callsig) {
-#say("   Mock executing: ", $callsig.method);
 	@!call_log.push($callsig);	# record the call
 
-#say("Checking ", @!antiphons, " antiphons");
 	for @!antiphons -> $one {
 	#pir::trace(1);
 		if $one.matches($callsig) {
 	pir::trace(0);
-#say("   ... found matching antiphon");		
 			return $one.invoke($callsig);
 		}
 	pir::trace(0);
 	}
 
-#say("   ... looking for passthrough antiphon for ", $callsig.method);
 	if %!passthrough_antiphons.contains($callsig.method) {
 		return %!passthrough_antiphons{$callsig.method}.invoke($callsig);
 	}
@@ -187,16 +178,13 @@ method mock_execute($callsig) {
 }
 
 method mock_new(*@pos, *%named) {
-#say("   Mock_new:");
 	# Make a new cuckoo, mocking the same class.
 	my $cuckoo := $!CUCULUS_CANORUS;
 	my $new_cuckoo := $cuckoo.WHAT.new(:class($cuckoo.class), :passthrough($cuckoo.passthrough));
 
 	# Pretend to be the standard P6object new method: Create a new egg linked to
 	# the new cuckoo, and invoke the (mocked) _init_obj.
-#say("   Mock_new: make a new egg");
 	my $new_egg := $new_cuckoo.new_egg;
-#say("   Mock_new: call init_obj on the egg.");
 	$new_egg._init_obj(|@pos, |%named);
 	
 	# NB: Init_obj probably returns $new_cuckoo, which isn't what we want the user to get.
@@ -217,7 +205,6 @@ sub new_antiphon($callsig) {
 # calling($foo).a(1).will_do X, calling($foo).a(2).will_do Y, etc.
 
 method new_egg( :&behavior = Cuculus::Canorus::mock_execute ) {
-#say("   Create new egg (" ~ &behavior ~ ")");
 	my $new_egg := pir::new__PP($!class);
 	self.init_egg($new_egg, &behavior);
 }
@@ -231,7 +218,6 @@ method passthrough($value?) {
 method verifier($value?)	{ $value.defined ?? ($!verifier := $value) !! $!verifier; }
 
 method verify_calls($callsig) {
-#say("   Adding verifier for callsig: ", $callsig.method);
 
 	$!verifier.sig_matcher:
 		Cuculus::SigMatcher.new: 

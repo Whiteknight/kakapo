@@ -37,7 +37,7 @@ method test_new() {
 
 method test_match() {
 	my $sut := Cuculus::Antiphon.new(:sig_matcher(pass()));	
-	my $sig := Cuculus::CallSignature.new(:object('obj'), :method('meth'));
+	my $sig := CallSignature.new(:object('obj'), :method('meth'));
 	
 	assert_match($sig, $sut,
 		'Should match any signature');
@@ -45,22 +45,18 @@ method test_match() {
 
 method test_match_fails() {
 	my $sut := Cuculus::Antiphon.new(:sig_matcher(fail()));
-	my $sig := Cuculus::CallSignature.new(:object('obj'), :method('meth'));
+	my $sig := CallSignature.new(:object('obj'), :method('meth'));
 	
 	assert_not_match($sig, $sut,
 		'Should always fail');
 }
 
 method test_invoke_returns() {
-	my $sig := Cuculus::CallSignature.new();
 	my $sut := Cuculus::Antiphon.new(:sig_matcher(pass()));
 	
 	$sut.will_return('abc');
 	
-	assert_match( $sig, $sut, 
-		'SUT should always match the signature');
-
-	assert_equal( $sut.invoke(), 'abc', 
+	assert_equal( $sut.invoke(CallSignature.new()), 'abc', 
 		'Invoke should return configured value');
 }
 
@@ -68,16 +64,12 @@ class Exception::TestInvoke is Exception::Wrapper {
 }
 
 method test_invoke_throws() {
-	my $sig := Cuculus::CallSignature.new();
 	my $sut := Cuculus::Antiphon.new(:sig_matcher(pass()));
 	
 	$sut.will_throw(Exception::TestInvoke.new);
 	
-	assert_match( $sig, $sut, 
-		'SUT should always match the signature');
-
 	assert_throws( Exception::TestInvoke, 'Invoke should throw configured exception',
-		{ $sut.invoke(); });
+		{ $sut.invoke(CallSignature.new); });
 }
 
 method test_invoke_side_effects() {
@@ -88,7 +80,7 @@ method test_invoke_side_effects() {
 	$sut.will_do( {$x := $x * 2; } );
 	$sut.will_do( {$x := $x + 7; } );
 	
-	$sut.invoke();
+	$sut.invoke(CallSignature.new);
 	
 	assert_equal( $x, 9, 
 		'Invoke should run the blocks in the right order.' );
