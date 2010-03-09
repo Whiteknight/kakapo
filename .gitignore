@@ -1,4 +1,3 @@
 replace_call
-test.nqp
-test.pir
+test.*
 

@@ -79,13 +79,14 @@ sub declare($class?, :@has?, :@is?) {
 	P6metaclass._add_attributes($parrotclass, @has);
 }
 
+# NB: If $parent is a protoobject, it's stuck with .defined=false
 method declare_class($class, :$parent) {
 	$class := $class // die("Cannot declare undefined class - give me a string name or a namespace");
 	my $parrotclass := self.get_parrotclass($class);
 	
 	# Already declared?
 	unless ! Opcode::isnull($parrotclass) && Opcode::isa($parrotclass, 'P6object') {
-		if Opcode::defined($parent) {
+		if pir::isa__IPP($parent, 'P6protoobject') || Opcode::defined($parent) {
 			self.new_class($class, :parent($parent));
 		}
 		else {
@@ -168,8 +169,7 @@ sub has(*@args, :$class?, *%opts) {
 	P6metaclass._add_attributes($class, %opts);
 }
 
-sub has_vtable($name, &code, :$class?) {
-	$class := $class // caller_namespace().get_class;	
+sub has_vtable($name, &code, :$class = caller_namespace().get_class) {
 	my $parrot_class	:= P6metaclass.get_parrotclass($class);
 	
 	if pir::isnull__IP($parrot_class) {

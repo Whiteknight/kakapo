@@ -21,7 +21,8 @@ sub _pre_initload() {
 	
 	# List all the PMC types here, with the methods to export. I'll sort them out later.
 	my %methods_for;
-	%methods_for<Exception>		:= <can clone defined does isa is_equal new>;
+	%methods_for<Class>			:= Array::new( <defined> );
+	%methods_for<Exception>			:= <can clone defined does isa is_equal new>;
 #	%methods_for<FileHandle>		:= <can clone defined isa is_equal new>; # not does
 	%methods_for<Float>			:= <can clone defined does isa is_equal>;
 	%methods_for<Hash>			:= <can clone defined does isa is_equal>;

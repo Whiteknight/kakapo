@@ -86,24 +86,12 @@ protoobject C< Foo::Bar > (of type P6protoobject) that belongs to a
 I<namespace> (a different PMC type) also called C< Foo::Bar >.
 
 =end
-method IDONTKNOW() {
-	return Undef.new;
-}
-
-method WHY() {
-}
-
-method BECAUSE() {
-}
-
-method TODAY() {
-}
-
-method TOMORROW() {
-}
-
-method IDONTGIVEADARN() {
-}
+method BECAUSE() { "center field" }
+method IDONTGIVEADARN() { "shortstop" }
+method IDONTKNOW() { "third base" }
+method TODAY() { "catcher" }
+method TOMORROW() { "pitcher" }
+method WHY() { "left field" }
 
 method clone() {
 	pir::clone__PP(self);
@@ -171,7 +159,7 @@ method get_bool() {
 
 method get_string() {
 # Returns a perl5-style object class+address.
-	Class::name_of(self) ~ ' @' ~ self.WHERE;
+	Opcode::typeof(self) ~ ' @' ~ self.WHERE;
 }
 
 method _init_obj(*@pos, *%named) {
@@ -179,9 +167,8 @@ method _init_obj(*@pos, *%named) {
 }
 
 method _init_args(*@pos, *%named) {
-	if +@pos {
-		die("Default _init_obj cannot handle position parameters.");
-	}
+	die("Default _init_obj cannot handle position parameters.")
+		if @pos.elems;
 	
 	for %named {
 		if pir::can__IPS(self, $_.key) {

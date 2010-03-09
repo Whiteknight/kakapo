@@ -24,6 +24,7 @@ sub _pre_initload() {
 		>, :tags('NAMESPACE'));
 	
 	Global::inject_root_symbol(Parrot::is_null);
+	Global::inject_root_symbol(Parrot::isa);
 }
 
 # NB: index defaults to 1, and create_key adds 1, for '2', because the default is 1 higher than
@@ -226,6 +227,17 @@ sub get_sub($path, :$caller_nsp?) {
 	}
 	
 	return &sub;
+}
+
+sub isa($obj, $class) {
+	if pir::isa__IPS($class, 'P6protoobject') {
+		$class := P6metaclass.get_parrotclass($class);
+	}
+	elsif pir::isa__IPS($class, 'String') {
+		$class := $class.split('::');
+	}
+
+	pir::isa__IPP($obj, $class);
 }
 
 sub is_null($obj) {

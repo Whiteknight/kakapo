@@ -10,15 +10,26 @@ method __dump($dumper, $label) {
 	my $subindent	:= "\n" ~ @results.shift;
 	my $indent		:= "\n" ~ @results.shift;
 
-	my $name := ~ self;
+	my $name := ~ self || '<anonymous>';
 	my $nsp := self.get_namespace;
 	
 	unless pir::isnull($nsp) {
-	say("Namespace is legit");
 		$name := Parrot::namespace_name($nsp);
 	}
 
 	print($name, ' {');
+	
+	my @parents := self.inspect('parents');
+	if @parents {
+		print($subindent, '---- Parents: ');
+	
+		for @parents -> $parent {
+			print($subindent, $parent);
+		}
+	}
+	else {
+		print($subindent, '---- No parents.');
+	}
 	
 	my $comma := '';
 	my @attributes := self.inspect('attributes').keys;
@@ -36,13 +47,13 @@ method __dump($dumper, $label) {
 	
 	my %methods_seen;
 
-	my @parents := self.inspect('all_parents');
+	my @mro := self.inspect('all_parents');
 	
-	if @parents == 0 {
+	if @mro == 0 {
 		print($subindent, "<No parents, even myself. This class is messed up.>");
 	}
 	else {
-		for @parents {
+		for @mro {
 			my $label := ($_ =:= self) 
 				?? "---- Methods defined locally" 
 				!! "---- Methods inherited from " 

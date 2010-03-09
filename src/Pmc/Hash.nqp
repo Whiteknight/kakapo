@@ -135,18 +135,10 @@ FIXME: This becomes a synonym for .new.
 
 =end
 
-sub merge(%first, *@hashes, :%into?, :$use_last?) {
+sub merge(%first, *@hashes, :%into = %first, :$use_last?) {
 	
 	@hashes.unshift(%first);	# Ensure at least one element.
 
-	unless Opcode::defined(%into) {
-		%into := @hashes.shift();
-		
-		unless Opcode::defined(%into) {
-			%into := Hash.new();
-		}
-	}
-	
 	my %stored := %into;
 	
 	if $use_last {

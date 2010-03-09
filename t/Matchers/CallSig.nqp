@@ -10,9 +10,10 @@ INIT {
 	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
 }
 
-class Test::Mimus::CallSignature
+class Test::Matcher::CallSig
 	is UnitTest::Testcase ;
 
+has $!sut;
 
 INIT {
 	use(	'UnitTest::Testcase' );
@@ -24,24 +25,18 @@ MAIN();
 sub MAIN() {
 	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
 	$proto.suite.run;
+	$proto.set_up;
+	$proto.test_new;
 }
 
+method set_up() {
+	$!sut := Matcher::CallSig.new;
+}
 
 method test_new() {
-	verify_that( 'CallSignature.new creates right class.' );
+	verify_that( '.new creates right class.' );
 	
-	my $sut := Mimus::CallSignature.new;
-	
-	assert_isa( $sut, 'Mimus::CallSignature', 
-		'SUT should be populated with object of the right class.');
-}
-
-method test_new_matcher() {
-	verify_that( 'CallSignature::SigMatcher.new creates right class.' );
-	
-	my $sut := Mimus::CallSignature::SigMatcher.new;
-	
-	assert_isa( $sut, 'Mimus::CallSignature::SigMatcher', 
+	assert_isa( $!sut, Matcher::CallSig,
 		'SUT should be populated with object of the right class.');
 }
 
@@ -49,11 +44,11 @@ method test_matcher() {
 	my $object := self;
 	my $method := 'foo';
 	
-	my $want := Mimus::CallSignature.new(:object($object), :method($method),
+	my $want := CallSignature.new(:object($object), :method($method),
 		:positional(Array::new(1, 'a')), :named( Hash.new( :z(3) ) ));
-	my $matcher := Mimus::CallSignature::SigMatcher.new(:expecting($want));
+	my $matcher := Matcher::CallSig.new(:expecting($want));
 
-	my $got := Mimus::CallSignature.new(:object($object), :method($method),
+	my $got := CallSignature.new(:object($object), :method($method),
 		:positional(Array::new(1, 'a')), :named( Hash.new( :rx(7), :t(1), :z(3))) );
 	
 	assert_match( $got, $matcher,
@@ -64,40 +59,40 @@ method test_matcher_fails_object() {
 	my $other := Hash.new;
 	my $method := 'foo';
 
-	my $want := Mimus::CallSignature.new(:object(self), :method($method));
-	my $got := Mimus::CallSignature.new(:object($other), :method($method));
-	my $matcher := Mimus::CallSignature::SigMatcher.new(:expecting($want));
+	my $want := CallSignature.new(:object(self), :method($method));
+	my $got := CallSignature.new(:object($other), :method($method));
+	my $matcher := Matcher::CallSig.new(:expecting($want));
 	
 	assert_not_match( $got, $matcher, 
 		'Should not match');
 }
 
 method test_matcher_fails_method() {
-	my $want := Mimus::CallSignature.new(:object(self), :method('foo'));
-	my $got := Mimus::CallSignature.new(:object(self), :method('bar'));
-	my $matcher := Mimus::CallSignature::SigMatcher.new(:expecting($want));
+	my $want := CallSignature.new(:object(self), :method('foo'));
+	my $got := CallSignature.new(:object(self), :method('bar'));
+	my $matcher := Matcher::CallSig.new(:expecting($want));
 	
 	assert_not_match( $got, $matcher, 
 		'Should not match');
 }
 
 method test_matcher_fails_named() {
-	my $want := Mimus::CallSignature.new(:object(self), :method('foo'),
+	my $want := CallSignature.new(:object(self), :method('foo'),
 		:positional(<a b c>), :named(Hash.new( :z(3), :a(1))));
-	my $got := Mimus::CallSignature.new(:object(self), :method('bar'),
+	my $got := CallSignature.new(:object(self), :method('bar'),
 		:positional(<a b c>), :named(Hash.new( :z(3), :a(2))));
-	my $matcher := Mimus::CallSignature::SigMatcher.new(:expecting($want));
+	my $matcher := Matcher::CallSig.new(:expecting($want));
 	
 	assert_not_match( $got, $matcher, 
 		'Should not match');
 }
 
 method test_matcher_fails_pos() {
-	my $want := Mimus::CallSignature.new(:object(self), :method('foo'),
+	my $want := CallSignature.new(:object(self), :method('foo'),
 		:positional(<a b c>));
-	my $got := Mimus::CallSignature.new(:object(self), :method('bar'),
+	my $got := CallSignature.new(:object(self), :method('bar'),
 		:positional(<a b c d>));
-	my $matcher := Mimus::CallSignature::SigMatcher.new(:expecting($want));
+	my $matcher := Matcher::CallSig.new(:expecting($want));
 	
 	assert_not_match( $got, $matcher, 
 		'Should not match');

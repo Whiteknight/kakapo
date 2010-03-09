@@ -10,7 +10,7 @@ INIT {
 	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
 }
 
-class Test::Mimus::Antiphon
+class Test::Cuculus::Antiphon
 	is UnitTest::Testcase ;
 
 INIT {
@@ -29,31 +29,31 @@ sub MAIN() {
 method test_new() {
 	verify_that( 'SUT is created okay, right class.' );
 	
-	my $sut := Mimus::Antiphon.new;
+	my $sut := Cuculus::Antiphon.new;
 	
-	assert_isa( $sut, 'Mimus::Antiphon',
+	assert_isa( $sut, 'Cuculus::Antiphon',
 		'SUT should be populated with object of the right class.');
 }
 
 method test_match() {
-	my $sut := Mimus::Antiphon.new(:sig_matcher(pass()));	
-	my $sig := Mimus::CallSignature.new(:object('obj'), :method('meth'));
+	my $sut := Cuculus::Antiphon.new(:sig_matcher(pass()));	
+	my $sig := Cuculus::CallSignature.new(:object('obj'), :method('meth'));
 	
 	assert_match($sig, $sut,
 		'Should match any signature');
 }
 
 method test_match_fails() {
-	my $sut := Mimus::Antiphon.new(:sig_matcher(fail()));
-	my $sig := Mimus::CallSignature.new(:object('obj'), :method('meth'));
+	my $sut := Cuculus::Antiphon.new(:sig_matcher(fail()));
+	my $sig := Cuculus::CallSignature.new(:object('obj'), :method('meth'));
 	
 	assert_not_match($sig, $sut,
 		'Should always fail');
 }
 
 method test_invoke_returns() {
-	my $sig := Mimus::CallSignature.new();
-	my $sut := Mimus::Antiphon.new(:sig_matcher(pass()));
+	my $sig := Cuculus::CallSignature.new();
+	my $sut := Cuculus::Antiphon.new(:sig_matcher(pass()));
 	
 	$sut.will_return('abc');
 	
@@ -68,8 +68,8 @@ class Exception::TestInvoke is Exception::Wrapper {
 }
 
 method test_invoke_throws() {
-	my $sig := Mimus::CallSignature.new();
-	my $sut := Mimus::Antiphon.new(:sig_matcher(pass()));
+	my $sig := Cuculus::CallSignature.new();
+	my $sut := Cuculus::Antiphon.new(:sig_matcher(pass()));
 	
 	$sut.will_throw(Exception::TestInvoke.new);
 	
@@ -81,7 +81,7 @@ method test_invoke_throws() {
 }
 
 method test_invoke_side_effects() {
-	my $sut := Mimus::Antiphon.new;
+	my $sut := Cuculus::Antiphon.new;
 	
 	my $x := 0;
 	$sut.will_do( {$x++ } );

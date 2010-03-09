@@ -96,6 +96,8 @@ sub MAIN(@argv) {
 	%kakapo<build_libs><library/kakapo_base.pir>.push( <src/Internals/kakapo_bottom.pir>);
 	
 	my @full_pir_files := <
+		src/CallSignature.pir
+		
 		src/Classes/P6object.pir
 		src/Classes/P6metaclass.pir
 
@@ -103,6 +105,7 @@ sub MAIN(@argv) {
 		src/Library.pir
 
 		src/Matchers/Boolean.pir
+		src/Matchers/CallSig.pir
 		src/Matchers/Factory.pir
 		src/Matchers/InstanceOf.pir
 		src/Matchers/Matcher.pir
@@ -110,12 +113,12 @@ sub MAIN(@argv) {
 		src/Matchers/Null.pir
 		src/Matchers/PassFail.pir
 		
-		src/Mimidae/Antiphon.pir
-		src/Mimidae/CallSignature.pir
-		src/Mimidae/Cuculus.pir
-		src/Mimidae/Maker.pir
-		src/Mimidae/Ovum.pir
-		src/Mimidae/Species.pir
+		src/Cuculinae/Antiphon.pir
+		src/Cuculinae/Cuculus.pir
+		src/Cuculinae/Cuckoo.pir
+		src/Cuculinae/Ovum.pir
+		src/Cuculinae/SigMatcher.pir
+		src/Cuculinae/Verifier.pir
 		
 		src/Program.pir
 		

@@ -8,9 +8,13 @@ INIT {
 	Kakapo::initload_done();
 }
 
+# Return a string suitable for use in an expression like:
+# Match failed. Expected [describe_self] but [describe_failure].
 method describe_failure($previous, $item) {
 	$previous ~ "was '$item'";
 }
 
+# Return a string suitable for use in an expression like:
+# Match failed. Expected [describe_self] but [describe_failure].
 method describe_self($previous)		{ self.__ABSTRACT__ }
 method matches($item)			{ self.__ABSTRACT__ }

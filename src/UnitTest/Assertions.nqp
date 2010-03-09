@@ -79,16 +79,16 @@ sub assert_not_isa($obj, $class, $message) {
 
 sub assert_match($obj, $matcher, $message) {
 	unless $matcher.matches($obj) {
-		my $explain := $matcher.describe_self('\nExpected: ')
-			~ $matcher.describe_failure("\n    but: ", $obj);
+		my $explain := $matcher.describe_self("\nExpected ")
+			~ $matcher.describe_failure("\nbut ", $obj);
 		fail($message ~ $explain);
 	}
 }
 
 sub assert_not_match($obj, $matcher, $message) {
 	if $matcher.matches($obj) {
-		my $explain := $matcher.describe_self('\nExpected: ')
-			~ $matcher.describe_failure("\n    but: ", $obj);
+		my $explain := $matcher.describe_self("\nExpected ")
+			~ $matcher.describe_failure("\nbut ", $obj);
 		fail($message ~ $explain);
 	}
 }

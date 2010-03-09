@@ -1,7 +1,7 @@
 # Copyright 2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-class Mimus::Antiphon;
+class Cuculus::Antiphon;
 
 has $!sig_matcher;
 has @!side_effects;
@@ -20,11 +20,15 @@ method _init_obj(*@pos, *%named) {
 	self._init_args(|@pos, |%named);
 }
 
-method invoke() {
+method invoke($callsig) {
 	$!invoke_count++;
-
+	my $object := $callsig.object;	# Pass this to &do, or not?
+	my $result := $object;
+	my @pos := $callsig.positional;
+	my %named := $callsig.named;
+	
 	for @!side_effects -> &do {
-		&do();
+		$result := &do(|@pos, |%named);
 	}
 
 	if $!throw {
@@ -36,7 +40,7 @@ method invoke() {
 		return $!return;
 	}
 
-	# FIXME: Otherwise, return 'self' of the object?
+	$result;
 }
 
 method sig_matcher($value?)	{ $value.defined ?? ($!sig_matcher := $value) !! $!sig_matcher; }
