@@ -37,6 +37,7 @@ sub get_preinit_subs() {
 		P6metaclass
 		P6object
 		DependencyQueue
+		ComponentMarshaller
 		Library
 		Kakapo::Full
 	>;

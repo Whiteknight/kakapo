@@ -100,6 +100,7 @@ sub MAIN(@argv) {
 		src/Classes/P6object.pir
 		src/Classes/P6metaclass.pir
 
+		src/ComponentMarshaller.pir
 		src/DependencyQueue.pir
 		src/Library.pir
 
@@ -321,7 +322,7 @@ sub strip_annotations(*%config) {
 			$fh.close;
 
 			if pir::index__ISS($body, "\n.annotate ") >= 0 {
-				say("Removing  annotations from $_");
+				say("Removing annotations from $_");
 				$body.replace("\n.annotate ", "\n# .annotate ");
 				$fh := pir::open__PSS(~$_, 'w');
 				$fh.puts($body);

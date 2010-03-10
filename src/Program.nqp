@@ -9,49 +9,57 @@ class Exception::ProgramExit
 module Program;
 
 has @!argv;
-has $!at_exit_queue;
-has $!at_start_queue;
+has $!exit_marshaller;
+has $!start_marshaller;
+has $!executable_name;
 has $!exit_value;
+has $!program_name;
 has $!stderr;
 has $!stdin;
 has $!stdout;
 
+our $_Instance;
 
 INIT {
 	Kakapo::depends_on( <Library> );
+	
+	$_Instance := my $undef;
 }
 
 sub _initload() {
 	extends( Library );		# FIXME: Refactor queue stuff out of library, and share.
 	has(<	@!argv
-		$!at_exit_queue
-		$!at_start_queue
+		$!exit_marshaller
+		$!start_marshaller
+		$!executable_name
 		$!exit_value
+		$!program_name
 		$!stderr
 		$!stdin
 		$!stdout
 	>);
 	
+	Global::inject_root_symbol( Program::global_at_exit, :as('at_exit') );
+	Global::inject_root_symbol( Program::global_at_start, :as('at_start') );
+	
 	Global::inject_root_symbol( Program::exit );
+	Global::inject_root_symbol( Program::_exit );
 }
 
-our method at_exit(*@pos, *%named) {
-	self.add_call($!at_exit_queue, |@pos, |%named);
+our method at_exit($sub, $name?, :$namespace = Parrot::caller_namespace(), :@requires) {
+	$!exit_marshaller.add_call($sub, $name, :namespace($namespace), :requires(@requires));
 }
 
-our method at_start(*@pos, *%named) {
-	self.add_call($!at_start_queue, |@pos, |%named);
+our method at_start($sub, $name?, :$namespace = Parrot::caller_namespace(), :@requires) {
+	$!start_marshaller.add_call($sub, $name, :namespace($namespace), :requires(@requires));
 }
 
 our method do_exit() {
-	self.process_queue($!at_exit_queue, :name('exit'));
-	
-	my $code := $!exit_value;
-	pir::exit($code);
+	$!exit_marshaller.process_queue(self);
 }
 
 our method do_start() {
-	self.process_queue($!at_start_queue, :name('start'));
+	$!start_marshaller.process_queue(self);
 }
 
 sub exit($status = 0) {
@@ -62,14 +70,72 @@ sub exit($status = 0) {
 	).throw;
 }
 
+sub _exit($status = 1) {
+	pir::exit($status);
+}
+
+our method exit_program($status = 0) {
+	$!exit_value := $status;
+}
+
+sub global_at_exit(*@pos, *%named) {
+	instance().at_exit(|@pos, |%named);
+}
+
+sub global_at_start(*@pos, *%named) {
+	instance().at_start(|@pos, |%named);
+}
+
 method _init_obj(*@pos, *%named) {
 	@!argv := @!argv;
-	$!at_exit_queue := DependencyQueue.new;
-	$!at_start_queue := DependencyQueue.new;
+	$!executable_name := $!executable_name;
+	$!exit_marshaller :=ComponentMarshaller.new(:name('exit'));
 	$!exit_value := 0;
+	$!program_name := $!program_name;
+	$!start_marshaller :=ComponentMarshaller.new(:name('start'));
 	
 	#super(|@pos, |%named);
 	self._init_args(|@pos, |%named);
+}
+
+method from_parrot($ignored?) {
+	my $interp := pir::getinterp__P();
+	
+	@!argv := $interp[2];		# IGLOBALS_ARGV_LIST = 2
+	$!executable_name := $interp[9];	# IGLOBALS_EXECUTABLE = 9
+	$!program_name := @!argv.shift;
+}
+
+sub instance(*@new) {	# Use *@new to allow passing undef (simplifies testing)
+	if @new.elems {
+		my $old := $_Instance;
+		
+		if $old.defined 
+			&& (! $old.exit_marshaller.is_empty || ! $old.start_marshaller.is_empty) {
+			die( "A previously-registered Program instance has unprocessed marshalling queues." );
+		}
+	
+		$_Instance := @new[0];
+	}
+	else {
+		die( "No Program::instance set yet" )
+			unless $_Instance.defined;
+			
+		$_Instance;
+	}
+}
+
+method main(*@argv) {
+	my &main := pir::get_hll_global__PS('main');
+	
+	&main := pir::get_hll_global__PS('MAIN')
+		if pir::isnull(&main);
+		
+	if pir::isnull(&main) {
+		die("You must override the '.main' method of your program class.");
+	}
+	
+	&main(@argv);
 }
 
 method run( :@argv ) {
@@ -78,7 +144,7 @@ method run( :@argv ) {
 
 	my %save_fh := swap_handles( :stderr($!stderr), :stdin($!stdin), :stdout($!stdout));
 
-	try {	
+	try {
 		self.do_start;
 		self.main(|@!argv);
 		
@@ -91,9 +157,13 @@ method run( :@argv ) {
 			}
 		}
 	};
+
+	# TODO: Maybe differentiate between _exit and exit in the exception?
+	self.do_exit;
 	
 	swap_handles(|%save_fh);
-	$!exit_value;
+
+	self.exit_program($!exit_value);
 }
 
 sub swap_handles(*%handles) {
@@ -116,118 +186,3 @@ sub swap_handles(*%handles) {
 
 	%save_handles;
 }
-
-
-#~ sub _pre_initload(*@modules_done) {
-	
-	#~ has(<	
-		#~ %!env
-		#~ $!executable
-		#~ $!process_id
-		#~ $!uid
-	#~ >);
-	
-	#~ say("Program init load done");
-#~ }
-
-#~ # Copy fields from another instance.
-#~ our method incorporate($other) {
-	#~ @!args		:= $other.args;
-	#~ $!at_exit_queue	:= $other.at_exit_queue;
-	#~ $!at_init_queue	:= $other.at_init_queue;
-	#~ $!at_load_queue	:= $other.at_load_queue;
-	#~ %!env			:= $other.env;
-	#~ $!executable		:= $other.executable;
-	#~ $!exit_value		:= $other.exit_value;
-	#~ $!process_id		:= $other.process_id;
-	#~ $!stderr		:= $other.stderr;
-	#~ $!stdin		:= $other.stdin;
-	#~ $!stdout		:= $other.stdout;
-	#~ $!uid			:= $other.uid;
-#~ }
-
-#~ method main(@args) {
-	#~ my &main := pir::get_hll_global__PS('main');
-	
-	#~ if pir::isnull(&main) {
-		#~ die("You must override the '.main' method of your program class.");
-	#~ }
-	
-	#~ &main(@args);
-#~ }
-
-#~ method run(*@args) {
-
-	#~ my $*PROGRAM_NAME := @args.elems
-		#~ ?? @args.shift
-		#~ !! '<anonymous>';
-	#~ my @*ARGS		:= @args;
-	#~ #my $*CWD		:= '';
-	#~ my %*ENV		:= %!env;
-	#~ my $*EXECUTABLE_NAME := $!executable;
-	#~ my $*PID		:= $!process_id;	# May be unset.
-	#~ #my $*UID		:= $!uid;		# May be unset.
-	#~ my $?PERL		:= 'nqp-rx';
-	#~ my $?VM		:= 'parrot';
-	#~ # %*OPTS	# ??
-	#~ # @*INC ??
-
-	#~ my $i := 0;
-	#~ my %*VM;
-	#~ my $interp := pir::getinterp__P();
-	
-	#~ for <	classname 
-		#~ compreg
-		#~ argv
-		#~ nci_funcs
-		#~ interpreter
-		#~ dyn_libs
-		#~ config
-		#~ lib_paths
-		#~ pbc_libs
-		#~ executable> {
-		#~ %*VM{~$_} := $interp[$i++];
-	#~ }
-	
-	#~ my $fh;
-	#~ my %save_fh;
-
-	#~ my $*ERR := pir::getstderr__P();
-	#~ if pir::defined( $!stderr ) {
-		#~ %save_fh<stderr> := $*ERR;
-		#~ pir::setstderr( $*ERR := $!stderr );
-	#~ }
-	
-	#~ my $*IN := pir::getstdin__P();
-	#~ if pir::defined( $!stdin ) {
-		#~ %save_fh<stdin> := $*IN;
-		#~ pir::setstdin( $*IN := $!stdin );
-	#~ }
-
-	#~ my $*OUT := pir::getstdout__P();
-	#~ if pir::defined( $!stdout ) {
-		#~ %save_fh<stdout> := $*OUT;
-		#~ pir::setstdout( $*OUT := $!stdout );
-	#~ }
-	
-	#~ my $exception;
-
-	#~ try {	
-		#~ self.main(@args);
-		
-		#~ CATCH {
-			#~ if $!.type == Exception::ProgramExit.type {
-				#~ $!exit_value := $!.payload;
-			#~ }
-			#~ else {
-				#~ $!.rethrow;
-			#~ }
-		#~ }
-	#~ };
-
-	#~ pir::setstderr(%save_fh<stderr>) if %save_fh.contains( <stderr> );
-	#~ pir::setstdin(%save_fh<stdin>)   if %save_fh.contains( <stdin> );
-	#~ pir::setstdout(%save_fh<stdout>) if %save_fh.contains( <stdout> );
-
-	#~ $!exit_value := self.do_exit;
-#~ }

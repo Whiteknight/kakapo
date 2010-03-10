@@ -1,4 +1,4 @@
-#! parrot-nqp
+#! /usr/bin/env parrot-nqp
 # Copyright 2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
@@ -65,4 +65,3 @@ method test_load_queue() {
 	fail_unless( $lib.b == 3 && $lib.a == 4 && $lib.c == 9,
 		'Subs should run in correct order.' );
 }
-

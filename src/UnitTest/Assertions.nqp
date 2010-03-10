@@ -53,12 +53,13 @@ sub assert_can_not($obj, $method, $message) {
 	fail($message) if pir::can($obj, $method);
 }
 
+# NB: The _equal assertions reverse the comparison so that the wanted form is dominant.
 sub assert_equal($o1, $o2, $message) {
-	fail($message) unless pir::iseq__IPP($o1, $o2);
+	fail($message) unless pir::iseq__IPP($o2, $o1);
 }
 
 sub assert_not_equal($o1, $o2, $message) {
-	fail($message) if pir::iseq__IPP($o1, $o2);
+	fail($message) if pir::iseq__IPP($o2, $o1);
 }
 
 sub assert_instance_of($obj, $class, $message) {
@@ -111,14 +112,17 @@ sub assert_not_same($o1, $o2, $message) {
 
 sub assert_throws($e_class, $message, &block) {
 	my $ok := 0;
+	my $exception;
 	
 	try {
 		&block();
 		
-		CATCH { $ok := ($!.type == $e_class.type); }
+		CATCH { $exception := $!; }
 	};
-	
-	fail($message) unless $ok;
+
+	unless $exception.defined || $exception.type != $e_class.type {
+		fail($message);
+	}
 }
 
 sub assert_throws_nothing($message, &block) {

@@ -24,17 +24,13 @@ sub MAIN() {
 	
 	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
 	$proto.suite.run;
-	$proto.test_exit;
+#	$proto.test_from_parrot;
 }
 
 class Test::Exit is Program {
 	method main(*@args) {
 		foo();
 		exit(1);
-	}
-	
-	method do_exit() {
-		self.exit_value;
 	}
 	
 	sub foo() {
@@ -56,10 +52,6 @@ class Test::StartQueue is Program {
 		has( < $.a $.b $.c > );
 	}
 	
-	method do_exit() {
-		self.process_queue($!at_exit_queue, :name('exit'));
-	}
-
 	sub set_a($pgm) {	$pgm.a($pgm.b + 1); }
 	sub set_b($pgm) {	$pgm.b(3); }
 	sub set_c($pgm) {	$pgm.c($pgm.a + 5); }
@@ -106,6 +98,80 @@ method test_exit_queue() {
 		'b should be set to 3');
 	assert_equal( $pgm.c, 9,
 		'c should be set to 9');
+}
+
+method test_from_parrot() {
+	my $pgm := Program.new;
+
+	assert_equal( $pgm.program_name, '',
+		'New program should have no name' );
+	
+	$pgm.from_parrot;
+	
+	assert_not_equal( $pgm.program_name, '',
+		'Taking values from parrot interp should provide a program name' );
+
+	assert_not_equal( $pgm.executable_name, '',
+		'Taking values from parrot interp should provide an executable name' );
+}
+
+
+class Test::Global::AtFuncs is Program {
+	sub foo() { 1; }
+}
+
+method test_global_at_exit() {
+	my $pgm := Test::Global::AtFuncs.new;
+	
+	assert_throws_nothing('Registered program should have no problems with at_exit global',
+	{
+		Program::instance($pgm);
+		at_exit(Test::Global::AtFuncs::foo);
+	});
+}
+
+method test_global_at_exit_fails() {
+	my $pgm := Test::Global::AtFuncs.new;
+		
+	try {
+		Program::instance(my $undef);
+		CATCH {
+			Program::instance().do_exit;
+			Program::instance($undef);
+		}
+	};
+
+	assert_throws(Control::Error, 'at_exit should throw exception if no program registered',
+	{
+		at_exit(Test::Global::AtFuncs::foo);
+	});
+}
+
+method test_global_at_start() {
+	my $pgm := Test::Global::AtFuncs.new;
+	
+	assert_throws_nothing('Registered program should have no problems with at_start global',
+	{
+		Program::instance($pgm);
+		at_start(Test::Global::AtFuncs::foo);
+	});
+}
+
+method test_global_at_start_fails() {
+	my $pgm := Test::Global::AtFuncs.new;
+	
+	try {
+		Program::instance(my $undef);
+		CATCH {
+			Program::instance().do_exit;
+			Program::instance($undef);
+		}
+	};
+
+	assert_throws(Control::Error, 'at_start should throw exception if no program registered',
+	{
+		at_start(Test::Global::AtFuncs::foo);
+	});
 }
 
 class Test::Program::Streams is Program {

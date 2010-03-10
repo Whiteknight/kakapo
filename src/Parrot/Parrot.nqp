@@ -319,3 +319,44 @@ sub new($pmc, %args?) {
 		?? pir::new__PP($key)
 		!! pir::new__PPP($key, %args);
 }
+
+sub qualified_name($x, :$namespace = caller_namespace(2)) {
+	if pir::isa__IPS($x, 'P6protoobject') {
+		$x := $x.WHO;			# namespace
+	}
+	elsif pir::isa__IPS($x, 'Class') || pir::isa__IPS($x, 'PMCProxy') {
+		$x := $x.get_namespace;		# namespace
+	}
+	
+	## break
+	
+	if pir::isa__IPS($x, 'NameSpace') {
+		$x := $x.get_name.join('::');
+	}
+	elsif pir::isa__IPS($x, 'String') {
+		if pir::split('::', $x) > 1 {
+			# keep it
+		}
+		else {
+			my @temp := pir::split(';', $x);
+			
+			if @temp == 1 {
+				@temp := $namespace.get_name;
+				@temp.push($x);
+			}
+			
+			$x := @temp.join('::');
+		}
+	}
+	elsif pir::isa__IPS($x, 'Sub') {	# includes MultiSubs
+		my @temp := $x.get_namespace.get_name;
+		@temp.push( ~$x );
+		$x := @temp.join('::');
+	}
+	else {
+		my $type := pir::typeof__SP($x);
+		die("Don't know how to make qualified name from $type: $x");
+	}
+	
+	$x;
+}
