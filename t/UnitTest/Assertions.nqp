@@ -1,5 +1,5 @@
 #! /usr/bin/env parrot-nqp
-# Copyright 2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright 2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 INIT {
@@ -12,7 +12,7 @@ INIT {
 
 class Test::UnitTest::Assertions
 	is UnitTest::Testcase ;
-	
+
 INIT {
 	use(	'UnitTest::Testcase' );
 	use(	'UnitTest::Assertions' );
@@ -25,7 +25,7 @@ sub MAIN() {
 	$proto.suite.run;
 }
 
-method test_assert_block_pass() {	
+method test_assert_block_pass() {
 	verify_that( 'assert_block does nothing if the block passes' );
 	want_pass('Should pass - block throws nothing', { assert_block("Block passed", { 1 }); });
 }
@@ -42,11 +42,11 @@ method test_assert_block_false() {
 
 method test_assert_block_false_pass() {
 	verify_that( 'assert_block_false throws an UnitTestFailure if block passes' );
-	
+
 	try {
 		assert_block_false("Block passed", { 1 });
 		fail('Assert_block_false should throw an exception');
-		
+
 		CATCH {
 			unless $!.type == Exception::UnitTestFailure.type {
 				$!.rethrow;
@@ -70,21 +70,21 @@ class Exception::TestAssertThrowsWrongType is Exception::Wrapper {
 
 method test_assert_throws_wrong_type() {
 	verify_that( 'assert_throws catches wrong exceptions and marks a failure' );
-	
+
 	my $pass := 0;
-	
+
 	try {
 		assert_throws(Exception::TestAssertThrows, 'Throws exception', {
 			Exception::TestAssertThrowsWrongType.new.throw;
 		});
-		
+
 		CATCH {
 			if $!.type == Exception::UnitTestFailure.type {
 				$pass := 1;
 			}
 		}
 	};
-	
+
 	unless $pass {
 		Exception::UnitTestFailure.new(:message("assert_throws didn't throw an error, or threw wrong type"));
 	}
@@ -92,9 +92,9 @@ method test_assert_throws_wrong_type() {
 
 method test_assert_throws_doesnt_throw() {
 	verify_that( 'assert_throws requires an exception be thrown' );
-	
+
 	my $pass := 0;
-	
+
 	try {
 		assert_throws(Exception::TestAssertThrows, 'Throws exception', { 1 });
 
@@ -104,7 +104,7 @@ method test_assert_throws_doesnt_throw() {
 			}
 		}
 	};
-	
+
 	unless $pass {
 		Exception::UnitTestFailure.new(:message("assert_throws didn't throw an error, but should"));
 	}
@@ -116,28 +116,28 @@ method test_assert_throws_nothing() {
 
 method test_assert_throws_nothing_fails() {
 	assert_throws(Exception::UnitTestFailure, 'Throws something unexpected', {
-		assert_throws_nothing('Throws nothing', 
+		assert_throws_nothing('Throws nothing',
 			{ Exception::TestAssertThrowsWrongType.new.throw }); });
 }
 
 method test_assert_same() {
 	my $s := "Hello, world.";
-	
+
 	assert_same($s, $s, "Same objects");
 }
 
 method test_assert_same_fails() {
 	my $s := "Hello, world.";
 	my $t := "Hello, world.";
-	
-	assert_throws(Exception::UnitTestFailure, 'Should throw error - not same objects', 
+
+	assert_throws(Exception::UnitTestFailure, 'Should throw error - not same objects',
 		{ assert_same($s, $t, 'Same object'); });
 }
 
 method test_assert_not_same() {
 	my $s := "Hello, world.";
 	my $t := "Hello, world.";
-	
+
 	assert_not_same($s, $t, 'Not same object');
 }
 
@@ -174,22 +174,22 @@ class Test::AssertCan {
 
 method test_assert_can() {
 	my $obj := Test::AssertCan.new;
-	want_pass('Should pass - has method', { assert_can($obj, 'xyzzy', 'Has method'); });	
+	want_pass('Should pass - has method', { assert_can($obj, 'xyzzy', 'Has method'); });
 }
 
 method test_assert_can_fails() {
 	my $obj := Test::AssertCan.new;
-	want_fail('Should fail - lacks method', { assert_can($obj, 'mumble', 'Lacks method'); });	
+	want_fail('Should fail - lacks method', { assert_can($obj, 'mumble', 'Lacks method'); });
 }
 
 method test_assert_can_not() {
 	my $obj := Test::AssertCan.new;
-	want_pass('Should pass - lacks method', { assert_can_not($obj, 'mumble', 'Lacks method'); });	
+	want_pass('Should pass - lacks method', { assert_can_not($obj, 'mumble', 'Lacks method'); });
 }
 
 method test_assert_can_not_fails() {
 	my $obj := Test::AssertCan.new;
-	want_fail('Should fail - has method', { assert_can_not($obj, 'xyzzy', 'Has method'); });	
+	want_fail('Should fail - has method', { assert_can_not($obj, 'xyzzy', 'Has method'); });
 }
 
 method test_assert_equal() {
@@ -288,4 +288,20 @@ method test_assert_false() {
 
 method test_assert_false_fails() {
 	want_fail("true should fail", { assert_false(1, 'true'); });
+}
+
+method test_assert_defined_fails() {
+    want_fail("Undef should fail", { assert_defined(Parrot::new("Undef"), "Undef"); });
+}
+
+method test_assert_defined() {
+    want_pass("not-Undef should not fail", { assert_defined(1, "Not Undef"); });
+}
+
+method test_assert_not_defined_fails() {
+    want_fail("not Undef should fail", { assert_not_defined(1, "Not Undef"); });
+}
+
+method test_assert_not_defined() {
+    want_pass("Undef should pass", { assert_not_defined(Parrot::new("Undef"), "Undef"); });
 }
