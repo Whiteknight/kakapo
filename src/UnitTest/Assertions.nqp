@@ -1,4 +1,4 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module UnitTest::Assertions;
@@ -9,16 +9,18 @@ INIT {
 
 sub _initload() {
 	use( <UnitTest::Testcase> );
-	
+
 	export(<
 		assert_block
 		assert_block_false
 		assert_can
 		assert_can_not
+                assert_defined
+                assert_not_defined
 		assert_equal
 		assert_not_equal
-		assert_instance_of		
-		assert_not_instance_of	
+		assert_instance_of
+		assert_not_instance_of
 		assert_isa
 		assert_not_isa
 		assert_match
@@ -53,7 +55,14 @@ sub assert_can_not($obj, $method, $message) {
 	fail($message) if pir::can($obj, $method);
 }
 
-# NB: The _equal assertions reverse the comparison so that the wanted form is dominant.
+sub assert_defined($obj, $message) {
+    fail($message) unless pir::defined($obj);
+}
+
+sub assert_not_defined($obj, $message) {
+    fail($message) if pir::defined($obj);
+}
+
 sub assert_equal($o1, $o2, $message) {
 	fail($message) unless pir::iseq__IPP($o2, $o1);
 }
@@ -113,10 +122,9 @@ sub assert_not_same($o1, $o2, $message) {
 sub assert_throws($e_class, $message, &block) {
 	my $ok := 0;
 	my $exception;
-	
 	try {
 		&block();
-		
+
 		CATCH { $exception := $!; }
 	};
 
@@ -127,12 +135,12 @@ sub assert_throws($e_class, $message, &block) {
 
 sub assert_throws_nothing($message, &block) {
 	my $ok := 1;
-	
+
 	try {
 		&block();
 		CATCH { $ok := 0; }
 	};
-	
+
 	fail($message) unless $ok;
 }
 
@@ -149,10 +157,10 @@ sub assert_within_delta($o1, $o2, $delta, $message) {
 	$difference := - $difference if $difference < 0;
 	fail($message) unless $difference < $delta;
 }
-	
+
 #~ assert_like(obj, regex, message)
 #~ assert_not_like
-	
+
 sub want_fail($message, &block) {
 	assert_throws(Exception::UnitTestFailure, $message, &block);
 }

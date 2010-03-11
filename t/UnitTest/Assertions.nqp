@@ -1,5 +1,5 @@
 #! /usr/bin/env parrot-nqp
-# Copyright 2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright 2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 INIT {
@@ -12,7 +12,7 @@ INIT {
 
 class Test::UnitTest::Assertions
 	is UnitTest::Testcase ;
-	
+
 INIT {
 	use(	'UnitTest::Testcase' );
 	use(	'UnitTest::Assertions' );
@@ -21,7 +21,7 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method test_assert_block_pass() {	
+method test_assert_block_pass() {
 	verify_that( 'assert_block does nothing if the block passes' );
 	want_pass('Should pass - block throws nothing', { assert_block("Block passed", { 1 }); });
 }
@@ -38,11 +38,11 @@ method test_assert_block_false() {
 
 method test_assert_block_false_pass() {
 	verify_that( 'assert_block_false throws an UnitTestFailure if block passes' );
-	
+
 	try {
 		assert_block_false("Block passed", { 1 });
 		fail('Assert_block_false should throw an exception');
-		
+
 		CATCH {
 			unless $!.type == Exception::UnitTestFailure.type {
 				$!.rethrow;
@@ -57,22 +57,22 @@ class Test::AssertCan {
 
 method test_assert_can() {
 	my $obj := Test::AssertCan.new;
-	want_pass('Should pass - has method', { assert_can($obj, 'xyzzy', 'Has method'); });	
+	want_pass('Should pass - has method', { assert_can($obj, 'xyzzy', 'Has method'); });
 }
 
 method test_assert_can_fails() {
 	my $obj := Test::AssertCan.new;
-	want_fail('Should fail - lacks method', { assert_can($obj, 'mumble', 'Lacks method'); });	
+	want_fail('Should fail - lacks method', { assert_can($obj, 'mumble', 'Lacks method'); });
 }
 
 method test_assert_can_not() {
 	my $obj := Test::AssertCan.new;
-	want_pass('Should pass - lacks method', { assert_can_not($obj, 'mumble', 'Lacks method'); });	
+	want_pass('Should pass - lacks method', { assert_can_not($obj, 'mumble', 'Lacks method'); });
 }
 
 method test_assert_can_not_fails() {
 	my $obj := Test::AssertCan.new;
-	want_fail('Should fail - has method', { assert_can_not($obj, 'xyzzy', 'Has method'); });	
+	want_fail('Should fail - has method', { assert_can_not($obj, 'xyzzy', 'Has method'); });
 }
 
 method test_assert_equal() {
@@ -284,4 +284,20 @@ method test_within_delta_fails() {
 	my $n1 := 10.0001;
 	my $n2 := 10.0002;
 	want_fail('Not close enough', { assert_within_delta($n1, $n2, 0.000001, 'close enough'); });
+}
+
+method test_assert_defined_fails() {
+    want_fail("Undef should fail", { assert_defined(Parrot::new("Undef"), "Undef"); });
+}
+
+method test_assert_defined() {
+    want_pass("not-Undef should not fail", { assert_defined(1, "Not Undef"); });
+}
+
+method test_assert_not_defined_fails() {
+    want_fail("not Undef should fail", { assert_not_defined(1, "Not Undef"); });
+}
+
+method test_assert_not_defined() {
+    want_pass("Undef should pass", { assert_not_defined(Parrot::new("Undef"), "Undef"); });
 }
