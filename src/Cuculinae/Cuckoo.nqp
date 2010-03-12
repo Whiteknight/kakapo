@@ -4,13 +4,24 @@
 module Cuckoo;
 
 INIT {
-	export( < calling cuckoo verify verify_never > );
-
-	Kakapo::depends_on( <Cuculus::Canorus> );
+	export(< 
+		calling 
+		cuckoo 
+		verify 
+		verify_never 
+	>);
+	
+	Kakapo::depends_on(|<
+		Cuculus::Canorus 
+		Matcher::CallSig
+	>);
 }
 
 sub _initload() {
-	use( <Cuculus::Canorus> );
+	use( Cuculus::Canorus );
+	use( Matcher::CallSig );
+	
+	export(< ANY ETC >, :namespace( 'Matcher::CallSig' ));
 }
 
 sub calling($egg) {

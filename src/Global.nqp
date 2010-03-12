@@ -62,8 +62,8 @@ our sub _pre_initload() {
 # every exported symbol. This is more to support L<C< use >>-ing a particular symbol than anything else,
 # but it is a valid import tag.
 
-our sub export($symbol, *@symbols, :$as?, :$namespace?, :@tags?) {
-	if pir::isa__IPS($symbol, 'String') {
+our sub export($symbol, *@symbols, :$as?, :$namespace = Parrot::caller_namespace(), :@tags?) {
+	if pir::isa__IPS($symbol, 'String') || ! pir::does__IPS($symbol, 'array') {
 		@symbols.unshift($symbol);
 	}
 	else {
@@ -73,15 +73,11 @@ our sub export($symbol, *@symbols, :$as?, :$namespace?, :@tags?) {
 	if ! pir::isa__IPS(@tags, 'ResizablePMCArray') { @tags := Array::new(@tags); }
 	elsif +@tags == 0 { @tags.push('DEFAULT'); }
 
-	my $source_nsp := Opcode::defined($namespace)
-		?? $namespace
-		!! Parrot::caller_namespace();
-	
-	if Opcode::isa($source_nsp, 'String') {
-		$source_nsp := Opcode::get_namespace($source_nsp);
+	if Opcode::isa($namespace, 'String') {
+		$namespace := Parrot::get_hll_namespace($namespace);
 	}
 
-	my $export_nsp := $source_nsp.make_namespace('EXPORT');
+	my $export_nsp := Parrot::caller_namespace().make_namespace('EXPORT');
 	
 	@tags.push('ALL');
 	
@@ -89,15 +85,15 @@ our sub export($symbol, *@symbols, :$as?, :$namespace?, :@tags?) {
 		my $tag_nsp := $export_nsp.make_namespace(~ $_);
 		
 		if Opcode::defined($as) {
-			my $export_sym := $symbol;
+			my $export_sym := @symbols[0];
 			if Opcode::isa($export_sym, 'String') {
-				$export_sym := $source_nsp.get_sym($export_sym);
+				$export_sym := $namespace.get_sym($export_sym);
 			}
 
 			inject_symbol($export_sym, :as($as), :namespace($tag_nsp));
 		}
 		else {
-			$source_nsp.export_to($tag_nsp, @symbols);
+			$namespace.export_to($tag_nsp, @symbols);
 		}
 	}
 }
