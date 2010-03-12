@@ -1,0 +1,50 @@
+# Kakapo release-9 #
+
+
+## Status ##
+
+Kakapo is in 'beta' status. Both the base and full libraries are usable, although the full 
+library is still missing many of the Matcher functions.
+
+More detailed status is available on the Google Code page: http://code.google.com/p/kakapo-parrot/
+
+## Changes ##
+
+ * release-9 (12 Mar, 2010)
+  
+   * Some rudimentary changes to 'Program' to get it working.
+   * Modified 'Cuculinae' library to better support non-P6object classes. It is now possible to
+     mock Test::Builder.
+   * Got UnitTest testcases working as part of setup.nqp test.
+   * Added assert_(not_)defined from Whiteknight++.
+   * Fixed setup.nqp to install pbc files.
+
+ * release-8 (08 Mar, 2010)
+
+   * Added 'Cuculinae' library to provide class/object mocking behavior.
+   * Removed 'Mimidae' code.
+   * Added tests to confirm that 'super()' works when several stacked methods call super.
+   * Modified super() to re-use the callers current method name.
+
+ * release-7 (25 Feb, 2010)
+
+   * Refactored P6object::new to only call one other method, '_init_obj', which (by default) calls
+     '_init_args' to handle the args.
+
+ * release-6 (25 Feb, 2010)
+
+   * Replaced '.elements' with '.elems'.
+   * Added many standard subs and methods in Array. (map, reduce, grep, cat, etc.)
+   * Added Mimidae library, a mock generator.
+
+ * release-5 (20 Feb, 2010)
+ 
+   * Added Global::inject_root_symbol(). 
+   * Created a set of syntax helpers in Syntax.nqp, including 'last()', 'next()', and 'redo()'.
+   * Added syntax subs in P6meta so that 'has()', 'has_vtable()' and 'extends()' are global keywords.
+   * Added krt0.pbc to build targets in setup.nqp.
+   * Added 'super()' and 'super_()' functions.
+   * Added 'caller' in Parrot (:tags('CALLER') with caller_namespace)
+   * Redesigned Program to be a class instead of a module.
+   * Added tests for Program, Parrot.
+
