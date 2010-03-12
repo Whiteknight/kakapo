@@ -22,13 +22,30 @@ method add_error($failure) {
 }
 
 method add_failure($failure) {
-	$!test_builder.ok(0, self.get_test_label($failure.test_case));
+	my $tc := $failure.test_case;
+	my $label := self.get_test_label($tc);
+	
+	if $tc.todo {
+		$!test_builder.todo(0, $label, $tc.todo);
+	}
+	else {
+		$!test_builder.ok(0, self.get_test_label($failure.test_case));
+	}
+	
 	$!test_builder.diag( $failure.fault.message );
 	self;
 }
 
 method end_test($test) {
-	$!test_builder.ok(1, self.get_test_label($test));
+	my $label := self.get_test_label($test);
+	
+	if $test.todo {
+		$!test_builder.todo(1, $label, $test.todo);
+	}
+	else {
+		$!test_builder.ok(1, self.get_test_label($test));
+	}
+	
 	self;
 }
 
@@ -39,6 +56,7 @@ method get_test_label($test) {
 method _init_obj(*@pos, *%named) {
 	%named<test_builder> := Parrot::new('Test::Builder')
 		unless %named.contains(<test_builder>);
+
 	self._init_args(|@pos, |%named);
 }
 

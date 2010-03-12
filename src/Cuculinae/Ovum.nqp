@@ -24,24 +24,46 @@ method VTABLE_find_method($name) {
 	has &!CUCULUS_BEHAVIOR;
 	has $!CUCULUS_CANORUS;
 
-say("   Find_method: $name");	
-	die( "No Cuculus attribute set!" )
-		unless $!CUCULUS_CANORUS.defined;
-
-	my &closure := -> *@pos, *%named {
+	my &method := -> *@pos, *%named {
 		my $self := @pos[0];
-		my $cuckoo := pir::getattribute__PPS($self, '$!CUCULUS_CANORUS');
-		
-		# NB: :object($cuckoo) here, not $self - many eggs represent the same cuckoo.
 		my $callsig := CallSignature.new(
 			:method($name),
 			:named(%named),
-			#:object($cuckoo), 
 			:object($self), 
 			:positional(@pos), 
 		);
+
+		my $cuckoo := pir::getattribute__PPS($self, '$!CUCULUS_CANORUS');
+
+		if pir::isnull($cuckoo) {
+			# If it wasn't set, then either we're inside the init :vtable method, or
+			# we're boned. Pop someting from the init stack and hope for the best.
+			Cuculus::Canorus::Ovum::_::pop_inits($self);
+			$cuckoo := pir::getattribute__PPS($self, '$!CUCULUS_CANORUS');
+		}
 		
 		my &behavior := pir::getattribute__PPS($self, '&!CUCULUS_BEHAVIOR');
 		&behavior($cuckoo, $callsig);
 	};
+	
+	my &closure := pir::newclosure__PP(&method);
+	pir::assign__vPS(&closure, $name);
+	&closure;
+}
+
+method pop_inits() {
+	has	&!CUCULUS_BEHAVIOR;
+	has	$!CUCULUS_CANORUS;
+	
+	die("Trying to pop inits, but stack is empty")
+		unless our @_Init_stack;
+	
+	&!CUCULUS_BEHAVIOR := @_Init_stack.pop;
+	$!CUCULUS_CANORUS := @_Init_stack.pop;
+	self;
+}
+
+sub push_inits( :&behavior!, :$cuckoo! ) {
+	our @_Init_stack.push($cuckoo);
+	@_Init_stack.push(&behavior);
 }

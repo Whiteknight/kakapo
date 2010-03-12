@@ -28,10 +28,10 @@ sub verify($egg, *%named) {
 	get_cuckoo($egg).verifier: 
 		Cuculus::Verifier.new: :conditions(%named);
 
-	# Create new verify-configured egg
-	get_cuckoo($egg).new_egg(
-		:behavior(Cuculus::Canorus::verify_calls)
-	);
+	# Create new verify-configured egg.
+	# NB: Create, then set behavior, to prevent init:vtable from creating 
+	# verify calls that fail.
+	my $new_egg := get_cuckoo($egg).new_egg(:behavior(Cuculus::Canorus::verify_calls));
 }
 
 sub verify_never($egg, *%named) {

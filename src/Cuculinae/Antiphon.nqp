@@ -26,7 +26,7 @@ method invoke($callsig) {
 	my $result := $object;
 	my @pos := $callsig.positional;
 	my %named := $callsig.named;
-	
+
 	for @!side_effects -> &do {
 		$result := &do(|@pos, |%named);
 	}

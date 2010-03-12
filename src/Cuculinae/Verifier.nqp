@@ -20,7 +20,7 @@ method conditions($value?)	{ %!conditions := $value.defined ?? $value !! %!condi
 method verify($cuckoo) {
 	my $matcher := $!sig_matcher;
 	my $count := $!match_count := 0;
-	
+
 	for $cuckoo.call_log -> $callsig {
 		$count++ if $matcher.matches($callsig);
 	}
@@ -47,17 +47,17 @@ method was_called(*%named) {
 	}
 	elsif %match.contains: <times> {
 		assert_true( $count == %match<times>,
-			'Wrong number of calls to callsig. Want exactly ' ~ %match<times>);
+			"Wrong number of calls ($count) to callsig. Want exactly " ~ %match<times>);
 	}
 	else {
 		if %match.contains: <at_least> {
 			assert_false( $count < %match<at_least>,
-				'Too few calls made to callsig. Expected at least ' ~ %match<at_least> ~ '.' );
+				'Too few calls ($count) made to callsig. Expected at least ' ~ %match<at_least> ~ '.' );
 		}
 		
 		if %match.contains: <at_most> {
 			assert_false( $count > %match<at_most>,
-				'Too many calls made to callsig. Expected at most ' ~ %match<at_most> ~ '.' );
+				'Too many calls ($count) made to callsig. Expected at most ' ~ %match<at_most> ~ '.' );
 		}
 	}
 		

@@ -1,43 +1,40 @@
+#! /usr/bin/env parrot-nqp
 # Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module Kakapo {
-	# Tell the Kakapo runtime which library file to load.	
-	sub library_name()		{ 'kakapo_test.pbc' }
+INIT {
+	# Load the Kakapo library
+	pir::load_language('parrot');
+	my $env := pir::new__PS('Env');
+	my $root_dir := $env<HARNESS_ROOT_DIR> || '.';
+	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
 }
 
 class Test::UnitTest::Loader
-	is UnitTest::Testcase {
-	
-	INIT {
-		use(	'P6metaclass' );		# has
-		use(	'UnitTest::Testcase' );	# fail, etc.
-		
+	is UnitTest::Testcase ;
 
-		Program::register_main();
-		has(	'$!loader' );
-		
-		my $loader := UnitTest::Loader.new();
-	}
+has	$!loader;
 	
-	sub main() {
-		my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
-		$proto.suite.run;
-	}
+INIT {
+	use(	'UnitTest::Testcase' );
+	use(	'UnitTest::Assertions' );
+}
 
-	method set_up() {
-		self.loader(UnitTest::Loader.new);
-	}
+# Run the MAIN for this class.
+Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 	
-	method test_load_tests_from_testcase() {
-		my $suite := self.loader.load_tests_from_testcase(
-			Test::UnitTest::WhichMethods
-		);
-		
-		unless $suite.num_tests == 3 {
-			fail("Expected 3 tests");
-		}
-	}
+
+method set_up() {
+	$!loader := UnitTest::Loader.new;
+}
+
+method test_load_tests_from_testcase() {
+	my $suite := $!loader.load_tests_from_testcase(
+		Test::UnitTest::WhichMethods
+	);
+	
+	assert_equal( $suite.num_tests, 3,
+		'Expected 3 tests');
 }
 
 class Test::UnitTest::WhichMethods

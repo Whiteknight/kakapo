@@ -148,7 +148,7 @@ our sub register_global($name, $object, :$namespace? = 'Global') {
 	export($name, :namespace($nsp));
 }
 
-our sub use($module?, :@except?, :@tags?, :@symbols?) {
+our sub use($module = Parrot::caller_namespace(0), :@except?, :@tags?, :@symbols?) {
 # Imports global symbols into the caller's namespace. If neither C<:tags> nor
 # C<:symbols> are specified, C<:tags('DEFAULT')> is assumed.
 
@@ -169,7 +169,7 @@ our sub use($module?, :@except?, :@tags?, :@symbols?) {
 # symbol list is generated. This allows the caller to block certain symbols, perhaps 
 # in order to rename or override them.
 
-	if ! Opcode::defined($module)		{ $module	:= Parrot::caller_namespace(0); }
+#	if ! Opcode::defined($module)		{ $module	:= Parrot::caller_namespace(0); }
 	if Opcode::isa(@tags, 'String')		{ @tags	:= Array::new(@tags); }
 	if Opcode::isa(@symbols, 'String')		{ @symbols	:= Array::new(@symbols); }
 	

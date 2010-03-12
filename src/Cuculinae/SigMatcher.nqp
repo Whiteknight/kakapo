@@ -20,8 +20,7 @@ method object_matches($actual) {
 
 	$exp =:=  $act
 	|| $exp =:= ANY()
-	|| isa($exp, Cuculus::Canorus::Ovum)
-		&& isa($act, Cuculus::Canorus::Ovum)
+	|| isa($exp, Cuculus::Canorus::Ovum) && isa($act, Cuculus::Canorus::Ovum)
 		&& Opcode::getattribute($exp, '$!CUCULUS_CANORUS') 
 			=:= Opcode::getattribute($act, '$!CUCULUS_CANORUS');
 }
@@ -32,14 +31,14 @@ method positionals_match($actual) {
 
 	my $count := 0;
 	my $num_expecting := @wanted;
-	
+
 	while $count < $num_expecting {
 		my $want := @wanted[$count];
 		return 1 if $want =:= ETC();
 		return 0 if $count == @got;	# Could be ok if ETC() above.
 
 		my $got := @got[$count];
-		
+
 		if $count == 0
 			&& isa($want, Cuculus::Canorus::Ovum) && isa($got, Cuculus::Canorus::Ovum)
 			&& get_cuckoo($want) =:= get_cuckoo($got) {

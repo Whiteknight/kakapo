@@ -3,25 +3,24 @@
 
 module UnitTest::Failure {
 	INIT {
-		use(	'P6metaclass' );
-		
-		has(	'$.fault', 
-			'$.test_case' 
-		);
+		has(<
+			$!fault
+			$!test_case
+		>);
 	}
 }
 
 class UnitTest::Result;
 
 INIT {
-	use(	'P6metaclass' );
-	
-	has(	'@!errors',
-		'@!failures',
-		'@!listeners',
-		'$.should_stop',
-		'$.num_tests',
-	);
+	has(<
+		@!errors
+		@!failures
+		@!listeners
+		$.should_stop
+		$.num_tests
+		$.planned_tests
+	>);
 }
 
 method add_error($test, $error) {
@@ -68,7 +67,11 @@ my method notify_listeners($method, *@pos, *%named) {
 }
 	
 method plan_tests($num_tests) {
-	self.notify_listeners('plan_tests', $num_tests);
+	# Ignore repeats in hierarchy of suites.
+	unless self.planned_tests {
+		self.planned_tests: $num_tests;
+		self.notify_listeners: 'plan_tests', $num_tests;
+	}
 }
 
 method remove_listener($listener) {

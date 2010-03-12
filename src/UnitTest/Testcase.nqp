@@ -7,17 +7,26 @@ class Exception::UnitTestFailure is Exception::Wrapper {
 
 module UnitTest::Testcase;
 
+has	$!todo;
+has	$!verify;
+
 INIT {
-	has(	'$.name',
-		'$!verify',
-	);
+	extends( UnitTest::Standalone );
 	
+	# NB: This auto-generates accessor methods for these names. And declares the class.
+	has(<
+		$!todo
+		$!verify
+	>);
+
 	export(<
 		fail
 		fail_if
 		fail_unless
 		verify_that
 	>);
+
+	export( UnitTest::Testcase::todo_test, :as('todo'));
 	
 	Kakapo::initload_done();
 }
@@ -103,11 +112,17 @@ method run_test() {
 our method set_up() { }
 
 our method suite() {
-	self.default_loader.load_tests_from_testcase(self);
+	my $suite := self.default_loader.load_tests_from_testcase(self);
+	$suite.name: "Test suite for " ~ pir::typeof__SP(self.WHAT);
+	$suite;
 }
 
 our method tear_down() { }
 
+sub todo_test( *@text ) {
+	Parrot::get_self().todo: @text.join;
+}
+
 sub verify_that(*@text) {
-	Parrot::get_self().verify(@text.join);
+	Parrot::get_self().verify: @text.join;
 }

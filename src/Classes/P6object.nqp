@@ -167,7 +167,7 @@ method _init_obj(*@pos, *%named) {
 }
 
 method _init_args(*@pos, *%named) {
-	die("Default _init_obj cannot handle position parameters.")
+	die("Default _init_obj cannot handle positional parameters.")
 		if @pos.elems;
 	
 	for %named {

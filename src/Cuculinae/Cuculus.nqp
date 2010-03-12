@@ -69,7 +69,8 @@ sub get_passthrough_antiphons($parent) {
 	# See TT#1497 for why this bogosity is needed.
 	my $pre_class := pir::new__PS( 'Class' );
 	$pre_class.add_parent( pir::get_class__PS( 'P6protoobject' ) );
-	$pre_class.add_parent( P6metaclass.get_parrotclass: $parent );
+	#~ $pre_class.add_parent( P6metaclass.get_parrotclass: $parent );
+	$pre_class.add_parent( $parent );
 
 	my %passthrough;
 
@@ -87,7 +88,12 @@ sub get_passthrough_antiphons($parent) {
 		}
 		else {
 			my &method := $pre_class.find_method($method_name);
-			$antiphon.will_do: &method;
+			
+			# NOTE: If the class being mocked it NOT a P6object class, but (for example)
+			# one of the .pir classes in the runtime library, then it may not _have_ all
+			# the methods provided by P6object. So check for null.
+			$antiphon.will_do: &method
+				unless pir::isnull(&method);
 		}
 
 		%passthrough{$method_name} := $antiphon;
@@ -110,9 +116,15 @@ sub get_rootclass_methods() {
 method init_egg( $egg, :&behavior = Cuculus::Canorus::mock_execute ) {
 	die( "Must be called with a Cuckoo's egg." )
 		unless isa($egg, 'Cuculus::Canorus::Ovum');
-	Opcode::setattribute($egg, '$!CUCULUS_CANORUS', self);
-	Opcode::setattribute($egg, '&!CUCULUS_BEHAVIOR', &behavior);
 
+	# This is null if we DIDN'T get called by an init :vtable. If we DID, then
+	# this pop was already done in the method closure.
+	if pir::isnull(pir::getattribute__PPS($egg, '$!CUCULUS_CANORUS')) {
+		Cuculus::Canorus::Ovum::_::pop_inits($egg);
+	}
+
+	# Always (re)set the behavior, because new_egg starts all eggs in execute mode first.
+	pir::setattribute__vPSP($egg, '&!CUCULUS_BEHAVIOR', &behavior);
 	$egg;
 }
 
@@ -125,26 +137,70 @@ method _init_obj(*@pos, *%named) {
 	self;
 }
 
-method mock_class($parent = 'P6object', :$named = mock_class_name($parent)) {
-
-	%!passthrough_antiphons := get_passthrough_antiphons($parent);
-
-	my $proto_cuckoo := P6metaclass.new_class: $named, :parent( 'Cuculus::Canorus::Ovum' );
-	P6metaclass.add_parent: $proto_cuckoo, $parent;
-
-	$!class := P6metaclass.get_parrotclass($proto_cuckoo);
-	self.init_egg($proto_cuckoo);
-
+method install_vtable_overrides($proto_egg) {
+	
+	my %vtable_overrides;
+	
+	my @mro := pir::class__PP($proto_egg).inspect('all_parents');
+	
+	for @mro -> $parent {
+		for $parent.inspect('vtable_overrides') {
+			%vtable_overrides{$_.key} := $_.value
+				unless %vtable_overrides.contains( $_.key );
+		}
+	}
+	
 	# Turn on find-method redirection for the proto-object
-	my $proto_class := pir::class__PP($proto_cuckoo);
+	my $proto_class := pir::class__PP($proto_egg);
 	has_vtable('find_method', Cuculus::Canorus::Ovum::_::VTABLE_find_method,
 		$proto_class);
 
-	# Finally, turn on find-method redirection for the mock class.
+	# Turn on find-method redirection for the mock class.
 	has_vtable('find_method', Cuculus::Canorus::Ovum::_::VTABLE_find_method,
-		:class($proto_cuckoo));
+		:class($proto_egg));
+	
+	#~ has_vtable(:class($proto_egg), 'init', -> $self {	
+	#~ say("Init of ", pir::typeof__SP($self), " from ", pir::typeof__SP(self));
+		#~ Opcode::setattribute($self, '$!CUCULUS_CANORUS', self);
+		#~ Opcode::setattribute($self, '&!CUCULUS_BEHAVIOR', Cuculus::Canorus::mock_execute);
+		
+		#~ $self.'init :vtable'();
+	#~ });
 
-	$proto_cuckoo;
+	#~ has_vtable(:class($proto_egg), 'init_pmc', -> $self, %args {
+	#~ say("Initpmc of ", pir::typeof__SP($self), " from ", pir::typeof__SP(self));
+		#~ Opcode::setattribute($self, '$!CUCULUS_CANORUS', self);
+		#~ Opcode::setattribute($self, '&!CUCULUS_BEHAVIOR', Cuculus::Canorus::mock_execute);
+		
+		#~ $self.'init_pmc :vtable'(%args);
+	#~ });
+
+	#~ # Anything else just gets mocked out
+	#~ for %vtable_overrides -> $vtable {
+		#~ has_vtable(:class($proto_egg), $vtable.key, -> $self, *@args {
+			#~ (pir::find_method__PPS(self, $vtable.key ~ ' :vtable'))(self, |@args);
+		#~ });
+	#~ }
+}
+
+method mock_class($parent = 'P6object', :$named) {
+	$parent := P6metaclass.get_parrotclass($parent);
+	$named := $named || mock_class_name($parent);
+
+	%!passthrough_antiphons := get_passthrough_antiphons($parent);
+
+	# Do this before P6metaclass has a chance to create the new proto_egg - should catch
+	# any init :vtable methods.
+	Cuculus::Canorus::Ovum::_::push_inits(:cuckoo(self), :behavior(Cuculus::Canorus::mock_execute));
+	
+	my $proto_egg := P6metaclass.new_class: $named, :parent( 'Cuculus::Canorus::Ovum' );
+	P6metaclass.add_parent: $proto_egg, $parent;
+
+	$!class := P6metaclass.get_parrotclass($proto_egg);
+	self.init_egg($proto_egg);
+
+	self.install_vtable_overrides($proto_egg);
+	$proto_egg;
 }
 
 sub mock_class_name($parent) {
@@ -155,19 +211,16 @@ sub mock_class_name($parent) {
 		$parent := '<anonymous>';
 	}
 
-	my $name := pir::typeof__SP($parent) ~ "::<mock{$_Next_id++;}>";
+	my $name := ~ $parent ~ "::<mock{$_Next_id++;}>";
 }
 
 method mock_execute($callsig) {
 	@!call_log.push($callsig);	# record the call
 
 	for @!antiphons -> $one {
-	#pir::trace(1);
 		if $one.matches($callsig) {
-	pir::trace(0);
 			return $one.invoke($callsig);
 		}
-	pir::trace(0);
 	}
 
 	if %!passthrough_antiphons.contains($callsig.method) {
@@ -205,6 +258,8 @@ sub new_antiphon($callsig) {
 # calling($foo).a(1).will_do X, calling($foo).a(2).will_do Y, etc.
 
 method new_egg( :&behavior = Cuculus::Canorus::mock_execute ) {
+	# Put the new egg in execute mode until any init:vtable finishes.
+	Cuculus::Canorus::Ovum::_::push_inits(:cuckoo(self), :behavior(Cuculus::Canorus::mock_execute));
 	my $new_egg := pir::new__PP($!class);
 	self.init_egg($new_egg, &behavior);
 }
@@ -218,7 +273,6 @@ method passthrough($value?) {
 method verifier($value?)	{ $value.defined ?? ($!verifier := $value) !! $!verifier; }
 
 method verify_calls($callsig) {
-
 	$!verifier.sig_matcher:
 		Cuculus::SigMatcher.new: 
 			:expecting($callsig);

@@ -10,13 +10,7 @@ INIT {
 	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
 }
 
-class Test::Mock::Parent {
-	has $!attr;
-
-	method attr($value?) { $value.defined ?? ($!attr := $value) !! $!attr; }
-}
-
-class Test::Cuculus::Sugar
+class Test::Cuculus::Cuckoo
 	is UnitTest::Testcase ;
 
 has $!sut;
@@ -40,6 +34,12 @@ sub MAIN() {
 
 sub get_behavior($egg)	{ pir::getattribute__PPS($egg, '&!CUCULUS_BEHAVIOR'); }
 sub get_cuckoo($egg)	{ pir::getattribute__PPS($egg, '$!CUCULUS_CANORUS'); }
+
+class Test::Mock::Parent {
+	has $!attr;
+
+	method attr($value?) { $value.defined ?? ($!attr := $value) !! $!attr; }
+}
 
 method set_up() {
 	$!sut := cuckoo( Test::Mock::Parent );
@@ -193,4 +193,29 @@ method test_verify_thrice() {
 	}
 	
 	verify( $egg ).three_times("a lady").was_called( :thrice );
+}
+
+class Test::VtableInits {
+	INIT {
+		has_vtable('init', Test::VtableInits::init);
+	}
+	
+	method init() {
+		my $x := self.foo();
+		$x.bar();
+	}
+}
+
+method test_vtable_init() {
+	verify_that( 'A class with init:vtable method counts calls made inside the init' );
+	
+	$!sut := cuckoo( Test::VtableInits );
+	my $egg := $!sut.new;
+	
+	$egg.foo();
+	
+	# NOTE: Because inits run in execute mode, 'foo' would be call 3x: once in init() for
+	# the $egg, once (above) explicitly by this test method, and then once more
+	# in init() for the verify($egg) below. 
+	verify( $egg ).foo.was_called( :at_least(2) );
 }

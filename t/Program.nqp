@@ -7,6 +7,7 @@ INIT {
 	pir::load_language('parrot');
 	my $env := pir::new__PS('Env');
 	my $root_dir := $env<HARNESS_ROOT_DIR> || '.';
+	say("Loading $root_dir/library/kakapo_full.pbc");
 	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
 }
 

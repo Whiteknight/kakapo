@@ -1,8 +1,8 @@
-#! parrot-nqp
-# Copyright 2010, Austin Hastings. See accompanying LICENSE file, or 
+#! /usr/bin/env parrot-nqp
+# Copyright 2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-INIT {	
+INIT {
 	# Load the Kakapo library
 	pir::load_language('parrot');
 	my $env := pir::new__PS('Env');
@@ -11,36 +11,40 @@ INIT {
 }
 
 class Test::UnitTest::AllTests
-	is UnitTest::Suite {
+	is UnitTest::Suite ;
 
 INIT {
-	use(	'UnitTest::Testcase' );	
-	
-	has(	'$.namespace');
+	use(	'UnitTest::Testcase' );
 }
 
-MAIN();
-
-sub MAIN() {
-	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
-	$proto.suite.run;
-}
+# Run the MAIN for this class.
+Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
 method suite() {
-	my @sub_suites := Array::new(
-		'Testcase',
-		'Suite',
-		'Loader',
-	);
-	
+	my @sub_suites := <
+		Assertions
+		Loader
+		Suite
+		TapListener
+		Testcase
+	>;
+
 	my $suite := self.new();
+	my $compiler := pir::compreg__PS('NQP-rx');
 	
-	for @sub_suites {
-		say("Loading t/UnitTest/$_.pbc");
-		pir::load_bytecode("t/UnitTest/$_.pbc");
-		say("Pulling suite from Test::UnitTest::$_");
-		$suite.add_test(P6metaclass.get_proto('Test::UnitTest::' ~ $_).suite);
+	for @sub_suites -> $file {
+		say("Loading t/UnitTest/$file.nqp");
+
+		my $code := File::slurp("t/UnitTest/$file.nqp");
+		$code := $compiler.compile: File::slurp("t/UnitTest/$file.nqp");
+		$code();
+
+		my $name := $file;
+		$name := 'Listener::TAP' if $name eq 'TapListener';
+		
+		$suite.add_test:
+			P6metaclass.get_proto('Test::UnitTest::' ~ $name).suite;
 	}
 
-	return $suite;		
+	return $suite;
 }

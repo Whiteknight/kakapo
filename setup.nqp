@@ -44,11 +44,10 @@ sub MAIN(@argv) {
 		:harness_files(		pir::join(' ', < 
 			!t/Pmc
 			!t/Structure
-			!t/UnitTest
 			t
 		>) ),
 		
-		:release_id(			'release-8' ),
+		:release_id(			'release-9' ),
 		:release_dir_format(	'released/%s'),
 		:vdd_file(			'vdd.txt' ),
 	);
@@ -75,6 +74,7 @@ sub MAIN(@argv) {
 		src/Pmc/common-methods.pir
 		src/Pmc/Exception.pir
 			src/Exceptions.pir
+		src/Pmc/File.pir
 		src/Pmc/Key.pir
 		src/Pmc/Hash.pir
 		src/Pmc/Namespace.pir
@@ -102,6 +102,7 @@ sub MAIN(@argv) {
 
 		src/ComponentMarshaller.pir
 		src/DependencyQueue.pir
+		src/FileSystem.pir
 		src/Library.pir
 
 		src/Matchers/Boolean.pir
@@ -120,12 +121,14 @@ sub MAIN(@argv) {
 		src/Cuculinae/SigMatcher.pir
 		src/Cuculinae/Verifier.pir
 		
+		src/Path.pir
 		src/Program.pir
 		
 		src/UnitTest/Assertions.pir
 		src/UnitTest/Listeners.pir
 		src/UnitTest/Loader.pir
 		src/UnitTest/Result.pir
+		src/UnitTest/Standalone.pir
 		src/UnitTest/Suite.pir
 		src/UnitTest/Testcase.pir
 	>;

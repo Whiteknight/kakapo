@@ -235,8 +235,12 @@ sub isa($obj, $class) {
 	}
 	elsif pir::isa__IPS($class, 'String') {
 		$class := $class.split('::');
+		
+		if pir::elements__IP($class) == 1 {
+			$class := $class.shift;
+		}
 	}
-
+	
 	pir::isa__IPP($obj, $class);
 }
 

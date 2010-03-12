@@ -2,11 +2,17 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module UnitTest::Suite;
+
+has	@!members;
+has	$!num_tests;
+
 INIT {
-	has(	'@!members',
-		'$.name',
-		'$.num_tests',
-	);
+	extends( UnitTest::Standalone );
+	
+	has(<
+		@!members
+		$!num_tests
+	>);
 }
 
 method add_test($test) {

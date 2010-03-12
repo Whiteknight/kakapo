@@ -15,8 +15,8 @@ method configure_suite($class, @tests, :$suite) {
 
 	my $proto := pir::getprop__PSP('metaclass', $class).WHAT();
 
-	for @tests {
-		$suite.add_test($proto.new(:name(~$_)));
+	for @tests -> $test {
+		$suite.add_test: $proto.new(:name($test));
 	}
 	
 	$suite;
