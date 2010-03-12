@@ -1,5 +1,5 @@
 #! /usr/bin/env parrot-nqp
-# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 # =head1 NAME
@@ -15,7 +15,7 @@
 INIT {
 	pir::load_language('parrot');
 	pir::load_bytecode('distutils.pbc');
-	
+
 	pir::load_bytecode('dumper.pir');
 }
 
@@ -26,14 +26,14 @@ sub new_hash(*%hash) {
 }
 
 sub MAIN(@argv) {
-	
+
 	my %kakapo := new_hash(
 		:name(		'Kakapo' ),
 		:abstract(		'Run-time library for NQP programs on the Parrot VM' ),
 		:authority(		'http://gitorious.org/austin' ),
 		:copyright_holder(	'Austin Hastings' ),
 		:doc_files(		<README CREDITS> ),
-		:keywords( 		< library  nqp  parrot  runtime  stand alone  xunit 
+		:keywords( 		< library  nqp  parrot  runtime  stand alone  xunit
 					unit testing  matcher  pmc  methods  >),
 		:license_type(	'Artistic License 2.0' ),
 		:license_uri(		'http://www.perlfoundation.org/artistic_license_2_0' ),
@@ -41,12 +41,12 @@ sub MAIN(@argv) {
 		:browser_uri(	'http://code.google.com/p/kakapo-parrot/' ),
 		:project_uri(		'git://gitorious.org/kakapo/kakapo.git' ),
 
-		:harness_files(		pir::join(' ', < 
+		:harness_files(		pir::join(' ', <
 			!t/Pmc
 			!t/Structure
 			t
 		>) ),
-		
+
 		:release_id(			'release-9' ),
 		:release_dir_format(	'released/%s'),
 		:vdd_file(			'vdd.txt' ),
@@ -55,7 +55,7 @@ sub MAIN(@argv) {
 	%kakapo<copy_templates><library/krt0.pir>			:= <src/Internals/krt0.pir_tmpl>;
 	%kakapo<copy_templates><src/Internals/kakapo_bottom.pir> := <src/Internals/kakapo_bottom.pir_tmpl>;
 	%kakapo<copy_templates><src/Internals/kakapo_top.pir>	:= <src/Internals/kakapo_top.pir_tmpl>;
-	
+
 	%kakapo<pir_nqp-rx><src/Internals/Base.pir>	:= <src/Internals/Base.nqp>;
 	%kakapo<pir_nqp-rx><src/Internals/Full.pir>	:= <src/Internals/Full.nqp>;
 
@@ -63,12 +63,12 @@ sub MAIN(@argv) {
 		src/Global.pir
 		src/Syntax.pir
 
-		src/Internals/Kakapo.pir 
-		
+		src/Internals/Kakapo.pir
+
 		src/Parrot/Opcode.pir
 		src/Parrot/Parrot.pir
 		src/Parrot/Pir.pir
-		
+
 		src/Pmc/Array.pir
 		src/Pmc/Class.pir
 		src/Pmc/common-methods.pir
@@ -82,21 +82,21 @@ sub MAIN(@argv) {
 		src/Pmc/Sub.pir
 		src/Pmc/Undef.pir
 	>;
-	
+
 	for @base_pir_files {
 		%kakapo<pir_nqp-rx>{~ $_} := change_ext(~$_, :from('.pir'), :to('.nqp'));
 	}
-	
+
 	%kakapo<build_libs><library/kakapo_base.pir> := <
 		src/Internals/kakapo_top.pir
 		src/Internals/Base.pir
 	>;
 	%kakapo<build_libs><library/kakapo_base.pir>.append( @base_pir_files );
 	%kakapo<build_libs><library/kakapo_base.pir>.push( <src/Internals/kakapo_bottom.pir>);
-	
+
 	my @full_pir_files := <
 		src/CallSignature.pir
-		
+
 		src/Classes/P6object.pir
 		src/Classes/P6metaclass.pir
 
@@ -113,17 +113,17 @@ sub MAIN(@argv) {
 		src/Matchers/Not.pir
 		src/Matchers/Null.pir
 		src/Matchers/PassFail.pir
-		
+
 		src/Cuculinae/Antiphon.pir
 		src/Cuculinae/Cuculus.pir
 		src/Cuculinae/Cuckoo.pir
 		src/Cuculinae/Ovum.pir
 		src/Cuculinae/SigMatcher.pir
 		src/Cuculinae/Verifier.pir
-		
+
 		src/Path.pir
 		src/Program.pir
-		
+
 		src/UnitTest/Assertions.pir
 		src/UnitTest/Listeners.pir
 		src/UnitTest/Loader.pir
@@ -132,7 +132,7 @@ sub MAIN(@argv) {
 		src/UnitTest/Suite.pir
 		src/UnitTest/Testcase.pir
 	>;
-	
+
 	for @full_pir_files {
 		%kakapo<pir_nqp-rx>{~ $_} := change_ext(~$_, :from('.pir'), :to('.nqp'));
 	}
@@ -146,7 +146,7 @@ sub MAIN(@argv) {
 	%kakapo<build_libs><library/kakapo_full.pir>.push( <src/Internals/kakapo_bottom.pir>);
 
 	%kakapo<strip_annotations> := %kakapo<build_libs>;
-	
+
 	%kakapo<pbc_pir><library/kakapo_base.pbc>	:= <library/kakapo_base.pir>;
 	%kakapo<pbc_pir><library/kakapo_full.pbc>	:= <library/kakapo_full.pir>;
 	%kakapo<pbc_pir><library/krt0.pbc>		:= <library/krt0.pir>;
@@ -160,30 +160,36 @@ sub MAIN(@argv) {
 
 	# This test file needs compiling so the others can load it.
 	%kakapo<pir_nqp-rx><t/Pmc/common-methods.pir> := <t/Pmc/common-methods.nqp>;
-	
+
+	%kakapo<inst_lib> := <
+		library/kakapo_base.pbc
+		library/kakapo_full.pbc
+		library/krt0.pbc
+	>;
+
 	register_step_before('build', Setup::Step::copy_templates);
 	register_step_before('clean', Setup::Step::clean_templates);
-	
+
 	#install_build_libs();
 	install_substep('build', Setup::Step::build_libs, :before('_build_pbc_pir'));
 	install_substep('build', Setup::Step::strip_annotations, :before('_build_pbc_pir'));
 	register_step_before('clean', Setup::Step::clean_libs);
-	
+
 	register_step('release', Setup::Step::make_release);
-	
+
 	pir::shift(@argv);
 	setup_(@argv, %kakapo);
 }
 
 sub change_ext($file, :$from!, :$to!) {
 	my $len := pir::length__IS($file) - pir::length__IS($from);
-	
+
 	unless pir::substr__SSI($file, $len) eq $from {
 		pir::die("No matching extension '$from' on file: $file");
 	}
-	
+
 	my $base := pir::substr__SSI($file, 0, $len);
-	$base ~ $to;	
+	$base ~ $to;
 }
 
 sub get_args() {
@@ -195,7 +201,7 @@ sub install_substep($step, &func, :$before, :$after) {
 	my $target := $before // $after;
 	my @insert;
 	@insert.push(&func);
-	
+
 	our %step;
 	my $index := ?$after;
 	for %step{$step} {
@@ -203,19 +209,19 @@ sub install_substep($step, &func, :$before, :$after) {
 			pir::splice__vppii(%step{$step}, @insert, $index, 0);
 			return 0;
 		}
-		
+
 		$index++;
 	}
-	
+
 	pir::die("Unable to insert substep &func into $step - could not find $target");
 }
 
 
-# distutils functions are not in a namespace, so Step:: methods can't address them 
+# distutils functions are not in a namespace, so Step:: methods can't address them
 # directly.
 
 sub needs_update($src, $dst, :$verbose) {
-	
+
 	! file_exists($dst) ||newer(~$src, $dst, :verbose($verbose));
 }
 
@@ -234,14 +240,14 @@ sub build_libs(*%config) {
 	my @inputs;
 	my $needs_update;
 	my $command;
-	
+
 	for %config<build_libs> {
 		$output_file := ~ $_;
 		@inputs := %config<build_libs>{$output_file};
 		$needs_update := 0;
-		
+
 		unless newer(~$output_file, @inputs) {
-			$command := 'cat ' 
+			$command := 'cat '
 				~ pir::join(' ', @inputs)
 				~ ' > '
 				~ $output_file;
@@ -257,13 +263,13 @@ sub clean_libs(*%config) {
 sub clean_templates(*%config) {
 	clean_key(%config<copy_templates>);
 }
-	
+
 sub copy_templates(*%config) {
 	my %cfg := %config<copy_templates>;
 	for %cfg {
 		my $src := %cfg{$_};
 		my $dst := ~ $_;
-		
+
 		unless newer(~$dst, ~$src) {
 			cp($src, $dst, :verbose(1));
 		}
@@ -275,36 +281,36 @@ sub make_release(*%config) {
 	unless $release_id {
 		pir::die("Cannot release: <release_id> config not set");
 	}
-	
+
 	my @args;
 	@args.push( $release_id );
-	
+
 	my $release_dir := pir::sprintf__SSP(%config<release_dir_format>, @args);
 
 	if file_exists($release_dir) {
 		pir::die("Cannot release: '$release_dir' already exists.");
 	}
-	
+
 	my $vdd := %config<vdd_file>;
-	
+
 	unless $vdd && file_exists($vdd) {
 		pir::die("Cannot release: no Version Description Document provided. Set <vdd_file> config.");
 	}
-	
+
 	my $fh := pir::open__PSS($vdd, 'r');
 	my $leader := $fh.readline;
 	$fh.close;
-	
+
 	if pir::index__ISS($leader, $release_id) < 0 {
 		pir::die("Cannot release: VDD file '$vdd' does not contain '$release_id' in line 1");
 	}
-	
-	my %cfg := %config<release_files>; 
+
+	my %cfg := %config<release_files>;
 	my $installed_vdd := 0;
-	
+
 	for %cfg {
 		install(%cfg{~$_}, $release_dir ~ '/' ~$_, :verbose(1));
-		
+
 		if %cfg{~$_} eq $vdd {
 			$installed_vdd++;
 		}
@@ -313,7 +319,7 @@ sub make_release(*%config) {
 	unless $installed_vdd {
 		install($vdd, $release_dir ~ '/VERSION', :verbose(1));
 	}
-	
+
 	unlink($vdd, :verbose(1));
 }
 
@@ -330,7 +336,7 @@ sub strip_annotations(*%config) {
 				$fh := pir::open__PSS(~$_, 'w');
 				$fh.puts($body);
 				$fh.close;
-			}				
+			}
 		}
 	}
 }
