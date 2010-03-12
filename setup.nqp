@@ -47,11 +47,7 @@ sub MAIN(@argv) {
 			t
 		>) ),
 
-<<<<<<< HEAD
 		:release_id(			'release-9' ),
-=======
-		:release_id(			'release-8' ),
->>>>>>> e350825d5f1e011f292f79332397ba097f7bd882
 		:release_dir_format(	'released/%s'),
 		:vdd_file(			'vdd.txt' ),
 	);
@@ -106,7 +102,6 @@ sub MAIN(@argv) {
 
 		src/ComponentMarshaller.pir
 		src/DependencyQueue.pir
-		src/FileSystem.pir
 		src/Library.pir
 
 		src/Matchers/Boolean.pir
@@ -125,10 +120,6 @@ sub MAIN(@argv) {
 		src/Cuculinae/SigMatcher.pir
 		src/Cuculinae/Verifier.pir
 
-<<<<<<< HEAD
-		src/Path.pir
-=======
->>>>>>> e350825d5f1e011f292f79332397ba097f7bd882
 		src/Program.pir
 
 		src/UnitTest/Assertions.pir
@@ -168,19 +159,11 @@ sub MAIN(@argv) {
 	# This test file needs compiling so the others can load it.
 	%kakapo<pir_nqp-rx><t/Pmc/common-methods.pir> := <t/Pmc/common-methods.nqp>;
 
-<<<<<<< HEAD
 	%kakapo<inst_lib> := <
 		library/kakapo_base.pbc
 		library/kakapo_full.pbc
 		library/krt0.pbc
 	>;
-=======
-        %kakapo<inst_lib> := <
-            library/kakapo_base.pbc
-            library/kakapo_full.pbc
-            library/krt0.pbc
-        >;
->>>>>>> e350825d5f1e011f292f79332397ba097f7bd882
 
 	register_step_before('build', Setup::Step::copy_templates);
 	register_step_before('clean', Setup::Step::clean_templates);
