@@ -1,19 +1,22 @@
 # Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module UnitTest::Loader;
-INIT {
-	use(	'P6metaclass' );
-	
-	has(	'%!seen_methods' );
+class UnitTest::Loader;
+
+has	$!class;
+has	%!seen_methods;
+has	$!test_prefix;
+
+sub compare_methods($a, $b) {
+	pir::cmp_str__ISS(~ $a, ~ $b);
 }
 
-method configure_suite($class, @tests, :$suite) {
+method configure_suite(@tests, :$suite) {
 	unless $suite.defined {
 		$suite := self.default_suite;
 	}
 
-	my $proto := pir::getprop__PSP('metaclass', $class).WHAT();
+	my $proto := pir::getprop__PSP('metaclass', $!class).WHAT();
 
 	for @tests -> $test {
 		$suite.add_test: $proto.new(:name($test));
@@ -26,8 +29,8 @@ method default_suite() {
 	return UnitTest::Suite.new();
 }
 
-method get_test_methods($class) {
-	my @mro := $class.inspect('all_parents');
+method get_test_methods() {
+	my @mro := $!class.inspect('all_parents');
 	my @test_methods := Array::new();
 	
 	for @mro {
@@ -37,14 +40,20 @@ method get_test_methods($class) {
 			my $name := ~ $_;
 			
 			if self.is_test_method($name) 
-				&& ! self.seen_methods.contains($name) {
-				self.seen_methods{$name} := 1;
+				&& ! %!seen_methods.contains($name) {
+				%!seen_methods{$name} := 1;
 				@test_methods.push($name);
 			}
 		}
 	}
 
-	return @test_methods;
+	self.order_tests(@test_methods);
+}
+
+method _init_obj(*@pos, *%named) {
+	$!test_prefix := 'test';
+	
+	self._init_args(|@pos, |%named);
 }
 
 # Returns true for "test_foo" and "testFoo" names
@@ -69,8 +78,14 @@ method is_test_method($name) {
 }
 
 method load_tests_from_testcase($testcase, :$sort, :$suite) {
-	my $class := P6metaclass.get_parrotclass($testcase);	
-	my @tests := self.get_test_methods($class);
+	$!class := P6metaclass.get_parrotclass($testcase);	
+	my @tests := self.get_test_methods;
 	
-	self.configure_suite($class, @tests, :suite($suite));
+	self.configure_suite(@tests, :suite($suite));
 }
+
+method order_tests(@tests) {
+	@tests.unsort;
+}
+
+method test_prefix($value?)	{ $value ?? ($!test_prefix := $value) !! $!test_prefix; }

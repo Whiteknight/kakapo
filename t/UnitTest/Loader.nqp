@@ -23,21 +23,16 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 	
+method main() {
+	self.set_up;
+	self.test_ordering;
+}
 
 method set_up() {
 	$!loader := UnitTest::Loader.new;
 }
 
-method test_load_tests_from_testcase() {
-	my $suite := $!loader.load_tests_from_testcase(
-		Test::UnitTest::WhichMethods
-	);
-	
-	assert_equal( $suite.num_tests, 3,
-		'Expected 3 tests');
-}
-
-class Test::UnitTest::WhichMethods
+class Dummy::UnitTest::Testcase
 	is UnitTest::Testcase {
 	method not_at_all()	{ Exception.new("not a valid test").throw; }
 	method not_a_test()	{ Exception.new("not a valid test").throw; }
@@ -47,4 +42,35 @@ class Test::UnitTest::WhichMethods
 	method test_all()		{ 1; }
 	method testAll()		{ 1; }
 	method test1()		{ 1; }
+}
+
+method test_load_tests_from_testcase() {
+	my $suite := $!loader.load_tests_from_testcase(
+		Dummy::UnitTest::Testcase
+	);
+	
+	assert_equal( $suite.num_tests, 3,
+		'Expected 3 tests');
+}
+
+
+sub str_cmp($a, $b) {
+	~$a le ~$b ?? -1 !! 1;
+}
+
+class Dummy::Loader is UnitTest::Loader {
+	method order_tests(@tests) {
+		@tests.sort( UnitTest::Loader::compare_methods );
+	}
+}
+
+method test_ordering() {
+	$!loader := Dummy::Loader.new;
+
+	my $suite := $!loader.load_tests_from_testcase(
+		Dummy::UnitTest::Testcase
+	);
+
+	assert_true( Opcode::getattribute($suite, '@!members').is_sorted( Test::UnitTest::Loader::str_cmp ),
+		'Default loader should order methods' );
 }
