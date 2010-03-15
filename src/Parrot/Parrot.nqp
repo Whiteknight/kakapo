@@ -1,8 +1,8 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-class Parrot;
 # Provides access to low-level functions of the Parrot VM.
+module Parrot;
 
 sub _pre_initload() {
 	export(<
@@ -30,7 +30,7 @@ sub _pre_initload() {
 # NB: index defaults to 1, and create_key adds 1, for '2', because the default is 1 higher than
 # the sub that *called* this sub. (foo() calls bar() calls caller(), caller returns 'foo')
 sub caller($index? = 1) {
-	my $key := Key::create_key('sub', $index + 1);
+	my $key := Key::create_key('sub', 1 + $index);
 	my &sub := pir::getinterp__P(){$key};
 }
 

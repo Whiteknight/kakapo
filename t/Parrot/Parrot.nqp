@@ -1,4 +1,4 @@
-#! parrot-nqp
+#! /usr/bin/env parrot-nqp
 # Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
@@ -14,7 +14,8 @@ class Test::Program
 	is UnitTest::Testcase ;
 
 INIT {
-	use(	'UnitTest::Testcase' );	
+	use(	UnitTest::Testcase );	
+	use(	UnitTest::Assertions );	
 }
 
 MAIN();
@@ -25,29 +26,37 @@ sub MAIN() {
 }
 
 class Test::Caller {
-	method a($d) { self.b($d); }
-	method b($d) { self.c($d); }
-	method c($depth) {
-		Parrot::caller($depth);
-	}
+
+	method arg1($arg = 1) { self.with_arg($arg); }
+	method arg2() { self.arg1(2); }
+	
+	method no_arg() { Parrot::caller(); }
+	
+	method with_arg($depth) { Parrot::caller($depth); }
 }
 
 method test_caller() {
 	my $tc := Test::Caller.new;
 	
-	fail_unless( ~$tc.a(0) eq 'c', 'caller(0) should return c');
-	fail_unless( ~$tc.a(1) eq 'b', 'caller(1) should return b');
-	fail_unless( ~$tc.a(2) eq 'a', 'caller(2) should return a');
-	fail_unless( ~$tc.a(3) eq 'test_caller', 'caller(3) should return this method');
+	assert_same( Test::Caller::with_arg, $tc.with_arg(0),
+		'Calling caller(0) should return present sub' );
+
+	assert_same( Test::Caller::arg1, $tc.arg1(),
+		'Calling caller(1) should return immediate caller' );
+
+	assert_same( Test::Caller::arg2, $tc.arg2(),
+		'Calling caller(2) should return callers caller.' );
+		
+	assert_same( $tc.no_arg, $tc.with_arg(1),
+		'Calling caller() should return same as calling caller(1)' );
 }
 
 class Test::New {
-	method x() { return 10; }
 }
 
 method test_new() {
 	my $test := Parrot::new('Test::New');
-	
-	fail_if( pir::isnull($test), 'Parrot::new should return new object' );
-	fail_unless( $test.x == 10, 'New object should be of correct pmc type' );
+
+	assert_not_null( $test,  'Parrot::new should return new object' );
+	assert_instance_of( $test, Test::New, 'New object should be of correct pmc type' );
 }

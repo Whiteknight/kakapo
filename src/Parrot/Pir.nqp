@@ -14,64 +14,43 @@ sub compile($string) {
 	$compiler($string);
 }
 
-sub compile_sub(:@body, :$name, :$namespace, :$method?, :@params?, :$vtable?) {
-	if ! @params.defined { @params := Array::new(); }
-	elsif ! does(@params, 'array') { @params := Array::new(@params); }
+sub compile_sub(:@body = "die 'I-i-i ain\'t got no- bo-dy!'", :$method, :@multi, :$name, :$namespace, :@params, :$vtable?) {
+	unless does(@params, 'array') { @params := Array::new(@params); }
 	unless does(@body, 'array') { @body := Array::new(@body); }
+	unless ! @multi.defined || does(@multi, 'array') { @multi := Array::new(@multi); }
 	
-	my @sub_decl := Array::new(".sub '" ~ $name ~ "'");
-	
-	if $method {
-		@sub_decl.push(":method");
-	}
-	
-	if $vtable {
-		if $vtable.isa('String') {
-			if $vtable[0] ne "'" && $vtable[0] ne '"' {
-				$vtable := "'" ~ $vtable ~ "'";
-			}
-			
-			@sub_decl.push(":vtable(" ~ $vtable ~ ")");
-		}
-		else {
-			@sub_decl.push(":vtable");
-		}
-	}
-	
-	@sub_decl := Array::new(@sub_decl.join(' '));
-	@sub_decl.unshift(".namespace " ~ pir_namespace($namespace));
-	
-	for @params {
-		@sub_decl.push("\t" ~ $_);
-	}
+	$method := $method ?? ':method' !! '';
+	my $multi := @multi ?? ":multi({ @multi.join(', ') })" !! '';
+	$vtable := $vtable 
+		?? $vtable.isa('String') ?? ":vtable('$vtable')" !! ':vtable'
+		!! '';
+		
+	my @sub_decl := Array::new(
+		".namespace { pir_namespace($namespace); }",
+		".sub '$name' $method $multi $vtable",
+		|(@params.map: -> $param { "\t$param" }),
+		"",
+		|@body,
+		".end\n",
+	);
 
-	if @params {
-		@sub_decl.push('');
-	}
-	
-	@sub_decl.append(@body);
-	@sub_decl.push(".end\n");
-	
 	my $sub := @sub_decl.join("\n");
 	compile($sub);
 }
 
 sub pir_namespace($nsp) {
-	unless Opcode::isa($nsp, 'String') {
-		$nsp := Parrot::namespace_name($nsp);
+	if pir::isa($nsp, 'P6protoobject') {
+		$nsp := pir::typeof__SP($nsp);
 	}
 	
-	my @parts := $nsp.split('::');
-	
-	my $result := "[";
-	
-	if @parts {
-		$result := $result 
-			~ " '" 
-			~ @parts.join("' ; '")
-			~ "'";	# no space!
+	if pir::isa($nsp, 'String') {
+		$nsp ?? "[ '{ $nsp.split('::').join(q<'; '>) }' ]" !! '[ ]'
 	}
-	
-	$result := $result ~ " ]";	# space: [ ] or [ 'foo' ]
-	return $result;
+	elsif pir::isa($nsp, 'NameSpace') {
+		$nsp.string_name(:format('pir'));
+	}
+	else {
+		die("Don't know how to format namespace name of ",
+			pir::typeof__SP($nsp), " $nsp");
+	}
 }

@@ -53,5 +53,5 @@ sub is_loaded() {
 }
 
 sub ident() {
-	our $_Ident := "Git blob $Id$";
+	our $_Ident := q{Git blob $Id$};
 }

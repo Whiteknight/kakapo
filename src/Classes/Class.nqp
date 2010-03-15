@@ -107,60 +107,6 @@ sub compile_default_multi($class_name, $multi_name, :$is_method) {
 	);
 }
 
-# =sub compile_multi
-
-# Creates a multi-sub trampoline that invokes a given NQP function. When invoked 
-# as `compile_multi('My::Class', 'foo', 'Parameter::Class', 'handler_method')` the
-# generated trampoline looks like:
-
-# .namespace [ 'My' ; 'Class' ]
-# .sub 'foo' :method :multi(_, [ 'Parameter' ; 'Class' ])
-# .param pmc positionals :slurpy
-# .param pmc named :named :slurpy
-# .tailcall 'handler_method'(self, positionals :flat, named :named :flat)
-# .end
-
-# But multimethod names block inherited multimethods, so a "default" multi
-# has to be created that forwards calls to any parent class multimethods. Per
-# pmichaud, a multi() or multi(_) (on self) will do the trick. So first check if 
-# the default exists already, and if not, then check if the parent(s*) name
-# resolves. 
-
-# =cut
-
-sub compile_multi($class_name, $multi_name, *@param_types,
-	:$target, :@actions?, :$is_method?) 
-{
-	my $kind := $is_method ?? 'multimethod' !! 'multisub';
-
-	NOTE("Compiling ", $kind, " trampoline [", 
-		$class_name, "::", $multi_name, 
-		"(", @param_types.join(', '), ", ...) -> ",
-		$target);
-
-	if $is_method {
-		@param_types.unshift('_');
-	}
-	
-	my $class_info := _class_info($class_name);
-	my $signature  := signature(@param_types);
-	
-	if $class_info<multisubs>{$multi_name}{$signature} {
-		NOTE("This trampoline has already been compiled.");
-		return 0;
-	}
-	
-	$class_info<multisubs>{$multi_name}{$signature} := 1;
-	
-	trampoline($class_name, $multi_name, 
-		:actions(@actions),
-		:adverbs(":multi(" ~ $signature ~ ")"
-			~ ($is_method ?? ' :method' !! '')),
-		:is_method($is_method),
-		:target($target),
-	);
-}
-
 sub find_class_named($class_name) {
 	my $class := Opcode::get_class($class_name);
 	
@@ -367,15 +313,3 @@ sub trampoline($namespace, $name, :$target,
 	Pir::compile($trampoline);
 	NOTE("Trampoline compiled okay.");
 }	
-
-### Moved to P6object.nqp
-
-sub get_meta() {
-	our $meta;
-	
-	unless Opcode::defined($meta) {
-		$meta := Opcode::new('P6metaclass');
-	}
-
-	return $meta;
-}
