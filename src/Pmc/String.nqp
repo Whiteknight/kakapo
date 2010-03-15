@@ -309,7 +309,7 @@ sub ltrim_indent($str, $indent) {
 		}
 	}
 	
-	return substr($str, $i);
+	substr($str, $i);
 }
 
 method repeat($times) {
@@ -322,52 +322,37 @@ method repeat($times) {
 		%r = box $S1
 	};
 	
-	return $result;
+	$result;
 }
 
 method split($delim? = '') {
 	pir::split__PSS($delim, self);
 }
 
-method substr($start, *@rest) {
-	my $len	:= length(self);
+method substr($start, $limit?) {
+	my $length	:= self.length;
 	
-	if $start < 0 {
-		$start := $start + $len;
+	die( "Invalid start offset ($start) for .substr" )
+		if $start > $length || $start + $length < 0;
+		
+	$start := $start + $length
+		if $start < 0;
+	$length := $length - $start;
+
+	if ! $limit.defined {
+		$limit := $length;
 	}
-	
-	if $start > $len {
-		$start	:= $len;
+	elsif $limit > $length {
+		$limit := $length;
+	}
+	elsif $limit < 0 {
+		$limit := $limit + $length;
 	}
 
-	$len := $len - $start;
-	
-	my $limit := $len;
-	
-	if +@rest {
-		$limit := @rest.shift();
+	die( "Invalid length limit ($limit) for .substr" )
+		if $limit > $length || $limit < 0;
 		
-		if $limit < 0 {
-			$limit := $limit + $len;
-		}
-		
-		if $limit > $len {
-			$limit := $len;
-		}
-	}
-
-	my $result := Q:PIR {
-		$P0 = find_lex 'self'
-		$S0 = $P0
-		$P0 = find_lex '$start'
-		$I0 = $P0
-		$P0 = find_lex '$limit'
-		$I1 = $P0
-		$S1 = substr $S0, $I0, $I1
-		%r = box $S1
-	};
-	
-	return $result;
+	pir::substr__SSII(self, $start, $limit);
 }
 
 method trim() {
