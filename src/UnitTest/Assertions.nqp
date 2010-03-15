@@ -1,4 +1,4 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or
+# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module UnitTest::Assertions;
@@ -15,8 +15,8 @@ sub _initload() {
 		assert_block_false
 		assert_can
 		assert_can_not
-                assert_defined
-                assert_not_defined
+		assert_defined
+		assert_not_defined
 		assert_equal
 		assert_not_equal
 		assert_instance_of
@@ -122,13 +122,14 @@ sub assert_not_same($o1, $o2, $message) {
 sub assert_throws($e_class, $message, &block) {
 	my $ok := 0;
 	my $exception;
+	
 	try {
 		&block();
 
 		CATCH { $exception := $!; }
 	};
 
-	unless $exception.defined || $exception.type != $e_class.type {
+	unless $exception.defined && $exception.type == $e_class.type {
 		fail($message);
 	}
 }

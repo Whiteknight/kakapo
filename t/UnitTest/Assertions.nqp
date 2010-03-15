@@ -230,22 +230,10 @@ method test_assert_throws_wrong_type() {
 
 method test_assert_throws_doesnt_throw() {
 	verify_that( 'assert_throws requires an exception be thrown' );
-	
-	my $pass := 0;
-	
-	try {
-		assert_throws(Exception::TestAssertThrows, 'Throws exception', { 1 });
 
-		CATCH {
-			if $!.type == Exception::UnitTestFailure.type {
-				$pass := 1;
-			}
-		}
-	};
-	
-	unless $pass {
-		Exception::UnitTestFailure.new(:message("assert_throws didn't throw an error, but should"));
-	}
+	want_fail( 'assert_throws should fail if nothing thrown', {
+		assert_throws( Exception::TestAssertThrows, 'Throws', { 1 } );
+	});
 }
 
 method test_assert_throws_nothing() {
