@@ -265,9 +265,11 @@ method is_sorted(:&cmp) {
 		if &cmp(self[$index], self[$index + 1]) > 0 {
 			return 0;
 		}
+		
+		$index++;
 	}
 	
-	return 1;
+	1;
 }
 
 method keys() {
