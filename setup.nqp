@@ -42,6 +42,7 @@ sub MAIN(@argv) {
 		:project_uri(		'git://gitorious.org/kakapo/kakapo.git' ),
 
 		:harness_files(		pir::join(' ', <
+			!t/test-data
 			!t/Pmc
 			!t/Structure
 			t
@@ -76,7 +77,6 @@ sub MAIN(@argv) {
 		src/Pmc/common-methods.pir
 		src/Pmc/Exception.pir
 			src/Exceptions.pir
-		src/Pmc/File.pir
 		src/Pmc/Key.pir
 		src/Pmc/Hash.pir
 		src/Pmc/Namespace.pir
@@ -103,7 +103,16 @@ sub MAIN(@argv) {
 		src/Classes/P6metaclass.pir
 
 		src/ComponentMarshaller.pir
+
+		src/Cuculinae/Antiphon.pir
+		src/Cuculinae/Cuculus.pir
+		src/Cuculinae/Cuckoo.pir
+		src/Cuculinae/Ovum.pir
+		src/Cuculinae/SigMatcher.pir
+		src/Cuculinae/Verifier.pir
+
 		src/DependencyQueue.pir
+		src/FileSystem.pir
 		src/Library.pir
 
 		src/Matchers/Boolean.pir
@@ -115,13 +124,7 @@ sub MAIN(@argv) {
 		src/Matchers/Null.pir
 		src/Matchers/PassFail.pir
 
-		src/Cuculinae/Antiphon.pir
-		src/Cuculinae/Cuculus.pir
-		src/Cuculinae/Cuckoo.pir
-		src/Cuculinae/Ovum.pir
-		src/Cuculinae/SigMatcher.pir
-		src/Cuculinae/Verifier.pir
-
+		src/Path.pir		
 		src/Program.pir
 
 		src/UnitTest/Assertions.pir
