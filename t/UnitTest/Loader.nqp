@@ -23,10 +23,10 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 	
-method main() {
-	self.set_up;
-	self.test_ordering;
-}
+#~ method main() {
+	#~ self.set_up;
+	#~ self.test_ordering;
+#~ }
 
 method set_up() {
 	$!loader := UnitTest::Loader.new;

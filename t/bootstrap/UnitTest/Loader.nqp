@@ -1,6 +1,4 @@
-#! parrot-nqp
-
-MAIN();
+#! /usr/bin/env parrot-nqp
 
 INIT {
 	# Load the Test::More library
@@ -18,25 +16,19 @@ INIT {
 	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
 }
 
+MAIN();
+
 sub MAIN() {	
-	plan(2);
+	plan(1);
 
 	our $Class_name := 'UnitTest::Loader';
 	
-	test_attrs();
 	test_load_from_testcase();
 }
 
 sub make_one() {
 	my $proto := Parrot::get_hll_global(our $Class_name);
 	$proto.new();
-}
-
-sub test_attrs() {
-	my $obj := make_one();
-	
-	$obj.seen_methods<foo> := 64;
-	is($obj.seen_methods<foo>, 64, 'Attrs: seen_methods okay');
 }
 
 class Dummy is UnitTest::Testcase {

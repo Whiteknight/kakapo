@@ -21,13 +21,15 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
+#~ method main() {
+	#~ self.test_compile;
+#~ }
+
 method test_compile() {
 	verify_that( 'compile($string) works' );
 
-	want_fail( 'test_compiled_string should NOT be defined already',
-	{
-		Test::Pir::CompiledString::test_compiled_string();
-	});
+	assert_throws( Exception::NullRegAccess, 'test_compiled_string should NOT be defined already',
+		{ Test::Pir::CompiledString::test_compiled_string(); });
 
 	my $str := q{
 .namespace ['Test';'Pir';'CompiledString']
@@ -59,9 +61,8 @@ class Dummy::CompileSub1 {
 method test_compile_sub() {
 	my $dummy := Dummy::CompileSub1.new;
 
-	want_fail( 'No sub compiled yet', {
-		$dummy.test;
-	});
+	assert_throws( Exception::GlobalNotFound, 'compiled_sub should NOT be defined already',
+		{ $dummy.test(); });
 
 	Pir::compile_sub(
 		:body( ".return (1)" ),
@@ -82,9 +83,8 @@ class Dummy::CompileSub2 {
 method test_compile_method() {
 	my $dummy := Dummy::CompileSub2.new;
 
-	want_fail( 'No sub compiled yet', {
-		$dummy.test;
-	});
+	assert_throws( Exception::MethodNotFound, 'compiled method should NOT be defined already',
+		{ $dummy.test(); });
 
 	Pir::compile_sub(
 		:body( ".return (2)" ),

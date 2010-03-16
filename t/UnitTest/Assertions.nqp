@@ -228,6 +228,12 @@ method test_assert_throws_wrong_type() {
 	}
 }
 
+method test_assert_throws_exception() {
+	todo( "This doesn't work. It probably should when subclassing Exceptions works." );
+	assert_throws( Exception, 'Should throw Exception',
+		{ Exception::UnitTestFailure.new(:message("Hello")).throw; });
+}
+
 method test_assert_throws_doesnt_throw() {
 	verify_that( 'assert_throws requires an exception be thrown' );
 

@@ -22,10 +22,12 @@ INIT {
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
 method test_compile_file() {
-	my $filename := 't/Parrot/test-nqp-compile-file.nqp';
+	my $filename := 't/test-data/test-nqp-compile-file.nqp';
 	
 	my &eval := Nqp::compile_file($filename);
 
 	assert_equal( 'nqp-rx compiled okay', &eval(),
 		'Compile-file should return Eval that works');
 }
+
+method main() { self.test_compile_file; }

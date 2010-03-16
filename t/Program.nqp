@@ -19,13 +19,12 @@ INIT {
 	use(	'UnitTest::Assertions' );	
 }
 
-MAIN();
+# Run the MAIN for this class.
+Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-sub MAIN() {
-	
-	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
-	$proto.suite.run;
-#	$proto.test_from_parrot;
+method run_test() {
+	say("Running test: $!name");
+	super();
 }
 
 class Test::Exit is Program {

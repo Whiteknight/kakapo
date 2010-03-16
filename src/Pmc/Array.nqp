@@ -67,9 +67,9 @@ sub _pre_initload() {
 	for <cat roundrobin zip> {
 		Global::inject_root_symbol($from_nsp{$_});
 	}
-
+	
 	# These have corresponding methods.
-	for <grep map reduce> {
+	for <grep join map reduce> {
 		Global::inject_root_symbol(
 			Parrot::get_hll_global('Array::' ~ $_ ~ '_args'),
 			:as($_),
@@ -270,6 +270,10 @@ method is_sorted(:&cmp) {
 	}
 	
 	1;
+}
+
+sub join_args( $delim, *@args ) {
+	@args.join($delim);
 }
 
 method keys() {

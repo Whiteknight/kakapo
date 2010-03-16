@@ -107,6 +107,7 @@ sub MAIN(@argv) {
 		src/Cuculinae/Antiphon.pir
 		src/Cuculinae/Cuculus.pir
 		src/Cuculinae/Cuckoo.pir
+		src/Cuculinae/MockFS.pir
 		src/Cuculinae/Ovum.pir
 		src/Cuculinae/SigMatcher.pir
 		src/Cuculinae/Verifier.pir
