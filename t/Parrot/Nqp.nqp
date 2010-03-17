@@ -24,6 +24,8 @@ Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 method test_compile_file() {
 	my $filename := 't/test-data/test-nqp-compile-file.nqp';
 	
+	todo( "Wants File, which is gone. Wait for FileSystem");
+	
 	my &eval := Nqp::compile_file($filename);
 
 	assert_equal( 'nqp-rx compiled okay', &eval(),

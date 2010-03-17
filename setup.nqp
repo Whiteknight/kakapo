@@ -77,6 +77,7 @@ sub MAIN(@argv) {
 		src/Pmc/common-methods.pir
 		src/Pmc/Exception.pir
 			src/Exceptions.pir
+		src/Pmc/File.pir
 		src/Pmc/Key.pir
 		src/Pmc/Hash.pir
 		src/Pmc/Namespace.pir
