@@ -1,4 +1,4 @@
-# Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 class UnitTest::Loader;
@@ -11,7 +11,7 @@ sub compare_methods($a, $b) {
 	pir::cmp_str__ISS(~ $a, ~ $b);
 }
 
-method configure_suite(@tests, :$suite) {
+method configure_suite(@tests, :$suite, *%named) {
 	unless $suite.defined {
 		$suite := self.default_suite;
 	}
@@ -21,7 +21,7 @@ method configure_suite(@tests, :$suite) {
 	for @tests -> $test {
 		$suite.add_test: $proto.new(:name($test));
 	}
-	
+
 	$suite;
 }
 
@@ -32,14 +32,14 @@ method default_suite() {
 method get_test_methods() {
 	my @mro := $!class.inspect('all_parents');
 	my @test_methods := Array::new();
-	
+
 	for @mro {
 		my %methods := $_.inspect('methods');
-		
+
 		for %methods {
 			my $name := ~ $_;
-			
-			if self.is_test_method($name) 
+
+			if self.is_test_method($name)
 				&& ! %!seen_methods.contains($name) {
 				%!seen_methods{$name} := 1;
 				@test_methods.push($name);
@@ -52,7 +52,7 @@ method get_test_methods() {
 
 method _init_obj(*@pos, *%named) {
 	$!test_prefix := 'test';
-	
+
 	self._init_args(|@pos, |%named);
 }
 
@@ -60,7 +60,7 @@ method _init_obj(*@pos, *%named) {
 method is_test_method($name) {
 	if $name.length > 4
 		&& $name.substr(0, 4) eq 'test' {
-		
+
 		if $name[4] eq '_' {
 			return 1;
 		}
@@ -68,7 +68,7 @@ method is_test_method($name) {
 		if String::is_cclass('UPPERCASE', $name, :offset(4)) {
 			return 1;
 		}
-		
+
 		if String::is_cclass('NUMERIC', $name, :offset(4)) {
 			return 1;
 		}
@@ -77,11 +77,11 @@ method is_test_method($name) {
 	return 0;
 }
 
-method load_tests_from_testcase($testcase, :$sort, :$suite) {
-	$!class := P6metaclass.get_parrotclass($testcase);	
+method load_tests_from_testcase($class, *%named) {
+	$!class := P6metaclass.get_parrotclass($class);
 	my @tests := self.get_test_methods;
-	
-	self.configure_suite(@tests, :suite($suite));
+
+	self.configure_suite(@tests, |%named);
 }
 
 method order_tests(@tests) {
