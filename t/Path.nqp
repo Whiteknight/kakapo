@@ -26,7 +26,7 @@ method test_new() {
 
 	assert_not_null( $sut,
 		'.new should return a valid object' );
-	assert_instance_of( $sut, Path,
+	assert_isa( $sut, Path,
 		'.new should return correct type' );
 }
 
@@ -39,8 +39,60 @@ method test_parse_rootdir() {
 		'/ should re-stringify as /' );
 }
 
+method test_parse_strings_rooted() {
+	my $sut := Path.new('/', 'x');
 
-#~ method main() {
-	#~ self.set_up;
-	#~ self.;
-#~ }
+	assert_equal('/x', ~$sut,
+		'/, x should stringify as /x' );
+	assert_true( $sut.is_absolute,
+		'/x should be absolute' );
+}
+
+method test_parse_strings_unrooted() {
+	my $sut := Path.new( 'a/b', 'c/d');
+	
+	assert_equal( 'a/b/c/d', ~$sut,
+		'a/b, c/d should stringify to a/b/c/d');
+
+	assert_true( $sut.is_relative,
+		'a/b/c/d should be relative' );
+}
+
+method test_parse_static_path() {
+	my $old := Path.new( '/x' );
+	my $sut := Path.new( $old, 'y');
+
+	assert_equal( '/x/y', ~$sut,
+		'Path:/x + y should = /x/y' );
+	assert_true( $sut.is_absolute,
+		'Should inherit absolute from old path' );
+}
+
+method test_parse_static_path_late() {
+	my $old := Path.new( 'x' );
+	my $sut := Path.new( 'w', $old, 'y' );
+	
+	assert_equal( 'w/x/y', ~$sut,
+		'w + path:x + y should = w/x/y' );
+	assert_true( $sut.is_relative,
+		'relative string + path should be relative' );
+}
+
+method test_parse_dynamic_first() {
+	my $old := Path.new( 'x' );
+	my $sut := Path.new( $old, 'y', 'z', :dynamic);
+
+	assert_equal( 'x/y/z', ~$sut,
+		'dynamic path:x + y + z should = x/y/z' );
+	assert_true( $sut.is_relative,
+		'relative first path should mean relative new path' );
+	
+	$old.append: 'a';
+	assert_equal( 'x/a/y/z', ~$sut,
+		'dynamic path update should reflect in this path' );
+		
+	$old.absolute;
+	assert_equal( '/x/a/y/z', ~$sut,
+		'dynamic path update to absolute should reflect in this path' );
+		
+}
