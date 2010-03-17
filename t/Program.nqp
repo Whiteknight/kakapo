@@ -7,7 +7,6 @@ INIT {
 	pir::load_language('parrot');
 	my $env := pir::new__PS('Env');
 	my $root_dir := $env<HARNESS_ROOT_DIR> || '.';
-	say("Loading $root_dir/library/kakapo_full.pbc");
 	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
 }
 
@@ -22,9 +21,9 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method run_test() {
-	say("Running test: $!name");
-	super();
+method set_up() {
+	# Set global-variable state to post-INIT{} condition.
+	pir::set_hll_global__vPSP( Key.new( <Program> ), '$_Instance', my $undef);
 }
 
 class Test::Exit is Program {
@@ -132,14 +131,6 @@ method test_global_at_exit() {
 
 method test_global_at_exit_fails() {
 	my $pgm := Test::Global::AtFuncs.new;
-		
-	try {
-		Program::instance(my $undef);
-		CATCH {
-			Program::instance().do_exit;
-			Program::instance($undef);
-		}
-	};
 
 	assert_throws(Control::Error, 'at_exit should throw exception if no program registered',
 	{
@@ -160,14 +151,6 @@ method test_global_at_start() {
 method test_global_at_start_fails() {
 	my $pgm := Test::Global::AtFuncs.new;
 	
-	try {
-		Program::instance(my $undef);
-		CATCH {
-			Program::instance().do_exit;
-			Program::instance($undef);
-		}
-	};
-
 	assert_throws(Control::Error, 'at_start should throw exception if no program registered',
 	{
 		at_start(Test::Global::AtFuncs::foo);

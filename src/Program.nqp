@@ -27,16 +27,17 @@ INIT {
 }
 
 sub _initload() {
-	extends( Library );		# FIXME: Refactor queue stuff out of library, and share.
 	has(<	@!argv
-		$!exit_marshaller
-		$!start_marshaller
 		$!executable_name
-		$!exit_value
 		$!program_name
+		$!exit_value
+		
 		$!stderr
 		$!stdin
 		$!stdout
+		
+		$!exit_marshaller
+		$!start_marshaller
 	>);
 	
 	Global::inject_root_symbol( Program::global_at_exit, :as('at_exit') );
