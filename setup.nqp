@@ -48,7 +48,7 @@ sub MAIN(@argv) {
 			t
 		>) ),
 
-		:release_id(			'release-9' ),
+		:release_id(			'release-10' ),
 		:release_dir_format(	'released/%s'),
 		:vdd_file(			'vdd.txt' ),
 	);
