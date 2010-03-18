@@ -1,8 +1,12 @@
-#! parrot-nqp
+#! /usr/bin/env parrot-nqp
+# Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
+module bootstrap::Classes::P6metaclass ;
 
 MAIN();
 
-sub MAIN() {
+INIT {
 	# Load the Test::More library
 	pir::load_language('parrot');
 	pir::compreg__PS('parrot').import('Test::More');
@@ -15,9 +19,10 @@ sub MAIN() {
 		$root_dir := '.';
 	}
 	
-	# -----------
-	
 	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
+}
+
+sub MAIN() {
 	
 	plan(7);
 

@@ -1,23 +1,23 @@
-#! parrot-nqp
+#! /usr/bin/env parrot-nqp
+# Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
+module bootstrap::Pmc::String;
 
 MAIN();
 
-sub MAIN() {
+INIT {
 	# Load the Test::More library
 	pir::load_language('parrot');
 	pir::compreg__PS('parrot').import('Test::More');
 	
 	# Load the Kakapo library
 	my $env := pir::new__PS('Env');
-	my $root_dir := $env<HARNESS_ROOT_DIR>;
-	
-	unless $root_dir {
-		$root_dir := '.';
-	}
-	
-	# -----------
-	
+	my $root_dir := $env<HARNESS_ROOT_DIR> || '.';
 	pir::load_bytecode($root_dir ~ '/library/kakapo_base.pbc');
+}
+
+sub MAIN() {
 	
 	plan(9 + 0);
 

@@ -96,3 +96,5 @@ method test_parse_dynamic_first() {
 		'dynamic path update to absolute should reflect in this path' );
 		
 }
+
+#method main() { self.set_up; self.test_parse_dynamic_first; }

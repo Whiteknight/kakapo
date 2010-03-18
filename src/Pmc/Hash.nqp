@@ -135,29 +135,38 @@ FIXME: This becomes a synonym for .new.
 
 =end
 
-sub merge(%first, *@hashes, :%into = %first, :$use_last?) {
+method merge(*@hashes, :%into = self, :$priority = 'left') {
 	
-	@hashes.unshift(%first);	# Ensure at least one element.
-
-	my %stored := %into;
-	
-	if $use_last {
-		@hashes := Array::reverse(@hashes);
-		%stored := Hash::empty();
+	if ! pir::isa(self, 'P6protoobject') {
+		@hashes.unshift: self;
+	}
+	elsif @hashes.elems == 0 {
+		die("You must provide at least one real hash to .merge()");
 	}
 
-	for @hashes {
-		my $hash := $_;
+	# %stored may alias %into if and ONLY if the values in %into will take
+	# precedent over other values. In that case, if %into has a key then don't
+	# bother merging that key. But if %into's values may be replaced, %stored
+	# has to be separated.
+	my %stored := %into;
+	
+	if $priority eq 'right' {
+		@hashes.reverse;
+		%stored := Hash.new;
+	}
+
+	for @hashes -> $hash {
 		for $hash {
-			unless Hash::exists(%stored, $_) {
-				# Order matters, %stored may alias %into
-				%into{$_} := 
-				%stored{$_} := $hash{$_};
+			my $key := $_.key;
+			
+			unless %stored.contains( $key ) {
+				# BEWARE: %stored =?= %into =?= $hash aliases
+				%into{ $key } := %stored{ $key } := $_.value;
 			}
 		}
 	}
 	
-	return %into;
+	%into;
 }
 
 =begin

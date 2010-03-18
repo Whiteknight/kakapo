@@ -6,6 +6,10 @@
 module Kakapo;
 
 sub depends_on(*@list, :$method) {
+	if @list.elems == 1 && @list[0].does( 'array' ) {
+		@list := @list.shift;
+	}
+	
 	my $namespace := Parrot::caller_namespace();
 	my $name := $namespace.string_name;
 	
@@ -71,4 +75,3 @@ sub library_instance($value?) {
 		?? (our $_library_instance := $value)
 		!! $_library_instance;
 }
-

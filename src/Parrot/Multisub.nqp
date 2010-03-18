@@ -4,6 +4,9 @@
 # Subsystem of Parrot dealing with multisubs.
 module Parrot;
 
+# Creates a set of multisub trampolines, declared with the :multi() signatures explicitly specified by
+# the caller, or inferred from the specially formatted name of the sub. Each trampoline calls an NQP
+# sub or method.
 sub define_multisub($name, @subs?, :$method, :$namespace = caller_namespace(), :@signatures, :$starting_with) {
 	$namespace := get_hll_namespace($namespace)
 		if $namespace.isa('String');

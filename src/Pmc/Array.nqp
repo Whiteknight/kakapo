@@ -257,7 +257,7 @@ method grep(&match) {
 	@matches;
 }
 
-method is_sorted(:&cmp) {
+method is_sorted(:&cmp = Array::cmp_string) {
 	my $index := 0;
 	my $limit := self.elems - 1;
 	

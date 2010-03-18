@@ -30,11 +30,18 @@ method set_up() {
 method test_new() {
 	assert_not_null( $!sut,
 		'.new should return a valid object' );
-	assert_instance_of( Cuculus::MockFS, $!sut,
+
+	assert_isa( $!sut, Cuculus::MockFS, 
 		'.new should return an instance of the right class' );
+
+	assert_not_null( $!sut.volumes<>,
+		'Volumes hash should be initialized' );
+
+	assert_same( $!sut.volumes<>, $!sut.cwd_path[-1],
+		'Cwd path should point to /' );
 }
 
-method test_configure() {
+method test_mkpath() {
 	assert_false( $!sut.exists( '/tmp/xxx' ),
 		'/tmp/xxx should not exist on new mockfs' );
 	
@@ -44,3 +51,43 @@ method test_configure() {
 		'/tmp/xxx should exist after mkpath' );
 }
 
+method test_add_entry() {
+	my $path_str := '/tmp/xxx/foo.txt';
+	
+	$!sut.add_entry($path_str, :contents("Howdy\n"), :type(<file>));
+	
+	assert_true( $!sut.exists( $path_str ),
+		"$path_str should exist after add_entry" );
+}
+
+method test_has_type() {
+	$!sut.add_entry: '/etc/motd', type => 'file';
+	$!sut.add_entry: '/dev/null', type => 'device';
+	$!sut.add_entry: '/usr/bin', type => 'link';
+
+	assert_false( $!sut.is_file( '/dev/null' ), 'is_file: /dev/null -> false');
+	assert_true( $!sut.has_type( '/dev/null', 'device'), 'is_device: /dev/null -> true');
+	
+	assert_true( $!sut.has_type( '/etc', 'directory' ),	'/etc should have type directory' );
+	assert_true( $!sut.is_directory( '/etc' ),	'/etc should have type directory' );
+	
+	assert_true( $!sut.has_type( '/etc/motd', 'file' ),	'/etc/motd should have type file' );
+	assert_true( $!sut.is_file( '/etc/motd'), 'is_file: /etc/motd -> true');
+	
+	assert_false( $!sut.is_file( '/usr/bin' ), 'is_file: /usr/bin -> false');
+	assert_true( $!sut.has_type( '/usr/bin', 'link'), 'is_link: /usr/bin -> true');
+	
+}
+
+method test_get_contents() {
+	$!sut.add_entry: '/etc/motd', type => 'file', contents => "Hello, world\n";
+	$!sut.add_entry: '/dev/null', type => 'device';
+	$!sut.add_entry: '/usr/bin', type => 'link';
+
+	assert_equal( $!sut.get_contents( '/etc/motd' ), "Hello, world\n",
+		'File contents should match' );
+	assert_equal($!sut.get_contents( '/' ).sort.join('|'), 'dev|etc|usr',
+		'Directory contents should be child names');
+}
+
+#method main() { self.set_up; self.test_has_type; }

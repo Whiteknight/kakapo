@@ -127,9 +127,8 @@ method get_string() {
 }
 
 my method _init_obj(*@parts, :$dynamic = 0, *%named) {
-	@!elements := @!elements;
-	$!filesystem := FileSystem.instance
-		unless %named.contains( <filesystem> );
+	@!elements := @!elements;	
+	$!filesystem := $*FileSystem;
 	$!initialized := 0;
 	$!is_relative := 1;
 	$!volume := '';

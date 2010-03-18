@@ -66,6 +66,7 @@ sub MAIN(@argv) {
 
 		src/Internals/Kakapo.pir
 
+		src/Parrot/Constants.pir
 		src/Parrot/Multisub.pir
 		src/Parrot/Nqp.pir
 		src/Parrot/Opcode.pir

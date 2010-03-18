@@ -29,7 +29,7 @@ method __dump($dumper, $label) {
 		my $nsp := self.get_namespace;
 		
 		if ! Opcode::isnull($nsp) && Opcode::defined($nsp) {
-			$nsp := $nsp.get_name.join('::');
+			$nsp := pir::join('::', $nsp.get_name);
 		}
 		else {
 			$nsp := '<no namespace>';

@@ -1,4 +1,8 @@
 #! /usr/bin/env parrot-nqp
+# Copyright 2010, Austin Hastings. See accompanying LICENSE file, or 
+# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
+
+module bootstrap::UnitTest::Loader ;
 
 INIT {
 	# Load the Test::More library
@@ -7,12 +11,7 @@ INIT {
 	
 	# Load the Kakapo library
 	my $env := pir::new__PS('Env');
-	my $root_dir := $env<HARNESS_ROOT_DIR>;
-	
-	unless $root_dir {
-		$root_dir := '.';
-	}
-	
+	my $root_dir := $env<HARNESS_ROOT_DIR> || '.';
 	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
 }
 

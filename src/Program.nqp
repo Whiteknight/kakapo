@@ -21,8 +21,7 @@ has $!stdout;
 our $_Instance;
 
 INIT {
-	Kakapo::depends_on( <Library> );
-	
+	Kakapo::depends_on( <Library FileSystem> );
 	$_Instance := my $undef;
 }
 
@@ -39,7 +38,14 @@ sub _initload() {
 		$!exit_marshaller
 		$!start_marshaller
 	>);
-	
+
+	# Initialize global contextual vars:
+	my $config := pir::getinterp__P()[6];
+	pir::set_hll_global__vSP( <%VM>, $config );
+
+	my $instance := FileSystem.instance;
+	pir::set_hll_global__vSP( <$FileSystem>, $instance);
+
 	Global::inject_root_symbol( Program::global_at_exit, :as('at_exit') );
 	Global::inject_root_symbol( Program::global_at_start, :as('at_start') );
 	

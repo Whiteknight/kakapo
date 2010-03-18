@@ -30,14 +30,12 @@ method suite() {
 	>;
 
 	my $suite := self.new();
-	my $compiler := pir::compreg__PS('NQP-rx');
 	
 	for @sub_suites -> $file {
 		say("Loading t/UnitTest/$file.nqp");
 
-		my $code := File::slurp("t/UnitTest/$file.nqp");
-		$code := $compiler.compile: File::slurp("t/UnitTest/$file.nqp");
-		$code();
+		my &code := Nqp::compile_file( "t/UnitTest/$file.nqp" );
+		&code();
 
 		my $name := $file;
 		$name := 'Listener::TAP' if $name eq 'TapListener';

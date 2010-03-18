@@ -49,13 +49,12 @@ method test_load_tests_from_testcase() {
 }
 
 sub str_cmp($a, $b) {
-	~$a le ~$b ?? -1 !! 1;
+	my $aname := pir::getattribute__PPS($a, '$!name');
+	my $bname := pir::getattribute__PPS($b, '$!name');
+	(~$aname le ~$bname) ?? -1 !! 1;
 }
 
 class Dummy::Loader is UnitTest::Loader {
-	method order_tests(@tests) {
-		@tests.sort( UnitTest::Loader::compare_methods );
-	}
 }
 
 # NB: Lots of methods here to lower the probability of a failure because
@@ -79,7 +78,7 @@ method test_ordering() {
 	my $suite := $!loader.load_tests_from_testcase(
 		Dummy::LoadOrder
 	);
-
-	assert_false( Opcode::getattribute($suite, '@!members').is_sorted( Test::UnitTest::Loader::str_cmp ),
+	
+	assert_false( Opcode::getattribute($suite, '@!members').is_sorted( cmp => Test::UnitTest::Loader::str_cmp ),
 		'Default loader should unsort methods' );
 }

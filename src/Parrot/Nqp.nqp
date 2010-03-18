@@ -5,8 +5,7 @@ module Nqp;
 
 sub compile_file($name) {
 	my $compiler := pir::compreg__PS('NQP-rx');
-
-	my $code := File::slurp($name);
+	my $code := $*FileSystem.get_contents($name);
 	$code := $compiler.compile: $code;
 }
 

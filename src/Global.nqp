@@ -120,6 +120,10 @@ our sub inject_symbol($object, :$namespace, :$as?, :$force?) {
 	# NB: find_var searches for *anything*, while find_sub requires isa(sub). In this case,
 	# any collision is bad.
 	if ! $force && Opcode::defined($namespace.find_var($as)) {
+		my $ns_name := pir::join__SSP('::', $namespace.get_name);
+		pir::say("Warning: symbol $as already exists in namespace $ns_name");
+		Sub::set_dump_detail(1);
+		_dumper($namespace.find_var($as));
 		return 0;
 	}
 	

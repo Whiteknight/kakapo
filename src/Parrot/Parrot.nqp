@@ -310,6 +310,17 @@ sub key_(@parts) {
 	$key;
 }
 
+sub macro_const( $namespace = caller_namespace(), :@TAGS, *%named ) {
+	for %named -> $macro {
+		my $name := $macro.key;
+		
+		die("Cannot define macro $name in namespace {$namespace.string_name} - a symbol with that name already exists")
+			if $namespace.contains( $name );
+			
+		$namespace.add_var($name, $macro.value);
+	}
+}
+
 sub namespace_name($nsp) {
 	pir::isa($nsp, 'String') 
 		?? $nsp
@@ -363,4 +374,22 @@ sub qualified_name($x, :$namespace = caller_namespace(2)) {
 	}
 	
 	$x;
+}
+
+# Return a global object by name.
+sub set_hll_global($path, $value) {
+	if $path.isa('String') {
+		$path := $path.split('::');
+	}
+	
+	unless pir::does__IPS($path, 'array') {
+		die("$path parameter must be a ::string or array of strings, not: ", $path);
+	}
+
+	my $name := $path.pop;
+	my $key := key_($path);
+	
+	$key.defined 
+		?? pir::set_hll_global__vPSP($key, $name, $value)
+		!! pir::set_hll_global__vSP($name, $value);
 }

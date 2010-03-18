@@ -22,11 +22,11 @@ method add_error($failure) {
 }
 
 method add_failure($failure) {
-	my $tc := $failure.test_case;
-	my $label := self.get_test_label($tc);
+	my $test := $failure.test_case;
+	my $label := self.get_test_label($test);
 	
-	if $tc.todo {
-		$!test_builder.todo(0, $label, $tc.todo);
+	if $test.todo {
+		$!test_builder.todo(0, $label, $test.todo);
 	}
 	else {
 		$!test_builder.ok(0, self.get_test_label($failure.test_case));

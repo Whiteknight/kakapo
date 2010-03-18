@@ -60,3 +60,19 @@ method test_new() {
 	assert_not_null( $test,  'Parrot::new should return new object' );
 	assert_instance_of( $test, Test::New, 'New object should be of correct pmc type' );
 }
+
+sub get_global_testSetGlobal() {
+	Q:PIR { 
+		%r = get_hll_global 'testSetGlobal'
+	};
+}
+
+method test_set_hll_global() {
+	assert_null( get_global_testSetGlobal(),
+		'Global should not be set yet' );
+	
+	Parrot::set_hll_global( 'testSetGlobal', 'now set' );
+	
+	assert_equal( 'now set', get_global_testSetGlobal(),
+		'Global should now be set.' );
+}

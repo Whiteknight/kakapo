@@ -123,5 +123,5 @@ method test_todo_pass() {
 
 method test_todo() {
 	todo("Maybe later");
-	fail("bang!");
+	fail("bang! (this test is two-due)");
 }
