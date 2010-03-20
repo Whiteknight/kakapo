@@ -60,6 +60,28 @@ method test_add_entry() {
 		"$path_str should exist after add_entry" );
 }
 
+method test_add_entry_relative() {
+	my $path_str := 'file.c=';
+	
+	# Confirm that relative paths work.
+	$!sut.add_entry: $path_str, contents => "Contents of file.c=";
+	assert_true( $!sut.exists( $path_str ),
+		"$path_str should exist after add_entry" );	
+}
+
+method test_add_entry_defaults() {
+	verify_that( 'Add_entry uses some sane default values' );
+
+	my $path_str := 'new_entry';
+	
+	$!sut.add_entry: $path_str;
+	
+	assert_true( $!sut.is_file( $path_str ),
+		'Entry should be file by default' );
+	assert_equal( '', $!sut.get_contents( $path_str ), 
+		'Entry should be empty by default' );
+}
+
 method test_has_type() {
 	$!sut.add_entry: '/etc/motd', type => 'file';
 	$!sut.add_entry: '/dev/null', type => 'device';

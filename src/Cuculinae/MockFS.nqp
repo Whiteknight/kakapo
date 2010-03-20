@@ -75,14 +75,25 @@ my method add_entry__Path( $path, *%named ) {
 	my %path_attrs := %named.clone;
 	%path_attrs.delete: <name>;
 	%path_attrs.delete: <type>;
+	%path_attrs.delete: <contents>;
 	self.mkpath( $path, |%path_attrs );
 	
 	my $entry := self.find_path( $path );
+	
+	unless pir::defined( $entry ) {
+		_dumper(self);
+		_dumper($path);
+		die( "Failed to add entry $path" );
+	}
+
+	# Specify some default properties:
+	my %defaults := Hash.new:
+		contents => '',
+		type => 'file',
+		;
 		
-	die( "Failed to add entry $path" )
-		unless pir::defined( $entry );
-		
-	$entry[-1].merge( %named, :priority('right'));
+	# Merge in specified attrs
+	$entry[-1].merge( %defaults, %named, :priority('right'));
 }
 
 our method chdir__ANY($path) {
@@ -93,16 +104,59 @@ our method chdir__Path($path) {
 
 	my @new_wd := self.find_path: $path;
 	
-	if @new_wd.defined {
-		@!cwd_path := @new_wd;
-	}
-	else {
-		die("Can't cd to $path");
-	}
+	die("Can't cd to $path - does not exist in this fs")
+		unless @new_wd.defined;
+		
+	self.cwd_path: @new_wd;
 }
 
 our method chdir__String($str) {
 	self.chdir: Path.new($str);
+}
+
+our method cwd() {
+	my @path := self.cwd_path.map: -> $part { $part<name>; };
+	my $*FileSystem := self;
+	Path.new: |@path, :absolute;
+}
+
+my method cwd_path($value?)  {
+	$value.defined 
+		?? (@!cwd_path := $value)
+		!! @!cwd_path.clone;
+}
+
+our method directory_separator() { '/' }
+
+our method exists__Path($path) {
+	my $item := self.find_path: $path;
+	$item.defined;
+}
+
+our method exists__String($path) {
+	self.exists: Path.new($path);
+}
+
+our method exists__ANY($path) {
+	die( "Don't know how to check if ", pir::typeof__SP($path), " exists. Use a String or Path");
+}
+
+my method find_path($path) {
+	my @path := $path.is_absolute
+		?? [ %!volumes{ $path.volume } ]
+		!! self.cwd_path;
+
+	my $cur := @path[-1];
+	my @elements := $path.elements;
+	
+	for @elements -> $next {
+		return my $undef
+			unless $cur<type>  eq 'directory' && $cur<contents>.contains: $next;
+
+		@path.push: $cur := $cur<contents>{$next};
+	}
+	
+	@path;
 }
 
 my method get_contents__ANY($path) {
@@ -133,46 +187,6 @@ my method get_contents__String($path) {
 	self.get_contents: Path.new($path);
 }
 
-our method cwd() {
-	my @path := @!cwd_path.map: -> $part { $part<name>; };
-	my $*FileSystem := self;
-	Path.new: |@path, :absolute;
-}
-
-our method directory_separator() { '/' }
-
-our method exists__Path($path) {
-	my $item := self.find_path($path);
-	
-	$item.defined;
-}
-
-our method exists__String($path) {
-	self.exists( Path.new($path) );
-}
-
-our method exists__ANY($path) {
-	die( "Don't know how to check if ", pir::typeof__SP($path), " exists. Use a String or Path");
-}
-
-my method find_path($path) {
-	my @path := $path.is_absolute
-		?? [ %!volumes{ $path.volume } ]
-		!! @!cwd_path;
-
-	my $cur := @path[-1];
-	my @elements := $path.elements;
-	
-	for @elements -> $next {
-		return my $undef
-			unless $cur<type>  eq 'directory' && $cur<contents>.contains: $next;
-
-		@path.push: $cur := $cur<contents>{$next};
-	}
-	
-	@path;
-}
-
 my method has_type__ANY($path, $type) {
 	die( "Don't know how to check if a(n) ", pir::typeof__SP($path), " is a $type. Use a String or Path");
 }
@@ -193,7 +207,7 @@ our method is_link($path)		{ self.has_type($path, 'link'); }
 
 my method _init_obj(*@pos, *%named) {
 	%!volumes<> := self.new_entry( :name(</>), :type(<directory>) );
-	@!cwd_path := [ %!volumes<> ];
+	self.cwd_path: [ %!volumes<> ];
 
 	self._init_args(|@pos, |%named);
 }
@@ -205,7 +219,7 @@ my method mkpath__ANY($path) {
 my method mkpath__Path($path, *%named) {
 	my @path := $path.is_absolute
 		?? [ %!volumes{ $path.volume } ]
-		!! @!cwd_path;
+		!! self.cwd_path;
 
 	my $cur := @path[-1];
 	my @elements := $path.elements;
