@@ -4,7 +4,6 @@
 
 INIT {
 	# Load the Kakapo library
-	pir::load_language('parrot');
 	my $env := pir::new__PS('Env');
 	my $root_dir := $env<HARNESS_ROOT_DIR> || '.';
 	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
@@ -15,11 +14,10 @@ class Test::Program
 
 INIT {
 	use(	'UnitTest::Testcase' );	
-	use(	'UnitTest::Assertions' );	
+	use(	'UnitTest::Assertions' );
 }
 
-# Run the MAIN for this class.
-Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
+TEST_MAIN();
 
 method set_up() {
 	# Set global-variable state to post-INIT{} condition.
@@ -157,35 +155,66 @@ method test_global_at_start_fails() {
 	});
 }
 
-class Test::Program::Streams is Program {
-	method main(*@argv) {
-		say("12345");
-	}
+class Dummy::SetMain is Program {
+	sub foo() { exit(27); }
+}
+
+method test_main_uses_set_main() {
+	my $pgm := Dummy::SetMain.new;
 	
-	method do_exit() {
-		$!exit_value;
+	assert_not_defined( $pgm.get_main,
+		'Program should have no &main set by default.' );
+	assert_throws( Control::Error, 'Program should die with no main set.',
+		{ $pgm.run; });
+
+	$pgm.set_main( Dummy::SetMain::foo );
+	assert_same( Dummy::SetMain::foo, $pgm.get_main,
+		'get/set_main should be accessors' );
+		
+	my $result := $pgm.run;
+	
+	assert_equal( 27, $result,
+		'After set_main, Program::main should call sub' );
+}
+
+class Dummy::RunSetsArgs is Program {
+	method main() {
+		@*ARGS[2];
 	}
+}
+
+method run_sets_args() {
+	my $dummy := Dummy::RunSetsArgs.new;
+	
+	my $result := $dummy.run: argv => <a b c>;
+	
+	assert_equal( 'b', $result,
+		'Result should be "b" if run is setting @*ARGS');
+}
+
+class Dummy::ProgramSwapsStreams is Program {
+	method main() {
+		say("12345");
+	}	
 }
 
 method test_run_swaps_streams() {
 	my $string_out := Parrot::new('StringHandle');
-	$string_out.open('blah', 'w');
+	$string_out.open('any value', 'w');
 	
-	my $pgm := Test::Program::Streams.new;
+	my $pgm := Dummy::ProgramSwapsStreams.new;
 	$pgm.stdout( $string_out );
 	
 	my $save_stdout := pir::getstdout__P();
 	
-	#pir::trace(4);
 	$pgm.run;
-	pir::trace(0);
 	
 	assert_same( pir::getstdout__P(), $save_stdout,
 		'Program should restore stdout');
 
-	$string_out.open('read');
+	$string_out.open('really, anything', 'r');
 
-	assert_equal( $string_out.readall, "12345\n",
+	assert_equal( $string_out.readall.index('34'), 2, #"12345\n",
 		'Program should write to stdout as given');
 }
 
@@ -232,6 +261,5 @@ method test_run_swaps_streams() {
 	#~ #fail_unless( %value<$*PID> ne '', 'Process id must be set' );
 	#~ fail_unless( %value<$?PERL> eq 'nqp-rx', 'Perl should be nqp' );
 	#~ fail_unless( %value<$?VM> eq 'parrot', 'VM should be parrot' );
-	#~ fail_unless( %value<%*VM><lib_paths> == 5, '%*VM<lib_paths> should have 5 entries' );
-		
+	#~ fail_unless( %value<%*VM><lib_paths> == 5, '%*VM<lib_paths> should have 5 entries' );	
 #~ }

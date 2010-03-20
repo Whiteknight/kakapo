@@ -6,17 +6,16 @@ class Exception::ProgramExit
 }
 
 # Provides a conventional framework for program execution. 
-module Program;
+class Program;
 
 has @!argv;
-has $!exit_marshaller;
-has $!start_marshaller;
 has $!executable_name;
+has $!exit_marshaller;
 has $!exit_value;
+has %!handles;
+has &!main;
 has $!program_name;
-has $!stderr;
-has $!stdin;
-has $!stdout;
+has $!start_marshaller;
 
 our $_Instance;
 
@@ -26,19 +25,8 @@ INIT {
 }
 
 sub _initload() {
-	has(<	@!argv
-		$!executable_name
-		$!program_name
-		$!exit_value
-		
-		$!stderr
-		$!stdin
-		$!stdout
-		
-		$!exit_marshaller
-		$!start_marshaller
-	>);
-
+	auto_accessors(:private);
+	
 	# Initialize global contextual vars:
 	my $config := pir::getinterp__P()[6];
 	pir::set_hll_global__vSP( <%VM>, $config );
@@ -85,6 +73,10 @@ our method exit_program($status = 0) {
 	$!exit_value := $status;
 }
 
+method set_main(&new_value) {
+	&!main := &new_value;
+}
+
 sub global_at_exit(*@pos, *%named) {
 	instance().at_exit(|@pos, |%named);
 }
@@ -113,6 +105,10 @@ method from_parrot($ignored?) {
 	$!program_name := @!argv.shift;
 }
 
+method get_main() {
+	&!main;
+}
+
 sub instance(*@new) {	# Use *@new to allow passing undef (simplifies testing)
 	if @new.elems {
 		my $old := $_Instance;
@@ -133,30 +129,46 @@ sub instance(*@new) {	# Use *@new to allow passing undef (simplifies testing)
 }
 
 method main(*@argv) {
-	my &main := pir::get_hll_global__PS('main');
-	
-	&main := pir::get_hll_global__PS('MAIN')
-		if pir::isnull(&main);
+	my &main := self.get_main;
+
+	unless &main.defined {
+		&main := pir::get_hll_global__PS('main');
+		&main := pir::get_hll_global__PS('MAIN')
+			if pir::isnull(&main);
+	}
 		
 	if pir::isnull(&main) {
-		die("You must override the '.main' method of your program class.");
+		die( "Could not find a main() to run. Override main() on this class, or call set_main()" );
 	}
 	
 	&main(@argv);
 }
 
 method run( :@argv ) {
-	self.argv( @argv )
-		if @argv;
+	if @argv {
+		self.program_name: @argv.shift;
+		self.argv: @argv;
+	}
 
-	my %save_fh := swap_handles( :stderr($!stderr), :stdin($!stdin), :stdout($!stdout));
+	my @*ARGS := self.argv;
+	my $*PROGRAM_NAME := self.program_name;
+	
+	my $*ERR;
+	my $*IN;
+	my $*OUT;
+	
+	my %saved_std := self.save_std_handles;
+	my %new_std := %!handles.merge: %saved_std, into => Hash.new;
+	
+	self.set_std_handles: %new_std;
 
 	try {
 		self.do_start;
-		self.main(|@!argv);
+		self.main;
 		
 		CATCH {
 			if $!.type == Exception::ProgramExit.type {
+				$!.handled: 1;
 				$!exit_value := $!.payload;
 			}
 			else {
@@ -168,10 +180,38 @@ method run( :@argv ) {
 	# TODO: Maybe differentiate between _exit and exit in the exception?
 	self.do_exit;
 	
-	swap_handles(|%save_fh);
-
+	self.set_std_handles: %saved_std;
 	self.exit_program($!exit_value);
 }
+
+method save_std_handles() {
+	my %handles;
+	
+	%handles<stderr>	:= pir::getstderr__P();
+	%handles<stdin>	:= pir::getstdin__P();
+	%handles<stdout> := pir::getstdout__P();
+
+	%handles;
+}
+
+method set_std_handles(%handles) {
+
+	pir::setstderr__vP(%handles<stderr>);
+	$*ERR := %handles<stderr>;
+	
+	pir::setstdin__vP(%handles<stdin>);
+	$*IN := %handles<stdin>;
+	
+	pir::setstdout__vP(%handles<stdout>);
+	$*OUT := %handles<stdout>;
+	
+	self;
+}
+
+# NB: Use pir::defined because Handles are PMCs (and hard to wrap!)
+method stderr($value?)		{ pir::defined($value) ?? (%!handles<stderr> := $value) !! %!handles<stderr> }
+method stdin($value?)		{ pir::defined($value) ?? (%!handles<stdin> := $value) !! %!handles<stdin> }
+method stdout($value?)		{ pir::defined($value) ?? (%!handles<stdout> := $value) !! %!handles<stdout> }
 
 sub swap_handles(*%handles) {
 	my %save_handles;
