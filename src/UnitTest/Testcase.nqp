@@ -23,6 +23,7 @@ INIT {
 		fail
 		fail_if
 		fail_unless
+		TEST_MAIN
 		verify_that
 	>);
 
@@ -118,6 +119,28 @@ our method suite() {
 }
 
 our method tear_down() { }
+
+sub TEST_MAIN(:$namespace = Parrot::caller_namespace()) {
+	my $parent_nsp := $namespace.get_parent;
+	my $namespace_name := ~ $namespace;
+	my $proto_obj := $parent_nsp.get_sym: $namespace_name;
+
+	if ! is_null( $proto_obj ) && isa( $proto_obj, 'P6protoobject' ) {
+		$proto_obj.MAIN();
+	}
+	elsif $namespace.contains: 'MAIN' {
+		if ! is_null( $proto_obj ) {
+			$namespace<MAIN>($proto_obj);
+		}
+		else {
+			$namespace<MAIN>();
+		}
+	}
+	else {
+		my $ns_name := $namespace.string_name;
+		die( "Could not locate proto-object for namespace $ns_name. Could not find 'MAIN()' in namespace. Nothing to do." );
+	}
+}
 
 sub todo_test( *@text ) {
 	Parrot::get_self().todo: @text.join;

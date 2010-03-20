@@ -1,14 +1,13 @@
 #! /usr/bin/env parrot-nqp
-# Copyright 2010, Austin Hastings. See accompanying LICENSE file, or 
-# http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
+# 0. The shebang (#!) line above works, at least on my Linux box. So I can run t/Foo.nqp on the command
+# line and have the tests run. (Actually, I run  {{{  setup.nqp && t/Foo.nqp  }}}.) 
 
 # 1. This bit is boilerplate. It loads the kakapo lib, honoring the HARNESS environment
 # settings.
 
 INIT {
 	# Load the Kakapo library
-	pir::load_language('parrot');
 	my $env := pir::new__PS('Env');
 	my $root_dir := $env<HARNESS_ROOT_DIR> || '.';
 	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
@@ -34,10 +33,10 @@ INIT {
 	use(	UnitTest::Assertions );	
 }
 
-# 5. Reflect to determine the current class name, the use that to get the proto-object and call MAIN.
-# This is boilerplate, but at least now you know what it does. (FYI: MAIN is defined in Standalone.nqp)
+# 5. This sub, provided by UnitTest::Testcase (above), uses reflection to determine the current class,
+# then uses that to get the proto-object and call MAIN. (Fyi, MAIN is defined in Standalone)
 
-Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
+TEST_MAIN();
 
 # 6. Uncomment this if you're having problems with a test case. It will print the name of the testcase
 # *before* it runs, so you know what's failing/dying/hanging.
