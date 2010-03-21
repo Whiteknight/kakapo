@@ -126,6 +126,7 @@ sub MAIN(@argv) {
 		src/Matchers/Not.pir
 		src/Matchers/Null.pir
 		src/Matchers/PassFail.pir
+		src/Matchers/PctNodes.pir
 
 		src/Path.pir		
 		src/Program.pir

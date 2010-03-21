@@ -107,7 +107,7 @@ sub auto_accessors(*@attrs, :$class = caller_namespace(), :$private = 0, :$publi
 
 		if %make_accessor{$twigil} && ! %methods.contains( $method_name ) {
 
-			my %attr_info := Hash.new(
+			my %attr_info := hash(
 				:accessor(		$method_name ),
 				:default_type(	%default_type{$sigil} ),
 				:name(		$attr ),
@@ -184,7 +184,7 @@ sub has(*@args, :$class?, *%opts) {
 
 	unless $class.defined { $class := caller_namespace(); }
 
-	# Handle  has(< a b c >) - only arg is an RPA.
+	# Handle  has(< a b c >) - only arg is an RxA.
 	if +@args == 1 && ! @args[0].isa('String') {
 		@args := @args[0];
 	}
@@ -216,7 +216,7 @@ sub has(*@args, :$class?, *%opts) {
 				die("Re-declaration of attribute '$base_name'");
 			}
 
-			%opts{$base_name} := Hash.new(
+			%opts{$base_name} := hash(
 				:accessor($base_name),
 				:default_type(%default_type{$sigil}),
 				:is_private($attr[0] eq '!' ?? 1 !! 0),
@@ -241,7 +241,11 @@ sub has_vtable($name, &code, :$class = caller_namespace().get_class) {
 my method _make_accessor($parrotclass, %info) {
 	my $namespace := $parrotclass.get_namespace;
 
-	my %accessor_details := Hash.new(
+	# Don't define one if it's already present.
+	return 0
+		unless pir::isnull($namespace.find_sub( %info<accessor> ));
+
+	my %accessor_details := hash(
 		:name(%info<accessor>),
 		:namespace($parrotclass.get_namespace),
 		:method(1),

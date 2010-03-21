@@ -5,7 +5,7 @@ module String;
 # Provides basic String functions, and adds some methods to the String PMC.
 
 sub _pre_initload() {
-	our %Cclass_id := Hash.new(
+	our %Cclass_id := Hash::hash(
 		:NONE(			0),
 		:ANY(				65535),
 

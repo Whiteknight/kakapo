@@ -36,19 +36,16 @@ sub/method syntax and PIR opcodes.
 
 module Hash;
 
-=begin
-=METHODS
+sub _pre_initload() {
+	Global::inject_root_symbol( Hash::hash );
+}
 
-=item contains($key) returns Boolean
-
-The C< .contains > method returns true (1) if the key exists in the Hash, 
-fales (0) otherwise. Note that there is no guarantee about the value stored
-in the Hash - it may be any value, including C< null >.
-
-=for code
-	if %hash.contains('null') { ... }
-
-=end
+# Returns true (1) if `$key` exists in the Hash. Returns false (0) otherwise. 
+# Note that there is no guarantee about the value stored in the Hash - it may 
+# be any value, including `null`.
+#
+# Example:
+#	if %week.contains: <Sunday> { ... }
 
 our method contains($key) {
 	Q:PIR {
@@ -59,24 +56,26 @@ our method contains($key) {
 	};
 }
 
-=begin
-=item delete($key) returns self
-
-The C< delete > method deletes the C< $key > from the Hash. If C< $key > is
-not a valid entry, nothing happens. Returns C< self > for method chaining.
-
-=for code
-	%week.delete('Wednesday');
-
-=end
+# Deletes the `$key` from the Hash. If `$key` is not an entry, nothing happens. 
+#
+# Returns `self` for method chaining.
+#
+# Example:
+#    %week.delete: <Wednesday>;
 
 our method delete($key) {
 	Q:PIR {
-		%r  = find_lex 'self'
-		$P1 = find_lex '$key'
-		delete %r[$P1]
+		$P0 = find_lex '$key'
+		delete self[$P0]
 	};
+
+	self;
 }
+
+# Returns the number of elements in the Hash.
+# 
+# Example:
+#   $num_days := %week.elems;
 
 our method elems() {
 	pir::elements__IP(self);
@@ -95,6 +94,10 @@ our method grep(&match) {
 	}
 	
 	%matches;
+}
+
+sub hash(*%hash) {
+	%hash;
 }
 
 our method keys() {
@@ -208,20 +211,19 @@ sub merge_keys(%first, *@hashes, :@keys!, :%into?, :$use_last?) {
 	return %into;
 }
 
-=begin
-=item new( [ %hash, ... ], [ :key(value), ... ] ) return Hash
+# NB: This is a lie. The positionals are errors, for now, because catching the errors
+# is more valuable than the merge constructor.
 
-The new method creates and returns a Hash. If no arguments are specified, an
-empty hash is returned. If positional arguments are given, they must also be
-Hashes. The entries are merged from left to right (right-most values dominate)
-into the new hash. If named parameters are provided, they are added to the
-new hash I< after > the positional hashes are merged. Effectively, the 
-positional hashes are default values.
-
-=for code
-    my %dictionary := Hash.new(%defaults, :one('uno'), :two('dos'));
-
-=end
+# The new method creates and returns a Hash. If no arguments are specified, an
+# empty hash is returned. If positional arguments are given, they must also be
+# Hashes. The entries are merged from left to right (right-most values dominate)
+# into the new hash. If named parameters are provided, they are added to the
+# new hash I< after > the positional hashes are merged. Effectively, the 
+# positional hashes are default values.
+#
+# Example:
+#     my %defaults := Hash.new:   one => '1', two => '2', three => '3';
+#     my %dictionary := Hash.new(%defaults, :one('uno'), :two('dos'));
 
 our method new(*@pos, *%pairs) {
 	if @pos.elems {
@@ -238,6 +240,9 @@ our method new(*@pos, *%pairs) {
 
 	%pairs;
 }
+
+# Returns an array of the values stored in the Hash. There is _no_ ordering 
+# imposed.
 
 our method values() {
 	my @values;

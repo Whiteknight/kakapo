@@ -16,6 +16,7 @@ sub get_preinit_subs() {
 		Parrot
 		Pir
 		Key
+		Hash
 		Array
 		Kakapo::Pmc::COMMON
 		String
