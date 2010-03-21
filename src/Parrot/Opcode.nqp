@@ -30,6 +30,7 @@ sub delete($object, $key) {
 sub does($object, $role)		{ pir::does($object, $role); }
 sub elements($object)		{ pir::elements($object); }
 sub exit($status)			{ pir::exit($status); }
+sub find_method($object, $name)	{ pir::find_method__PPS($object, $name); }
 sub get_addr($object)		{ pir::get_addr__IP($object); }
 sub getattribute($object, $name)	{ pir::getattribute__PPS($object, $name); }
 sub get_class($object)		{ pir::get_class__PP($object); }

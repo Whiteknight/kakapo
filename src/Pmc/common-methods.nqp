@@ -1,4 +1,4 @@
-# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Kakapo::Pmc::COMMON;
@@ -18,7 +18,7 @@ Note that this method is compiled at run-time for each class. See L< install_sym
 sub _pre_initload() {
 	# Make these available for import by other modules.
 	export(< can clone defined does isa >);
-	
+
 	# List all the PMC types here, with the methods to export. I'll sort them out later.
 	my %methods_for;
 	%methods_for<Class>			:= Array::new( <defined> );
@@ -35,15 +35,15 @@ sub _pre_initload() {
 #	%methods_for<StringHandle>		:= <can clone defined does isa is_equalnew>;
 	%methods_for<Sub>			:= <can clone defined does isa is_equal>; #! not new
 	%methods_for<Undef>			:= <can clone does isa is_equal new>; #! not defined
-	
+
 	my $from_nsp := pir::get_namespace__P();
 
 	# Order counts
 	my @first_pmcs := <
-		Undef 
-		String 
-		Hash 
-		ResizablePMCArray 
+		Undef
+		String
+		Hash
+		ResizablePMCArray
 		ResizableStringArray
 	>;
 
@@ -53,21 +53,21 @@ sub _pre_initload() {
 		my $namespace := Parrot::get_hll_namespace(~ $_);
 		install_methods($namespace, %methods_for{$_}, :skip_new);
 	}
-	
+
 	# Now build 'new' methods.
 	for @first_pmcs {
 		my $namespace := Parrot::get_hll_namespace(~ $_);
 		install_methods($namespace, %methods_for{$_}); # no :skip_new here
 		%methods_for{$_} := my $undef;
 	}
-	
+
 	# Now process the rest of the PMCs
 	for %methods_for.kv -> $pmc_type, @methods {
 		if @methods {
 			if pir::typeof__SP(Parrot::get_hll_global($pmc_type)) eq 'NameSpace' {
 				P6metaclass.register($pmc_type);
 			}
-			
+
 			my $namespace := Parrot::get_hll_namespace($pmc_type);
 			install_methods($namespace, @methods);
 		}
@@ -86,15 +86,15 @@ C< $method_name > must be a String. Returns C< false > otherwise.
 =end
 
 method can($method) {
-	pir::can(self, $method); 
+	pir::can(self, $method);
 }
 
 =begin
 =item clone() returns PMC
 
 Returns a clone of the invocant object. The C< clone > method is frequently overridden,
-but in general should return an object which is a duplicate in all respects -- same 
-contents, same members, same size, same value, whatever. 
+but in general should return an object which is a duplicate in all respects -- same
+contents, same members, same size, same value, whatever.
 
 See the documentation of the particular PMC type to determine I< whether >, and if so
 I< how > complex data structures are cloned. In general, Parrot's basic PMC types do
@@ -134,7 +134,7 @@ members of the C< Undef > type. That type does not import this method.
 =end
 
 method defined() {
-	1; 
+	1;
 }
 
 =begin
@@ -155,7 +155,7 @@ sub install_methods($namespace, @methods, :$skip_new?) {
 
 	my %export_subs;
 	my $pmc_name := ~ $namespace;
-	
+
 	for @methods {
 		unless $namespace{~ $_} {
 			if $from_nsp{~ $_} {
