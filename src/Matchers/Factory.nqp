@@ -58,8 +58,6 @@ sub export_sub($sub, :$as, :$tags? = 'DEFAULT') {
 	#~ return Matcher::AnyOne(@matchers);
 #~ }
 			
-#~ sub null()				{ return Matcher::Null.new(); }	
-
 #~ sub _returns_Float($value)		{ return returns(Matcher::IsCloseTo.new($value)); }
 #~ sub _returns_Integer($value)	{ return returns(Matcher::Equals.new($value)); }
 #~ sub _returns_Matcher($value)	{ return Matcher::DescribedAs.new('returns', $value); }

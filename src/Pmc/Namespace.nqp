@@ -30,6 +30,38 @@ method __dump($dumper, $label) {
 	$dumper.deleteIndent;
 }
 
+method fetch($name, :$relative = 0) {
+	my @parts;
+	
+	die("Currently this only accepts String names")
+		unless pir::isa($name, 'String');
+		
+	if $relative {
+		die("You must use a real namespace (not a protoobject) as the base for a :relative fetch")
+			if pir::isa(self, 'P6protoobject');
+		
+		@parts := self.get_name;
+		@parts.append: $name.split('::');
+	}
+	else {
+		@parts := $name.split(';');
+		my $elems := @parts.elems;
+		
+		die("Invalid namespace specification: '$name'")
+			if $elems > 2;
+
+		@parts.unshift('parrot') 
+			if $elems == 1;
+		
+		my $hll_relative := @parts.pop;
+		@parts.append: $hll_relative.split('::');
+	}
+	
+	my $root_nsp := pir::get_root_namespace__P();
+	my $namespace := $root_nsp.make_namespace(@parts);
+	$namespace;
+}
+
 method string_name(:$format, :$with_hll) {
 	$format := $format // 'perl6';
 	

@@ -43,6 +43,7 @@ sub MAIN(@argv) {
 
 		:harness_files(		pir::join(' ', <
 			!t/test-data
+			!t/Matchers/Tree.nqp
 			!t/Pmc
 			!t/Structure
 			t
@@ -119,15 +120,15 @@ sub MAIN(@argv) {
 		src/FileSystem.pir
 		src/Library.pir
 
-		src/Matchers/Boolean.pir
 		src/Matchers/CallSig.pir
 		src/Matchers/Factory.pir
 		src/Matchers/InstanceOf.pir
+		src/Matchers/IsNull.pir
 		src/Matchers/Matcher.pir
 		src/Matchers/Not.pir
-		src/Matchers/Null.pir
 		src/Matchers/PassFail.pir
 		src/Matchers/PctNodes.pir
+		src/Matchers/TrueFalse.pir
 
 		src/Path.pir		
 		src/Program.pir

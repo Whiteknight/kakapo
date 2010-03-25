@@ -81,6 +81,8 @@ method append(@other) {
 	for @other {
 		self.push($_);
 	}
+	
+	self;
 }
 
 #=begin 

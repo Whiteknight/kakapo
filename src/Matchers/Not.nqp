@@ -14,10 +14,9 @@ sub _initload() {
 	extends(	'Matcher' );
 	
 	has(	'$!child' );
-	
-#~ Class::multi_sub('Matcher::Not', 'factory', :starting_with('_factory_'));
-#~ Matcher::Factory::export_sub(Matcher::Not::factory, :as('not'));
 
+	Parrot::define_multisub('factory', :starting_with('factory'));
+	Matcher::Factory::export_sub(Matcher::Not::factory, :as('not'));
 }
 
 # Pass through - the "reason for failure" will be the same, only the failure itself is reversed.
@@ -26,14 +25,14 @@ method describe_failure($item, $description) {
 }
 
 # Pass through with just a "not" prepended.
-method describe_self($description? = '') {
+method describe_self($description = '') {
 	$!child.describe_self($description ~ "not ");
 }
 
-sub _factory_Float($value)			{ factory(Matcher::factory::is($value)); }
-sub _factory_Integer($value)		{ factory(Matcher::factory::is($value)); }
-sub _factory_Matcher($matcher)		{ Matcher::Not.new($matcher); }
-sub _factory_String($value)		{ factory(Matcher::factory::is($value)); }
+sub factory__Float($value)		{ factory(Matcher::Factory::is($value)); }
+sub factory__Integer($value)		{ factory(Matcher::Factory::is($value)); }
+sub factory__Matcher($matcher)	{ Matcher::Not.new($matcher); }
+sub factory__String($value)		{ factory(Matcher::Factory::is($value)); }
 
 method _init_obj($child?, *%named) {
 	$!child := $child;

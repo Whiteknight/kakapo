@@ -63,6 +63,14 @@ sub assert_not_defined($obj, $message) {
     fail($message) if pir::defined($obj);
 }
 
+sub assert_does($obj, $role, $message) {
+	fail($message) unless pir::class__PP($obj).does($role);
+}
+
+sub assert_does_not($obj, $role, $message) {
+	fail($message) if pir::class__PP($obj).does($role);
+}
+
 sub assert_equal($o1, $o2, $message) {
 	fail($message) unless pir::iseq__IPP($o2, $o1);
 }

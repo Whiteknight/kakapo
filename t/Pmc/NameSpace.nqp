@@ -1,4 +1,5 @@
-# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
+#! /usr/bin/env parrot-nqp
+# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 INIT {
@@ -13,13 +14,14 @@ class Test::Pmc::NameSpace
 	is UnitTest::Testcase;
 
 INIT {
-	use(	'UnitTest::Testcase' );	
+	use(	'UnitTest::Testcase' );
+	use(	'UnitTest::Assertions' );
 }
 
 MAIN();
 
 sub MAIN() {
-	
+
 	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
 	$proto.suite.run;
 }
@@ -27,7 +29,7 @@ sub MAIN() {
 method test_string_name() {
 	my $sut := pir::get_namespace__P();
 
-	fail_unless( $sut.WHO.can( 'string_name' ), 
+	fail_unless( $sut.WHO.can( 'string_name' ),
 		'NameSpace should have string_name method');
 	fail_unless( $sut.string_name eq 'Test::Pmc::NameSpace',
 		'Default name is no-hll with ::');
@@ -36,3 +38,14 @@ method test_string_name() {
 	fail_unless( $sut.string_name(:format('pir')) eq "['Test'; 'Pmc'; 'NameSpace']",
 		':format(pir) should use [ ; ; ] style');
 }
+
+method test_fetch_basic() {
+	my $nsp := NameSpace.fetch: 'No::Such::Namespace'; 
+	
+	assert_isa( $nsp, 'NameSpace',
+		'Fetch should return a NameSpace instance');
+	
+	assert_equal( $nsp.get_name, <parrot::No::Such::Namespace>.split('::'),
+		'Fetch should automatically add hll name');
+}
+

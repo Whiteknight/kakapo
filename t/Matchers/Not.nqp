@@ -1,3 +1,4 @@
+#! /usr/bin/env parrot-nqp
 # Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
@@ -17,25 +18,56 @@ INIT {
 	use(	'UnitTest::Assertions' );	
 }
 
-MAIN();
-
-sub MAIN() {
-	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
-	$proto.suite.run;
-	#$proto.test_match;
-}
+TEST_MAIN();
 
 method test_match() {
-	my $sut := Matcher::Not.new(Matcher::Boolean.new(:true));
+	my $sut := Matcher::Not.new(Matcher::TrueFalse.new(:true));
 	assert_match(0, $sut, 'False should match not(true)');
 }
 
-method test_nonmatch() {
-	my $sut := Matcher::Not.new(Matcher::Boolean.new(:true));
-	want_fail('True should not match not(true)', { assert_match(1, $sut, 'should not match'); });
-}
-
 method test_new() {
-	my $sut := Matcher::Not.new(Matcher::Boolean.new(:true));
+	my $sut := Matcher::Not.new(Matcher::TrueFalse.new(:true));
 	assert_isa($sut, 'Matcher::Not', 'New should return the right type');
 }
+
+method test_nonmatch() {
+	my $sut := Matcher::Not.new(Matcher::TrueFalse.new(:true));
+	want_fail('True should not match not(true)', { 
+		assert_match(1, $sut, 'should not match'); });
+}
+
+class Dummy::NotFactoryTest {
+	INIT {
+		use( UnitTest::Assertions );
+		use( Matcher::Factory );
+	}
+	
+	method not_true() {
+		my $matcher := not(true());
+		assert_match(0, $matcher,
+			'0 should be not true' );
+		assert_not_match(1, $matcher, 
+			'1 should not match not true');
+	}
+
+	method not_false() {
+		my $matcher := not(false());
+		assert_not_match(0, $matcher,
+			'0 should not match not false' );
+		assert_match(1, $matcher,
+			'1 should match not false' );
+	}
+}
+		
+method test_factory_methods() {
+	my $dummy := Dummy::NotFactoryTest.new;
+	todo( "There's something amok with multisub dispatch in the factory sub");
+	
+	#_dumper(P6metaclass.get_parrotclass(Matcher::Not).inspect('all_parents'));
+	assert_throws_nothing( 'Assertions should pass',
+		{$dummy.not_true; });
+	assert_throws_nothing( 'Assertions should pass',
+		{ $dummy.not_false; });
+}
+
+#method main() { self.test_factory_methods; }

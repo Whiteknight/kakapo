@@ -1,3 +1,4 @@
+#! /usr/bin/env parrot-nqp
 # Copyright 2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
@@ -9,7 +10,7 @@ INIT {
 	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
 }
 
-class Test::Matcher::Null
+class Test::Matcher::IsNull
 	is UnitTest::Testcase ;
 	
 INIT {
@@ -25,16 +26,16 @@ sub MAIN() {
 }
 
 method test_match() {
-	my $sut := Matcher::Null.new;
+	my $sut := Matcher::IsNull.new;
 	assert_match(NoSuchSymbol, $sut, 'Null value should match');
 }
 
 method test_nonmatch() {
-	my $sut := Matcher::Null.new;
+	my $sut := Matcher::IsNull.new;
 	want_fail('Valid value should not match null', { assert_match('foo', $sut, 'should not match'); });
 }
 
 method test_new() {
-	my $sut := Matcher::Null.new;
-	assert_isa($sut, 'Matcher::Null', 'New should return the right type');
+	my $sut := Matcher::IsNull.new;
+	assert_isa($sut, 'Matcher::IsNull', 'New should return the right type');
 }

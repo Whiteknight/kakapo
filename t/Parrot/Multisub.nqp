@@ -155,8 +155,8 @@ class Dummy::MultiStartingWith {
 	has $!dog;
 	
 	method dog() { $!dog; }
-	method dog__Integer($i) { $!dog := $i; }
-	method dog__String($s) { $!dog := $s; }
+	method dog__Integer($i) { $!dog := "int: $i"; }
+	method dog__String($s) { $!dog := "string: $s"; }
 	method dog__Float($f) { die("no float"); }
 	method dog__ANY__Integer($x, $i) { $!dog := $i + 1; }
 	method dog__ANY__Float($x, $f) { $!dog := $f / 2; }
@@ -170,14 +170,14 @@ method test_multi_starting_with() {
 	my $obj := Dummy::MultiStartingWith.new;
 
 	$obj.mutt( 1 );
-	assert_equal( 1, $obj.mutt,
+	assert_equal( "int: 1", $obj.mutt,
 		'Ints should be stored');
 
 	assert_throws( Control::Error, 'Floats should die',
 		{ $obj.mutt(6.02E23); });
 		
 	$obj.mutt('spot');
-	assert_equal( 'spot', $obj.mutt,
+	assert_equal( 'string: spot', $obj.mutt,
 		'Strings should be stored');
 		
 	$obj.mutt(self, 1);

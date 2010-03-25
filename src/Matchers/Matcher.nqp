@@ -3,6 +3,8 @@
 
 class Matcher;
 
+has	$!heirloom;
+
 INIT {
 	# No more work is need for this class.
 	Kakapo::initload_done();

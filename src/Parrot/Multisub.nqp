@@ -42,7 +42,9 @@ sub define_multisub($name, @subs?, :$method, :$namespace = caller_namespace(), :
 		die( "Null sub in call to define_multisub")
 			if is_null($sub);
 
-		@adverbs := [ ":multi({ @signatures[$index].join(', ') })" ];
+		@adverbs := [ ":multi({ @signatures[$index].join(', ') })",
+			":subid('$name({@signatures[$index].join(', ') })')"
+		];
 		@adverbs.unshift(':method')
 			if $method;
 			
@@ -54,7 +56,7 @@ sub define_multisub($name, @subs?, :$method, :$namespace = caller_namespace(), :
 			:namespace($namespace), 
 			:target($sub)
 		);
-#		say($source);
+		#say($source);
 		Pir::compile($source);
 	}
 }
@@ -123,6 +125,7 @@ sub trampoline_default(:$method!, :$namespace!, :$target!) {
 		};
 	}
 	else {
+	my $P0 := '$P0';
 		$body := qq {
 	{ $tailcall }'$target_name'(pos :flat, named :flat :named)
 		};
