@@ -1,53 +1,53 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module Matcher::AllOf;
 # Matchers that matches only when all of its child matchers do. This is a short-circuiting 'AND'.
+module Matcher::AllOf;
 
-use('Dumper');
-Program::initload(:after('Matcher'));
-Matcher::Factory::export_sub(Matcher::AllOf::factory, :as('all_of'));
+INIT {
+	Kakapo::depends_on(<
+		Matcher::Factory
+		Matcher::Junction
+	>);
+}
 
 sub _initload() {
-	if our $_Initload_done { return 0; }
-	$_Initload_done := 1;
+	extends( Matcher::Junction );
 	
-	my $class_name := 'Matcher::AllOf';
+	Matcher::Factory::export_sub( Matcher::AllOf::factory, :as('all_of'));
+}
+
+
+method describe_failure($item, $description = '') {
+	my $count := 0;
+	my $and := '';
 	
-	NOTE("Creating class ", $class_name);
-	Class::SUBCLASS($class_name,
-		'Matcher'
-	);
-}
-
-method describe_failure($item, $description) {
-	return $description
-		~ "FIXME: What to put here? (allof)";
-}
-
-method describe_self($description) {
-	return $description
-		~ "FIXME: What to put here? (allof)";
-}
-
-method described_as(*@value)		{ self._ATTR('described_as', @value); }
-
-sub factory(*@list)				{ Matcher::AllOf.new(Matcher::Factory::make_matcher_list(@list)); }
-
-method init(@args, %opts) {
-	Matcher::init(self, @args, %opts);
-	self.matchers(@args);
-}
-
-method matches($item) {
-	for self.matchers {
-		unless $_.matches($item) {
-			return 0;
+	for @!children -> $kid {
+		unless $kid.matches: $item {
+			$description := $kid.describe_failure($item, "$description$and");
+			$and := ', and ';
+			++$count;
 		}
 	}
 	
-	return 1;
+	if $count > 1 {
+		$description := "( $description)";
+	}
+	
+	$description;
 }
 
-method matchers(*@value)			{ self._ATTR('matchers', @value); }
+method describe_self($description) {
+	$description 
+	~ "all of ( " 
+	~ @!children.map( -> $_ { $_.describe_self; }).join(', ')
+	~ " )";
+}
+	
+sub factory(*@list) { 
+	Matcher::AllOf.new( :children(@list) );
+}
 
+our method matches($item) {
+	@!children.grep( -> $kid { ! $kid.matches: $item } ) == 0;
+}
