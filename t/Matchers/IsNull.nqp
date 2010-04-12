@@ -18,12 +18,7 @@ INIT {
 	use(	'UnitTest::Assertions' );	
 }
 
-MAIN();
-
-sub MAIN() {
-	my $proto := Opcode::get_root_global(pir::get_namespace__P().get_name);
-	$proto.suite.run;
-}
+TEST_MAIN();
 
 method test_match() {
 	my $sut := Matcher::IsNull.new;

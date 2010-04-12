@@ -12,11 +12,12 @@ INIT {
 }
 
 sub _initload() {
-	extends(	Matcher );
+	extends( Matcher );
+	
 	Matcher::Factory::export_sub(Matcher::IsNull::factory, :as('null'));	
 }
 
-method describe_self($description) {
+method describe_self($description = '') {
 	$description ~ "a null value";
 }
 
