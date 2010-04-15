@@ -15,7 +15,8 @@ INIT {
 
 sub _initload() {
 	extends(	'Matcher' );
-	has(		'$!returning' );
+	has(		<$!returning> );
+	auto_accessors( :private );
 	
 	Matcher::Factory::export_sub(Matcher::PassFail::factory_fail, :as('fail'));
 	Matcher::Factory::export_sub(Matcher::PassFail::factory_pass, :as('pass'));
