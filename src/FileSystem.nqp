@@ -1,7 +1,7 @@
-# Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-# Provides a conventional framework for program execution. 
+# Provides a conventional framework for program execution.
 class FileSystem;
 
 INIT {
@@ -9,7 +9,7 @@ INIT {
 		:DEFAULT(	FileSystem::Unix),
 		:linux(	FileSystem::Unix),
 	);
-	
+
 	Kakapo::initload_done();
 }
 
@@ -19,10 +19,14 @@ method get_osname_map() {
 
 method _init_obj(*@pos, *%named) {
 	my %map := self.get_osname_map();
-	my $osname := %*VM<osname>;
-	
-	$osname := 'DEFAULT' 
-		unless %map.contains: $osname;
+	my $osname := 'DEFAULT';
+        try {
+            my $tmp := %*VM<osname>;
+            $osname := $tmp if %map.contains: $tmp;
+
+            # if not, whatever. Keep it at DEFAULT
+            CATCH { }
+        }
 
 	my $class := %map{$osname};
 	my $obj := $class.new( |@pos, |%named );	# NB: Returns a different type than Path.
@@ -36,7 +40,7 @@ our method instance($value?) {
 	elsif ! our $_Instance.defined {
 		self.instance: self.new;
 	}
-	
+
 	$_Instance;
 }
 
@@ -48,12 +52,12 @@ has	$!os;
 
 INIT {
 	use(	Parrot::Unix::Stat );
-	
+
 	my @multisubs := [ <exists> ];
-	
+
 	for @multisubs -> $name {
 		Parrot::define_multisub($name, :method, :starting_with($name));
-		
+
 		my $string_sub := Parrot::get_hll_global( "FileSystem::Unix::{$name}__String" );
 		unless is_null( $string_sub ) {
 			Parrot::define_multisub($name, [ $string_sub ], signatures => [ <_ string> ] );
@@ -85,7 +89,7 @@ my method exists__ANY($ignored) {
 
 our method get_contents($path, *%named) {
 	my $contents;
-	
+
 	if self.is_file: $path {
 		%named<mode> := 'r';
 		my $fh := self.open($path, |%named);
@@ -99,14 +103,14 @@ our method get_contents($path, *%named) {
 		# What to do?
 		die("Don't know how to get contents of non-file, non-directory: $path");
 	}
-	
+
 	$contents;
 }
 
 my method _init_obj(*@pos, *%named) {
 	$!file := pir::new__PS( 'File' );
 	$!os := pir::new__PS( 'OS' );
-	
+
 	self._init_args(|@pos, |%named);
 }
 
@@ -122,17 +126,17 @@ our method is_directory($path) {
 }
 
 our method is_file($path) {
-	my @stat := $!os.stat( ~$path );	
+	my @stat := $!os.stat( ~$path );
 	S_ISREG(@stat[2]);
 }
 
 our method is_link($path) {
-	my @stat := $!os.lstat( ~$path );	
+	my @stat := $!os.lstat( ~$path );
 	S_ISLNK(@stat[2]);
 }
 
 our method open($path, *%named) {
-	
+
 	my $fh	:= pir::new__PS('FileHandle');
 	my $mode	:= '' ~ %named<mode> // 'r';
 

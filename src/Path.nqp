@@ -2,7 +2,7 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 # Abstract representation of filesystem entries.
-class Path; 
+class Path;
 
 INIT {
 	our %_Osname_class_map := Hash.new(
@@ -17,10 +17,14 @@ method get_osname_map() {
 
 method _init_obj(*@pos, *%named) {
 	my %map := self.get_osname_map();
-	my $osname := %*VM<osname>;
-	
-	$osname := 'DEFAULT' 
-		unless %map.contains: $osname;
+	my $osname := 'DEFAULT';
+        try {
+            my $tmp := %*VM<osname>;
+            $osname := $tmp if %map.contains: $tmp;
+
+            # if not, whatever. Keep it at DEFAULT
+            CATCH { }
+        }
 
 	my $class := %map{$osname};
 	my $obj := $class.new( |@pos, |%named );	# NB: Returns a different type than Path.
@@ -38,7 +42,7 @@ has	$!initialized;
 
 INIT {
 	auto_accessors(:private);
-	
+
 	Parrot::define_multisub( <append>, :method, :starting_with( <append> ));
 	Parrot::define_multisub( <append>, [ Path::Unix::append__String ], :method, :signatures( [ < _ string > ]));
 }
@@ -56,11 +60,11 @@ my method append__Path($element, :$dynamic = 0) {
 		$!is_relative := $element.is_relative;
 		$!volume := $element.volume;
 	}
-		
+
 	$dynamic
-		?? @!elements.push: $element 
+		?? @!elements.push: $element
 		!! @!elements.append( $element.elements );
-	
+
 	self;
 }
 
@@ -86,15 +90,15 @@ my method append__String($element, :$dynamic = 0) {
 			$!is_relative := 1;
 		}
 	}
-	
+
 	# Take care of trailing /:  "foo/" -> [ 'foo', '' ]
 	my $last := @parts.pop;
-	
+
 	@parts.push: $last
 		unless $last eq '';
-		
+
 	@!elements.append: @parts;
-	
+
 	self;
 }
 
@@ -120,19 +124,19 @@ our method exists()			{ $!filesystem.exists(self); }
 # NB: This is called by the 'get_string' vtable provided by P6object
 method get_string() {
 	my $slash := self.directory_separator;
-	
+
 	self.is_absolute
 		?? $!volume ~ $slash ~ self.elements.join: $slash
 		!! self.elements.join: $slash;
 }
 
 my method _init_obj(*@parts, :$dynamic = 0, *%named) {
-	@!elements := @!elements;	
+	@!elements := @!elements;
 	$!filesystem := $*FileSystem;
 	$!initialized := 0;
 	$!is_relative := 1;
 	$!volume := '';
-	
+
 	self._init_args(|%named);
 
 	for @parts -> $part {
