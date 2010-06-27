@@ -1,9 +1,9 @@
-# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-class Exception::DependencyQueue::AlreadyDone 
+class Exception::DependencyQueue::AlreadyDone
 	is Exception::Wrapper;
-	
+
 # A queue that orders its entries according to their prerequisites.
 module DependencyQueue;
 
@@ -33,7 +33,7 @@ our method add_entry($name, $value, :@requires?) {
 			:message("Added already-done $name to DependencyQueue")
 		).throw;
 	}
-	
+
 	if @requires.isa('String') { @requires := Array::new(@requires); }
 	my @entry := Array::new($name, $value, @requires);
 	self.pending{$name} := @entry;
@@ -50,7 +50,7 @@ method _init_obj(*@pos, *%named) {
 	while @pos {
 		self.mark_as_done: @pos.shift;
 	}
-	
+
 	self._init_args(|@pos, |%named);
 }
 
@@ -97,13 +97,13 @@ my method tsort_add_pending_entries(@list) {
 
 	for @list {
 		my $key := $_;
-		
+
 		if self.already_added($key) {
-			next();
+			next;
 		}
-		
+
 		## Check for cycles in the graph.
-		
+
 		my $next_index := self.cycle_keys.elems;
 		self.cycle_keys.push($key);
 
@@ -112,19 +112,19 @@ my method tsort_add_pending_entries(@list) {
 
 			die("Cycle detected in dependencies: ", @slice.join(', '));
 		}
-		
+
 		self.cycle{$key} := $next_index;
 
 		## Put everything $key depends on ahead of $key
-		
+
 		if self.pending.contains($key) {
 			my $node := self.pending{$key};
 			my @prerequisites := $node[2];
-			
+
 			if +@prerequisites {
 				self.tsort_add_pending_entries(@prerequisites);
 			}
-		
+
 			## Finally, it's my turn.
 			self.added{$key} := 1;
 			self.queue.push($node);

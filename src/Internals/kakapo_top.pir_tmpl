@@ -1,18 +1,19 @@
 .namespace []
 
+.loadlib 'io_ops'
 .include 'iglobals.pasm'
 .include 'interpinfo.pasm'
 .include 'sysinfo.pasm'
 
 # By virtue of appearing first in the library, this function runs before all other :init or :load
-# subs. Call one of the Kakapo _pre_initload hooks to set up those modules that absolutely 
+# subs. Call one of the Kakapo _pre_initload hooks to set up those modules that absolutely
 # must be done first.
 
 .sub '_kakapo_top_pre_initload' :load :init
 
 	$P0 = get_hll_global ['Kakapo'], '_pre_initload'
 	unless null $P0 goto call_sub
-	
+
 	die "Could not locate Kakapo::_pre_initload. Is your library file corrupted?"
 
 call_sub:

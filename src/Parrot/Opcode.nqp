@@ -1,10 +1,10 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 # Provides NQP-callable versions of various Parrot opcodes.
 module Opcode;
 
-# Kakapo startup function. Do the global exports early, so that other modules 
+# Kakapo startup function. Do the global exports early, so that other modules
 # can import these functions during their init processing.
 sub _pre_initload() {
 
@@ -12,7 +12,12 @@ sub _pre_initload() {
 	export(:tags('TYPE'),	'can', 'does', 'get_class', 'isa', 'new', 'typeof');
 }
 
-sub backtrace()			{ pir::backtrace(); }
+sub backtrace()
+{
+    # TODO: backtrace causes an IMCC parse error. It might be a dynop now
+    #pir::backtrace();
+}
+
 sub can($object, $method)		{ pir::can__IPS($object, $method); }
 sub class($object)			{ pir::class__PP($object); }
 sub clone($object)			{ pir::clone($object); }
@@ -65,7 +70,7 @@ sub get_hll_global($p1, $p2?) {
 	if $p2 {
 		@parts.push($p2);
 	}
-	
+
 	my $name := @parts.pop;
 
 	my $result := Q:PIR {
@@ -74,43 +79,43 @@ sub get_hll_global($p1, $p2?) {
 		$S1 = $P1
 		%r = get_hll_global [$P0], $S1
 	};
-	
+
 	return $result;
 }
 
 sub get_root_global($p1, $p2?) {
 # May be called with C< ('a::b') >, C< (@names) >, C< ('a::b', 'c') >, or C< (@nsp_names, 'c') >.
-	
+
 	my @parts := pir::isa($p1, 'String') ?? $p1.split('::') !! $p1;
-	
+
 	if $p2 {
 		@parts.push($p2);
 	}
 
 	my $name := @parts.pop;
-	
+
 	my $result := Q:PIR {
 		$P0 = find_lex '@parts'
 		$P1 = find_lex '$name'
 		$S1 = $P1
 		%r = get_root_global [$P0], $S1
 	};
-	
+
 	return $result;
 }
 
 sub make_root_namespace($p1) {
 	my $result;
-	
+
 	if defined($p1) {
 		my @parts := isa($p1, 'String') ?? $p1.split('::') !! $p1;
-		
+
 		my $nsp := get_root_namespace();
 		$result := $nsp.make_namespace(@parts);
 	}
 	else {
 		die("Undefined namespace path");
 	}
-	
+
 	return $result;
 }

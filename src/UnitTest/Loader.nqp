@@ -8,7 +8,7 @@ has	%!seen_methods;
 has	$!test_prefix;
 
 sub compare_methods($a, $b) {
-	pir::cmp_str__ISS(~ $a, ~ $b);
+	pir::cmp_str__IPP(~ $a, ~ $b);
 }
 
 method configure_suite(@tests, :$suite, *%named) {
