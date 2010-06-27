@@ -181,7 +181,7 @@ sub MAIN(@argv) {
 
 	#install_build_libs();
 	install_substep('build', Setup::Step::build_libs, :before('_build_pbc_pir'));
-	install_substep('build', Setup::Step::strip_annotations, :before('_build_pbc_pir'));
+	#install_substep('build', Setup::Step::strip_annotations, :before('_build_pbc_pir'));
 	register_step_before('clean', Setup::Step::clean_libs);
 
 	register_step('release', Setup::Step::make_release);
