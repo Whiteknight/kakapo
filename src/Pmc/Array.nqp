@@ -41,7 +41,7 @@ sub _pre_initload() {
 	%pmcs<ResizableStringArray>.push( <append> );
 
 	my $from_nsp := pir::get_namespace__P();
-        $from_nsp := pir::typeof__PP($from_nsp);
+        $from_nsp := $from_nsp.get_class();
 
 	for %pmcs {
 		my %export_subs;
