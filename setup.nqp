@@ -130,7 +130,7 @@ sub MAIN(@argv) {
 		src/Matchers/PctNodes.pir
 		src/Matchers/TrueFalse.pir
 
-		src/Path.pir		
+		src/Path.pir
 		src/Program.pir
 
 		src/UnitTest/Assertions.pir
@@ -306,7 +306,8 @@ sub make_release(*%config) {
 		pir::die("Cannot release: no Version Description Document provided. Set <vdd_file> config.");
 	}
 
-	my $fh := pir::open__PSS($vdd, 'r');
+	my $fh := pir::new__PS("FileHandle");
+        $fh.open($vdd, 'r');
 	my $leader := $fh.readline;
 	$fh.close;
 
@@ -335,14 +336,16 @@ sub make_release(*%config) {
 sub strip_annotations(*%config) {
 	for %config<strip_annotations> {
 		if file_exists(~$_) {
-			my $fh := pir::open__PSS(~$_, 'r');
+			my $fh := pir::new__PS("FileHandle");
+                        $fh.open(~$_, 'r');
 			my $body := $fh.readall();
 			$fh.close;
 
 			if pir::index__ISS($body, "\n.annotate ") >= 0 {
 				say("Removing annotations from $_");
 				$body.replace("\n.annotate ", "\n# .annotate ");
-				$fh := pir::open__PSS(~$_, 'w');
+				$fh := pir::new__PS("FileHandle");
+                                $fh.open(~$_, 'w');
 				$fh.puts($body);
 				$fh.close;
 			}

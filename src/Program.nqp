@@ -1,11 +1,11 @@
-# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 class Exception::ProgramExit
 	is Exception::Wrapper {
 }
 
-# Provides a conventional framework for program execution. 
+# Provides a conventional framework for program execution.
 class Program;
 
 has @!argv;
@@ -26,9 +26,9 @@ INIT {
 
 sub _initload() {
 	auto_accessors(:private);
-	
+
 	# Initialize global contextual vars:
-	my $config := pir::getinterp__P()[6];
+	my $config := pir::getinterp__P()[8];
 	pir::set_hll_global__vSP( <%VM>, $config );
 
 	my $instance := FileSystem.instance;
@@ -36,7 +36,7 @@ sub _initload() {
 
 	Global::inject_root_symbol( Program::global_at_exit, :as('at_exit') );
 	Global::inject_root_symbol( Program::global_at_start, :as('at_start') );
-	
+
 	Global::inject_root_symbol( Program::exit );
 	Global::inject_root_symbol( Program::_exit );
 }
@@ -60,7 +60,7 @@ our method do_start() {
 sub exit($status = 0) {
 	Exception::ProgramExit.new(
 		:exit_code($status),
-		:message("exit($status)"), 
+		:message("exit($status)"),
 		:payload($status)
 	).throw;
 }
@@ -92,14 +92,14 @@ method _init_obj(*@pos, *%named) {
 	$!exit_value := 0;
 	$!program_name := $!program_name;
 	$!start_marshaller :=ComponentMarshaller.new(:name('start'));
-	
+
 	#super(|@pos, |%named);
 	self._init_args(|@pos, |%named);
 }
 
 method from_parrot($ignored?) {
 	my $interp := pir::getinterp__P();
-	
+
 	@!argv := $interp[2];		# IGLOBALS_ARGV_LIST = 2
 	$!executable_name := $interp[9];	# IGLOBALS_EXECUTABLE = 9
 	$!program_name := @!argv.shift;
@@ -112,18 +112,18 @@ method get_main() {
 sub instance(*@new) {	# Use *@new to allow passing undef (simplifies testing)
 	if @new.elems {
 		my $old := $_Instance;
-		
-		if $old.defined 
+
+		if $old.defined
 			&& (! $old.exit_marshaller.is_empty || ! $old.start_marshaller.is_empty) {
 			die( "A previously-registered Program instance has unprocessed marshalling queues." );
 		}
-	
+
 		$_Instance := @new[0];
 	}
 	else {
 		die( "No Program::instance set yet" )
 			unless $_Instance.defined;
-			
+
 		$_Instance;
 	}
 }
@@ -136,11 +136,11 @@ method main(*@argv) {
 		&main := pir::get_hll_global__PS('MAIN')
 			if pir::isnull(&main);
 	}
-		
+
 	if pir::isnull(&main) {
 		die( "Could not find a main() to run. Override main() on this class, or call set_main()" );
 	}
-	
+
 	&main(@argv);
 }
 
@@ -152,20 +152,20 @@ method run( :@argv ) {
 
 	my @*ARGS := self.argv;
 	my $*PROGRAM_NAME := self.program_name;
-	
+
 	my $*ERR;
 	my $*IN;
 	my $*OUT;
-	
+
 	my %saved_std := self.save_std_handles;
 	my %new_std := %!handles.merge: %saved_std, into => Hash.new;
-	
+
 	self.set_std_handles: %new_std;
 
 	try {
 		self.do_start;
 		self.main;
-		
+
 		CATCH {
 			if $!.type == Exception::ProgramExit.type {
 				$!.handled: 1;
@@ -179,14 +179,14 @@ method run( :@argv ) {
 
 	# TODO: Maybe differentiate between _exit and exit in the exception?
 	self.do_exit;
-	
+
 	self.set_std_handles: %saved_std;
 	self.exit_program($!exit_value);
 }
 
 method save_std_handles() {
 	my %handles;
-	
+
 	%handles<stderr>	:= pir::getstderr__P();
 	%handles<stdin>	:= pir::getstdin__P();
 	%handles<stdout> := pir::getstdout__P();
@@ -198,13 +198,13 @@ method set_std_handles(%handles) {
 
 	pir::setstderr__vP(%handles<stderr>);
 	$*ERR := %handles<stderr>;
-	
+
 	pir::setstdin__vP(%handles<stdin>);
 	$*IN := %handles<stdin>;
-	
+
 	pir::setstdout__vP(%handles<stdout>);
 	$*OUT := %handles<stdout>;
-	
+
 	self;
 }
 
@@ -215,17 +215,17 @@ method stdout($value?)		{ pir::defined($value) ?? (%!handles<stdout> := $value) 
 
 sub swap_handles(*%handles) {
 	my %save_handles;
-	
+
 	if pir::defined( %handles<stderr> ) {
 		%save_handles<stderr> := pir::getstderr__P();
 		pir::setstderr( %handles<stderr> );
 	}
-	
+
 	if pir::defined( %handles<stdin> ) {
 		%save_handles<stdin> := pir::getstdin__P();
 		pir::setstdin( %handles<stdin> );
 	}
-	
+
 	if pir::defined( %handles<stdout> ) {
 		%save_handles<stdout> := pir::getstdout__P();
 		pir::setstdout( %handles<stdout> );
