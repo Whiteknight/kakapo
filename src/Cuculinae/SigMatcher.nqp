@@ -9,7 +9,7 @@ INIT {
 
 sub _initload() {
 	extends( Matcher::CallSig );
-	
+
 	use(	'Matcher::CallSig' );
 	use(	'Cuculus::Canorus' );
 }
@@ -21,8 +21,7 @@ method object_matches($actual) {
 	$exp =:=  $act
 	|| $exp =:= ANY()
 	|| isa($exp, Cuculus::Canorus::Ovum) && isa($act, Cuculus::Canorus::Ovum)
-		&& Opcode::getattribute($exp, '$!CUCULUS_CANORUS') 
-			=:= Opcode::getattribute($act, '$!CUCULUS_CANORUS');
+		&& Opcode::getattribute($exp, '$!CUCULUS_CANORUS') =:= Opcode::getattribute($act, '$!CUCULUS_CANORUS');
 }
 
 method positionals_match($actual) {
@@ -52,7 +51,7 @@ method positionals_match($actual) {
 		else {
 			return 0;
 		}
-		
+
 		$count++;
 	}
 
