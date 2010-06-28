@@ -1,13 +1,12 @@
 # Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-class Pmc::Array{
+class Array {
 
 # Special sub called when the Kakapo library is loaded or initialized to
 # guarantee this module is already initialized during :init and :load
 # processing.
 sub _pre_initload() {
-
 	our %Bsearch_compare_func;
 
 	%Bsearch_compare_func{'<=>'}	:= Array::cmp_numeric;
@@ -41,24 +40,23 @@ sub _pre_initload() {
 	%pmcs<ResizableStringArray>.push( <append> );
 
 	my $from_nsp := pir::get_namespace__P();
-        $from_nsp := $from_nsp.get_class();
 
 	for %pmcs {
-		my %export_subs;
 		my $pmc_name := ~ $_;
-		my $to_nsp := Parrot::get_hll_namespace($pmc_name);
+		my $to_class := Parrot::get_hll_namespace($pmc_name).get_class();
 
 		for %pmcs{$_} {
-			if !pir::isnull__IP($from_nsp.find_method($_)) {
-				%export_subs{$_} := $from_nsp{$_};
-			}
+                        my $method := $from_nsp{$_};
+                        if !pir::isnull__IP($method) {
+                            try {
+				$to_class.add_method($_, $method);
+                            }
+                        }
 			else {
 				pir::die("Request to export unknown Array method '$_'");
 			}
 
-		}
-
-		$from_nsp.export_to($to_nsp, %export_subs);
+                }
 	}
 
 	# Put some helper functions in the global namespace.
