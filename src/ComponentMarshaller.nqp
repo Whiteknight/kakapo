@@ -2,63 +2,60 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 # Orders code execution among interdependent components.
-module ComponentMarshaller;
+class ComponentMarshaller {
 
-has $!name;
-has $!queue;
+    has $!name;
+    has $!queue;
 
-sub _pre_initload(*@modules_done) {
-	has(<
-		$!name
-		$!queue
-	>);
-}
+    # Add a call to C< $sub >, optionally named C< $name >, to the queue. Any dependencies
+    # will be specified by the (optional) C< :requires(...) > named parameter. If C< $sub > is a
+    # string name, the C< :namespace > parameter may by used to provide relevant context.
+    # (Not necessary if the string includes a namespace: 'Foo::bar'.)
 
-# Add a call to C< $sub >, optionally named C< $name >, to the queue. Any dependencies
-# will be specified by the (optional) C< :requires(...) > named parameter. If C< $sub > is a
-# string name, the C< :namespace > parameter may by used to provide relevant context.
-# (Not necessary if the string includes a namespace: 'Foo::bar'.)
+    my method add_call($sub, $name?, :$namespace = Parrot::caller_namepace(), :@requires) {
 
-my method add_call($sub, $name?, :$namespace = Parrot::caller_namepace(), :@requires) {
+            $sub := Parrot::qualified_name($sub, :namespace($namespace))
+                    unless $sub.isa('Sub');
 
-	$sub := Parrot::qualified_name($sub, :namespace($namespace))
-		unless $sub.isa('Sub');
+            $name := Parrot::qualified_name($sub)
+                    unless $name.defined;
 
-	$name := Parrot::qualified_name($sub)
-		unless $name.defined;
+            $!queue.add_entry($name, $sub, @requires);
+    }
 
-	$!queue.add_entry($name, $sub, @requires);
-}
+    our method _init_obj(*@pos, *%named) {
+            $!queue := DependencyQueue.new;
+            if %named{"name"} {
+                $!name := %named{"name"};
+            }
 
-our method _init_obj(*@pos, *%named) {
-	$!queue := DependencyQueue.new;
+            #self._init_args(|@pos, |%named);
+    }
 
-	self._init_args(|@pos, |%named);
-}
+    our method is_empty() {
+            $!queue.is_empty;
+    }
 
-our method is_empty() {
-	$!queue.is_empty;
-}
+    our method mark_as_done($name) {
+            $!queue.mark_as_done($name);
+    }
 
-our method mark_as_done($name) {
-	$!queue.mark_as_done($name);
-}
+    our method process_queue($invocant) {
+            my &callee;
 
-our method process_queue($invocant) {
-	my &callee;
+            # FIXME: Not doing namespaces right, here.
+            until $!queue.is_empty {
+                    &callee := $!queue.next_entry;
 
-	# FIXME: Not doing namespaces right, here.
-	until $!queue.is_empty {
-		&callee := $!queue.next_entry;
+                    &callee := Parrot::get_hll_global(&callee)
+                            if &callee.isa('String');
 
-		&callee := Parrot::get_hll_global(&callee)
-			if &callee.isa('String');
+                    die( "Got null callee while processing $!name queue" )
+                            if pir::isnull(&callee);
 
-		die( "Got null callee while processing $!name queue" )
-			if pir::isnull(&callee);
+                    &callee($invocant);
+            }
 
-		&callee($invocant);
-	}
-
-	$!queue.reset;
+            $!queue.reset;
+    }
 }

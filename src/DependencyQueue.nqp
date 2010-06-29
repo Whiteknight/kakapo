@@ -5,132 +5,121 @@ class Exception::DependencyQueue::AlreadyDone
 	is Exception::Wrapper;
 
 # A queue that orders its entries according to their prerequisites.
-module DependencyQueue;
+class DependencyQueue {
 
-has %!added;
-has %!already_done;
-has %!cycle;
-has @!cycle_keys;
-has $!locked;
-has %!pending;
-has @!queue;
+    has %!added;
+    has %!already_done;
+    has %!cycle;
+    has @!cycle_keys;
+    has $!locked;
+    has %!pending;
+    has @!queue;
 
-sub _pre_initload() {
+    our method add_entry($name, $value, :@requires?) {
+            if %!already_done.contains($name) {
+                    Exception::DependencyQueue::AlreadyDone.new(
+                            :message("Added already-done $name to DependencyQueue")
+                    ).throw;
+            }
 
-	has(	'%!added',
-		'%!already_done',
-		'%!cycle',
-		'@!cycle_keys',
-		'$!locked',
-		'%!pending',
-		'@!queue'
-	);
-}
+            if @requires.isa('String') { @requires := Array::new(@requires); }
+            my @entry := Array::new($name, $value, @requires);
+            %!pending{$name} := @entry;
+    }
 
-our method add_entry($name, $value, :@requires?) {
-	if self.already_done.contains($name) {
-		Exception::DependencyQueue::AlreadyDone.new(
-			:message("Added already-done $name to DependencyQueue")
-		).throw;
-	}
+    my method already_added($name) {
+            return %!already_done.contains($name)
+                    || self.added.contains($name);
+    }
 
-	if @requires.isa('String') { @requires := Array::new(@requires); }
-	my @entry := Array::new($name, $value, @requires);
-	self.pending{$name} := @entry;
-}
+    method _init_obj(*@pos, *%named) {
+            $!locked := 0;
 
-my method already_added($name) {
-	return self.already_done.contains($name)
-		|| self.added.contains($name);
-}
+            while @pos {
+                    self.mark_as_done: @pos.shift;
+            }
 
-method _init_obj(*@pos, *%named) {
-	self.locked(0);
+            #self._init_args(|@pos, |%named);
+    }
 
-	while @pos {
-		self.mark_as_done: @pos.shift;
-	}
+    our method is_empty() {
+            return $!locked
+                    ?? @!queue.elems == 0
+                    !! %!pending.elems == 0;
+    }
 
-	self._init_args(|@pos, |%named);
-}
+    our method mark_as_done($label) {
+            %!already_done{$label} := 1;
+    }
 
-our method is_empty() {
-	return self.locked
-		?? self.queue.elems == 0
-		!! self.pending.elems == 0;
-}
+    our method next_entry() {
+            unless $!locked {
+                    self.tsort_queue();
+            }
 
-our method mark_as_done($label) {
-	self.already_done{$label} := 1;
-}
+            if @!queue.elems {
+                    my $node := @!queue.shift;
+                    self.mark_as_done($node[0]);
+                    $node[1];
+            }
+            else {
+                    Undef.new;
+            }
+    }
 
-our method next_entry() {
-	unless self.locked {
-		self.tsort_queue();
-	}
+    our method reset() {
+            $!locked := 0;
+            @!pending(Hash.new);
+    }
 
-	if self.queue.elems {
-		my $node := self.queue.shift;
-		self.mark_as_done($node[0]);
-		$node[1];
-	}
-	else {
-		Undef.new;
-	}
-}
+    method tsort_queue() {
+            $!locked := 1;
+            @!cycle_keys(Array::new());
+            %!cycle(Hash.new());
+            %!added(Hash.new());
+            self.tsort_add_pending_entries(%!pending.keys);
+    }
 
-our method reset() {
-	self.locked(0);
-	self.pending(Hash.new);
-}
+    my method tsort_add_pending_entries(@list) {
+    # Visits a list of keys, adding the attached calls to the queue in topological order.
 
-method tsort_queue() {
-	self.locked(1);
-	self.cycle_keys(Array::new());
-	self.cycle(Hash.new());
-	self.added(Hash.new());
-	self.tsort_add_pending_entries(self.pending.keys);
-}
+            for @list {
+                    my $key := $_;
 
-my method tsort_add_pending_entries(@list) {
-# Visits a list of keys, adding the attached calls to the queue in topological order.
+                    if self.already_added($key) {
+                            next;
+                    }
 
-	for @list {
-		my $key := $_;
+                    ## Check for cycles in the graph.
 
-		if self.already_added($key) {
-			next;
-		}
+                    my $next_index := @!cycle_keys.elems;
+                    %!cycle_keys.push($key);
 
-		## Check for cycles in the graph.
+                    if %!cycle.contains($key) {
+                            my @slice := @!cycle_keys.slice(:from(%!cycle{$key}));
 
-		my $next_index := self.cycle_keys.elems;
-		self.cycle_keys.push($key);
+                            die("Cycle detected in dependencies: ", @slice.join(', '));
+                    }
 
-		if self.cycle.contains($key) {
-			my @slice := self.cycle_keys.slice(:from(self.cycle{$key}));
+                    %!cycle{$key} := $next_index;
 
-			die("Cycle detected in dependencies: ", @slice.join(', '));
-		}
+                    ## Put everything $key depends on ahead of $key
 
-		self.cycle{$key} := $next_index;
+                    if %!pending.contains($key) {
+                            my $node := %!pending{$key};
+                            my @prerequisites := $node[2];
 
-		## Put everything $key depends on ahead of $key
+                            if +@prerequisites {
+                                    self.tsort_add_pending_entries(@prerequisites);
+                            }
 
-		if self.pending.contains($key) {
-			my $node := self.pending{$key};
-			my @prerequisites := $node[2];
-
-			if +@prerequisites {
-				self.tsort_add_pending_entries(@prerequisites);
-			}
-
-			## Finally, it's my turn.
-			self.added{$key} := 1;
-			self.queue.push($node);
-		}
-		else {
-			die("$key is a requirement, but is not marked done, and not in the pending queue.");
-		}
-	}
+                            ## Finally, it's my turn.
+                            %!added{$key} := 1;
+                            @!queue.push($node);
+                    }
+                    else {
+                            die("$key is a requirement, but is not marked done, and not in the pending queue.");
+                    }
+            }
+    }
 }

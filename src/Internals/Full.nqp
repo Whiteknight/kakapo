@@ -1,7 +1,7 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-# This file is only linked with the 'kakapo_full' library. 
+# This file is only linked with the 'kakapo_full' library.
 
 module Kakapo;
 
@@ -9,15 +9,15 @@ sub depends_on(*@list, :$method) {
 	if @list.elems == 1 && @list[0].does( 'array' ) {
 		@list := @list.shift;
 	}
-	
+
 	my $namespace := Parrot::caller_namespace();
 	my $name := $namespace.string_name;
-	
+
 	unless $method.defined {
 		unless Parrot::caller_namespace().contains(<_initload>) {
 			die("Could not locate (default) '_initload' method in namespace $name");
 		}
-		
+
 		$method := $namespace<_initload>;
 	}
 
@@ -27,7 +27,7 @@ sub depends_on(*@list, :$method) {
 sub get_preinit_subs() {
 
 	# Note: Order is crucial.
-	
+
 	<	Global
 		Opcode
 		Parrot
@@ -41,9 +41,6 @@ sub get_preinit_subs() {
 		Syntax
 		P6metaclass
 		P6object
-		DependencyQueue
-		ComponentMarshaller
-		Library
 		Kakapo::Full
 	>;
 }
@@ -61,18 +58,20 @@ sub library_load_done() {
 	Kakapo::Full::library_instance().do_load();
 }
 
-module Kakapo::Full;
+module Kakapo::Full {
 
-sub _pre_initload() {
-	library_instance(Library.new);
-	
-	for Kakapo::get_preinit_subs() -> $module_name {
-		Kakapo::initload_done($module_name);
-	}
-}
+    our $_library_instance;
 
-sub library_instance($value?) {
-	$value.defined
-		?? (our $_library_instance := $value)
-		!! $_library_instance;
+    sub _pre_initload() {
+            library_instance(Library.new);
+            for Kakapo::get_preinit_subs() -> $module_name {
+                    Kakapo::initload_done($module_name);
+            }
+    }
+
+    sub library_instance($value?) {
+            $value.defined
+                    ?? ($_library_instance := $value)
+                    !! $_library_instance;
+    }
 }
