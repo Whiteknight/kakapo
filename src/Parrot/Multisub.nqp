@@ -1,4 +1,4 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 # Subsystem of Parrot dealing with multisubs.
@@ -8,57 +8,58 @@ module Parrot;
 # the caller, or inferred from the specially formatted name of the sub. Each trampoline calls an NQP
 # sub or method.
 sub define_multisub($name, @subs?, :$method, :$namespace = caller_namespace(), :@signatures, :$starting_with) {
-	$namespace := get_hll_namespace($namespace)
-		if $namespace.isa('String');
-	$namespace := $namespace.WHO
-		if $namespace.isa('P6protoobject');
-		
-	unless @subs {
-		die( "You must provide either @subs or a :starting_with prefix")
-			unless $starting_with;
-			
-		my $len := $starting_with.length;
-		for $namespace.keys -> $sub {
-			@subs.push: $sub
-				if $sub.substr(0, $len) eq $starting_with;
-		}
-	}
-	
-	die("@signatures must have same #elements as @subs, if provided")
-		if @signatures && @signatures.elems != @subs.elems;
+	#$namespace := get_hll_namespace($namespace)
+#		if pir::isa($namespace, 'String');
+#	$namespace := $namespace.WHO
+#		if pir::isa($namespace, 'P6protoobject');
+#
+#	unless @subs {
+#		pir::die( "You must provide either @subs or a :starting_with prefix")
+#			unless $starting_with;
+#
+#		my $len := $starting_with.length;
+#		for $namespace.keys -> $sub {
+#			@subs.push: $sub
+#				if $sub.substr(0, $len) eq $starting_with;
+#		}
+#	}
+#
+#	pir::die("@signatures must have same #elements as @subs, if provided")
+#		if @signatures && @signatures.elems != @subs.elems;
+#
+#	unless @signatures {
+#		@signatures := @subs.map: -> $name {
+#			my @sig := parse_multisig(~ $name);
+#			@sig.unshift: <_>
+#				if $method;
+#			@sig};
+#	}
+#
+#	my @adverbs;
+#	my $index := 0;
+#
+#	for @subs -> $sub {
+#		pir::die( "Null sub in call to define_multisub")
+#			if is_null($sub);
+#
+#		@adverbs := [ ":multi({ @signatures[$index].join(', ') })",
+#			":subid('$name({@signatures[$index].join(', ') })')"
+#		];
+#		@adverbs.unshift(':method')
+#			if $method;
+#
+#		$index++;
 
-	unless @signatures {
-		@signatures := @subs.map: -> $name { 
-			my @sig := parse_multisig(~ $name); 
-			@sig.unshift: <_>
-				if $method;
-			@sig};
-	}
 
-	my @adverbs;
-	my $index := 0;
-
-	for @subs -> $sub {
-		die( "Null sub in call to define_multisub")
-			if is_null($sub);
-
-		@adverbs := [ ":multi({ @signatures[$index].join(', ') })",
-			":subid('$name({@signatures[$index].join(', ') })')"
-		];
-		@adverbs.unshift(':method')
-			if $method;
-			
-		$index++;
-
-		my $source := trampoline($name, 
-			:adverbs(@adverbs), 
-			:method($method),
-			:namespace($namespace), 
-			:target($sub)
-		);
-		#say($source);
-		Pir::compile($source);
-	}
+#		my $source := trampoline($name,
+#			:adverbs(@adverbs),
+#			:method($method),
+#			:namespace($namespace),
+#			:target($sub)
+#		);
+#		#say($source);
+#		Pir::compile($source);
+#	}
 }
 
 sub parse_multisig($name) {
@@ -71,15 +72,15 @@ sub trampoline($name, :$namespace!, :@adverbs, :@body, :$method = 0, :$target!) 
 
 	unless @body {
 		@body := trampoline_default(
-			:method($method), 
-			:namespace($namespace), 
+			:method($method),
+			:namespace($namespace),
 			:target($target),
 		);
 	}
-	
+
 	my $pir_namespace := Pir::pir_namespace($namespace);
 	my $sub_modifiers := @adverbs.join(' ');
-	
+
 	my $code := qq{
 .namespace $pir_namespace
 .sub '$name' $sub_modifiers
@@ -91,32 +92,32 @@ sub trampoline($name, :$namespace!, :@adverbs, :@body, :$method = 0, :$target!) 
 }
 
 sub trampoline_default(:$method!, :$namespace!, :$target!) {
-	my $tailcall := $method 
+	my $tailcall := $method
 		?? '.tailcall self.'
 		!! '.tailcall ';
-		
+
 	my @nsp_parts;
 	my $target_nsp;
 	my $target_name;
-	
-	if $target.isa('String') {
+
+	if pir::isa($target, 'String') {
 		@nsp_parts := $target.split('::');
 		$target_name := @nsp_parts.pop;
 		$target_nsp := @nsp_parts.join('::');
-		$target_nsp := $namespace 
+		$target_nsp := $namespace
 			unless $target_nsp;
 	}
-	elsif $target.isa('Sub') {
+	elsif pir::isa($target, 'Sub') {
 		$target_nsp := $target.get_namespace;
 		$target_name := ~ $target;
 	}
 	else {
-		die( "Don't know how to build trampoline for ", pir::typeof__SP($target), " $target" );
+		pir::die( "Don't know how to build trampoline for " ~ pir::typeof__SP($target) ~ " $target" );
 	}
-	
-	$target_nsp := Pir::pir_namespace($target_nsp); 
+
+	$target_nsp := Pir::pir_namespace($target_nsp);
 	my $body;
-	
+
 	if $target_nsp ne Pir::pir_namespace($namespace) {
 		$body := qq{
 	.local pmc target_sub
@@ -130,6 +131,6 @@ sub trampoline_default(:$method!, :$namespace!, :$target!) {
 	{ $tailcall }'$target_name'(pos :flat, named :flat :named)
 		};
 	}
-	
+
 	[ $body ];
 }

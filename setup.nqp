@@ -147,7 +147,7 @@ sub MAIN(@argv) {
 	}
 
 	%kakapo<build_libs><library/kakapo_full.pir> := <
-		src/Internals/kakapo_top.pir
+                src/Internals/kakapo_top.pir
 		src/Internals/Full.pir
 	>;
 	%kakapo<build_libs><library/kakapo_full.pir>.append( @base_pir_files );

@@ -1,26 +1,37 @@
 # kakapo_bottom.pir - code to be attached to the end of kakapo libraries.
 
-# Copyright (C) 2009, Austin Hastings. See LICENSE distributed with this file 
+# Copyright (C) 2009, Austin Hastings. See LICENSE distributed with this file
 # or at http://www.opensource.org/licenses/artistic-license-2.0.php
 
 .namespace [ 'Kakapo' ]
 
+.sub kakapo_bottom_initload :init :load
+
+	#$P0 = get_hll_global ['Kakapo'], '_pre_initload'
+	#unless null $P0 goto call_sub
+
+	#die "Could not locate Kakapo::_pre_initload. Is your library file corrupted?"
+
+#call_sub:
+#	$P0()
+.end
+
 .sub kakapo_bottom_init :init
 	$S0 = 'library_init_done'
-	.tailcall kakapo_bottom_notify($S0)
+	#.tailcall kakapo_bottom_notify($S0)
 .end
 
 .sub kakapo_bottom_load :load
 	$S0 = 'library_load_done'
-	.tailcall kakapo_bottom_notify($S0)
+	#.tailcall kakapo_bottom_notify($S0)
 .end
 
 .sub kakapo_bottom_notify
 	.param string sub_name
-	
+
 	$P0 = get_hll_global [ 'Kakapo' ], sub_name
 	unless null $P0 goto notify
-	
+
 	$S0 = "Could not locate 'Kakapo::"
 	concat $S0, sub_name
 	concat $S0, "' function"

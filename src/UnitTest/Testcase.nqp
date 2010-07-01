@@ -1,36 +1,14 @@
-# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 class Exception::UnitTestFailure is Exception::Wrapper {
 	method severity() { Exception::Severity.ERROR; }
 }
 
-module UnitTest::Testcase;
+module UnitTest::Testcase is UnitTest::Standalone;
 
 has	$!todo;
 has	$!verify;
-
-INIT {
-	extends( UnitTest::Standalone );
-	
-	# NB: This auto-generates accessor methods for these names. And declares the class.
-	has(<
-		$!todo
-		$!verify
-	>);
-
-	export(<
-		fail
-		fail_if
-		fail_unless
-		TEST_MAIN
-		verify_that
-	>);
-
-	export( UnitTest::Testcase::todo_test, :as('todo'));
-	
-	Kakapo::initload_done();
-}
 
 my method default_loader() {
 	UnitTest::Loader.new;
@@ -65,26 +43,26 @@ method run($result?) {
 	unless $result.defined {
 		$result := self.default_result;
 	}
-	
+
 	$result.start_test(self);
 	my $exception;
-	
+
 	try {
 		self.set_up();
 		self.run_test();
-	
+
 		CATCH {
 			$exception := $!;
 			$!.handled(1);
 		}
 	};
-	
+
 	try {
 		self.tear_down();
 
 		CATCH {
 			$!.handled(1);
-			
+
 			unless $exception.defined {
 				$exception := $!;
 			}
@@ -102,7 +80,7 @@ method run($result?) {
 	else {
 		$result.end_test(self);
 	}
-	
+
 	$result;
 }
 

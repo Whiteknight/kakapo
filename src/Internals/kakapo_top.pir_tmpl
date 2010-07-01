@@ -11,11 +11,4 @@
 
 .sub '_kakapo_top_pre_initload' :load :init
 
-	$P0 = get_hll_global ['Kakapo'], '_pre_initload'
-	unless null $P0 goto call_sub
-
-	die "Could not locate Kakapo::_pre_initload. Is your library file corrupted?"
-
-call_sub:
-	$P0()
 .end

@@ -41,7 +41,7 @@ has	$!is_relative;
 has	$!initialized;
 
 INIT {
-	auto_accessors(:private);
+	#auto_accessors(:private);
 
 	Parrot::define_multisub( <append>, :method, :starting_with( <append> ));
 	Parrot::define_multisub( <append>, [ Path::Unix::append__String ], :method, :signatures( [ < _ string > ]));
@@ -108,7 +108,7 @@ our method elements() {
 	my @result := [ ];
 
 	for @!elements -> $elt {
-		if $elt.isa: <String> {
+		if pir::isa($elt, <String>) {
 			@result.push: $elt;
 		}
 		else {
@@ -140,14 +140,14 @@ my method _init_obj(*@parts, :$dynamic = 0, *%named) {
 	self._init_args(|%named);
 
 	for @parts -> $part {
-		self.append($part, :dynamic($dynamic && $part.isa: 'Path'));
+		self.append($part, :dynamic($dynamic && pir::isa($part, 'Path')));
 	}
 
 	self;
 }
 
 our method is_absolute() {
-	if @!elements.elems == 0 || @!elements[0].isa('String') {
+	if @!elements.elems == 0 || pir::isa(@!elements[0], 'String') {
 		! $!is_relative;
 	}
 	else {
@@ -156,7 +156,7 @@ our method is_absolute() {
 }
 
 our method is_relative() {
-	if @!elements.elems == 0 || @!elements[0].isa('String') {
+	if @!elements.elems == 0 || pir::isa(@!elements[0], 'String') {
 		$!is_relative;
 	}
 	else {

@@ -30,7 +30,7 @@ module Global;
 
 our sub _pre_initload() {
 	inject_root_symbol(Global::use);
-	inject_root_symbol(Global::export);
+	#inject_root_symbol(Global::export);
 }
 
 # =signature	export($symbol [...], [ :namespace(_), ] [ :tags( [ string [...] ] ) ] )

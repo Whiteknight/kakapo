@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module String;
@@ -31,17 +31,17 @@ sub character_offset_of($string, *%opts) {
 	DUMP(:string($string), :options(%opts));
 
 	our %Line_number_info;
-	
+
 	unless %Line_number_info{$string} {
 		_init_line_number_info($string);
 	}
 
 	my $offset	:= 0 + %opts<offset>;
-	
+
 	unless Hash::exists(%opts, 'line') {
 		%opts<line> := line_number_of($string, :offset($offset));
 	}
-	
+
 	my $line		:= -1 + %opts<line>;
 	my $line_offset	:= %Line_number_info{$string}[$line];
 	NOTE("Line number offset is: ", $line_offset);
@@ -51,17 +51,17 @@ sub character_offset_of($string, *%opts) {
 
 sub display_width($str) {
 # Compute the display width of the C<$str>, assuming that tabs
-# are 8 characters wide, and all other chars are 1 character wide. Thus, a 
+# are 8 characters wide, and all other chars are 1 character wide. Thus, a
 # sequence like tab-space-space-tab will have a width of 16, since the two spaces
 # do not equate to a full tab stop.
 # Returns the computed width of C<$str>.
 
 	my $width := 0;
-	
+
 	if $str {
 		my $i := 0;
 		my $len := length($str);
-		
+
 		while $i < $len {
 			if char_at($str, $i) eq "\t" {
 				$width := $width + 8 - ($width % 8);
@@ -69,7 +69,7 @@ sub display_width($str) {
 			else {
 				$width++;
 			}
-			
+
 			$i++;
 		}
 	}
@@ -83,22 +83,22 @@ sub downcase($str) {
 
 sub find_cclass($class_name, $str, *%opts) {
 # Returns the index of the first character in C<$str> at or after C<:offset()> that
-# is a member of the character class C<$class_name>. If C<:count()> is 
-# specified, scanning ends after the C<:count()> characters have been scanned. 
+# is a member of the character class C<$class_name>. If C<:count()> is
+# specified, scanning ends after the C<:count()> characters have been scanned.
 # By default, C<:offset(0)> and C<:count(length($str))> are used.
 
 # If no matching characters are found, returns the last index plus one.
 
 	my $offset	:= 0 + %opts<offset>;
 	my $count	:= %opts<count>;
-	
+
 	unless $count {
 		$count := length($str) - $offset;
 	}
-	
+
 	our %Cclass_id;
 	my $cclass := 0 + %Cclass_id{$class_name};
-	
+
 	#NOTE("class = ", $class_name, "(", $cclass, "), offset = ", $offset, ", count = ", $count, ", str = ", $str);
 
 	my $result := Q:PIR {
@@ -109,16 +109,16 @@ sub find_cclass($class_name, $str, *%opts) {
 		offset = $P0
 		$P0 = find_lex '$count'
 		count = $P0
-		
+
 		.local string str
 		$P0 = find_lex '$str'
 		str = $P0
-	
+
 		$I0 = find_cclass cclass, str, offset, count
 		%r = box $I0
-		
+
 	};
-	
+
 	#NOTE("Result = ", $result);
 	return $result;
 }
@@ -129,22 +129,22 @@ sub find_not_cclass($class_name, $str, *%opts) {
 # leading whitespace, etc.
 
 	my $offset	:= %opts<offset>;
-	
+
 	unless $offset {
 		$offset := 0;
 	}
-	
+
 	my $count	:= %opts<count>;
-	
+
 	unless $count {
 		$count := length($str) - $offset;
 	}
-	
+
 	our %Cclass_id;
 	my $class := 0 + %Cclass_id{$class_name};
 
 	#NOTE("class = ", $class_name, "(", $class, "), offset = ", $offset, ", count = ", $count, ", str = ", $str);
-	
+
 	my $result := Q:PIR {
 		$P0 = find_lex '$class'
 		$I1 = $P0
@@ -157,31 +157,31 @@ sub find_not_cclass($class_name, $str, *%opts) {
 		$I0 = find_not_cclass $I1, $S2, $I3, $I4
 		%r = box $I0
 	};
-	
+
 	#NOTE("Result = ", $result);
 	return $result;
 }
 
 sub index($haystack, $needle, *%opts) {
 	my $offset := 0 + %opts<offset>;
-	
+
 	my $result := Q:PIR {
-		.local string haystack		
+		.local string haystack
 		$P0 = find_lex '$haystack'
 		haystack = $P0
-		
+
 		.local string needle
 		$P0 = find_lex '$needle'
 		needle = $P0
-		
+
 		.local int offset
 		$P0 = find_lex '$offset'
 		offset = $P0
-		
+
 		$I0 = index haystack, needle, offset
 		%r = box $I0
 	};
-	
+
 	return $result;
 }
 
@@ -189,9 +189,9 @@ sub is_cclass($class_name, $str, *%opts) {
 	our %Cclass_id;
 	my $offset	:= 0 + %opts<offset>;
 	my $class	:= 0 + %Cclass_id{$class_name};
-	
+
 	#say("class = ", $class_name, "(", $class, "), offset = ", $offset, ", str = ", $str);
-	
+
 	my $result := Q:PIR {
 		$P0 = find_lex '$class'
 		$I1 = $P0
@@ -202,7 +202,7 @@ sub is_cclass($class_name, $str, *%opts) {
 		$I0 = is_cclass $I1, $S2, $I3
 		%r = box $I0
 	};
-	
+
 	#NOTE("Result = ", $result);
 	return $result;
 }
@@ -211,7 +211,7 @@ method length(*%opts) {
 	my $offset	:= 0 + %opts<offset>;
 	#NOTE("Computing length of string beyond offset ", $offset);
 	#DUMP(self);
-	
+
 	my $result	:= Q:PIR {
 		$P0 = find_lex 'self'
 		$S0 = $P0
@@ -222,9 +222,9 @@ method length(*%opts) {
 	if $offset > $result {
 		$offset := $result;
 	}
-	
+
 	$result := $result - $offset;
-	
+
 	#NOTE("Result = ", $result);
 	return $result;
 }
@@ -232,18 +232,18 @@ method length(*%opts) {
 sub _init_line_number_info($string) {
 	#NOTE("Initializing line-number information of previously-unseen string");
 	#DUMP($string);
-	
+
 	my @lines := Array::new(-1);
 	my $len := String::length($string);
 	my $i := -1;
-	
+
 	while $i < $len {
 		$i := String::find_cclass('NEWLINE', $string, :offset($i + 1));
 		@lines.push($i);
 	}
-	
+
 	our %Line_number_info;
-	
+
 	%Line_number_info{$string} := @lines;
 	#NOTE("String parsed into ", +@lines, " lines");
 	#DUMP(@lines);
@@ -273,17 +273,17 @@ sub line_number_of($string, *%opts) {
 	}
 
 	our %Line_number_info;
-	
+
 	unless %Line_number_info{$string} {
 		_init_line_number_info($string);
 	}
-	
+
 	my $offset := 0 + %opts<offset>;
-	
+
 	NOTE("Bsearching for line number of ", $offset, " in string");
-	
+
 	my $line := Array::bsearch(%Line_number_info{$string}, $offset, :cmp('<=>'));
-	
+
 	if $line < 0 {
 		# Likely case - token is between the newlines.
 		$line := (-$line) - 1;
@@ -296,10 +296,10 @@ sub line_number_of($string, *%opts) {
 
 sub ltrim_indent($str, $indent) {
 	my $limit := find_not_cclass('WHITESPACE', $str);
-	
+
 	my $i := 0;
 	my $prefix := 0;
-	
+
 	while $i < $limit && $prefix < $indent {
 		if char_at($str, $i) eq "\t" {
 			$prefix := $prefix + 8 - $prefix % 8;
@@ -308,7 +308,7 @@ sub ltrim_indent($str, $indent) {
 			$prefix++;
 		}
 	}
-	
+
 	substr($str, $i);
 }
 
@@ -321,7 +321,7 @@ method repeat($times) {
 		$S1 = repeat $S0, $I0
 		%r = box $S1
 	};
-	
+
 	$result;
 }
 
@@ -331,15 +331,15 @@ method split($delim? = '') {
 
 method substr($start, $limit?) {
 	my $length	:= self.length;
-	
+
 	die( "Invalid start offset ($start) for .substr" )
 		if $start > $length || $start + $length < 0;
-		
+
 	$start := $start + $length
 		if $start < 0;
 	$length := $length - $start;
 
-	if ! $limit.defined {
+	if ! pir::defined($limit) {
 		$limit := $length;
 	}
 	elsif $limit > $length {
@@ -351,7 +351,7 @@ method substr($start, $limit?) {
 
 	die( "Invalid length limit ($limit) for .substr" )
 		if $limit > $length || $limit < 0;
-		
+
 	pir::substr__SSII(self, $start, $limit);
 }
 
@@ -359,23 +359,23 @@ method trim() {
 	my $result	:= '';
 	my $left	:= find_not_cclass('WHITESPACE', self);
 	#NOTE("$left : ", $left);
-	
+
 	my $len	:= length(self);
 	#NOTE("$len  : ", $len);
-	
+
 	if $left < $len {
 		my $right := $len - 1;
-		
+
 		while is_cclass('WHITESPACE', self, :offset($right)) {
 			$right--;
 		}
-		
+
 		#NOTE("$right: ", $right);
-		
+
 		# NB: +1 below to re-include non-ws that broke while.
 		$result := substr(self, $left, $right - $left + 1);
 	}
-	
+
 	#NOTE("result: ", $result);
 	return $result;
 }

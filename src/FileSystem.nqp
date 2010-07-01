@@ -10,7 +10,7 @@ INIT {
 		:linux(	FileSystem::Unix),
 	);
 
-	Kakapo::initload_done();
+	#Kakapo::initload_done();
 }
 
 method get_osname_map() {
@@ -51,18 +51,18 @@ has	$!file;
 has	$!os;
 
 INIT {
-	use(	Parrot::Unix::Stat );
+	#use(	Parrot::Unix::Stat );
 
 	my @multisubs := [ <exists> ];
 
-	for @multisubs -> $name {
-		Parrot::define_multisub($name, :method, :starting_with($name));
-
-		my $string_sub := Parrot::get_hll_global( "FileSystem::Unix::{$name}__String" );
-		unless is_null( $string_sub ) {
-			Parrot::define_multisub($name, [ $string_sub ], signatures => [ <_ string> ] );
-		}
-	}
+	#for @multisubs -> $name {
+	#	Parrot::define_multisub($name, :method, :starting_with($name));
+#
+#		my $string_sub := Parrot::get_hll_global( "FileSystem::Unix::{$name}__String" );
+#		unless is_null( $string_sub ) {
+#			Parrot::define_multisub($name, [ $string_sub ], signatures => [ <_ string> ] );
+#		}
+#	}
 }
 
 our method chdir($path = '') {

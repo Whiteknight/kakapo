@@ -7,8 +7,8 @@ has $!expecting;
 
 INIT {
 	Kakapo::depends_on( 'Matcher' );
-	
-	export(< ANY ETC >);
+
+	#export(< ANY ETC >);
 }
 
 sub _initload() {
@@ -37,7 +37,7 @@ method describe_self($previous) {
 }
 
 method format_sig($callsig) {
-	'CallSignature:{ ' ~ self.format_obj($callsig.object) 
+	'CallSignature:{ ' ~ self.format_obj($callsig.object)
 		~ '.' ~ $callsig.method ~ '( '
 		~ $callsig.positional.map( -> $obj { self.format_obj($obj) }).join(', ')
 		~ $callsig.named.keys.map( -> $key { ":$key(" ~ self.format_obj($!expecting.named{$key}) ~ ')' }).join(', ')
@@ -69,41 +69,41 @@ method method_matches($actual) {
 	|| $!expecting.method =:= ANY();
 }
 
-method named_match($actual) {	
+method named_match($actual) {
 	my %act := $actual.named;
 
 	for $!expecting.named -> $exp {
-		unless %act.contains($exp.key) 
+		unless %act.contains($exp.key)
 			&& ($exp.value =:= ANY()
 				|| pir::iseq__IPP($exp.value, %act{$exp.key})) {
 			return 0;
 		}
 	}
-	
+
 	1;
 }
 
 method object_matches($actual) {
-	$!expecting.object =:= $actual.object 
+	$!expecting.object =:= $actual.object
 	|| $!expecting.object =:= ANY();
 }
-	
+
 method positionals_match($actual) {
 	my $count := 0;
 	my $num_expecting := $!expecting.positional;
 	my @wanted := $!expecting.positional;
 	my @got := $actual.positional;
-	
+
 	while $count < $num_expecting {
 		return 1 if @wanted[$count] =:= ETC();
 		return 0 if $count == @got;	# Could be ok if ETC() above.
-		
+
 		unless @wanted[$count] =:= ANY()
 			|| @wanted[$count] =:= @got[$count]
 			|| pir::iseq__IPP(@wanted[$count], @got[$count]) {
 			return 0;
 		}
-		
+
 		$count++;
 	}
 

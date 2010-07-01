@@ -1,32 +1,31 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Dumper;
 # Configurable module for generating debug output.
 
 sub _pre_initload() {
-# Special sub called when the Kakapo library is loaded or initialized to guarantee this module 
+# Special sub called when the Kakapo library is loaded or initialized to guarantee this module
 # is already initialized during :init and :load processing.
 
 	Opcode::load_bytecode('dumper.pbc');
-	
+
 	our $Caller_depth := 0;
 	our $Prefix_string := ':..';
 	our $Prefix_string_len := String::length($Prefix_string);
 	our @Info_rejected := Array::new(0, -1, 'null');
 
-	Global::export('ASSERT', 'DUMP', 'DUMP_', 'NOTE');
 	#Global::use(:symbols('$Kakapo_config'));		# FIXME: Parameterize this.
 }
 
 our sub ASSERT($condition, *@message, :$caller_level?) {
 	unless lock('ASSERT') { return 0; }
-	
+
 	my $message := +@message ?? @message.join !! 'ASSERTION FAILED';
 
 	# This is a bit of a hack, but it shows ASSERT instead of _block99 in the stack trace.
 	$condition ?? 0 !! Program::die($message);
-	
+
 	unlock('ASSERT');
 }
 
@@ -44,20 +43,20 @@ our sub DUMP(*@pos, :$caller_level?, :@info?, *%named) {
 
 	if @info[0] && @info[0] % 4 > 1 {
 		our $Prefix := make_bare_prefix(@info[1]);
-		
+
 		if +@pos {
 			print($Prefix);
 			_dumper(@pos, @info[2]);
 			#PCT::HLLCompiler.dumper(@pos, @info[2]);
 		}
-		
+
 		if +%named {
 			print($Prefix);
 			_dumper(@pos, @info[2]);
 			#PCT::HLLCompiler.dumper(%named, @info[2]);
 		}
 	}
-	
+
 	unlock('DUMP');
 }
 
@@ -73,7 +72,7 @@ our sub NOTE(*@parts, :$caller_level?, :@info?) {
 	unless $caller_level {
 		$caller_level := 0;
 	}
-	
+
 	unless @info {
 		# $caller_level + 2 for NOTE(), unless-block()
 		@info := info(:caller_level($caller_level + 2));
@@ -83,7 +82,7 @@ our sub NOTE(*@parts, :$caller_level?, :@info?) {
 		our $Prefix := make_named_prefix(@info);
 		say($Prefix, ': ', @parts.join);
 	}
-	
+
 	unlock('NOTE');
 }
 
@@ -100,7 +99,7 @@ sub caller_depth_below($namespace, $name, :$starting, :$limit?) {
 	my $depth := Q:PIR {
 		.local pmc interp
 		interp = getinterp
-		
+
 		.local int depth, show_depth, show_limit
 		$P0 = find_lex '$starting'
 		depth = $P0
@@ -108,54 +107,54 @@ sub caller_depth_below($namespace, $name, :$starting, :$limit?) {
 		show_depth = 1
 		$P0 = find_lex '$limit'
 		show_limit = $P0
-		
+
 		.local string sub_name, nsp_name
 		$P0 = find_lex '$name'
 		sub_name = $P0
 		$P0 = find_lex '$namespace'
 		nsp_name = $P0
-		
+
 		.local pmc key, namespace, caller
 		.local string caller_name
-		
+
 		push_eh handler
-		
+
 	while_not_root:
-		
+
 		inc depth
-		
+
 		# Make a [ 'sub' , $depth ] key
 		key = new 'Key'
 		key = 'sub'
 		$P0 = new 'Key'
 		$P0 = depth
 		push key, $P0
-		
+
 		caller = interp[ key ]
-		
+
 		caller_name = caller
 		$S1 = substr caller_name, 0, 6
 
 		if $S1 == '_block' goto while_not_root
 
-		inc show_depth		
+		inc show_depth
 		if show_depth >= show_limit goto  done
 
 		unless caller_name == sub_name goto while_not_root
-		
+
 		namespace = caller.'get_namespace'()
-		
+
 		$P0 = namespace.'get_name'()
 		$S0 = join '::', $P0
 
 		unless $S0 == nsp_name goto while_not_root
-	
+
 		goto done
 
 	handler:
 		say "Suppressed exception in caller_depth_below"
 		#backtrace
-		
+
 	done:
 		pop_eh
 		# Done: depth indicates depth from "parrot::Slam::main" to present.
@@ -173,23 +172,23 @@ sub find_named_caller(:$nth?, :$starting?) {
 	my $caller := Q:PIR {
 		.local pmc interp
 		interp = getinterp
-		
+
 		.local int how_many
 		$P0 = find_lex '$nth'
 		how_many = $P0
-		
+
 		.local int num_found
 		num_found = 0
 
 		.local int depth
 		$P0 = find_lex '$starting'
 		depth = $P0
-		
+
 		.local pmc caller, key, namespace
-		.local string caller_name		
-	
+		.local string caller_name
+
 	find_named_caller:
-	
+
 	skip_over_blocks:	# Skip over '_block...' lexical scopes
 		inc depth
 
@@ -199,28 +198,28 @@ sub find_named_caller(:$nth?, :$starting?) {
 		$P0 = new 'Key'
 		$P0 = depth
 		push key, $P0
-		
+
 		caller = interp [ key ]
 		caller_name = caller
 		$S0 = substr caller_name, 0, 8
-		
+
 		# NB: '_block13' is magical because it is the block NQP uses for "file scope".
 		if $S0 == '_block13' goto dont_skip_block13
-		
+
 		$S0 = substr $S0, 0, 6
-		
+
 		if $S0 == '_block' goto skip_over_blocks
 	dont_skip_block13:
-		
+
 		# Found one. Is that enough?
 		inc num_found
 		if num_found < how_many goto done
-		
-	done:		
+
+	done:
 		# Remember the caller depth for stack_depth
 		$P0 = get_global '$Caller_depth'
 		$P0 = depth
-		
+
 		# Now we have a sub named other than '_block'
 		%r = caller
 	};
@@ -230,31 +229,31 @@ sub find_named_caller(:$nth?, :$starting?) {
 
 sub get_caller($level?, :$attr?) {
 	$level := 1 + $level;
-	
+
 	unless $attr {
 		$attr := 'sub';
 	}
-	
+
 	my $caller := Q:PIR {
 		.local string attr
 		$P0 = find_lex '$attr'
 		attr = $P0
-		
+
 		.local pmc interp, key
 		interp = getinterp
-		
+
 		key = new 'Key'
 		key = attr
-		
+
 		.local int level
 		$P0 = find_lex '$level'
 		level = $P0
-		
+
 		$P0 = new 'Key'
 		$P0 = level
-		
+
 		push key, $P0
-		
+
 		%r = interp [ key ]
 	};
 
@@ -276,10 +275,10 @@ sub get_dumper_config($named_caller, :$starting) {
 	my @parts := $named_caller.get_namespace.get_name.clone;
 	@parts[0] := 'Dump';
 	@parts.push(~ $named_caller);
-	
+
 	my $key := @parts.join('::');
 	our %Dumper_config_cache;
-	
+
 	unless my @config := %Dumper_config_cache{$key} {
 		@config := Array::new(
 			get_config($key),
@@ -296,7 +295,7 @@ sub get_dumper_config($named_caller, :$starting) {
 	if @config[0] {
 		@config[1] := stack_depth(:starting($starting + 2));
 	}
-		
+
 	return @config;
 }
 
@@ -307,19 +306,19 @@ sub info(:$caller_level) {
 # [2] = caller full name:  Path::To::Class::sub
 
 	our $Caller_depth;
-	
+
 	unless lock('info') { return our @Info_rejected; }
 
 	$caller_level++;
-	
+
 	our $Last_lexpad_addr;
 	our @Result;
-	
-	# If lexpad address is the same, it's the same call frame. So return 
+
+	# If lexpad address is the same, it's the same call frame. So return
 	# the identical result. This is a "called-from-same-block" cache, to
 	# handle frequent pairings of NOTE+DUMP, e.g.
 	my $lexpad_addr := Parrot::get_address_of(get_caller($caller_level, :attr('lexpad')));
-	
+
 	if $lexpad_addr && $lexpad_addr == $Last_lexpad_addr {
 		# Do nothing - last result still in @Result.
 	}
@@ -343,13 +342,13 @@ sub lock($key) {
 			:NOTE(0),
 		);
 	}
-	
+
 	my $locked := %_Already_in{$key};
-	
-	if $locked {	
+
+	if $locked {
 		return 0;
 	}
-	
+
 	$locked++;
 	return 1;
 }
@@ -361,10 +360,10 @@ sub make_bare_prefix($depth) {
 
 	our $Prefix_string;
 	our $Prefix_string_len;
-	
+
 	$depth--;
 	my $prefix := String::repeat($Prefix_string, ($depth / $Prefix_string_len));
-	
+
 	$prefix := $prefix ~ String::substr($Prefix_string, 0, $depth % 3);
 
 	return $prefix ~ '+-';
@@ -385,7 +384,7 @@ sub stack_depth(:$starting) {
 	our $Root_nsp;
 
 	my $depth := 0;
-	
+
 	unless $Root_sub {
 		my $stack_root := get_config('Dump', 'Stack', 'Root');
 		$Stack_root_offset := 0 + get_config('Dump', 'Stack', 'Root_offset');
@@ -396,11 +395,11 @@ sub stack_depth(:$starting) {
 			$Root_nsp	:= @parts.join('::');
 		}
 	}
-	
+
 	# If config doesn't know Root yet, we're probably in the early stages,
 	# before the config file loads. Return 0.
 	if $Root_sub {
-		$depth := caller_depth_below($Root_nsp, $Root_sub, 
+		$depth := caller_depth_below($Root_nsp, $Root_sub,
 			:starting($starting + 2));
 		$depth := $depth - $Stack_root_offset;
 	}
@@ -411,7 +410,7 @@ sub stack_depth(:$starting) {
 sub unlock($key) {
 	our %_Already_in;		# Shared with lock()
 	my $locked := %_Already_in{$key};
-	
+
 	if $locked {
 		$locked--;
 	}

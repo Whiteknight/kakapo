@@ -65,9 +65,9 @@ method describe_failure($previous, $item) {
 method describe_hash(%hash) {
 	%hash.keys.sort.map: -> $key {
 		my $value := %hash{$key};
-		
-		if pir::isa($value, 'Boolean') 
-			|| (pir::isa($value, 'Integer') 
+
+		if pir::isa($value, 'Boolean')
+			|| (pir::isa($value, 'Integer')
 				&& ($value == 1 || $value == 0)) {
 			":" ~ ($value ?? '' !! '!') ~ $key;
 		}
@@ -83,8 +83,8 @@ method describe_hash(%hash) {
 method describe_node($node) {
 	self.describe_type( pir::typeof__SP($node) )
 	~ '( '
-	~ cat( 
-		self.describe_hash( $node.hash ), 
+	~ cat(
+		self.describe_hash( $node.hash ),
 		self.describe_children( $node.list ),
 	).join(', ')
 	~ ' )';
@@ -95,7 +95,7 @@ method describe_node($node) {
 method describe_self($previous) {
 	my $descr := $previous ~ self.describe_type( ~$!node_type )
 	~ '( '
-	~ cat( 
+	~ cat(
 		self.describe_hash( %!attrs ),
 		self.describe_children( @!children ),
 	).join(', ')
@@ -143,18 +143,6 @@ INIT {
 	Kakapo::depends_on(|<
 		Matcher
 		Matcher::Factory
-	>);
-}
-
-sub _initload() {
-	export( |<
-		block
-		control
-		op
-		stmts
-		val
-		var
-		varlist
 	>);
 }
 

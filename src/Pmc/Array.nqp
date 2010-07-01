@@ -6,7 +6,7 @@ module Array;
 # Special sub called when the Kakapo library is loaded or initialized to
 # guarantee this module is already initialized during :init and :load
 # processing.
-sub _pre_initload() {
+INIT {
     our %Bsearch_compare_func;
 
     %Bsearch_compare_func{'<=>'}	:= Array::cmp_numeric;

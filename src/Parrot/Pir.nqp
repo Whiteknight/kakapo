@@ -4,20 +4,15 @@
 module Pir;
 # Provide helper methods for constructing and compiling PIR code.
 
-sub _pre_initload() {
-	use(	Opcode,	:tags('DEFAULT', 'TYPE'));
-	use(	Parrot,	:tags('NAMESPACE'));
-}
-
 sub compile($string) {
 	my $compiler := pir::compreg__PS('PIR');
 	$compiler($string);
 }
 
 sub compile_sub(:@body = "die 'I-i-i ain\'t got no- bo-dy!'", :$method, :@multi, :$name, :$namespace, :@params, :$vtable?) {
-	unless does(@params, 'array') { @params := Array::new(@params); }
-	unless does(@body, 'array') { @body := Array::new(@body); }
-	unless ! @multi.defined || does(@multi, 'array') { @multi := Array::new(@multi); }
+	unless Opcode::does(@params, 'array') { @params := Array::new(@params); }
+	unless Opcode::does(@body, 'array') { @body := Array::new(@body); }
+	unless ! @multi.defined || Opcode::does(@multi, 'array') { @multi := Array::new(@multi); }
 
 	$method := $method ?? ':method' !! '';
 	my $multi := @multi ?? ":multi({ @multi.join(', ') })" !! '';
