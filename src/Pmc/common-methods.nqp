@@ -14,8 +14,9 @@ Returns a new instance of the PMC type of the invocant.
 Note that this method is compiled at run-time for each class. See L< install_symbols >.
 
 =end
+=cut
 
-sub _pre_initload() {
+INIT {
 	# Make these available for import by other modules.
 	export(< can clone defined does isa >);
 
@@ -74,36 +75,36 @@ sub _pre_initload() {
 	}
 }
 
-=begin
-=item can( $method_name ) returns Boolean
+#=begin
+#=item can( $method_name ) returns Boolean
 
-Returns C< true > if the invocant object supports calling the C< $method_name > method.
-C< $method_name > must be a String. Returns C< false > otherwise.
+#Returns C< true > if the invocant object supports calling the C< $method_name > method.
+#C< $method_name > must be a String. Returns C< false > otherwise.
 
-=begin code
-	if $object.can( 'resize' ) { ... }
-=end code
-=end
+#=begin code
+#	if $object.can( 'resize' ) { ... }
+#=end code
+#=end
 
 method can($method) {
 	pir::can(self, $method);
 }
 
-=begin
-=item clone() returns PMC
+#=begin
+#=item clone() returns PMC
 
-Returns a clone of the invocant object. The C< clone > method is frequently overridden,
-but in general should return an object which is a duplicate in all respects -- same
-contents, same members, same size, same value, whatever.
+#Returns a clone of the invocant object. The C< clone > method is frequently overridden,
+#but in general should return an object which is a duplicate in all respects -- same
+#contents, same members, same size, same value, whatever.
 
-See the documentation of the particular PMC type to determine I< whether >, and if so
-I< how > complex data structures are cloned. In general, Parrot's basic PMC types do
-B< deep > clones, which can cause problems if your data structure contains cycles.
+#See the documentation of the particular PMC type to determine I< whether >, and if so
+#I< how > complex data structures are cloned. In general, Parrot's basic PMC types do
+#B< deep > clones, which can cause problems if your data structure contains cycles.
 
-=begin code
-	$obj2 := $object.clone;
-=end code
-=end
+#=begin code
+#	$obj2 := $object.clone;
+#=end code
+#=end
 
 method clone() {
 	pir::clone(self);
@@ -122,59 +123,54 @@ sub create_new_method($namespace) {
 	);
 }
 
-=begin
-=item defined() returns Boolean
+#=begin
+#=item defined() returns Boolean
 
-Returns C< true >, always. Every common PMC type is considered to be defined, except
-members of the C< Undef > type. That type does not import this method.
+#Returns C< true >, always. Every common PMC type is considered to be defined, except
+#members of the C< Undef > type. That type does not import this method.
 
-=begin code
-	if $object.defined { ... }
-=end code
-=end
+#=begin code
+#	if $object.defined { ... }
+#=end code
+#=end
 
 method defined() {
 	1;
 }
 
-=begin
-=item does( $role ) returns Boolean
+#=begin
+#=item does( $role ) returns Boolean
 
-Returns C< true > if the invocant implements the C< $role > named by the parameter.
-Returns C< false > otherwise.
+#Returns C< true > if the invocant implements the C< $role > named by the parameter.
+#Returns C< false > otherwise.
 
-=begin code
-	if $object.does( 'array' ) { ... }
-=end code
-=end
+#=begin code
+#	if $object.does( 'array' ) { ... }
+#=end code
+#=end
 
-method does($role)				{ pir::does(self, $role); }
+method does($role) { pir::does(self, $role); }
 
-sub install_methods($namespace, @methods, :$skip_new?) {
-	my $from_nsp := pir::get_namespace__P();
+sub install_methods($class, @methods, :$skip_new?) {
+    my $from_nsp := pir::get_namespace__P();
 
-	my %export_subs;
-	my $pmc_name := ~ $namespace;
+    my %class_methods := pir::inspect($class, 'methods');
 
-	for @methods {
-		unless $namespace{~ $_} {
-			if $from_nsp{~ $_} {
-				%export_subs{~ $_} := $from_nsp{~ $_};
-			}
-			elsif $_ eq 'new' {
-				unless $skip_new {
-					create_new_method(~ $_);
-				}
-			}
-			else {
-				pir::die("Request to export unknown COMMON method '$_'");
-			}
-		}
-	}
-
-	if %export_subs {
-		$from_nsp.export_to($namespace, %export_subs);
-	}
+    for @methods {
+        unless %class_methods{~ $_} {
+            if $from_nsp{~ $_} {
+                %class_methods{~ $_} := $from_nsp{~ $_};
+            }
+            elsif $_ eq 'new' {
+                unless $skip_new {
+                    create_new_method(~ $_);
+                }
+            }
+            else {
+                pir::die("Request to export unknown COMMON method '$_'");
+            }
+        }
+    }
 }
 
 method isa($type) {
