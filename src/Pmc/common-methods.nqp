@@ -18,7 +18,7 @@ Note that this method is compiled at run-time for each class. See L< install_sym
 
 INIT {
 	# Make these available for import by other modules.
-	export(< can clone defined does isa >);
+	#export(< can clone defined does isa >);
 
 	# List all the PMC types here, with the methods to export. I'll sort them out later.
 	my %methods_for;
@@ -49,13 +49,13 @@ INIT {
 	# Get the critical PMCs set up first (need .defined, etc., for building 'new' methods)
 	for @first_pmcs {
 		P6metaclass.register(~ $_);
-		my $namespace := Parrot::get_hll_namespace(~ $_);
+		my $namespace := Parrot::get_root_namespace(~ $_);
 		install_methods(pir::get_class__PP($namespace), %methods_for{$_}, :skip_new);
 	}
 
 	# Now build 'new' methods.
 	for @first_pmcs {
-		my $namespace := Parrot::get_hll_namespace(~ $_);
+		my $namespace := Parrot::get_root_namespace(~ $_);
 		install_methods(pir::get_class__PP($namespace), %methods_for{$_}); # no :skip_new here
 		%methods_for{$_} := my $undef;
 	}
@@ -63,11 +63,11 @@ INIT {
 	# Now process the rest of the PMCs
 	for %methods_for.kv -> $pmc_type, @methods {
 		if @methods {
-			if pir::typeof__SP(Parrot::get_hll_global($pmc_type)) eq 'NameSpace' {
+			if pir::typeof__SP(Parrot::get_root_global($pmc_type)) eq 'NameSpace' {
 				P6metaclass.register($pmc_type);
 			}
 
-			my $namespace := Parrot::get_hll_namespace($pmc_type);
+			my $namespace := Parrot::get_root_namespace($pmc_type);
 			install_methods(pir::get_class__PP($namespace), @methods);
 		}
 	}
