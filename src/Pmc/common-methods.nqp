@@ -37,8 +37,6 @@ INIT {
 	%methods_for<Sub>			:= <can clone defined does isa is_equal>; #! not new
 	%methods_for<Undef>			:= <can clone does isa is_equal new>; #! not defined
 
-	my $from_nsp := pir::get_namespace__P();
-
 	# Order counts
 	my @first_pmcs := <
 		Undef
@@ -52,13 +50,13 @@ INIT {
 	for @first_pmcs {
 		P6metaclass.register(~ $_);
 		my $namespace := Parrot::get_hll_namespace(~ $_);
-		install_methods($namespace, %methods_for{$_}, :skip_new);
+		install_methods(pir::get_class__PP($namespace), %methods_for{$_}, :skip_new);
 	}
 
 	# Now build 'new' methods.
 	for @first_pmcs {
 		my $namespace := Parrot::get_hll_namespace(~ $_);
-		install_methods($namespace, %methods_for{$_}); # no :skip_new here
+		install_methods(pir::get_class__PP($namespace), %methods_for{$_}); # no :skip_new here
 		%methods_for{$_} := my $undef;
 	}
 
@@ -70,7 +68,7 @@ INIT {
 			}
 
 			my $namespace := Parrot::get_hll_namespace($pmc_type);
-			install_methods($namespace, @methods);
+			install_methods(pir::get_class__PP($namespace), @methods);
 		}
 	}
 }
@@ -110,17 +108,17 @@ method clone() {
 	pir::clone(self);
 }
 
-sub create_new_method($namespace) {
-	my $type := ~ $namespace;
-	my &new := Pir::compile_sub(
-		:name('new'),
-		:namespace($namespace),
-		:method(1),
-		:body( (
-			"\t" ~ '$P0 = ' ~ "new [ '$type' ]",
-			"\t" ~ '.return ($P0)',
-		) ),
-	);
+sub create_new_method($class) {
+    my $type := ~ $class;
+    my &new := Pir::compile_sub(
+        :name('new'),
+        :namespace($class.get_namespace()),
+        :method(1),
+        :body( (
+            "\t" ~ '$P0 = ' ~ "new [ '$type' ]",
+            "\t" ~ '.return ($P0)',
+        ) ),
+    );
 }
 
 #=begin
@@ -153,17 +151,19 @@ method does($role) { pir::does(self, $role); }
 
 sub install_methods($class, @methods, :$skip_new?) {
     my $from_nsp := pir::get_namespace__P();
+    my $from_class := pir::get_class__PP($from_nsp);
 
-    my %class_methods := pir::inspect($class, 'methods');
+    my %to_methods := pir::inspect__PPS($class, 'methods');
+    my %from_methods := pir::inspect__PPS($from_class, 'methods');
 
     for @methods {
-        unless %class_methods{~ $_} {
-            if $from_nsp{~ $_} {
-                %class_methods{~ $_} := $from_nsp{~ $_};
+        unless %to_methods{~ $_} {
+            if %from_methods{~ $_} {
+                %to_methods{~ $_} := %from_methods{~ $_};
             }
             elsif $_ eq 'new' {
                 unless $skip_new {
-                    create_new_method(~ $_);
+                    create_new_method($class);
                 }
             }
             else {

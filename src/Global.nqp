@@ -32,7 +32,7 @@ our sub inject_root_symbol($pmc, :$as, :$force) {
 
 our sub inject_method($class, $method, :$name?, :$force?) {
     $name := $name // ~$method; # /
-    my %methods = pir::inspect($class, 'methods');
+    my %methods := pir::inspect__PPS($class, 'methods');
     if %methods{$name} {
         if $force {
             %methods{$name} := $method;
