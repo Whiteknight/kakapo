@@ -1,30 +1,11 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::Equals;
 # TypeSafe matcher that matches if the target is the same as a preset value.
 
-use('Dumper');
-Program::initload(:after('Matcher::TypeSafe'));
-Class::multi_sub('Matcher::Equals', 'factory', :starting_with('_factory_'));
-Matcher::Factory::export_sub(Matcher::Equals::factory, :as('is'));
-
-sub _initload() {
-	if our $_Initload_done { return 0; }
-	$_Initload_done := 1;
-	
-	my $class_name := 'Matcher::Equals';
-	
-	NOTE("Creating class ", $class_name);
-	Class::SUBCLASS($class_name,
-		'Matcher::TypeSafe'
-	);
-	
-	Class::multi_method($class_name, 'matches_typesafe', :starting_with('_match_'));
-}
-
 method describe_self($description) {
-	return $description 
+	return $description
 		~ "a(n) "
 		~ self.match_type
 		~ " equal to '" ~ self.value ~ "'";
@@ -41,7 +22,7 @@ method find_match_type($item) {
 			self.match_type(~$_);
 		}
 	}
-	
+
 	unless self.match_type {
 		self.match_type('String');
 	}
@@ -49,11 +30,11 @@ method find_match_type($item) {
 
 method init(@args, %opts) {
 	Matcher::init(self, @args, %opts);
-	
+
 	unless +@args {
 		DIE("You must provide a comparison value for 'equals' matcher.");
 	}
-	
+
 	self.value(@args.shift);
 	self.find_match_type(self.value);
 }
@@ -66,7 +47,7 @@ method match_type(*@value)		{ self._ATTR('match_type', @value); }
 
 method match_scalar($item) {
 	my $value := self.value;
-	
+
 	unless self.match_type {
 		self.find_match_type($item);
 	}

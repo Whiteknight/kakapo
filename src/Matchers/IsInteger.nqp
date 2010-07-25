@@ -1,26 +1,10 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 # TypeSafe matcher that matches if the target is the same as a preset integer.
 module Matcher::IsInteger ;
 
 has $!integer;
-
-INIT {
-	Kakapo::depends_on(|<
-		Matcher 
-		Matcher::Factory
-		Matcher::TypeSafe
-	>);
-}
-
-sub _initload() {
-	extends( Matcher::TypeSafe );
-	has( <$!integer> );
-	auto_accessors( :private );
-
-	Matcher::Factory::export_sub(Matcher::IsInteger::factory, :as('is_integer'));
-}
 
 method describe_self($description = '') {
 	$description ~ "integer $!integer";
@@ -36,7 +20,7 @@ sub factory($integer) {
 
 method _init_obj($integer?, *%named) {
 	$!integer := pir::new__ps('Integer');
-	
+
 	if $integer.defined {
 		super(:integer($integer), |%named);
 	}

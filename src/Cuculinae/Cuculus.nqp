@@ -9,17 +9,6 @@ has $!class;
 has %!passthrough_antiphons;
 has $!verifier;
 
-INIT {
-	export( <
-		add_antiphon
-		get_behavior
-		get_cuckoo
-		verify_calls
-	> );
-
-	Kakapo::depends_on( 'Cuculus::SigMatcher' );
-}
-
 sub _initload() {
 	use( 'Cuculus::SigMatcher' );
 }
@@ -28,7 +17,7 @@ method add_antiphon($callsig) {
 
 	my $antiphon := new_antiphon($callsig);
 	@!antiphons.push($antiphon);
-	
+
 	# Return the antiphon so we can chain .will(...) calls.
 	$antiphon;
 }
@@ -88,7 +77,7 @@ sub get_passthrough_antiphons($parent) {
 		}
 		else {
 			my &method := $pre_class.find_method($method_name);
-			
+
 			# NOTE: If the class being mocked it NOT a P6object class, but (for example)
 			# one of the .pir classes in the runtime library, then it may not _have_ all
 			# the methods provided by P6object. So check for null.
@@ -138,18 +127,18 @@ method _init_obj(*@pos, *%named) {
 }
 
 method install_vtable_overrides($proto_egg) {
-	
+
 	my %vtable_overrides;
-	
+
 	my @mro := pir::class__PP($proto_egg).inspect('all_parents');
-	
+
 	for @mro -> $parent {
 		for $parent.inspect('vtable_overrides') {
 			%vtable_overrides{$_.key} := $_.value
 				unless %vtable_overrides.contains( $_.key );
 		}
 	}
-	
+
 	# Turn on find-method redirection for the proto-object
 	my $proto_class := pir::class__PP($proto_egg);
 	has_vtable('find_method', Cuculus::Canorus::Ovum::_::VTABLE_find_method,
@@ -158,12 +147,12 @@ method install_vtable_overrides($proto_egg) {
 	# Turn on find-method redirection for the mock class.
 	has_vtable('find_method', Cuculus::Canorus::Ovum::_::VTABLE_find_method,
 		:class($proto_egg));
-	
-	#~ has_vtable(:class($proto_egg), 'init', -> $self {	
+
+	#~ has_vtable(:class($proto_egg), 'init', -> $self {
 	#~ say("Init of ", pir::typeof__SP($self), " from ", pir::typeof__SP(self));
 		#~ Opcode::setattribute($self, '$!CUCULUS_CANORUS', self);
 		#~ Opcode::setattribute($self, '&!CUCULUS_BEHAVIOR', Cuculus::Canorus::mock_execute);
-		
+
 		#~ $self.'init :vtable'();
 	#~ });
 
@@ -171,7 +160,7 @@ method install_vtable_overrides($proto_egg) {
 	#~ say("Initpmc of ", pir::typeof__SP($self), " from ", pir::typeof__SP(self));
 		#~ Opcode::setattribute($self, '$!CUCULUS_CANORUS', self);
 		#~ Opcode::setattribute($self, '&!CUCULUS_BEHAVIOR', Cuculus::Canorus::mock_execute);
-		
+
 		#~ $self.'init_pmc :vtable'(%args);
 	#~ });
 
@@ -192,7 +181,7 @@ method mock_class($parent = 'P6object', :$named) {
 	# Do this before P6metaclass has a chance to create the new proto_egg - should catch
 	# any init :vtable methods.
 	Cuculus::Canorus::Ovum::_::push_inits(:cuckoo(self), :behavior(Cuculus::Canorus::mock_execute));
-	
+
 	my $proto_egg := P6metaclass.new_class: $named, :parent( 'Cuculus::Canorus::Ovum' );
 	P6metaclass.add_parent: $proto_egg, $parent;
 
@@ -239,7 +228,7 @@ method mock_new(*@pos, *%named) {
 	# the new cuckoo, and invoke the (mocked) _init_obj.
 	my $new_egg := $new_cuckoo.new_egg;
 	$new_egg._init_obj(|@pos, |%named);
-	
+
 	# NB: Init_obj probably returns $new_cuckoo, which isn't what we want the user to get.
 	$new_egg;
 }
@@ -274,7 +263,7 @@ method verifier($value?)	{ $value.defined ?? ($!verifier := $value) !! $!verifie
 
 method verify_calls($callsig) {
 	$!verifier.sig_matcher:
-		Cuculus::SigMatcher.new: 
+		Cuculus::SigMatcher.new:
 			:expecting($callsig);
 
 	$!verifier.verify(self);
