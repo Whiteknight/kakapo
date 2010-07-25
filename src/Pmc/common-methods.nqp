@@ -1,7 +1,7 @@
 # Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module Kakapo::Pmc::COMMON;
+class Kakapo::Pmc::COMMON;
 
 =begin
 
@@ -49,28 +49,41 @@ INIT {
 	# Get the critical PMCs set up first (need .defined, etc., for building 'new' methods)
 	for @first_pmcs {
 		P6metaclass.register(~ $_);
-		my $namespace := Parrot::get_root_namespace(~ $_);
-		install_methods(pir::get_class__PP($namespace), %methods_for{$_}, :skip_new);
+                my $name := $_;
+                my $namespace;
+                Q:PIR {
+                    $P0 = find_lex '$name'
+                    $S0 = $P0
+                    $P1 = get_root_namespace ['parrot'; $S0]
+                    store_lex '$namespace', $P1
+                };
+                my $class := pir::get_class__PP($namespace);
+		install_methods($class, %methods_for{$_}, :skip_new);
 	}
 
 	# Now build 'new' methods.
 	for @first_pmcs {
-		my $namespace := Parrot::get_root_namespace(~ $_);
+		my $namespace := pir::get_hll_namespace__PP(~ $_);
 		install_methods(pir::get_class__PP($namespace), %methods_for{$_}); # no :skip_new here
 		%methods_for{$_} := my $undef;
 	}
 
-	# Now process the rest of the PMCs
-	for %methods_for.kv -> $pmc_type, @methods {
-		if @methods {
-			if pir::typeof__SP(Parrot::get_root_global($pmc_type)) eq 'NameSpace' {
-				P6metaclass.register($pmc_type);
-			}
-
-			my $namespace := Parrot::get_root_namespace($pmc_type);
-			install_methods(pir::get_class__PP($namespace), @methods);
-		}
-	}
+    # Now process the rest of the PMCs
+    for %methods_for.kv -> $pmc_type, @methods {
+        if @methods {
+            my $ns;
+            Q:PIR {
+                $P0 = find_lex '$pmc_type'
+                $S0 = $P0
+                $P1 = get_root_namespace ['parrot'; $S0]
+                store_lex '$ns', $P1
+            };
+            if pir::typeof__SP($ns) eq 'NameSpace' {
+                P6metaclass.register($pmc_type);
+            }
+            install_methods(pir::get_class__PP($ns), @methods);
+        }
+    }
 }
 
 #=begin
@@ -152,7 +165,6 @@ method does($role) { pir::does(self, $role); }
 sub install_methods($class, @methods, :$skip_new?) {
     my $from_nsp := pir::get_namespace__P();
     my $from_class := pir::get_class__PP($from_nsp);
-
     my %to_methods := pir::inspect__PPS($class, 'methods');
     my %from_methods := pir::inspect__PPS($from_class, 'methods');
 
