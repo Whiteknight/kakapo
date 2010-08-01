@@ -32,10 +32,10 @@ INIT {
 	%methods_for<NameSpace>		:= <can clone defined does isa is_equal>;
 	%methods_for<ResizablePMCArray>	:= <can clone defined does isa is_equal new>;
 	%methods_for<ResizableStringArray>	:= <can clone defined does isa is_equal new>;
-	%methods_for<String>			:= <can clone defined does is_equal>; #! not new isa
+	%methods_for<String>			:= <can does is_equal>; #! not new isa clone defined
 #	%methods_for<StringHandle>		:= <can clone defined does isa is_equalnew>;
 	%methods_for<Sub>			:= <can clone defined does isa is_equal>; #! not new
-	%methods_for<Undef>			:= <can clone does isa is_equal new>; #! not defined
+	%methods_for<Undef>			:= <can does is_equal new>; #! not defined clone isa
 
 	# Order counts
 	my @first_pmcs := <
@@ -63,9 +63,17 @@ INIT {
 
 	# Now build 'new' methods.
 	for @first_pmcs {
-		my $namespace := pir::get_hll_namespace__PP(~ $_);
-		install_methods(pir::get_class__PP($namespace), %methods_for{$_}); # no :skip_new here
-		%methods_for{$_} := my $undef;
+            my $name := $_;
+            my $namespace;
+            Q:PIR {
+                $P0 = find_lex '$name'
+                $S0 = $P0
+                $P1 = get_root_namespace ['parrot'; $S0]
+                store_lex '$namespace', $P1
+            };
+            my $class := pir::get_class__PP($namespace);
+            install_methods($class, %methods_for{$_}); # no :skip_new here
+            %methods_for{$_} := my $undef;
 	}
 
     # Now process the rest of the PMCs
@@ -169,18 +177,23 @@ sub install_methods($class, @methods, :$skip_new?) {
     my %from_methods := pir::inspect__PPS($from_class, 'methods');
 
     for @methods {
-        unless %to_methods{~ $_} {
-            if %from_methods{~ $_} {
-                %to_methods{~ $_} := %from_methods{~ $_};
+        if %from_methods{~ $_} {
+            my $test := $class.find_method(~$_);
+            if Parrot::is_null($test) {
+                $class.add_method(~$_, %from_methods{~ $_});
+                $test := $class.find_method(~$_);
             }
-            elsif $_ eq 'new' {
-                unless $skip_new {
+        }
+        elsif $_ eq 'new' {
+            unless $skip_new {
+                my $test := $class.find_method("new");
+                unless $test {
                     create_new_method($class);
                 }
             }
-            else {
-                pir::die("Request to export unknown COMMON method '$_'");
-            }
+        }
+        else {
+            pir::die("Request to export unknown COMMON method '$_'");
         }
     }
 }

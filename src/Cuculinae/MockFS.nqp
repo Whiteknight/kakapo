@@ -1,4 +1,4 @@
-# Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 # Provides a Mock FileSystem to avoid IO during testing.
@@ -18,8 +18,8 @@ method get_osname_map() {
 method _init_obj(*@pos, *%named) {
 	my %map := self.get_osname_map();
 	my $osname := %*VM<osname>;
-	
-	$osname := 'DEFAULT' 
+
+	$osname := 'DEFAULT'
 		unless %map.contains: $osname;
 
 	my $class := %map{$osname};
@@ -38,29 +38,28 @@ has	%!user_groups;
 has	%!volumes;		# Not used much, but makes paths easier.
 
 INIT {
-	auto_accessors( :private );
 
 	my @multisubs := <
 		add_entry
-		chdir 
-		exists 
+		chdir
+		exists
 		get_contents
 		has_type
-		mkpath 
+		mkpath
 	>;
-	
+
 	for @multisubs -> $name {
 		Parrot::define_multisub($name, :method, :starting_with($name));
-		
+
 		my $string_sub := Parrot::get_hll_global( "Cuculus::MockFS::Unix::{$name}__String" );
-		unless is_null( $string_sub ) {
+		unless Parrot::is_null($string_sub) {
 			Parrot::define_multisub($name, [ $string_sub ], signatures => [ <_ string> ] );
 		}
 	}
 	#~ Parrot::define_multisub('mkpath', :method, :starting_with('mkpath'));
-	#~ Parrot::define_multisub('mkpath', 
-		#~ :method, [ Cuculus::MockFS::Unix::mkpath__String ], 
-		#~ signatures => [ < _ string >,	], # Note: lowercase 'string' 
+	#~ Parrot::define_multisub('mkpath',
+		#~ :method, [ Cuculus::MockFS::Unix::mkpath__String ],
+		#~ signatures => [ < _ string >,	], # Note: lowercase 'string'
 	#~ );
 }
 
@@ -77,9 +76,9 @@ my method add_entry__Path( $path, *%named ) {
 	%path_attrs.delete: <type>;
 	%path_attrs.delete: <contents>;
 	self.mkpath( $path, |%path_attrs );
-	
+
 	my $entry := self.find_path( $path );
-	
+
 	unless pir::defined( $entry ) {
 		_dumper(self);
 		_dumper($path);
@@ -91,7 +90,7 @@ my method add_entry__Path( $path, *%named ) {
 		contents => '',
 		type => 'file',
 		;
-		
+
 	# Merge in specified attrs
 	$entry[-1].merge( %defaults, %named, :priority('right'));
 }
@@ -103,10 +102,10 @@ our method chdir__ANY($path) {
 our method chdir__Path($path) {
 
 	my @new_wd := self.find_path: $path;
-	
+
 	die("Can't cd to $path - does not exist in this fs")
 		unless @new_wd.defined;
-		
+
 	self.cwd_path: @new_wd;
 }
 
@@ -121,7 +120,7 @@ our method cwd() {
 }
 
 my method cwd_path($value?)  {
-	$value.defined 
+	$value.defined
 		?? (@!cwd_path := $value)
 		!! @!cwd_path.clone;
 }
@@ -148,14 +147,14 @@ my method find_path($path) {
 
 	my $cur := @path[-1];
 	my @elements := $path.elements;
-	
+
 	for @elements -> $next {
 		return my $undef
 			unless $cur<type>  eq 'directory' && $cur<contents>.contains: $next;
 
 		@path.push: $cur := $cur<contents>{$next};
 	}
-	
+
 	@path;
 }
 
@@ -229,16 +228,16 @@ my method mkpath__Path($path, *%named) {
 			unless $cur<contents>.contains: $next {
 				$cur<contents>{$next} := self.new_entry( :name($next), :type(<directory>));
 			}
-			
+
 			@path.push: $cur := $cur<contents>{$next};
 		}
 		else {
 			die("Cannot mkpath $path - element {$cur<name>} is not a directory");
 		}
 	}
-	
+
 	@path;
-	
+
 }
 
 my method mkpath__String($path) {
@@ -248,24 +247,24 @@ my method mkpath__String($path) {
 my method new_entry(:$type = 'file', *%details) {
 	my $contents;
 	my $undef;
-	
+
 	if $type eq 'directory' {
 		$contents := Hash.new;
 	}
-	
+
 	%details.merge: Hash.new(
 		:contents(	$contents ),
 		:group(	$undef ),
-		:mode(	$undef ),		
+		:mode(	$undef ),
 		:type(		$type ),
 		:user(		$undef ),
 	);
-	
+
 	%details;
 }
 
 our method open($path, *%named) {
-	
+
 	my $fh	:= pir::new__PS('FileHandle');
 	my $mode	:= '' ~ %named<mode> // 'r';
 

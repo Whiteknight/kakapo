@@ -59,7 +59,7 @@ INIT {
 
     # These are "list-of-list" subs, and have no corresponding methods.
     for <cat roundrobin zip> {
-            Global::inject_root_symbol($from_nsp{$_});
+        Global::inject_root_symbol($from_nsp{$_});
     }
 
     # These have corresponding methods.
@@ -74,22 +74,19 @@ INIT {
 sub install_methods($class, @methods, :$skip_new?) {
     my $from_nsp := pir::get_namespace__P();
     my $from_class := pir::get_class__PP($from_nsp);
-    my %to_methods := pir::inspect__PPS($class, 'methods');
     my %from_methods := pir::inspect__PPS($from_class, 'methods');
 
     for @methods {
-        unless %to_methods{~ $_} {
-            if %from_methods{~ $_} {
-                %to_methods{~ $_} := %from_methods{~ $_};
+        if %from_methods{~ $_} {
+            $class.add_method(~$_, %from_methods{~ $_});
+        }
+        elsif $_ eq 'new' {
+            unless $skip_new {
+                create_new_method($class);
             }
-            elsif $_ eq 'new' {
-                unless $skip_new {
-                    create_new_method($class);
-                }
-            }
-            else {
-                pir::die("Request to export unknown COMMON method '$_'");
-            }
+        }
+        else {
+            pir::die("Request to export unknown COMMON method '$_'");
         }
     }
 }

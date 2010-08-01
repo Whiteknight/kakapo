@@ -1,5 +1,5 @@
 #! /usr/bin/env parrot-nqp
-# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 INIT {
@@ -12,12 +12,7 @@ INIT {
 class Test::Program
 	is UnitTest::Testcase ;
 
-INIT {
-	use(	'UnitTest::Testcase' );	
-	use(	'UnitTest::Assertions' );
-}
-
-TEST_MAIN();
+UnitTest::Testcase::TEST_MAIN();
 
 method set_up() {
 	# Set global-variable state to post-INIT{} condition.
@@ -29,7 +24,7 @@ class Test::Exit is Program {
 		foo();
 		exit(1);
 	}
-	
+
 	sub foo() {
 		exit(4);
 	}
@@ -37,18 +32,18 @@ class Test::Exit is Program {
 
 method test_exit() {
 	verify_that( 'Calling global exit() immediately ends program' );
-	
+
 	my $pgm := Test::Exit.new;
 	my $status := $pgm.run;
-	
-	fail_unless($status == 4, 'Exit 4 should have passed through');	
+
+	fail_unless($status == 4, 'Exit 4 should have passed through');
 }
 
 class Test::StartQueue is Program {
-	INIT {
-		has( < $.a $.b $.c > );
-	}
-	
+has $!a;
+has $!b;
+has $!c;
+
 	sub set_a($pgm) {	$pgm.a($pgm.b + 1); }
 	sub set_b($pgm) {	$pgm.b(3); }
 	sub set_c($pgm) {	$pgm.c($pgm.a + 5); }
@@ -58,13 +53,13 @@ method test_start_queue() {
 	verify_that( 'Program calls the entries in the at_start queue correctly' );
 
 	my $pgm := Test::StartQueue.new;
-	
+
 	$pgm.at_start(Test::StartQueue::set_c, 'c', :requires('a'));
 	$pgm.at_start(Test::StartQueue::set_a, 'a', :requires('b'));
 	$pgm.at_start(Test::StartQueue::set_b, 'b');
 
 	$pgm.do_start;
-	
+
 	assert_equal( $pgm.a, 4,
 		'a should be set to 4');
 	assert_equal( $pgm.b, 3,
@@ -75,20 +70,20 @@ method test_start_queue() {
 
 method test_exit_queue() {
 	verify_that( 'Program calls the entries in the at_exit queue correctly' );
-	
+
 	my $pgm := Test::StartQueue.new;
-	
+
 	$pgm.at_exit(Test::StartQueue::set_c, 'c', :requires('a'));
 	$pgm.at_exit(Test::StartQueue::set_a, 'a', :requires('b'));
 	$pgm.at_exit(Test::StartQueue::set_b, 'b');
 
 	$pgm.do_start;
-	
+
 	assert_equal( $pgm.a + $pgm.b + $pgm.c, 0,
 		'Nothing done at do_start');
 
 	$pgm.do_exit;
-	
+
 	assert_equal( $pgm.a, 4,
 		'a should be set to 4');
 	assert_equal( $pgm.b, 3,
@@ -102,9 +97,9 @@ method test_from_parrot() {
 
 	assert_equal( $pgm.program_name, '',
 		'New program should have no name' );
-	
+
 	$pgm.from_parrot;
-	
+
 	assert_not_equal( $pgm.program_name, '',
 		'Taking values from parrot interp should provide a program name' );
 
@@ -119,7 +114,7 @@ class Test::Global::AtFuncs is Program {
 
 method test_global_at_exit() {
 	my $pgm := Test::Global::AtFuncs.new;
-	
+
 	assert_throws_nothing('Registered program should have no problems with at_exit global',
 	{
 		Program::instance($pgm);
@@ -138,7 +133,7 @@ method test_global_at_exit_fails() {
 
 method test_global_at_start() {
 	my $pgm := Test::Global::AtFuncs.new;
-	
+
 	assert_throws_nothing('Registered program should have no problems with at_start global',
 	{
 		Program::instance($pgm);
@@ -148,7 +143,7 @@ method test_global_at_start() {
 
 method test_global_at_start_fails() {
 	my $pgm := Test::Global::AtFuncs.new;
-	
+
 	assert_throws(Control::Error, 'at_start should throw exception if no program registered',
 	{
 		at_start(Test::Global::AtFuncs::foo);
@@ -161,7 +156,7 @@ class Dummy::SetMain is Program {
 
 method test_main_uses_set_main() {
 	my $pgm := Dummy::SetMain.new;
-	
+
 	assert_not_defined( $pgm.get_main,
 		'Program should have no &main set by default.' );
 	assert_throws( Control::Error, 'Program should die with no main set.',
@@ -170,9 +165,9 @@ method test_main_uses_set_main() {
 	$pgm.set_main( Dummy::SetMain::foo );
 	assert_same( Dummy::SetMain::foo, $pgm.get_main,
 		'get/set_main should be accessors' );
-		
+
 	my $result := $pgm.run;
-	
+
 	assert_equal( 27, $result,
 		'After set_main, Program::main should call sub' );
 }
@@ -185,9 +180,9 @@ class Dummy::RunSetsArgs is Program {
 
 method run_sets_args() {
 	my $dummy := Dummy::RunSetsArgs.new;
-	
+
 	my $result := $dummy.run: argv => <a b c>;
-	
+
 	assert_equal( 'b', $result,
 		'Result should be "b" if run is setting @*ARGS');
 }
@@ -195,20 +190,20 @@ method run_sets_args() {
 class Dummy::ProgramSwapsStreams is Program {
 	method main() {
 		say("12345");
-	}	
+	}
 }
 
 method test_run_swaps_streams() {
 	my $string_out := Parrot::new('StringHandle');
 	$string_out.open('any value', 'w');
-	
+
 	my $pgm := Dummy::ProgramSwapsStreams.new;
 	$pgm.stdout( $string_out );
-	
+
 	my $save_stdout := pir::getstdout__P();
-	
+
 	$pgm.run;
-	
+
 	assert_same( pir::getstdout__P(), $save_stdout,
 		'Program should restore stdout');
 
@@ -221,14 +216,14 @@ method test_run_swaps_streams() {
 #~ class Test::Dynamic is Program {
 	#~ method main(@args) {
 		#~ my %results;
-		
+
 		#~ for @args {
 			#~ %results{~ $_} := pir::find_dynamic_lex__PS(~ $_);
 		#~ }
-		
+
 		#~ exit(%results);
 	#~ }
-	
+
 	#~ method do_exit() {
 		#~ self.exit_value;
 	#~ }
@@ -236,9 +231,9 @@ method test_run_swaps_streams() {
 
 #~ method test_dynamic_vars() {
 	#~ verify_that( 'The various $*DYNAMIC_VARS get set when running' );
-	
+
 	#~ my $fetch := Test::Dynamic.new;
-	
+
 	#~ my @args := <
 		#~ thisProgram
 		#~ $*PROGRAM_NAME
@@ -251,7 +246,7 @@ method test_run_swaps_streams() {
 		#~ %*VM
 	#~ >;
 	#~ my %value := $fetch.run(@args);
-	
+
 	#~ fail_unless( %value<$*PROGRAM_NAME> eq @args.shift,
 		#~ 'Program name should be this script.');
 	#~ fail_unless( %value<@*ARGS>.join(' ') eq @args.join(' '),
@@ -261,5 +256,5 @@ method test_run_swaps_streams() {
 	#~ #fail_unless( %value<$*PID> ne '', 'Process id must be set' );
 	#~ fail_unless( %value<$?PERL> eq 'nqp-rx', 'Perl should be nqp' );
 	#~ fail_unless( %value<$?VM> eq 'parrot', 'VM should be parrot' );
-	#~ fail_unless( %value<%*VM><lib_paths> == 5, '%*VM<lib_paths> should have 5 entries' );	
+	#~ fail_unless( %value<%*VM><lib_paths> == 5, '%*VM<lib_paths> should have 5 entries' );
 #~ }

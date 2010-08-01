@@ -63,6 +63,7 @@ sub MAIN(@argv) {
 
 	my @base_pir_files := <
 		src/Global.pir
+                src/Pmc/Array.pir
                 src/Pmc/common-methods.pir
 		src/Syntax.pir
 
@@ -75,7 +76,7 @@ sub MAIN(@argv) {
 		src/Parrot/Parrot.pir
 		src/Parrot/Pir.pir
 
-		src/Pmc/Array.pir
+
 		src/Pmc/Class.pir
 
 		src/Pmc/Exception.pir
