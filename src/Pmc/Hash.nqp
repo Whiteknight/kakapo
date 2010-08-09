@@ -1,43 +1,49 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
-=begin
 
-=NAME Hash - Adds subs and methods to the Hash PMC namespace.
+# =NAME Hash - Adds subs and methods to the Hash PMC namespace.
+#
+# =DESCRIPTION
+#
+# This is a collection of subs and methods that add common functionality to 
+# Hashes in NQP. In many cases, the code acts as a bridge between the NQP
+# sub/method syntax and PIR opcodes. 
+#
+# =SYNOPSIS
+#
+#	 %pies := Hash.new( :apple(1), :blueberry(2), :cherry(3) );
+#
+#	 unless %pies.contains('rhubarb') { ... }	
+#
+#	 if %pies.defined { ... }			
+#
+#	 %pies.delete('cherry');			
+#
+#	 $number_of_pies := %pies.elems;	
+#
+#	 @pies := %pies.keys;
+#
+#	 %all_pies := Hash.merge(%good_pies, %bad_pies);
+#
+#	 %all_pies.merge(%more_pies);
 
-=DESCRIPTION
-
-This is a collection of subs and methods that add common functionality to 
-Hashes in NQP. In many cases, the code acts as a bridge between the NQP
-sub/method syntax and PIR opcodes. 
-
-
-=SYNOPSIS
-
-=begin code
-
-    %pies := Hash.new( :apple(1), :blueberry(2), :cherry(3) );
-
-    unless %pies.contains('rhubarb') { ... }	
-
-    if %pies.defined { ... }			
-
-    %pies.delete('cherry');			
-
-    $number_of_pies := %pies.elems;	
-
-    @pies := %pies.keys;
-
-    %all_pies := Hash.merge(%good_pies, %bad_pies);
-
-    %all_pies.merge(%more_pies);
-
-=end code
-=end
-
-module Hash;
+module Pmc::Hash;
 
 sub _pre_initload() {
-	Global::inject_root_symbol( Hash::hash );
+	Global::inject_root_symbol( Pmc::Hash::hash );
+	
+	unless pir::isa( Parrot::get_hll_global( <Hash> ), 'P6protoobject' ) {
+		P6metaclass.register: <Hash>;
+	}
+	
+	my $hash_nsp := pir::get_hll_namespace__pp( pir::split__pss('::', 'Hash') );
+	my $hash_pmc := $hash_nsp.get_class;
+
+	my $nsp := pir::get_namespace__p();
+	my &new := $nsp.get_method: 'new';
+	$hash_nsp.install_method: 'new', &new;
+	$nsp.export_methods_to: <Hash>;
+	$nsp.export_to: $hash_nsp, [<merge_keys> ];	
 }
 
 # Returns true (1) if `$key` exists in the Hash. Returns false (0) otherwise. 
@@ -172,12 +178,10 @@ method merge(*@hashes, :%into = self, :$priority = 'left') {
 	%into;
 }
 
-=begin
-=item merge_keys
-
-FIXME: Merge this sub with .merge( :keys )
-
-=end
+# =item merge_keys
+#
+# FIXME: Merge this sub with .merge( :keys )
+#
 
 sub merge_keys(%first, *@hashes, :@keys!, :%into?, :$use_last?) {
 	@hashes.unshift(%first);
@@ -226,7 +230,7 @@ sub merge_keys(%first, *@hashes, :@keys!, :%into?, :$use_last?) {
 #     my %dictionary := Hash.new(%defaults, :one('uno'), :two('dos'));
 
 our method new(*@pos, *%pairs) {
-	if @pos.elems {
+	if +@pos {
 		my $message := 'Invalid call to Hash.new with positional args.';
 
 		if pir::isa__IPS(@pos[0], 'NameSpace') {

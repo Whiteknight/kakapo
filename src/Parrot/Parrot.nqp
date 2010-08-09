@@ -37,7 +37,7 @@ sub caller($index? = 1) {
 # NB: index defaults to 1, and create_key adds 1, for '2', because the default is 1 higher than
 # the sub that *called* this sub. (foo() calls bar() calls caller(), caller returns 'foo')
 sub caller_namespace($index? = 1) {
-	my $key := Key::create_key('namespace', $index + 1);
+	my $key := Pmc::Key::create_key('namespace', $index + 1);
 	my $nsp := pir::getinterp__P(){$key};
 }
 
@@ -155,8 +155,10 @@ sub get_address_of($what) {
 
 # Return a global object by name.
 sub get_hll_global($path) {
-	if $path.isa('String') {
-		$path := $path.split('::');
+	# NB: This sub is called VERY EARLY. Don't try to use $obj.method syntax here.
+	
+	if pir::isa__ips( $path, 'String' ) {
+		$path := pir::split__pss( '::', $path );
 	}
 	
 	unless pir::does__IPS($path, 'array') {
@@ -166,7 +168,7 @@ sub get_hll_global($path) {
 	my $name := $path.pop;
 	my $key := key_($path);
 	
-	$key.defined 
+	pir::defined( $key )
 		?? pir::get_hll_global__PPS($key, $name)
 		!! pir::get_hll_global__PS($name);
 }
@@ -180,7 +182,7 @@ sub get_hll_global($path) {
 sub get_hll_namespace($path?) {
 
 	my $result;
-	
+
 	if pir::defined__IP($path) {
 		if pir::isa__IPS($path, 'String') {
 			$path := key_(pir::split__PSS('::', $path));

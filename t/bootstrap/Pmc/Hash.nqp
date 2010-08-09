@@ -1,5 +1,7 @@
 #! parrot-nqp
 
+module bootstrap::Pmc::Hash;
+
 MAIN();
 
 sub MAIN() {
@@ -41,11 +43,15 @@ sub test_defined() {
 
 sub test_new() {
 	my $object := Hash.new();
-	isa_ok($object, 'Hash', 'Created a Hash okay');
+	isa_ok($object, 'Hash', 'Hash.new()');
+	
+	$object := hash();
+	isa_ok($object, 'Hash', 'hash()');
 	
 	$object := Hash.new( :a(2), :b(3), :c(5));
-	isa_ok($object, 'Hash', 'Created a Hash okay');
-	is(3, +$object, 'Created with 3 elements');
+	isa_ok($object, 'Hash', 'Hash.new( :a(2), ...)');
+	is( pir::elements__ip( $object ), 3, 'Hash has 3 elements');
+	is(+$object, 3, 'Created with 3 elements');
 	
 	is($object<b>, 3, 'Elements right');
 	is($object<c>, 5, 'Elements right');

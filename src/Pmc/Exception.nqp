@@ -1,13 +1,11 @@
 # Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module Exception;
+module Pmc::Exception;
 # Provides support for Exception PMCs
 
 sub _pre_initload() {
-# Not loading P6 in base
-#	use('P6metaclass');
-#         has('payload'); etc.
+	pir::get_namespace__p().export_methods_to: <Exception>;
 }
 
 my method _attr($name, @value) {
@@ -20,8 +18,8 @@ my method _attr($name, @value) {
 	}
 }
 
-method backtrace_string() {
-	my @parts := Array::new();
+our method backtrace_string() {
+	my @parts;
 	my $sub;
 	my $sub_name;
 	
@@ -38,24 +36,24 @@ method backtrace_string() {
 	return @parts.join("\n");
 }
 
-method exit_code(*@value)		{ self._attr('exit_code', @value); }
-method handled(*@value)			{ self._attr('handled', @value); }
-method message(*@value)			{ self._attr('message', @value); }
-method payload(*@value)			{ self._attr('payload', @value); }
+our method exit_code(*@value)		{ self._attr('exit_code', @value); }
+our method handled(*@value)		{ self._attr('handled', @value); }
+our method message(*@value)		{ self._attr('message', @value); }
+our method payload(*@value)		{ self._attr('payload', @value); }
 
-method rethrow()				{ pir::rethrow(self); }
-method severity(*@value)			{ self._attr('severity', @value); }
-method throw()				{ pir::throw(self); }
-method type(*@value)			{ self._attr('type', @value); }
+our method rethrow()			{ pir::rethrow(self); }
+our method severity(*@value)		{ self._attr('severity', @value); }
+our method throw()				{ pir::throw(self); }
+our method type(*@value)			{ self._attr('type', @value); }
 
 class Exception::Severity {
 	method NORMAL()		{ 0; }
-	method WARNING()		{ 1; }
-	method ERROR()			{ 2; }
-	method SEVERE()			{ 3; }
-	method FATAL()			{ 4; }
+	method WARNING()	{ 1; }
+	method ERROR()		{ 2; }
+	method SEVERE()		{ 3; }
+	method FATAL()		{ 4; }
 	method DOOMED()		{ 5; }
-	method EXIT()			{ 6; }
+	method EXIT()		{ 6; }
 }
 
 class Exception::Wrapper;

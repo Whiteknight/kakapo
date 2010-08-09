@@ -49,11 +49,11 @@ INIT {
 
 our method absolute($bool = 1)		{ $!is_relative := ! $bool; }
 
-my method append__ANY($element, :$dynamic) {
+our method append__ANY($element, :$dynamic) {
 	die( "Can't use a ", pir::typeof__SP($element), " as part of a Path - use a String or Path instead.");
 }
 
-my method append__Path($element, :$dynamic = 0) {
+our method append__Path($element, :$dynamic = 0) {
 
 	unless $!initialized {
 		$!initialized := $element.initialized;
@@ -73,7 +73,7 @@ my method append__Path($element, :$dynamic = 0) {
 # Scenario: "x/" -> [ 'x', '' ] -> [ 'x' ] :relative
 # Scenario: "" -> [ '' ] -> [ ] :absolute (confused with /)
 
-my method append__String($element, :$dynamic = 0) {
+our method append__String($element, :$dynamic = 0) {
 	die( "Cannot use :dynamic with a String, only a Path argument" )
 		if $dynamic;
 
@@ -130,7 +130,7 @@ method get_string() {
 		!! self.elements.join: $slash;
 }
 
-my method _init_obj(*@parts, :$dynamic = 0, *%named) {
+our method _init_obj(*@parts, :$dynamic = 0, *%named) {
 	@!elements := @!elements;
 	$!filesystem := $*FileSystem;
 	$!initialized := 0;
@@ -177,7 +177,7 @@ our method relative($bool = 1)		{ $!is_relative := $bool; }
 #~ our method backup_time()	{ self._stat_query(8); }
 #~ our method change_time()	{ self._stat_query(7); }
 #~ our method create_time()	{ self._stat_query(4); }
-#~ my method _stat_query($index) {	# $index
+#~ our method _stat_query($index) {	# $index
 	#~ pir::stat__ISI(self._complete, $index);
 #~ }
 #~ our method gid()		{ self._stat_query(10); }
@@ -194,6 +194,6 @@ our method slurp(*%named) {
 
 #~ class Path::Cwd;
 
-#~ my method _complete() {
+#~ our method _complete() {
 	#~ '.';
 #~ }

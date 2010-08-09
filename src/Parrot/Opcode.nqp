@@ -7,15 +7,18 @@ module Opcode;
 # Kakapo startup function. Do the global exports early, so that other modules
 # can import these functions during their init processing.
 sub _pre_initload() {
-
 	export(:tags('DEFAULT'),	'defined');
 	export(:tags('TYPE'),	'can', 'does', 'get_class', 'isa', 'new', 'typeof');
 }
 
 sub backtrace()
 {
-    # TODO: backtrace causes an IMCC parse error. It might be a dynop now
-    #pir::backtrace();
+	# TODO: backtrace causes an IMCC parse error. It might be a dynop now
+	#pir::backtrace();
+	Q:PIR {
+	%r = loadlib 'debug_ops'
+	#backtrace
+	};
 }
 
 sub can($object, $method)		{ pir::can__IPS($object, $method); }

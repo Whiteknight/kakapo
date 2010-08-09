@@ -337,7 +337,7 @@ sub strip_annotations(*%config) {
 	for %config<strip_annotations> {
 		if file_exists(~$_) {
 			my $fh := pir::new__PS("FileHandle");
-                        $fh.open(~$_, 'r');
+			$fh.open(~$_, 'r');
 			my $body := $fh.readall();
 			$fh.close;
 
@@ -345,7 +345,7 @@ sub strip_annotations(*%config) {
 				say("Removing annotations from $_");
 				$body.replace("\n.annotate ", "\n# .annotate ");
 				$fh := pir::new__PS("FileHandle");
-                                $fh.open(~$_, 'w');
+				$fh.open(~$_, 'w');
 				$fh.puts($body);
 				$fh.close;
 			}

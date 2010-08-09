@@ -1,11 +1,11 @@
 # Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module String;
+module Pmc::String;
 # Provides basic String functions, and adds some methods to the String PMC.
 
-sub _pre_initload() {
-	our %Cclass_id := Hash::hash(
+our sub _pre_initload() {
+	our %Cclass_id := hash(
 		:NONE(			0),
 		:ANY(				65535),
 
@@ -24,8 +24,10 @@ sub _pre_initload() {
 		:NEWLINE(			4096),
 		:WORD(			8192),
 	);
+	
+	pir::get_namespace__p().export_methods_to: <String>;
+	# FIXME: Need to export subs to String as well.
 }
-
 
 sub character_offset_of($string, *%opts) {
 	DUMP(:string($string), :options(%opts));
@@ -249,21 +251,6 @@ sub _init_line_number_info($string) {
 	#DUMP(@lines);
 }
 
-=begin
-=item isa( $type ) returns Boolean
-
-Returns C< true > if the invocant is a member of the class or PMC type named
-by the parameter. Returns C< false > otherwise.
-
-=begin code
-	if $object.isa( 'Undef' ) { ... }
-=end code
-=end
-
-method isa($type) {
-	pir::isa(self, $type);
-}
-
 sub line_number_of($string, *%opts) {
 	DUMP(:string($string), :options(%opts));
 
@@ -329,7 +316,7 @@ method split($delim? = '') {
 	pir::split__PSS($delim, self);
 }
 
-method substr($start, $limit?) {
+method substr($start, $limit? = self.length) {
 	my $length	:= self.length;
 	
 	die( "Invalid start offset ($start) for .substr" )
@@ -339,10 +326,7 @@ method substr($start, $limit?) {
 		if $start < 0;
 	$length := $length - $start;
 
-	if ! $limit.defined {
-		$limit := $length;
-	}
-	elsif $limit > $length {
+	if $limit > $length {
 		$limit := $length;
 	}
 	elsif $limit < 0 {

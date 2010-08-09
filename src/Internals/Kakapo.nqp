@@ -36,6 +36,7 @@ sub call_preinit_subs(@list) {
 	my &sub;
 
 	for @list {
+		say("Calling preinit for $_");
 		$nsp := pir::get_hll_namespace__PP( pir::split('::', ~$_) );
 		&sub := $nsp.find_sub('_pre_initload');
 		

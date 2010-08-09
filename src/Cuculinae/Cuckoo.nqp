@@ -25,7 +25,7 @@ sub _initload() {
 }
 
 sub calling($egg) {
-	get_cuckoo($egg).new_egg(:behavior(Cuculus::Canorus::add_antiphon));
+	get_cuckoo($egg).new_egg(:behavior('add_antiphon'));
 }
 
 sub cuckoo($class, *%named) {
@@ -42,7 +42,7 @@ sub verify($egg, *%named) {
 	# Create new verify-configured egg.
 	# NB: Create, then set behavior, to prevent init:vtable from creating 
 	# verify calls that fail.
-	my $new_egg := get_cuckoo($egg).new_egg(:behavior(Cuculus::Canorus::verify_calls));
+	my $new_egg := get_cuckoo($egg).new_egg(:behavior('verify_calls'));
 }
 
 sub verify_never($egg, *%named) {

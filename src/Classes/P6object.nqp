@@ -7,22 +7,39 @@ module P6object;
 # this module is available during :init and :load processing for other modules.
 sub _pre_initload() {
 
-	Pir::compile_sub(:name('__get_bool'), :vtable('get_bool'),
-		:namespace('P6object'),
-		:body(
-			'$I0= self."get_bool"()',
-			'.return ($I0)',
-		),
-	);
+	my $nsp := Parrot::get_hll_namespace( 'P6object' );
+	my $class := $nsp.get_class;
+	my %vtable_overrides;
+	#~ %vtable_overrides<get_bool> := P6object::__get_bool;
+	%vtable_overrides<get_bool> := $nsp.get_method: '__get_bool';
+	#~ %vtable_overrides<get_string> := P6object::__get_string;
+	%vtable_overrides<get_string> := $nsp.get_method: '__get_string';
 	
-	Pir::compile_sub(:name('__get_string'), :vtable('get_string'),
-		:namespace('P6object'),
-		:body(
-			'$S0 = self."get_string"()',
-			'.return ($S0)',
-		),
-	);
+	for %vtable_overrides.kv -> $name, &method {
+		$class.add_vtable_override: $name, &method;
+	}
 }
+
+our method __get_bool() {
+	Q:PIR {
+		$I0 = self.'get_bool'()
+		.return ($I0)
+	};
+}
+
+our method __get_string() {
+	Q:PIR {
+		$S0 = self.'get_string'()
+		.return ($S0)
+	};
+}
+	#~ Pir::compile_sub(:name('__get_string'), :vtable('get_string'),
+		#~ :namespace('P6object'),
+		#~ :body(
+			#~ '$S0 = self."get_string"()',
+			#~ '.return ($S0)',
+		#~ ),
+	#~ );
 
 # # P6object - the root of the P6/NQP class hierarchy. #
 #

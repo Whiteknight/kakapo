@@ -10,13 +10,6 @@ has %!passthrough_antiphons;
 has $!verifier;
 
 INIT {
-	export( <
-		add_antiphon
-		get_behavior
-		get_cuckoo
-		verify_calls
-	> );
-
 	Kakapo::depends_on( 'Cuculus::SigMatcher' );
 }
 
@@ -24,7 +17,7 @@ sub _initload() {
 	use( 'Cuculus::SigMatcher' );
 }
 
-method add_antiphon($callsig) {
+our method add_antiphon($callsig) {
 
 	my $antiphon := new_antiphon($callsig);
 	@!antiphons.push($antiphon);
@@ -33,10 +26,10 @@ method add_antiphon($callsig) {
 	$antiphon;
 }
 
-method antiphons()	{ @!antiphons; }
-method call_log()	{ @!call_log; }
+our method antiphons()	{ @!antiphons; }
+our method call_log()	{ @!call_log; }
 
-method class(*@value) {
+our method class(*@value) {
 	if @value {
 		die( 'Cannot reset $!class attribute: already points to ' ~ "'$!class'" )
 			if pir::defined(pir::getattribute__PPS(self, '$!class'));
@@ -113,7 +106,7 @@ sub get_rootclass_methods() {
 	@_Rootclass_methods;
 }
 
-method init_egg( $egg, :&behavior = Cuculus::Canorus::mock_execute ) {
+our method init_egg( $egg, :$behavior = 'mock_execute' ) {
 	die( "Must be called with a Cuckoo's egg." )
 		unless isa($egg, 'Cuculus::Canorus::Ovum');
 
@@ -124,11 +117,11 @@ method init_egg( $egg, :&behavior = Cuculus::Canorus::mock_execute ) {
 	}
 
 	# Always (re)set the behavior, because new_egg starts all eggs in execute mode first.
-	pir::setattribute__vPSP($egg, '&!CUCULUS_BEHAVIOR', &behavior);
+	pir::setattribute__vPSP($egg, '&!CUCULUS_BEHAVIOR', $behavior);
 	$egg;
 }
 
-method _init_obj(*@pos, *%named) {
+our method _init_obj(*@pos, *%named) {
 	@!antiphons := @!antiphons;	# Null -> empty
 	@!call_log := @!call_log;		# Null -> empty
 
@@ -137,7 +130,7 @@ method _init_obj(*@pos, *%named) {
 	self;
 }
 
-method install_vtable_overrides($proto_egg) {
+our method install_vtable_overrides($proto_egg) {
 	
 	my %vtable_overrides;
 	
@@ -183,7 +176,7 @@ method install_vtable_overrides($proto_egg) {
 	#~ }
 }
 
-method mock_class($parent = 'P6object', :$named) {
+our method mock_class($parent = 'P6object', :$named) {
 	$parent := P6metaclass.get_parrotclass($parent);
 	$named := $named || mock_class_name($parent);
 
@@ -191,7 +184,7 @@ method mock_class($parent = 'P6object', :$named) {
 
 	# Do this before P6metaclass has a chance to create the new proto_egg - should catch
 	# any init :vtable methods.
-	Cuculus::Canorus::Ovum::_::push_inits(:cuckoo(self), :behavior(Cuculus::Canorus::mock_execute));
+	Cuculus::Canorus::Ovum::_::push_inits(:cuckoo(self), :behavior('mock_execute'));
 	
 	my $proto_egg := P6metaclass.new_class: $named, :parent( 'Cuculus::Canorus::Ovum' );
 	P6metaclass.add_parent: $proto_egg, $parent;
@@ -214,7 +207,7 @@ sub mock_class_name($parent) {
 	my $name := ~ $parent ~ "::<mock{$_Next_id++;}>";
 }
 
-method mock_execute($callsig) {
+our method mock_execute($callsig) {
 	@!call_log.push($callsig);	# record the call
 
 	for @!antiphons -> $one {
@@ -230,7 +223,7 @@ method mock_execute($callsig) {
 	$callsig.object;		# returns "self"
 }
 
-method mock_new(*@pos, *%named) {
+our method mock_new(*@pos, *%named) {
 	# Make a new cuckoo, mocking the same class.
 	my $cuckoo := $!CUCULUS_CANORUS;
 	my $new_cuckoo := $cuckoo.WHAT.new(:class($cuckoo.class), :passthrough($cuckoo.passthrough));
@@ -257,22 +250,22 @@ sub new_antiphon($callsig) {
 # or verify, and the eggs are throw-away, so there may be lots of them pointing to the same object:
 # calling($foo).a(1).will_do X, calling($foo).a(2).will_do Y, etc.
 
-method new_egg( :&behavior = Cuculus::Canorus::mock_execute ) {
+our method new_egg( :$behavior = 'mock_execute' ) {
 	# Put the new egg in execute mode until any init:vtable finishes.
-	Cuculus::Canorus::Ovum::_::push_inits(:cuckoo(self), :behavior(Cuculus::Canorus::mock_execute));
+	Cuculus::Canorus::Ovum::_::push_inits(:cuckoo(self), :behavior('mock_execute'));
 	my $new_egg := pir::new__PP($!class);
-	self.init_egg($new_egg, &behavior);
+	self.init_egg($new_egg, $behavior);
 }
 
-method passthrough($value?) {
+our method passthrough($value?) {
 	%!passthrough_antiphons := ($value.defined
 		?? $value
 		!! %!passthrough_antiphons);
 }
 
-method verifier($value?)	{ $value.defined ?? ($!verifier := $value) !! $!verifier; }
+our method verifier($value?)	{ $value.defined ?? ($!verifier := $value) !! $!verifier; }
 
-method verify_calls($callsig) {
+our method verify_calls($callsig) {
 	$!verifier.sig_matcher:
 		Cuculus::SigMatcher.new: 
 			:expecting($callsig);

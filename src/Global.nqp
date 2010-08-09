@@ -19,9 +19,9 @@
 #
 # =end code
 #
-# B<NOTE:> This module is the I< very first > module initialized in the Kakapo library. Because of 
+# B<NOTE:> This module is one of the very first modules initialized in the Kakapo library. Because of 
 # this, it must call no external functions that depend on being initialized. (In general, only calls to
-# Opcode:: should be made.)
+# Parrot support subs should be made: Opcode, pir::, Parrot)
 
 module Global;
 
@@ -29,8 +29,8 @@ module Global;
 # module is available during :init and :load processing for other modules.
 
 our sub _pre_initload() {
-	inject_root_symbol(Global::use);
-	inject_root_symbol(Global::export);
+	inject_root_symbol( Global::use );
+	inject_root_symbol( Global::export );
 }
 
 # =signature	export($symbol [...], [ :namespace(_), ] [ :tags( [ string [...] ] ) ] )
@@ -47,9 +47,9 @@ our sub _pre_initload() {
 # other tags are specified.) The symbol is added to all of the export groups named in C< :tags >. This allows
 # definition of partially overlapping tag sets, by adding the common symbols to multiple tags:
 #
-#	Global::export('c1', 'c2', 'c3', :tags('A', 'B'));
-#	Global::export('a1', 'a2', :tags('A'));	# A include a1, a2, c1, c2, c3
-#	Global::export('b1', :tags('B'));		# B includes b1, c1, c2, c3
+#	export( 'c1', 'c2', 'c3', :tags('A', 'B'));
+#	export( 'a1', 'a2', :tags('A'));		# A include a1, a2, c1, c2, c3
+#	export( 'b1', :tags('B'));		# B includes b1, c1, c2, c3
 #
 # The option C<:as($name)> can only be used with a single symbol. In this case, the symbol - which in this 
 # case may be an object, or the String name of an object - is added to the specified export tags under the 
@@ -63,14 +63,14 @@ our sub _pre_initload() {
 # but it is a valid import tag.
 
 our sub export($symbol, *@symbols, :$as?, :$namespace = Parrot::caller_namespace(), :@tags?) {
-	if pir::isa__IPS($symbol, 'String') || ! pir::does__IPS($symbol, 'array') {
+	if pir::isa($symbol, 'String') || ! pir::does__IPS($symbol, 'array') {
 		@symbols.unshift($symbol);
 	}
 	else {
 		@symbols := $symbol;	# Array: <name name name>
 	}
 
-	if ! pir::isa__IPS(@tags, 'ResizablePMCArray') { @tags := Array::new(@tags); }
+	if ! pir::isa(@tags, 'ResizablePMCArray') { @tags := [ @tags ]; }
 	elsif +@tags == 0 { @tags.push('DEFAULT'); }
 
 	if Opcode::isa($namespace, 'String') {
@@ -102,7 +102,6 @@ our sub inject_root_symbol($pmc, :$as, :$force) {
 	my $hll_namespace := pir::get_hll_namespace__P();
 	inject_symbol($pmc, :as($as), :namespace($hll_namespace), :force($force));
 }
-
 
 our sub inject_symbol($object, :$namespace, :$as?, :$force?) {
 # Injects a PMC C< $object > into a C< $namespace >, optionally C< $as > a certain name. For C< Sub > and 
@@ -150,7 +149,7 @@ our sub register_global($name, $object, :$namespace? = 'Global') {
 
 our sub use($module = Parrot::caller_namespace(0), :@except?, :@tags?, :@symbols?) {
 # Imports global symbols into the caller's namespace. If neither C<:tags> nor
-# C<:symbols> are specified, C<:tags('DEFAULT')> is assumed.
+# C<:symbols> are specified, C< :tags('DEFAULT') > is assumed.
 
 # The strings given to C<:tags > are tag names. The C<DEFAULT> tag is one 
 # of two special tag names known to the system. Otherwise, each module may 
@@ -169,12 +168,11 @@ our sub use($module = Parrot::caller_namespace(0), :@except?, :@tags?, :@symbols
 # symbol list is generated. This allows the caller to block certain symbols, perhaps 
 # in order to rename or override them.
 
-#	if ! Opcode::defined($module)		{ $module	:= Parrot::caller_namespace(0); }
-	if Opcode::isa(@tags, 'String')		{ @tags	:= Array::new(@tags); }
-	if Opcode::isa(@symbols, 'String')		{ @symbols	:= Array::new(@symbols); }
-	
-	if Opcode::isa($module, 'P6object')	{ $module	:= Opcode::typeof($module); }
-	if Opcode::isa($module, 'String')		{ $module	:= Parrot::get_hll_namespace($module); }
+	if pir::isa(@tags, 'String')		{ @tags	:= [ @tags ]; }
+	if pir::isa(@symbols, 'String')	{ @symbols	:= [ @symbols ]; }
+
+	if pir::isa($module, 'P6object')	{ $module	:= Opcode::typeof($module); }
+	if pir::isa($module, 'String')	{ $module	:= Parrot::get_hll_namespace($module); }
 
 	if +@tags == 0 && +@symbols == 0 {
 		@tags.push('DEFAULT');
@@ -193,7 +191,7 @@ our sub use($module = Parrot::caller_namespace(0), :@except?, :@tags?, :@symbols
 		my $source_nsp := $export_nsp.make_namespace(~ $_);
 		my @tag_symbols;
 		
-		for $source_nsp.keys {
+		for $source_nsp {
 			unless %except{$_} {
 				@tag_symbols.push(~ $_);
 			}

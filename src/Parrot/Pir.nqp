@@ -15,9 +15,9 @@ sub compile($string) {
 }
 
 sub compile_sub(:@body = "die 'I-i-i ain\'t got no- bo-dy!'", :$method, :@multi, :$name, :$namespace, :@params, :$vtable?) {
-	unless does(@params, 'array') { @params := Array::new(@params); }
-	unless does(@body, 'array') { @body := Array::new(@body); }
-	unless ! @multi.defined || does(@multi, 'array') { @multi := Array::new(@multi); }
+	unless does(@params, 'array') { @params := [ @params ]; }
+	unless does(@body, 'array') { @body := [ @body ]; }
+	unless ! @multi.defined || does(@multi, 'array') { @multi := [ @multi ]; }
 	
 	$method := $method ?? ':method' !! '';
 	my $multi := @multi ?? ":multi({ @multi.join(', ') })" !! '';
@@ -25,7 +25,7 @@ sub compile_sub(:@body = "die 'I-i-i ain\'t got no- bo-dy!'", :$method, :@multi,
 		?? $vtable.isa('String') ?? ":vtable('$vtable')" !! ':vtable'
 		!! '';
 		
-	my @sub_decl := Array::new(
+	my @sub_decl := ResizableStringArray.new(
 		".namespace { pir_namespace($namespace); }",
 		".sub '$name' $method $multi $vtable",
 		|(@params.map: -> $param { "\t$param" }),

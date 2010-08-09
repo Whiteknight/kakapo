@@ -1,5 +1,7 @@
 #! parrot-nqp
 
+module bootstrap::Pmc::Array;
+
 MAIN();
 
 sub MAIN() {

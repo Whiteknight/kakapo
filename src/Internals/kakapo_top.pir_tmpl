@@ -1,5 +1,6 @@
 .namespace []
 
+.loadlib 'debug_ops'
 .loadlib 'io_ops'
 .include 'iglobals.pasm'
 .include 'interpinfo.pasm'

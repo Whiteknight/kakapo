@@ -41,7 +41,6 @@ my method _add_attributes($class, %attrs) {
 
 	for %attrs {
 		my %attr_info := %attrs{$_};
-
 		$parrotclass.add_attribute(%attr_info<name>);
 		self._make_accessor($parrotclass, %attr_info);
 	}
@@ -346,11 +345,16 @@ sub has(*@args, :$class = caller_namespace(), *%opts) {
 				$sigil	:= '$';
 			}
 
-			unless %is_twigil{$attr[0]} {
+			my $base_name;
+			
+			if %is_twigil{$attr[0]} {
+				$twigil := $attr[0];
+				$base_name := $attr.substr(1);
+			}
+			else {
+				$base_name := $attr;
 				$attr := '!' ~ $attr;
 			}
-
-			my $base_name := $attr.substr(1);
 
 			if %opts.contains($base_name) {
 				die("Re-declaration of attribute '$base_name'");
@@ -359,7 +363,7 @@ sub has(*@args, :$class = caller_namespace(), *%opts) {
 			%opts{$base_name} := hash(
 				:accessor($base_name),
 				:default_type(%default_type{$sigil}),
-				:is_private($attr[0] eq '!' ?? 1 !! 0),
+				:is_private($twigil eq '!' ?? 1 !! 0),
 				:name($sigil ~ $attr),
 			);
 		}
@@ -379,14 +383,16 @@ sub has_vtable($name, &code, :$class = caller_namespace().get_class) {
 }
 
 my method _make_accessor($parrotclass, %info) {
-	my $namespace := $parrotclass.get_namespace;
+	#my $namespace := $parrotclass.get_namespace;
 
-	# Don't define one if it's already present.
+	my $name := %info<accessor>;
+	
+	# Don't define one if it's already present on the local class (not inherited)
 	return 0
-		unless pir::isnull($namespace.find_sub( %info<accessor> ));
+		if $parrotclass.methods{ $name }.defined;
 
 	my %accessor_details := hash(
-		:name(%info<accessor>),
+		:name( $name ),
 		:namespace($parrotclass.get_namespace),
 		:method(1),
 	);
@@ -399,7 +405,7 @@ my method _make_accessor($parrotclass, %info) {
 	my $attr := %info<name>;
 	my $debug := %info<debug> ?? '' !! '# ';
 
-	%accessor_details<body> := Array::new(
+	%accessor_details<body> := [
 		"\t" ~ 'if has_value goto set_value',
 		"\t" ~ $debug ~ "say \"Fetching attribute '$attr'\"",
 		"\t" ~ "value = getattribute self, '$attr'",
@@ -419,9 +425,9 @@ my method _make_accessor($parrotclass, %info) {
 		"\t" ~ $debug ~ '$P0(value)',
 		"\t" ~ "setattribute self, '$attr', value",
 		"\t" ~ '.return (self)',
-	);
+	];
 
-	Parrot::call_sub_(Pir::compile_sub, Array::new(), %accessor_details);
+	Parrot::call_sub_(Pir::compile_sub, [ ], %accessor_details);
 }
 
 

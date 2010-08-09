@@ -28,16 +28,19 @@ sub get_preinit_subs() {
 
 	# Note: Order is crucial.
 	
-	<	Global
+	<
+		Pmc::Namespace
+		Global			
 		Opcode
 		Parrot
 		Pir
-		Key
-		Hash
-		Array
+		Pmc::Undef
+		Pmc::Hash			
+		Pmc::Key	
 		Kakapo::Pmc::COMMON
-		String
-		Exception
+		Pmc::Array
+		Pmc::String
+		Pmc::Exception
 		Syntax
 		P6metaclass
 		P6object

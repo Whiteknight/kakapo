@@ -42,8 +42,9 @@ method VTABLE_find_method($name) {
 			$cuckoo := pir::getattribute__PPS($self, '$!CUCULUS_CANORUS');
 		}
 		
-		my &behavior := pir::getattribute__PPS($self, '&!CUCULUS_BEHAVIOR');
-		&behavior($cuckoo, $callsig);
+		my $behavior := pir::getattribute__PPS($self, '&!CUCULUS_BEHAVIOR');
+		Parrot::call_method($cuckoo, $behavior, $callsig);
+		#&behavior($cuckoo, $callsig);
 	};
 	
 	my &closure := pir::newclosure__PP(&method);
@@ -63,7 +64,7 @@ method pop_inits() {
 	self;
 }
 
-sub push_inits( :&behavior!, :$cuckoo! ) {
+sub push_inits( :$behavior!, :$cuckoo! ) {
 	our @_Init_stack.push($cuckoo);
-	@_Init_stack.push(&behavior);
+	@_Init_stack.push($behavior);
 }

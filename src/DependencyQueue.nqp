@@ -35,7 +35,7 @@ our method add_entry($name, $value, :@requires?) {
 	}
 
 	if @requires.isa('String') { @requires := Array::new(@requires); }
-	my @entry := Array::new($name, $value, @requires);
+	my @entry := [ $name, $value, @requires ];
 	self.pending{$name} := @entry;
 }
 
@@ -86,7 +86,7 @@ our method reset() {
 
 method tsort_queue() {
 	self.locked(1);
-	self.cycle_keys(Array::new());
+	self.cycle_keys( [] );
 	self.cycle(Hash.new());
 	self.added(Hash.new());
 	self.tsort_add_pending_entries(self.pending.keys);

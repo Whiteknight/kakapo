@@ -1,21 +1,37 @@
 # Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module Key;
+module Pmc::Key;
 
 sub _pre_initload() {
 	P6metaclass.register('Key');
+
+	# Get target namespace
+	my $to_nsp := pir::get_hll_namespace__pp( pir::split__pss('::', 'Key') );
+	my $to_pmc := $to_nsp.get_class;
+	
+	# Get source (this) namespace
+	my $from_nsp := pir::get_namespace__p();	
+
+	# Inject 'new' and '__dump' into P6object chain (protoclass and class)
+	for <__dump new> -> $method {
+		my &sub := $from_nsp.get_method: $method;
+		$to_nsp.install_method: ~$method, &sub;
+	}
+	
+	$from_nsp.export_methods_to: <Key>;
+
+	#my @export_subs := [ <merge_keys> ];
+	#$from_nsp.export_to: $to_nsp, [<merge_keys> ];
 }
 
 method __dump($dumper, $label) {
 	print( pir::get_repr__SP(self) );
 }
 
-method new(*@parts, *%named) {
-	create_key(|@parts, |%named);
-}
-
 # NB: This sub called before Key class is registered. DO NOT try to merge with the method, above.
+# Also, do not try to call $key.methods yet, since the methods will not be exported yet.
+
 sub create_key(*@parts, *%opts) {
 	my $key;
 	my $segment;
@@ -38,7 +54,8 @@ sub create_key(*@parts, *%opts) {
 		}
 		
 		if pir::defined($key) {
-			$key.push: $segment;
+			# $key.push: $segment;
+			pir::push__vpp($key, $segment);
 		}
 		else {
 			$key := $segment;
@@ -48,8 +65,9 @@ sub create_key(*@parts, *%opts) {
 	$key;
 }
 
-# The startup code needs this before common runs.
-method defined() { 1 }
+method new(*@parts, *%named) {
+	create_key(|@parts, |%named);
+}
 
 method push($obj) {
 	pir::push__vPP(self, $obj);

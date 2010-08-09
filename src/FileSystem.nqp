@@ -51,6 +51,9 @@ has	$!file;
 has	$!os;
 
 INIT {
+	pir::loadlib__ps('file');
+	pir::loadlib__ps('os');
+	
 	use(	Parrot::Unix::Stat );
 
 	my @multisubs := [ <exists> ];
