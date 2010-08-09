@@ -1,23 +1,14 @@
 # Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module UnitTest::Suite;
+class UnitTest::Suite;
 
 has	@!members;
 has	$!num_tests;
 
-INIT {
-	extends( UnitTest::Standalone );
-
-	has(<
-		@!members
-		$!num_tests
-	>);
-}
-
 method add_test($test) {
-	self.members.push($test);
-	self.num_tests(self.num_tests + $test.num_tests);
+	@!members.push($test);
+	$!num_tests := $!num_tests + $test.num_tests;
 	self;
 }
 

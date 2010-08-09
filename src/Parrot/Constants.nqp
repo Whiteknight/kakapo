@@ -1,4 +1,4 @@
-# Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Parrot;
@@ -43,7 +43,7 @@ INIT {
 		:DATATYPE_FUNC_PTR(		-67 ),
 		:DATATYPE_SIZED(			-66 ),
 	);
-	
+
 	macro_const(
 		:PMCTYPE_default(			0 ),
 		:PMCTYPE_Null(				1 ),
@@ -149,7 +149,7 @@ INIT {
 		:S_ISUID(		0o0004000 ),
 		:S_ISGID(		0o0002000 ),
 		:S_ISVTX(		0o0001000 ),
-		
+
 		:S_IRWXU(		0o0700 ),
 		:S_IRUSR(		0o0400 ),
 		:S_IWUSR(		0o0200 ),
@@ -165,22 +165,13 @@ INIT {
 		:S_IWOTH(	0o0002 ),
 		:S_IXOTH(		0o0001 ),
 	);
-
-	export( <
-		S_ISBLK
-		S_ISCHR
-		S_ISDIR
-		S_ISFIFO
-		S_ISLNK
-		S_ISREG
-		S_ISSOCK >);
 }
 
 # NB:  Have to use qualified names for these constants because otherwise NQP looks in root nsp.
-sub S_ISBLK($mode)	{ pir::band__III($mode, Parrot::Unix::Stat::S_IFMT) == Parrot::Unix::Stat::S_IFBLK; }
-sub S_ISCHR($mode)	{ pir::band__III($mode, Parrot::Unix::Stat::S_IFMT) == Parrot::Unix::Stat::S_IFCHR; }
-sub S_ISDIR($mode)	{ pir::band__III($mode, Parrot::Unix::Stat::S_IFMT) == Parrot::Unix::Stat::S_IFDIR; }
-sub S_ISFIFO($mode)	{ pir::band__III($mode, Parrot::Unix::Stat::S_IFMT) == Parrot::Unix::Stat::S_IFFIFO; }
-sub S_ISLNK($mode)	{ pir::band__III($mode, Parrot::Unix::Stat::S_IFMT) == Parrot::Unix::Stat::S_IFLNK; }
-sub S_ISREG($mode)	{ pir::band__III($mode, Parrot::Unix::Stat::S_IFMT) == Parrot::Unix::Stat::S_IFREG; }
-sub S_ISSOCK($mode)	{ pir::band__III($mode, Parrot::Unix::Stat::S_IFMT) == Parrot::Unix::Stat::S_IFSOCK; }
+our sub S_ISBLK($mode)	{ pir::band__III($mode, Parrot::Unix::Stat::S_IFMT) == Parrot::Unix::Stat::S_IFBLK; }
+our sub S_ISCHR($mode)	{ pir::band__III($mode, Parrot::Unix::Stat::S_IFMT) == Parrot::Unix::Stat::S_IFCHR; }
+our sub S_ISDIR($mode)	{ pir::band__III($mode, Parrot::Unix::Stat::S_IFMT) == Parrot::Unix::Stat::S_IFDIR; }
+our sub S_ISFIFO($mode)	{ pir::band__III($mode, Parrot::Unix::Stat::S_IFMT) == Parrot::Unix::Stat::S_IFFIFO; }
+our sub S_ISLNK($mode)	{ pir::band__III($mode, Parrot::Unix::Stat::S_IFMT) == Parrot::Unix::Stat::S_IFLNK; }
+our sub S_ISREG($mode)	{ pir::band__III($mode, Parrot::Unix::Stat::S_IFMT) == Parrot::Unix::Stat::S_IFREG; }
+our sub S_ISSOCK($mode)	{ pir::band__III($mode, Parrot::Unix::Stat::S_IFMT) == Parrot::Unix::Stat::S_IFSOCK; }

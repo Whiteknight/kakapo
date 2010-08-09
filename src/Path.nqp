@@ -41,10 +41,8 @@ has	$!is_relative;
 has	$!initialized;
 
 INIT {
-	auto_accessors(:private);
-
-	Parrot::define_multisub( <append>, :method, :starting_with( <append> ));
-	Parrot::define_multisub( <append>, [ Path::Unix::append__String ], :method, :signatures( [ < _ string > ]));
+	#Parrot::define_multisub( <append>, :method, :starting_with( <append> ));
+	#Parrot::define_multisub( <append>, [ Path::Unix::append__String ], :method, :signatures( [ < _ string > ]));
 }
 
 our method absolute($bool = 1)		{ $!is_relative := ! $bool; }

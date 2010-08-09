@@ -1,36 +1,14 @@
-# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 class Exception::UnitTestFailure is Exception::Wrapper {
 	method severity() { Exception::Severity.ERROR; }
 }
 
-module UnitTest::Testcase;
+class UnitTest::Testcase is UnitTest::Standalone;
 
-has	$!todo;
-has	$!verify;
-
-INIT {
-	extends( UnitTest::Standalone );
-	
-	# NB: This auto-generates accessor methods for these names. And declares the class.
-	has(<
-		$!todo
-		$!verify
-	>);
-
-	export(<
-		fail
-		fail_if
-		fail_unless
-		TEST_MAIN
-		verify_that
-	>);
-
-	export( UnitTest::Testcase::todo_test, :as('todo'));
-	
-	Kakapo::initload_done();
-}
+has $!todo;
+has $!verify;
 
 my method default_loader() {
 	UnitTest::Loader.new;
@@ -42,7 +20,7 @@ my method default_result() {
 	return $result;
 }
 
-sub fail($why) {
+our sub fail($why) {
 	Exception::UnitTestFailure.new(:message($why)).throw;
 }
 
@@ -65,26 +43,26 @@ method run($result?) {
 	unless $result.defined {
 		$result := self.default_result;
 	}
-	
+
 	$result.start_test(self);
 	my $exception;
-	
+
 	try {
 		self.set_up();
 		self.run_test();
-	
+
 		CATCH {
 			$exception := $!;
 			$!.handled(1);
 		}
 	};
-	
+
 	try {
 		self.tear_down();
 
 		CATCH {
 			$!.handled(1);
-			
+
 			unless $exception.defined {
 				$exception := $!;
 			}
@@ -102,7 +80,7 @@ method run($result?) {
 	else {
 		$result.end_test(self);
 	}
-	
+
 	$result;
 }
 
@@ -120,15 +98,15 @@ our method suite() {
 
 our method tear_down() { }
 
-sub TEST_MAIN(:$namespace = Parrot::caller_namespace()) {
+our sub TEST_MAIN(:$namespace = Parrot::caller_namespace()) {
 	my $parent_nsp := $namespace.get_parent;
 	my $namespace_name := ~ $namespace;
 	my $proto_obj := $parent_nsp.get_sym: $namespace_name;
 
-	if ! is_null( $proto_obj ) && isa( $proto_obj, 'P6protoobject' ) {
+	if ! Parrot::is_null( $proto_obj ) && Parrot::isa( $proto_obj, 'P6protoobject' ) {
 		$proto_obj.MAIN();
 	}
-	elsif $namespace.contains: 'MAIN' {
+        elsif $namespace.contains: 'MAIN' {
 		if ! is_null( $proto_obj ) {
 			$namespace<MAIN>($proto_obj);
 		}
@@ -138,7 +116,7 @@ sub TEST_MAIN(:$namespace = Parrot::caller_namespace()) {
 	}
 	else {
 		my $ns_name := $namespace.string_name;
-		die( "Could not locate proto-object for namespace $ns_name. Could not find 'MAIN()' in namespace. Nothing to do." );
+		pir::die( "Could not locate proto-object for namespace $ns_name. Could not find 'MAIN()' in namespace. Nothing to do." );
 	}
 }
 

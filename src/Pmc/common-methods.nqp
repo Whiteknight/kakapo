@@ -1,7 +1,7 @@
 # Copyright 2009-2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-module Kakapo::Pmc::COMMON;
+class Kakapo::Pmc::COMMON;
 
 sub _pre_initload() {
 	# List all the PMC types here, with the methods to export. I'll sort them out later.
@@ -58,21 +58,21 @@ method can($method) {
 	pir::can(self, $method);
 }
 
-=begin
-=item clone() returns PMC
+#=begin
+#=item clone() returns PMC
 
-Returns a clone of the invocant object. The C< clone > method is frequently overridden,
-but in general should return an object which is a duplicate in all respects -- same
-contents, same members, same size, same value, whatever.
+#Returns a clone of the invocant object. The C< clone > method is frequently overridden,
+#but in general should return an object which is a duplicate in all respects -- same
+#contents, same members, same size, same value, whatever.
 
-See the documentation of the particular PMC type to determine I< whether >, and if so
-I< how > complex data structures are cloned. In general, Parrot's basic PMC types do
-B< deep > clones, which can cause problems if your data structure contains cycles.
+#See the documentation of the particular PMC type to determine I< whether >, and if so
+#I< how > complex data structures are cloned. In general, Parrot's basic PMC types do
+#B< deep > clones, which can cause problems if your data structure contains cycles.
 
-=begin code
-	$obj2 := $object.clone;
-=end code
-=end
+#=begin code
+#	$obj2 := $object.clone;
+#=end code
+#=end
 
 method clone() {
 	pir::clone(self);
@@ -101,16 +101,16 @@ sub create_new_method($namespace) {
 	$namespace.add_sub('new', &new);
 }
 
-=begin
-=item defined() returns Boolean
+#=begin
+#=item defined() returns Boolean
 
-Returns C< true >, always. Every common PMC type is considered to be defined, except
-members of the C< Undef > type. That type does not import this method.
+#Returns C< true >, always. Every common PMC type is considered to be defined, except
+#members of the C< Undef > type. That type does not import this method.
 
-=begin code
-	if $object.defined { ... }
-=end code
-=end
+#=begin code
+#	if $object.defined { ... }
+#=end code
+#=end
 
 method defined() {
 	1;

@@ -1,12 +1,12 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Pir;
 # Provide helper methods for constructing and compiling PIR code.
 
 sub _pre_initload() {
-	use(	Opcode,	:tags('DEFAULT', 'TYPE'));
-	use(	Parrot,	:tags('NAMESPACE'));
+	Global::use(	Opcode,	:tags('DEFAULT', 'TYPE'));
+	Global::use(	Parrot,	:tags('NAMESPACE'));
 }
 
 sub compile($string) {
@@ -21,8 +21,8 @@ sub compile_sub(:@body = "die 'I-i-i ain\'t got no- bo-dy!'", :$method, :@multi,
 	
 	$method := $method ?? ':method' !! '';
 	my $multi := @multi ?? ":multi({ @multi.join(', ') })" !! '';
-	$vtable := $vtable 
-		?? $vtable.isa('String') ?? ":vtable('$vtable')" !! ':vtable'
+	$vtable := $vtable
+		?? pir::isa($vtable, 'String') ?? ":vtable('$vtable')" !! ':vtable'
 		!! '';
 		
 	my @sub_decl := ResizableStringArray.new(
@@ -42,7 +42,7 @@ sub pir_namespace($nsp) {
 	if pir::isa($nsp, 'P6protoobject') {
 		$nsp := pir::typeof__SP($nsp);
 	}
-	
+
 	if pir::isa($nsp, 'String') {
 		$nsp ?? "[ '{ $nsp.split('::').join(q<'; '>) }' ]" !! '[ ]'
 	}
