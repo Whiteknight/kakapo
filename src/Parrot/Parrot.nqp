@@ -5,6 +5,25 @@
 module Parrot;
 
 sub _pre_initload() {
+	export(<
+		call_method		call_method_
+		call_sub		call_sub_
+		call_tuple_method	call_tuple_method_
+		call_tuple_sub	call_tuple_sub_
+		>,  :tags('CALL'));
+	
+	export(<
+		caller 
+		caller_namespace
+		>, :tags('CALLER'));
+	
+	export(<
+		caller_namespace 
+		get_hll_namespace
+		namespace_name
+		>, :tags('NAMESPACE'));
+	
+
 	Global::inject_root_symbol(Parrot::is_null);
 	Global::inject_root_symbol(Parrot::isa);
 }

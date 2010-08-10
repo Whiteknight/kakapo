@@ -27,7 +27,6 @@ sub depends_on(*@list, :$method) {
 sub get_preinit_subs() {
 
 	# Note: Order is crucial.
-	
 	<
 		Pmc::Namespace
 		Global			

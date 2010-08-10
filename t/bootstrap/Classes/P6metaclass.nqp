@@ -18,8 +18,8 @@ INIT {
 	unless $root_dir {
 		$root_dir := '.';
 	}
-	
-	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
+
+	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');	
 }
 
 sub MAIN() {	

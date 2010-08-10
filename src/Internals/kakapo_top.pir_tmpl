@@ -10,13 +10,13 @@
 # subs. Call one of the Kakapo _pre_initload hooks to set up those modules that absolutely
 # must be done first.
 
-#.sub '_kakapo_top_pre_initload' :load :init
-#
-#	$P0 = get_hll_global ['Kakapo'], '_pre_initload'
-#	unless null $P0 goto call_sub
+.sub '_kakapo_top_pre_initload' :load :init
 
-#	die "Could not locate Kakapo::_pre_initload. Is your library file corrupted?"
+	$P0 = get_hll_global ['Kakapo'], '_pre_initload'
+	unless null $P0 goto call_sub
 
-#call_sub:
-#	$P0()
-#.end
+	die "Could not locate Kakapo::_pre_initload. Is your library file corrupted?"
+
+call_sub:
+	$P0()
+.end

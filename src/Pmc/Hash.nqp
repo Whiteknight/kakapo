@@ -39,7 +39,6 @@ sub _pre_initload() {
 	my $hash_nsp := pir::get_hll_namespace__pp( pir::split__pss('::', 'Hash') );
 	my $hash_pmc := $hash_nsp.get_class;
 
-say("Initializing Hash namespace");
 	my $nsp := pir::get_namespace__p();
 	my &new := $nsp.get_method: 'new';
 	$hash_nsp.install_method: 'new', &new;
