@@ -24,7 +24,7 @@ sub run_tests() {
 	
 	pir::load_bytecode($root_dir ~ '/library/kakapo_base.pbc');
 	
-	plan(27);
+	plan(29);
 	
 	test_new();
 	test_contains();

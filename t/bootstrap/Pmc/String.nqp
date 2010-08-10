@@ -66,4 +66,3 @@ sub test_isa() {
 	nok($obj.isa('NotMe'), 'isa returns false okay');
 	nok($obj.isa('Exception'), 'isa returns false okay 2');
 }
-

@@ -15,7 +15,7 @@ sub _pre_initload() {
 	%methods_for<NameSpace>		:= <can clone defined does isa is_equal>;
 	%methods_for<ResizablePMCArray>	:= <can clone defined does isa is_equal>;
 	%methods_for<ResizableStringArray>	:= <can clone defined does isa is_equal>;
-	%methods_for<String>			:= <can clone defined does is_equal>; #! not isa
+	%methods_for<String>			:= <can clone defined does isa is_equal>;
 	%methods_for<Sub>			:= <can clone defined does isa is_equal>;
 	%methods_for<Undef>			:= <can clone does isa is_equal>; #! not defined
 
