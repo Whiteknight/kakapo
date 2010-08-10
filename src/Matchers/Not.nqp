@@ -20,12 +20,12 @@ sub _initload() {
 }
 
 # Pass through - the "reason for failure" will be the same, only the failure itself is reversed.
-our method describe_failure($item, $description) {
+method describe_failure($item, $description) {
 	$!child.describe_failure($item, $description);
 }
 
 # Pass through with just a "not" prepended.
-our method describe_self($description = '') {
+method describe_self($description = '') {
 	$!child.describe_self($description ~ "not ");
 }
 
@@ -34,11 +34,11 @@ sub factory__Integer($value)		{ factory(Matcher::Factory::is($value)); }
 sub factory__Matcher($matcher)	{ Matcher::Not.new($matcher); }
 sub factory__String($value)		{ factory(Matcher::Factory::is($value)); }
 
-our method _init_obj($child?, *%named) {
+method _init_obj($child?, *%named) {
 	$!child := $child;
 	self;
 }
 	
-our method matches($item) {
+method matches($item) {
 	! $!child.matches($item);
 }

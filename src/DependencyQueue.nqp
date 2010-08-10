@@ -96,7 +96,7 @@ my method tsort_add_pending_entries(@list) {
 # Visits a list of keys, adding the attached calls to the queue in topological order.
 
 	for @list {
-		my $key := $_;
+		my $key := ~$_;
 
 		if self.already_added($key) {
 			next;

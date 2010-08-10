@@ -18,12 +18,12 @@ sub _initload() {
 	);
 }
 
-our method describe_self($description) {
+method describe_self($description) {
 	return $description 
 		~ "an array equal to '" ~ self.value ~ "'";
 }
 
-our method init(@children, %attributes) {
+method init(@children, %attributes) {
 	Matcher::init(self, @children, %attributes);
 	
 	unless +@children {
@@ -33,9 +33,9 @@ our method init(@children, %attributes) {
 	self.value(@children.shift);
 }
 
-our method matches_typesafe($item) {
+method matches_typesafe($item) {
 	my $result := Opcode::iseq(self.value, $item);
 	return $result;
 }
 
-our method value(*@value)			{ self._ATTR('value', @value); }
+method value(*@value)			{ self._ATTR('value', @value); }

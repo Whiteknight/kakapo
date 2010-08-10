@@ -17,14 +17,14 @@ sub _initload() {
 	Matcher::Factory::export_sub(Matcher::InstanceOf::factory, :as('instance_of'));
 }
 
-our method describe_failure($item, $description) {
+method describe_failure($item, $description) {
 	$description
 		~ ( is_null($item)
 			?? 'was null'
 			!! 'had type: ' ~ Opcode::typeof($item));
 }
 
-our method describe_self($description) {
+method describe_self($description) {
 	$description ~ qq<an instance of type '$!type_name'>;
 }
 
@@ -33,12 +33,12 @@ sub factory($type, *%named) {
 	my $matcher := Matcher::InstanceOf.new(|%named);
 }
 
-our method matches($item) {
+method matches($item) {
 	! is_null($item) 
 		&& pir::isa__IPP($item, $!type_name);
 }
 
-our method type($value?) {
+method type($value?) {
 	if $value {
 		$!type_name := ($value.isa('String')
 			?? $value

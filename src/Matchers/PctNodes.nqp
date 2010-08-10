@@ -7,7 +7,23 @@ has	%!attrs;
 has	@!children;
 has	$!node_type;
 
-our method bad_attrs($item) {
+INIT {
+	Kakapo::depends_on(|<
+		Matcher
+		Matcher::Factory
+	>);
+}
+
+sub _initload() {
+	extends( <Matcher> );
+	has(<
+		%!attrs
+		@!children
+		$!node_type
+	>);
+}
+
+method bad_attrs($item) {
 	my @bad;
 
 	for %!attrs -> $attr {
@@ -24,7 +40,7 @@ our method bad_attrs($item) {
 	@bad;
 }
 
-our method describe_children(@children = [ ]) {
+method describe_children(@children = [ ]) {
 	@children.map: -> $kid {
 		if pir::isa($kid, 'Matcher') {
 			$kid.describe_self('');
@@ -40,18 +56,18 @@ our method describe_children(@children = [ ]) {
 
 # Return a string suitable for use in an expression like:
 # Match failed. Expected [describe_self] but [describe_failure].
-our method describe_failure($previous, $item) {
+method describe_failure($previous, $item) {
 	my $descr := $previous ~ "was " ~ self.describe_node($item);
 
 	$descr;
 }
 
-our method describe_hash(%hash) {
+method describe_hash(%hash) {
 	%hash.keys.sort.map: -> $key {
 		my $value := %hash{$key};
-
-		if pir::isa($value, 'Boolean')
-			|| (pir::isa($value, 'Integer')
+		
+		if pir::isa($value, 'Boolean') 
+			|| (pir::isa($value, 'Integer') 
 				&& ($value == 1 || $value == 0)) {
 			":" ~ ($value ?? '' !! '!') ~ $key;
 		}
@@ -64,11 +80,11 @@ our method describe_hash(%hash) {
 	};
 }
 
-our method describe_node($node) {
+method describe_node($node) {
 	self.describe_type( pir::typeof__SP($node) )
 	~ '( '
-	~ cat(
-		self.describe_hash( $node.hash ),
+	~ cat( 
+		self.describe_hash( $node.hash ), 
 		self.describe_children( $node.list ),
 	).join(', ')
 	~ ' )';
@@ -76,10 +92,10 @@ our method describe_node($node) {
 
 # Return a string suitable for use in an expression like:
 # Match failed. Expected [describe_self] but [describe_failure].
-our method describe_self($previous) {
+method describe_self($previous) {
 	my $descr := $previous ~ self.describe_type( ~$!node_type )
 	~ '( '
-	~ cat(
+	~ cat( 
 		self.describe_hash( %!attrs ),
 		self.describe_children( @!children ),
 	).join(', ')
@@ -88,19 +104,19 @@ our method describe_self($previous) {
 	$descr;
 }
 
-our method describe_type($type) {
+method describe_type($type) {
 	$type := $type.split('(')[0].split(';').pop.split('::').pop;
 	$type := pir::downcase__SS($type);
 }
 
-our method _init_obj(*@children, *%attrs) {
+method _init_obj(*@children, *%attrs) {
 	@!children := @children;
 	%!attrs := %attrs;
 	$!node_type := 'PCT::Node';
 	super();
 }
 
-our method matches($item) {
+method matches($item) {
 
 	if ! $item.isa: $!node_type
 		|| pir::elements__IP($item) < @!children.elems
@@ -119,7 +135,7 @@ our method matches($item) {
 	1;
 }
 
-our method node_type(*@value)	{ @value ?? ($!node_type := @value.shift) !! $!node_type; }
+method node_type(*@value)	{ @value ?? ($!node_type := @value.shift) !! $!node_type; }
 
 module Matcher::PAST::Node;
 

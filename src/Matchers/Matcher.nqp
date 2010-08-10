@@ -12,11 +12,11 @@ INIT {
 
 # Return a string suitable for use in an expression like:
 # Match failed. Expected [describe_self] but [describe_failure].
-our method describe_failure($previous, $item) {
+method describe_failure($previous, $item) {
 	$previous ~ "was '$item'";
 }
 
 # Return a string suitable for use in an expression like:
 # Match failed. Expected [describe_self] but [describe_failure].
-our method describe_self($previous)		{ self.__ABSTRACT__ }
-our method matches($item)			{ self.__ABSTRACT__ }
+method describe_self($previous)		{ self.__ABSTRACT__ }
+method matches($item)			{ self.__ABSTRACT__ }

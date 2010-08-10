@@ -1,49 +1,52 @@
-# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-# Matcher that matches if any one of its child matchers accepts. This is a short-circuiting 'OR'.
 module Matcher::AnyOne;
+# Matcher that matches if any one of its child matchers accepts. This is a short-circuiting 'OR'.
 
-INIT {
-	Kakapo::depends_on(<
-		Matcher::Factory
-		Matcher::Junction
-	>);
-}
+use('Dumper');
+Program::initload(:after('Matcher'));
+Matcher::Factory::export_sub(Matcher::AnyOne::factory, :as('any_of'));
 
 sub _initload() {
-	extends( Matcher::Junction );
+	if our $_Initload_done { return 0; }
+	$_Initload_done := 1;	
 	
-	Matcher::Factory::export_sub( Matcher::AnyOne::factory, :as('any_of'));
-}
-
-
-our method describe_failure($item, $description = '') {
-	$description ~ "was $item";
-}
-
-our method describe_self($description) {
-	if @!children {
-		my @list := @!children.map( -> $kid { $kid.describe_self; });
-		my $last := @list.pop;
-		
-		my $first := @list.join(', ');
-		@list := [ $first, $last ];
-		$description ~ @list.join(', or ');
-	}
-	else {
-		$description;
-	}
-}
+	my $class_name := 'Matcher::AnyOne';
 	
-sub factory(*@list) { 
-	Matcher::AnyOne.new( :children(@list) );
+	NOTE("Creating class ", $class_name);
+	Class::SUBCLASS($class_name,
+		'Matcher'
+	);
 }
 
-our method matches($item) {
-	for @!children -> $kid {
-		return 1 if $kid.matches: $item;
+method describe_failure($item, $description) {
+	return $description
+		~ "FIXME: What to put here? (AnyOne)";
+}
+
+method describe_self($description) {
+	return $description
+		~ "FIXME: What to put here? (AnyOne)";
+}
+
+method described_as(*@value)		{ self._ATTR('described_as', @value); }
+
+sub factory(*@list)				{ Matcher::AnyOne.new(Matcher::Factory::make_matcher_list(@list)); }
+
+method init(@args, %opts) {
+	Matcher::init(self, @args, %opts);
+	self.matchers(@args);
+}
+
+method matches($item) {
+	for self.matchers {
+		if $_.matches($item) {
+			return 1;
+		}
 	}
 	
-	0;
+	return 0;
 }
+
+method matchers(*@value)			{ self._ATTR('matchers', @value); }

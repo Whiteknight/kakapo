@@ -31,10 +31,14 @@ my method default_result() {
 	$result;
 }
 
-our method run($result?) {
-	unless $result.defined {
-		$result := self.default_result;
-	}
+our method _init_obj(*@pos, *%named) {
+        $!num_tests := 0;
+        @!members := [ ];
+
+        self._init_args(|@pos, |%named);
+}
+
+our method run($result = self.default_result) {
 
 	$result.plan_tests(self.num_tests);
 

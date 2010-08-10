@@ -1,8 +1,22 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Matcher::Factory;
 # Provides factory methods to facilitate constructing matchers.
+
+INIT {
+	Kakapo::depends_on('Matcher');
+}
+
+sub _initload() {
+	#~ my $class_name := 'Matcher::Factory';
+	
+	#~ Class::multi_sub($class_name, 'equals', :starting_with('_equals_'));
+	#~ Class::multi_sub($class_name, 'make_matcher', :starting_with('_make_'));
+	#~ Class::multi_sub($class_name, 'returns', :starting_with('_returns_'));
+	
+	#export('assert_that', 'empty', 'equals', 'has', 'instance_of', 'null', 'returns', 'same_as');
+}
 
 # Used to export a C< $sub > from a Matcher's namespace as a Factory method.
 sub export_sub($sub, :$as, :$tags? = 'DEFAULT') {
@@ -15,7 +29,7 @@ sub export_sub($sub, :$as, :$tags? = 'DEFAULT') {
 			#~ ~ $matcher.describe_failure($item, "\n     but: ");
 		#~ return 0;
 	#~ }
-
+	
 	#~ return 1;
 #~ }
 
@@ -36,14 +50,14 @@ sub export_sub($sub, :$as, :$tags? = 'DEFAULT') {
 
 #~ sub make_matcher_list(@list) {
 	#~ my @matchers;
-
+	
 	#~ while @list {
 		#~ @matchers.push(make_matcher(@list.shift));
 	#~ }
-
+	
 	#~ return Matcher::AnyOne(@matchers);
 #~ }
-
+			
 #~ sub _returns_Float($value)		{ return returns(Matcher::IsCloseTo.new($value)); }
 #~ sub _returns_Integer($value)	{ return returns(Matcher::Equals.new($value)); }
 #~ sub _returns_Matcher($value)	{ return Matcher::DescribedAs.new('returns', $value); }

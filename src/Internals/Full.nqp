@@ -5,23 +5,21 @@
 
 module Kakapo;
 
-sub depends_on(*@list, :$method) {
-	if @list.elems == 1 && @list[0].does( 'array' ) {
-		@list := @list.shift;
-	}
+sub depends_on(*@list, :$method = '_initload') {
 
+	die("Nested array passed to @list parameter")
+		if @list[0].isa: 'ResizablePMCArray';
+		
 	my $namespace := Parrot::caller_namespace();
 	my $name := $namespace.string_name;
 
-	unless $method.defined {
-		unless Parrot::caller_namespace().contains(<_initload>) {
-			die("Could not locate (default) '_initload' method in namespace $name");
-		}
-
-		$method := $namespace<_initload>;
+	if $method.isa: <String> {
+		die("Could not locate '$method' method in namespace $name")
+			unless $namespace.contains: $method;
 	}
 
-	#Kakapo::Full::library_instance().at_initload($method, $name, :requires(@list));
+	$method := $namespace.find_sub: $method;
+	Kakapo::Full::library_instance().at_initload($method, $name, :requires(@list));
 }
 
 sub get_preinit_subs() {
@@ -50,9 +48,8 @@ sub get_preinit_subs() {
 	>;
 }
 
-sub initload_done($name?) {
-	$name := $name // Parrot::caller_namespace().string_name; #/
-	#Kakapo::Full::library_instance().module_initload_done($name);
+sub initload_done($name = Parrot::caller_namespace().string_name) {
+	Kakapo::Full::library_instance().module_initload_done: $name;
 }
 
 sub library_init_done() {

@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 # Evaluates match in TrueFalse context
@@ -6,8 +6,23 @@ module Matcher::TrueFalse;
 
 has $!expected;
 
-our method describe_self($previous? = '') {
-	$previous ~ ($!expected
+INIT {
+	Kakapo::depends_on(|<
+		Matcher 
+		Matcher::Factory
+	>);	
+}
+
+sub _initload() {
+	extends(	Matcher );
+	has(		'$!expected' );
+	
+	Matcher::Factory::export_sub(Matcher::TrueFalse::factory_true, :as('true'));
+	Matcher::Factory::export_sub(Matcher::TrueFalse::factory_false, :as('false'));
+}
+
+method describe_self($previous? = '') {
+	$previous ~ (self.expected 
 		?? 'a true value'
 		!! 'a false value');
 }
@@ -15,16 +30,16 @@ our method describe_self($previous? = '') {
 sub factory_false()			{ Matcher::TrueFalse.new(:false); }
 sub factory_true()			{ Matcher::TrueFalse.new(:true); }
 
-our method false($ignored?) {
+method false($ignored?) {
 	$!expected := 0;
 }
 
-our method matches($item) {
-	$item
-		?? $!expected
-		!! !$!expected;
+method matches($item) {
+	$item 
+		?? self.expected 
+		!! !self.expected;
 }
 
-our method true($ignored?) {
+method true($ignored?) {
 	$!expected := 1;
 }

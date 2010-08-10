@@ -20,7 +20,7 @@ has $!start_marshaller;
 our $_Instance;
 
 INIT {
-	Kakapo::depends_on( <Library FileSystem> );
+	Kakapo::depends_on( |<Library FileSystem> );
 	$_Instance := my $undef;
 }
 

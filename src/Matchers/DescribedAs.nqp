@@ -19,17 +19,17 @@ sub _initload() {
 	);
 }
 
-our method describe_failure($item, $description) {
+method describe_failure($item, $description) {
 	return self.predicate.describe_failure($item, $description);
 }
 
-our method describe_self($description) {
+method describe_self($description) {
 	return self.predicate.describe_self($description ~ self.described_as ~ ' ');
 }
 
-our method described_as(*@value)		{ self._ATTR('described_as', @value); }
+method described_as(*@value)		{ self._ATTR('described_as', @value); }
 
-our method init(@args, %opts) {
+method init(@args, %opts) {
 	Matcher::init(self, @args, %opts);
 	
 	unless self.described_as {
@@ -49,10 +49,10 @@ our method init(@args, %opts) {
 	}
 }
 
-our method matches(*@item) {
+method matches(*@item) {
 	my %opts;
 	my $result := Parrot::call_method_(self.predicate, 'matches', @item, %opts);
 	return $result;
 }
 
-our method predicate(*@value)		{ self._ATTR('predicate', @value); }
+method predicate(*@value)		{ self._ATTR('predicate', @value); }

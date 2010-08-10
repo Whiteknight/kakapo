@@ -9,6 +9,8 @@ INIT {
 		:DEFAULT(	FileSystem::Unix),
 		:linux(	FileSystem::Unix),
 	);
+	
+	Kakapo::initload_done();
 }
 
 our method get_osname_map() {
