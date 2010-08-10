@@ -4,7 +4,6 @@
 
 INIT {
 	# Load the Kakapo library
-	pir::load_language('parrot');
 	my $env := pir::new__PS('Env');
 	my $root_dir := $env<HARNESS_ROOT_DIR> || '.';
 	pir::load_bytecode($root_dir ~ '/library/kakapo_full.pbc');
@@ -16,12 +15,11 @@ class Test::FileSystem
 has	$!sut;
 
 INIT {
-	use(	'UnitTest::Testcase' );	
-	use(	'UnitTest::Assertions' );	
+	use(	UnitTest::Testcase );	
+	use(	UnitTest::Assertions );	
 }
 
-# Run the MAIN for this class.
-Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
+TEST_MAIN();
 
 our method set_up() {
 	$!sut := FileSystem.instance;
