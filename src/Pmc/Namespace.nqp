@@ -65,7 +65,7 @@ method export_method($name, :$as = $name, :@tags?) {
 
 method export_sub($name, :$as? = $name, :$lookup = 'find_sub', :@tags?) {
 	if ! pir::does__ips(@tags, 'array') {
-		@tags := Array::new(@tags);
+		@tags := [ @tags ];
 	}
 	elsif +@tags == 0 {
 		pir::push__vpp( @tags, 'DEFAULT' );

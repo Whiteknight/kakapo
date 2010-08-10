@@ -149,7 +149,7 @@ my method compose_role2($class_pmc, $role_pmc) {
 }
 
 sub declare($class?, :@has?, :@is?) {
-	if ! Opcode::does(@is, 'array') { @is := Array::new(@is); }
+	if ! Opcode::does(@is, 'array') { @is := [ @is ]; }
 
 	unless Opcode::defined($class) {
 		$class := caller_namespace();

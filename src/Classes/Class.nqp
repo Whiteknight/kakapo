@@ -21,12 +21,12 @@ sub compile_default_multi($class_name, $multi_name, :$is_method) {
 	my @actions;
 	
 	unless $default_method {
-		@actions := Array::new(
+		@actions := [
 			"say 'No method available that will accept the following arguments:'",
 			'$P0 = get_hll_global ["Dumper"], "DUMP_"',
 			'$P0(pos)',
 			"die 'No method available that will accept the arguments given'",
-		);
+		];
 	}
 
 	compile_multi($class_name, $multi_name,

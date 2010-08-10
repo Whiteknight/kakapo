@@ -43,9 +43,7 @@ method test_can() {
 	
 	unless Opcode::can($object, 'can') { fail("No 'can' method"); }
 	
-	my @methods := Array::new(
-		'can', 'clone', 'defined', 'does', 'isa', 'new',
-	);
+	my @methods := <can clone defined does isa new>;
 	
 	for @methods {
 		unless $object.can(~ $_) { fail( "No can($_)" ); }

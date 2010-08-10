@@ -8,16 +8,16 @@ has	%!seen_methods;
 has	$!test_prefix;
 
 sub compare_methods($a, $b) {
-	pir::cmp_str__IPP(~ $a, ~ $b);
+	pir::cmp__ISS(~$a, ~$b);
 }
 
-method configure_suite(@tests, :$suite, *%named) {
+our method configure_suite(@tests, :$suite, *%named) {
 	unless $suite.defined {
 		$suite := self.default_suite;
 	}
 
 	my $proto := pir::getprop__PSP('metaclass', $!class).WHAT();
-        pir::say(pir::typeof__SP($proto));
+
 	for @tests -> $test {
 		$suite.add_test: $proto.new(:name($test));
 	}
@@ -25,13 +25,13 @@ method configure_suite(@tests, :$suite, *%named) {
 	$suite;
 }
 
-method default_suite() {
+our method default_suite() {
 	return UnitTest::Suite.new();
 }
 
-method get_test_methods() {
+our method get_test_methods() {
 	my @mro := $!class.inspect('all_parents');
-	my @test_methods := Array::new();
+	my @test_methods := [ ];
 
 	for @mro {
 		my %methods := $_.inspect('methods');
@@ -50,14 +50,14 @@ method get_test_methods() {
 	self.order_tests(@test_methods);
 }
 
-method _init_obj(*@pos, *%named) {
+our method _init_obj(*@pos, *%named) {
 	$!test_prefix := 'test';
 
 	self._init_args(|@pos, |%named);
 }
 
 # Returns true for "test_foo" and "testFoo" names
-method is_test_method($name) {
+our method is_test_method($name) {
 	if $name.length > 4
 		&& $name.substr(0, 4) eq 'test' {
 
@@ -77,15 +77,15 @@ method is_test_method($name) {
 	return 0;
 }
 
-method load_tests_from_testcase($class, *%named) {
+our method load_tests_from_testcase($class, *%named) {
 	$!class := P6metaclass.get_parrotclass($class);
 	my @tests := self.get_test_methods;
 
 	self.configure_suite(@tests, |%named);
 }
 
-method order_tests(@tests) {
+our method order_tests(@tests) {
 	@tests.unsort;
 }
 
-method test_prefix($value?)	{ $value ?? ($!test_prefix := $value) !! $!test_prefix; }
+our method test_prefix($value?)	{ $value ?? ($!test_prefix := $value) !! $!test_prefix; }

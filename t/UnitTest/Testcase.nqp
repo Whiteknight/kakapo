@@ -23,7 +23,7 @@ INIT {
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
 method main() {
-	my @tests := Array::new(
+	my @tests := [
 		'test_error', 
 		'test_error_and_teardown_fails',
 		'test_failure', 
@@ -31,7 +31,7 @@ method main() {
 		'test_success',
 		'test_suite',
 		'test_teardown_fails',
-	);
+	];
 
 	# Note: I'm not using the ".suite" facility, since this file has to prove it works.
 	# Pass this $result to all testcases to get better TAP listener behavior.

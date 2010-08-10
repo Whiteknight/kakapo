@@ -13,7 +13,7 @@ sub _pre_initload() {
 	our $Caller_depth := 0;
 	our $Prefix_string := ':..';
 	our $Prefix_string_len := String::length($Prefix_string);
-	our @Info_rejected := Array::new(0, -1, 'null');
+	our @Info_rejected := [ 0, -1, 'null' ];
 
 	Global::export('ASSERT', 'DUMP', 'DUMP_', 'NOTE');
 	#Global::use(:symbols('$Kakapo_config'));		# FIXME: Parameterize this.
@@ -281,11 +281,7 @@ sub get_dumper_config($named_caller, :$starting) {
 	our %Dumper_config_cache;
 	
 	unless my @config := %Dumper_config_cache{$key} {
-		@config := Array::new(
-			get_config($key),
-			0,
-			$key
-		);
+		@config := [ get_config($key), 0, $key ];
 
 		%Dumper_config_cache{$key} := @config;
 	}

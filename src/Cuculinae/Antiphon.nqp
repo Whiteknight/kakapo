@@ -15,7 +15,7 @@ method matches($call_sig) {
 
 method _init_obj(*@pos, *%named) {
 	$!invoke_count := 0;
-	@!side_effects := Array::new();
+	@!side_effects := [ ];
 	
 	self._init_args(|@pos, |%named);
 }

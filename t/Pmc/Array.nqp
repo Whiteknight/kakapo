@@ -26,7 +26,7 @@ sub MAIN() {
 }
 
 method test_elems() {
-	my @a1 := Array::new();
+	my @a1;
 	
 	fail_unless( @a1.elems == 0,
 		'New = empty = 0 elements');
@@ -82,10 +82,10 @@ method test_map() {
 }	
 
 method test_new() {
-	my @a1 := Array::new();
+	my @a1;
 	
 	fail_unless( @a1.isa('ResizablePMCArray'),
-		'Array::new should return RPA');
+		'Local array vivification should return RPA');
 		
 	@a1 := ResizablePMCArray.new();
 	fail_unless( @a1.isa('ResizablePMCArray'),
@@ -95,7 +95,7 @@ method test_new() {
 	fail_unless( @a1.isa('ResizableStringArray'),
 		'RSA.new should return RSA');
 		
-	@a1 := Array::new(1, 2, 3, 4);
+	@a1 := [ 1, 2, 3, 4 ];
 	fail_unless( @a1.elems == 4,
 		'New should create an array from its args');
 }
@@ -188,7 +188,7 @@ method test_splice() {
 }
 
 method test_unsort() {
-	my @array := Array::new('a', 'b', 'c', 'd');
+	my @array := [ 'a', 'b', 'c', 'd' ];
 	my @yaarr := @array.clone.unsort;
 
 	fail_unless(@yaarr.elems == @array.elems,

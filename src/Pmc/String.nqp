@@ -235,7 +235,7 @@ sub _init_line_number_info($string) {
 	#NOTE("Initializing line-number information of previously-unseen string");
 	#DUMP($string);
 	
-	my @lines := Array::new(-1);
+	my @lines := [ -1 ];
 	my $len := String::length($string);
 	my $i := -1;
 	

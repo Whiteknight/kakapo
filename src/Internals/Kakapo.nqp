@@ -1,4 +1,4 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009-2010, Austin Hastings. See accompanying LICENSE file, or 
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 module Kakapo;
@@ -36,7 +36,8 @@ sub call_preinit_subs(@list) {
 	my &sub;
 
 	for @list {
-		say("Calling preinit for $_");
+		#say("Calling preinit for $_");
+		
 		$nsp := pir::get_hll_namespace__PP( pir::split('::', ~$_) );
 		&sub := $nsp.find_sub('_pre_initload');
 		

@@ -22,11 +22,11 @@ module File;
 
 #~ sub find_all($path, @search_list) {
 	#~ NOTE("Finding all paths matching '", $path, "' in ", +@search_list, " directories");
-	#~ my @results := Array::new();
+	#~ my @results := [ ];
 	
 	#~ if String::char_at($path, 0) eq '/' {
 		#~ NOTE("Path is rooted - not using search paths");
-		#~ @search_list := Array::new('');
+		#~ @search_list := [ '' ];
 	#~ }
 	#~ else {
 		#~ $path := '/' ~ $path;

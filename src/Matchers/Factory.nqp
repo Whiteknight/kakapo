@@ -35,7 +35,7 @@ sub export_sub($sub, :$as, :$tags? = 'DEFAULT') {
 #~ sub _make_String($value)		{ return equals($value); }
 
 #~ sub make_matcher_list(@list) {
-	#~ my @matchers := Array::new();
+	#~ my @matchers;
 
 	#~ while @list {
 		#~ @matchers.push(make_matcher(@list.shift));

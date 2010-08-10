@@ -45,11 +45,11 @@ method test_matcher() {
 	my $method := 'foo';
 	
 	my $want := CallSignature.new(:object($object), :method($method),
-		:positional(Array::new(1, 'a')), :named( Hash.new( :z(3) ) ));
+		:positional([ 1, 'a']), :named( Hash.new( :z(3) ) ));
 	my $matcher := Matcher::CallSig.new(:expecting($want));
 
 	my $got := CallSignature.new(:object($object), :method($method),
-		:positional(Array::new(1, 'a')), :named( Hash.new( :rx(7), :t(1), :z(3))) );
+		:positional([ 1, 'a' ]), :named( Hash.new( :rx(7), :t(1), :z(3))) );
 	
 	assert_match( $got, $matcher,
 		'Should match' );

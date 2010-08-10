@@ -129,7 +129,7 @@ sub call_tuple_sub_($sub, @args?, %opts?) {
 # Calls sub C< $sub > with flattened arglist C< @args > and flattened
 # options C< %opts >. Returns an RPA with the tuple returned by the sub.
 
-	unless Opcode::defined(@args)	{ @args := Array::new(); }
+	unless Opcode::defined(@args)	{ @args := [ ]; }
 	unless Opcode::defined(%opts)	{ %opts := Hash::empty(); }
 
 	Q:PIR {

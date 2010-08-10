@@ -68,7 +68,7 @@ method test_default_sig_matches_anything() {
 		:method($method),
 		:named( Hash.new( :rx(7), :t(1), :z(3))),
 		:object($object), 
-		:positional(Array::new(1, 'a')), 
+		:positional( [ 1, 'a' ] ), 
 	);
 
 	assert_match( $got, $!sut,
@@ -88,7 +88,7 @@ method test_matcher() {
 		:method($method),
 		:named( Hash.new( :z(3) ) ),
 		:object($object), 
-		:positional(Array::new(1, 'a')), 
+		:positional( [ 1, 'a' ]), 
 	);
 	$!sut.expecting($want);
 
@@ -96,7 +96,7 @@ method test_matcher() {
 		:method($method),
 		:named( Hash.new( :rx(7), :t(1), :z(3))),
 		:object($object), 
-		:positional(Array::new(1, 'a')), 
+		:positional( [ 1, 'a' ]), 
 	);
 
 	assert_match( $got, $!sut,

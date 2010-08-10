@@ -24,8 +24,8 @@ method test_rsa_append() {
 	
 	self.note("Testing RSA.append() method");
 	
-	my @strings := ResizableStringArray::new('a', 'b');
-	my @extras := ResizableStringArray::new('c', 'd', 'e');
+	my @strings := ResizableStringArray.new('a', 'b');
+	my @extras := ResizableStringArray.new('c', 'd', 'e');
 	
 	self.assert_that("The elements count", @strings.elems, is(2));
 	
@@ -38,14 +38,14 @@ method test_rsa_append() {
 	self.assert_that("Element 3", @strings[3], is('d'));
 	self.assert_that("Element 4", @strings[4], is('e'));
 	
-	@strings := ResizableStringArray::new();
+	@strings := ResizableStringArray.new();
 	self.assert_that("The elements count", @strings.elems, is(0));
 	
 	my $ary := (0, 1, 2);
 	@strings.append( $ary );
 	self.assert_that("The elements count", @strings.elems, is(3));
 	
-	@strings.append( Array::new('dog', 'cow'));
+	@strings.append( Array.new('dog', 'cow'));
 	self.assert_that("The elements count", @strings.elems, is(5));
 }
 
@@ -53,7 +53,7 @@ method test_rsa_clone() {
 	
 	self.note("Testing RSA.clone() method");
 	
-	my @strings := ResizableStringArray::new('a', 'z');
+	my @strings := ResizableStringArray.new('a', 'z');
 	my @str2	:= @strings.clone;
 	
 	self.assert_that("The elements count", @str2.elems, is(@strings.elems));
@@ -71,7 +71,7 @@ method test_rsa_contains() {
 	
 	self.note("Testing RSA.contains() method");
 	
-	my @strings := ResizableStringArray::new('a', 'b', 'c');
+	my @strings := ResizableStringArray.new('a', 'b', 'c');
 	self.assert_that("The array contains 'a'", @strings.contains('a'), is(true()));
 	self.assert_that("The array contains 'c'", @strings.contains('c'), is(true()));
 	self.assert_that("The array contains 'b'", @strings.contains('b'), is(true()));
@@ -85,7 +85,7 @@ method test_rsa_elements() {
 
 	self.note("Testing RSA.elems() method");
 	
-	my @strings := ResizableStringArray::new();
+	my @strings := ResizableStringArray.new();
 	self.assert_that("The elements count", @strings.elems, is(0));
 
 	my $count := 0;
@@ -100,7 +100,7 @@ method test_rsa_join() {
 	
 	self.note("Testing RSA.join() method");
 	
-	my @strings := ResizableStringArray::new('foo', 1, 'cow');
+	my @strings := ResizableStringArray.new('foo', 1, 'cow');
 	self.assert_that('The default join', @strings.join, is('foo1cow'));
 	self.assert_that('Joining with spaces', @strings.join(' '), is('foo 1 cow'));
 }
@@ -109,11 +109,11 @@ method test_rsa_new() {
 	
 	self.note("Testing RSA.new() class method");
 	
-	my @strings := ResizableStringArray::new();
+	my @strings := ResizableStringArray.new();
 	self.assert_that("A new RSA", @strings, is(instance_of('ResizableStringArray')));
 	self.assert_that("A new RSA", @strings, is(empty()));
 
-	@strings := ResizableStringArray::new("foo");
+	@strings := ResizableStringArray.new("foo");
 	self.assert_that("A new RSA", @strings, is(instance_of('ResizableStringArray')));
 	self.assert_that("The ResizableStringArray", @strings, is(not(empty())));
 	self.assert_that("The elements count", @strings.elems, is(1));	

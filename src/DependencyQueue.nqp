@@ -34,7 +34,7 @@ our method add_entry($name, $value, :@requires?) {
 		).throw;
 	}
 
-	if @requires.isa('String') { @requires := Array::new(@requires); }
+	if @requires.isa('String') { @requires := [ @requires ]; }
 	my @entry := [ $name, $value, @requires ];
 	self.pending{$name} := @entry;
 }

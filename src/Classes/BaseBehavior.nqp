@@ -12,7 +12,7 @@ sub _pre_initload() {
 
 	Global::use('Dumper');
 	
-	@No_args := Array::new();
+	@No_args := [ ];
 
 	my $get_bool := '
 .namespace [ "Class" ; "BaseBehavior" ]
@@ -44,9 +44,7 @@ method _ATTR_ARRAY($name, @value) {
 	my $result := self._ATTR($name, @value);
 	
 	if ! Opcode::defined($result) {
-		$result := self._ATTR($name, 
-			Array::new(Array::new())
-		);
+		$result := self._ATTR($name,  [ [ ] ] );
 	}
 	
 	return $result;
@@ -56,9 +54,7 @@ method _ATTR_DEFAULT($name, @value, $default) {
 	my $result := self._ATTR($name, @value);
 	
 	if ! Opcode::defined($result) {
-		$result := self._ATTR($name,
-			Array::new($default)
-		);
+		$result := self._ATTR($name, [ $default ] );
 	}
 	
 	return $result;
@@ -77,9 +73,7 @@ method _ATTR_HASH($name, @value) {
 	my $result := self._ATTR($name, @value);
 	
 	if ! Opcode::defined($result) {
-		$result := self._ATTR($name, 
-			Array::new(Hash::empty())
-		);
+		$result := self._ATTR($name,  [ Hash::empty() ] );
 	}
 	
 	return $result;

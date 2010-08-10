@@ -91,7 +91,7 @@ method test_mock_class() {
 	verify_that( 'mock_class() creates an anonymous class based on P6object' );
 
 	my $class := $!sut.mock_class();
-	self.check_created_class($class, :parents(Array::new('Cuculus::Canorus::Ovum')));
+	self.check_created_class($class, :parents( [ 'Cuculus::Canorus::Ovum' ] ));
 }
 
 method test_mock_class_named() {
@@ -99,7 +99,7 @@ method test_mock_class_named() {
 
 	my $class := $!sut.mock_class(:named('Foo::Bar'));
 
-	self.check_created_class($class, :parents(Array::new('Cuculus::Canorus::Ovum')));
+	self.check_created_class($class, :parents( [ 'Cuculus::Canorus::Ovum' ] ));
 	self.check_class_namespace($class, 'Foo::Bar');
 }
 
