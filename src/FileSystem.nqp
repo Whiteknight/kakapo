@@ -8,6 +8,7 @@ INIT {
 	our %_Osname_class_map := Hash.new(
 		:DEFAULT(	FileSystem::Unix),
 		:linux(	FileSystem::Unix),
+		:MSWin32(	FileSystem::Windows),
 	);
 	
 	Kakapo::initload_done();
@@ -20,13 +21,14 @@ our method get_osname_map() {
 our method _init_obj(*@pos, *%named) {
 	my %map := self.get_osname_map();
 	my $osname := 'DEFAULT';
-        try {
-            my $tmp := %*VM<osname>;
-            $osname := $tmp if %map.contains: $tmp;
+	
+	try {
+		my $tmp := %*VM<osname>;
+		$osname := $tmp if %map.contains: $tmp;
 
-            # if not, whatever. Keep it at DEFAULT
-            CATCH { }
-        }
+		# if not, whatever. Keep it at DEFAULT
+		CATCH { }
+	}
 
 	my $class := %map{$osname};
 	my $obj := $class.new( |@pos, |%named );	# NB: Returns a different type than Path.
@@ -55,17 +57,6 @@ INIT {
 	pir::loadlib__ps('os');
 	
 	use(	Parrot::Unix::Stat );
-
-	my @multisubs := [ <exists> ];
-
-	for @multisubs -> $name {
-		Parrot::define_multisub($name, :method, :starting_with($name));
-
-		my $string_sub := Parrot::get_hll_global( "FileSystem::Unix::{$name}__String" );
-		unless Parrot::is_null( $string_sub ) {
-			Parrot::define_multisub($name, [ $string_sub ], signatures => [ <_ string> ] );
-		}
-	}
 }
 
 our method chdir($path = '') {
@@ -78,13 +69,21 @@ our method cwd() {
 
 our method directory_separator() { '/' }
 
-my method exists__Path($path) {
-	$!file.exists( ~ $path );
+our multi method exists( Path $path ) {
+	$!file.exists( ~$path );
 }
 
-my method exists__String($path) {
-	$!file.exists($path);
+#~ my method exists__Path($path) {
+	#~ $!file.exists( ~ $path );
+#~ }
+
+our multi method exists( String $path ) {
+	$!file.exists: $path;
 }
+
+#~ my method exists__String($path) {
+	#~ $!file.exists($path);
+#~ }
 
 my method exists__ANY($ignored) {
 	die( "Don't know how to check if ", pir::typeof__SP($ignored), " exists. Use a String or Path");
@@ -130,7 +129,7 @@ our method is_directory($path) {
 
 our method is_file($path) {
 	my @stat := $!os.stat( ~$path );
-	S_ISREG(@stat[2]);
+	Parrot::Unix::Stat::S_ISREG(@stat[2]);
 }
 
 our method is_link($path) {
@@ -157,3 +156,8 @@ our method open($path, *%named) {
 }
 
 our method volume_separator() { ':' }
+
+class FileSystem::Windows
+	is FileSystem::Unix;
+
+our method directory_separator() { '\\' }

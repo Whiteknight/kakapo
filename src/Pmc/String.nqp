@@ -97,27 +97,8 @@ our method find_not_cclass($cclass, :$offset = 0, :$count = self.length - $offse
 	my $result := pir::find_not_cclass__iisii($cclass, self, $offset, $count);
 }
 
-sub index($haystack, $needle, *%opts) {
-	my $offset := 0 + %opts<offset>;
-	
-	my $result := Q:PIR {
-		.local string haystack		
-		$P0 = find_lex '$haystack'
-		haystack = $P0
-		
-		.local string needle
-		$P0 = find_lex '$needle'
-		needle = $P0
-		
-		.local int offset
-		$P0 = find_lex '$offset'
-		offset = $P0
-		
-		$I0 = index haystack, needle, offset
-		%r = box $I0
-	};
-	
-	return $result;
+our method index($lookfor, :$offset = 0) {
+	my $result := pir::index__issi( self, $lookfor, $offset );
 }
 
 our method is_cclass($cclass, :$offset = 0) {

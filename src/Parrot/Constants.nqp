@@ -162,9 +162,19 @@ INIT {
 
 		:S_IRWXO(		0o00070 ),
 		:S_IROTH(		0o0004 ),
-		:S_IWOTH(	0o0002 ),
+		:S_IWOTH(		0o0002 ),
 		:S_IXOTH(		0o0001 ),
 	);
+	
+	export( <
+		S_ISBLK
+		S_ISCHR
+		S_ISDIR
+		S_ISFIFO
+		S_ISLNK
+		S_ISREG
+		S_ISSOCK
+	> );
 }
 
 # NB:  Have to use qualified names for these constants because otherwise NQP looks in root nsp.

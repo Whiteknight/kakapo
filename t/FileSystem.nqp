@@ -87,8 +87,8 @@ our method test_get_contents_dir() {
 }
 
 our method test_is_file() {
-	assert_true( $!sut.is_file( '/etc/passwd' ),
-		'/etc/passwd should be a file' );
-	assert_false( $!sut.is_file( '/etc' ),
-		'/etc should not be a file' );
+	assert_true( $!sut.is_file( 't/FileSystem.nqp' ),
+		't/FileSystem.nqp should be a file' );
+	assert_false( $!sut.is_file( 't/bootstrap' ),
+		't/bootstrap should not be a file' );
 }
