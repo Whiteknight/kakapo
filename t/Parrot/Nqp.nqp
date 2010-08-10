@@ -21,7 +21,7 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method test_compile_file() {
+our method test_compile_file() {
 	my $filename := 't/test-data/test-nqp-compile-file.nqp';
 	
 	my &eval := Nqp::compile_file($filename);

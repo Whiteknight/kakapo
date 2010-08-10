@@ -4,7 +4,7 @@
 # Matchers that matches only when all of its child matchers do. This is a short-circuiting 'AND'.
 module Matcher::AllOf;
 
-method describe_failure($item, $description = '') {
+our method describe_failure($item, $description = '') {
 	my $count := 0;
 	my $and := '';
 
@@ -23,7 +23,7 @@ method describe_failure($item, $description = '') {
 	$description;
 }
 
-method describe_self($description) {
+our method describe_self($description) {
 	$description
 	~ "all of ( "
 	~ @!children.map( -> $_ { $_.describe_self; }).join(', ')

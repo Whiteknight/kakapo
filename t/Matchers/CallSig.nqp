@@ -29,18 +29,18 @@ sub MAIN() {
 	$proto.test_new;
 }
 
-method set_up() {
+our method set_up() {
 	$!sut := Matcher::CallSig.new;
 }
 
-method test_new() {
+our method test_new() {
 	verify_that( '.new creates right class.' );
 	
 	assert_isa( $!sut, Matcher::CallSig,
 		'SUT should be populated with object of the right class.');
 }
 
-method test_matcher() {
+our method test_matcher() {
 	my $object := self;
 	my $method := 'foo';
 	
@@ -55,7 +55,7 @@ method test_matcher() {
 		'Should match' );
 }
 
-method test_matcher_fails_object() {
+our method test_matcher_fails_object() {
 	my $other := Hash.new;
 	my $method := 'foo';
 
@@ -67,7 +67,7 @@ method test_matcher_fails_object() {
 		'Should not match');
 }
 
-method test_matcher_fails_method() {
+our method test_matcher_fails_method() {
 	my $want := CallSignature.new(:object(self), :method('foo'));
 	my $got := CallSignature.new(:object(self), :method('bar'));
 	my $matcher := Matcher::CallSig.new(:expecting($want));
@@ -76,7 +76,7 @@ method test_matcher_fails_method() {
 		'Should not match');
 }
 
-method test_matcher_fails_named() {
+our method test_matcher_fails_named() {
 	my $want := CallSignature.new(:object(self), :method('foo'),
 		:positional(<a b c>), :named(Hash.new( :z(3), :a(1))));
 	my $got := CallSignature.new(:object(self), :method('bar'),
@@ -87,7 +87,7 @@ method test_matcher_fails_named() {
 		'Should not match');
 }
 
-method test_matcher_fails_pos() {
+our method test_matcher_fails_pos() {
 	my $want := CallSignature.new(:object(self), :method('foo'),
 		:positional(<a b c>));
 	my $got := CallSignature.new(:object(self), :method('bar'),

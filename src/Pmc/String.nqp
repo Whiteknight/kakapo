@@ -5,9 +5,14 @@ module Pmc::String;
 # Provides basic String functions, and adds some methods to the String PMC.
 
 our sub _pre_initload() {
-	our %Cclass_id := hash(
+	my $from_nsp := pir::get_namespace__p();
+	$from_nsp.export_methods_to: <String>;
+	
+	my $pmc_nsp := Parrot::get_hll_namespace( <String> );
+	#~ $from_nsp.export_to: $pmc_nsp, < >;
+	Parrot::macro_const( $pmc_nsp.make_namespace('CharacterClass'),
 		:NONE(			0),
-		:ANY(				65535),
+		:ANY(			65535),
 
 		:UPPERCASE(		1),
 		:LOWERCASE(		2),
@@ -24,48 +29,38 @@ our sub _pre_initload() {
 		:NEWLINE(			4096),
 		:WORD(			8192),
 	);
-	
-	pir::get_namespace__p().export_methods_to: <String>;
-	# FIXME: Need to export subs to String as well.
+
 }
 
-sub character_offset_of($string, *%opts) {
-	DUMP(:string($string), :options(%opts));
+our method character_offset_of(:$offset = 0, :$line = line_number_of(self, :offset($offset)) - 1) {
 
 	our %Line_number_info;
 	
-	unless %Line_number_info{$string} {
-		_init_line_number_info($string);
+	unless %Line_number_info{self} {
+		_init_line_number_info(self);
 	}
 
-	my $offset	:= 0 + %opts<offset>;
-	
-	unless Hash::exists(%opts, 'line') {
-		%opts<line> := line_number_of($string, :offset($offset));
-	}
-	
-	my $line		:= -1 + %opts<line>;
-	my $line_offset	:= %Line_number_info{$string}[$line];
-	NOTE("Line number offset is: ", $line_offset);
+	my $line_offset := %Line_number_info{self}[$line];
 	my $result := $offset - $line_offset;
+	
 	return $result;
 }
 
-sub display_width($str) {
-# Compute the display width of the C<$str>, assuming that tabs
+our method display_width() {
+# Compute the display width of the C<self>, assuming that tabs
 # are 8 characters wide, and all other chars are 1 character wide. Thus, a 
 # sequence like tab-space-space-tab will have a width of 16, since the two spaces
 # do not equate to a full tab stop.
-# Returns the computed width of C<$str>.
+# Returns the computed width of C<self>.
 
 	my $width := 0;
 	
-	if $str {
+	if self {
 		my $i := 0;
-		my $len := length($str);
+		my $len := self.length;
 		
 		while $i < $len {
-			if char_at($str, $i) eq "\t" {
+			if self.char_at($i) eq "\t" {
 				$width := $width + 8 - ($width % 8);
 			}
 			else {
@@ -79,89 +74,27 @@ sub display_width($str) {
 	return $width;
 }
 
-sub downcase($str) {
-	pir::downcase__SS($str);
+our method lc() {
+	pir::downcase__SS(self);
 }
 
-sub find_cclass($class_name, $str, *%opts) {
-# Returns the index of the first character in C<$str> at or after C<:offset()> that
+our method find_cclass($cclass, :$offset = 0, :$count = self.length - $offset, *%opts) {
+# Returns the index of the first character in C<self> at or after C<:offset()> that
 # is a member of the character class C<$class_name>. If C<:count()> is 
 # specified, scanning ends after the C<:count()> characters have been scanned. 
-# By default, C<:offset(0)> and C<:count(length($str))> are used.
+# By default, C<:offset(0)> and C<:count(length(self))> are used.
 
 # If no matching characters are found, returns the last index plus one.
 
-	my $offset	:= 0 + %opts<offset>;
-	my $count	:= %opts<count>;
-	
-	unless $count {
-		$count := length($str) - $offset;
-	}
-	
-	our %Cclass_id;
-	my $cclass := 0 + %Cclass_id{$class_name};
-	
-	#NOTE("class = ", $class_name, "(", $cclass, "), offset = ", $offset, ", count = ", $count, ", str = ", $str);
-
-	my $result := Q:PIR {
-		.local int cclass, offset, count
-		$P0 = find_lex '$cclass'
-		cclass = $P0
-		$P0 = find_lex '$offset'
-		offset = $P0
-		$P0 = find_lex '$count'
-		count = $P0
-		
-		.local string str
-		$P0 = find_lex '$str'
-		str = $P0
-	
-		$I0 = find_cclass cclass, str, offset, count
-		%r = box $I0
-		
-	};
-	
-	#NOTE("Result = ", $result);
-	return $result;
+	my $result := pir::find_cclass__iisii($cclass, self, $offset, $count);
 }
 
-sub find_not_cclass($class_name, $str, *%opts) {
+our method find_not_cclass($cclass, :$offset = 0, :$count = self.length - $offset) {
 # Behaves like L<#find_cclass> except that the search is for the first
 # character B<not> a member of C<$class_name>. Useful for skipping
 # leading whitespace, etc.
 
-	my $offset	:= %opts<offset>;
-	
-	unless $offset {
-		$offset := 0;
-	}
-	
-	my $count	:= %opts<count>;
-	
-	unless $count {
-		$count := length($str) - $offset;
-	}
-	
-	our %Cclass_id;
-	my $class := 0 + %Cclass_id{$class_name};
-
-	#NOTE("class = ", $class_name, "(", $class, "), offset = ", $offset, ", count = ", $count, ", str = ", $str);
-	
-	my $result := Q:PIR {
-		$P0 = find_lex '$class'
-		$I1 = $P0
-		$P0 = find_lex '$str'
-		$S2 = $P0
-		$P0 = find_lex '$offset'
-		$I3 = $P0
-		$P0 = find_lex '$count'
-		$I4 = $P0
-		$I0 = find_not_cclass $I1, $S2, $I3, $I4
-		%r = box $I0
-	};
-	
-	#NOTE("Result = ", $result);
-	return $result;
+	my $result := pir::find_not_cclass__iisii($cclass, self, $offset, $count);
 }
 
 sub index($haystack, $needle, *%opts) {
@@ -187,56 +120,24 @@ sub index($haystack, $needle, *%opts) {
 	return $result;
 }
 
-sub is_cclass($class_name, $str, *%opts) {
-	our %Cclass_id;
-	my $offset	:= 0 + %opts<offset>;
-	my $class	:= 0 + %Cclass_id{$class_name};
-	
-	#say("class = ", $class_name, "(", $class, "), offset = ", $offset, ", str = ", $str);
-	
-	my $result := Q:PIR {
-		$P0 = find_lex '$class'
-		$I1 = $P0
-		$P0 = find_lex '$str'
-		$S2 = $P0
-		$P0 = find_lex '$offset'
-		$I3 = $P0
-		$I0 = is_cclass $I1, $S2, $I3
-		%r = box $I0
-	};
-	
-	#NOTE("Result = ", $result);
-	return $result;
+our method is_cclass($cclass, :$offset = 0) {
+	my $result := pir::is_cclass__iisi($cclass, self, $offset);
 }
 
-method length(*%opts) {
-	my $offset	:= 0 + %opts<offset>;
-	#NOTE("Computing length of string beyond offset ", $offset);
-	#DUMP(self);
-	
-	my $result	:= Q:PIR {
-		$P0 = find_lex 'self'
-		$S0 = $P0
-		$I0 = length $S0
-		%r = box $I0
-	};
+our method length(:$offset = 0) {
+
+	my $result := pir::length__is(self);
 
 	if $offset > $result {
 		$offset := $result;
 	}
 	
-	$result := $result - $offset;
-	
-	#NOTE("Result = ", $result);
-	return $result;
+	$result := $result - $offset;	
 }
 
-sub _init_line_number_info($string) {
-	#NOTE("Initializing line-number information of previously-unseen string");
-	#DUMP($string);
-	
+my sub _init_line_number_info($string) {
 	my @lines := [ -1 ];
-	my $len := String::length($string);
+	my $len := $string.length;
 	my $i := -1;
 	
 	while $i < $len {
@@ -299,7 +200,7 @@ sub ltrim_indent($str, $indent) {
 	substr($str, $i);
 }
 
-method repeat($times) {
+our method repeat($times) {
 	my $result := Q:PIR {
 		$P0 = find_lex 'self'
 		$S0 = $P0
@@ -312,11 +213,11 @@ method repeat($times) {
 	$result;
 }
 
-method split($delim? = '') {
+our method split($delim? = '') {
 	pir::split__PSS($delim, self);
 }
 
-method substr($start, $limit? = self.length) {
+our method substr($start, $limit? = self.length) {
 	my $length	:= self.length;
 	
 	die( "Invalid start offset ($start) for .substr" )
@@ -339,7 +240,7 @@ method substr($start, $limit? = self.length) {
 	pir::substr__SSII(self, $start, $limit);
 }
 
-method trim() {
+our method trim() {
 	my $result	:= '';
 	my $left	:= find_not_cclass('WHITESPACE', self);
 	#NOTE("$left : ", $left);
@@ -362,4 +263,8 @@ method trim() {
 	
 	#NOTE("result: ", $result);
 	return $result;
+}
+
+our method uc() {
+	pir::upcase__ss(self);
 }

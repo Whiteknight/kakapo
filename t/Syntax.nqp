@@ -24,7 +24,7 @@ sub MAIN() {
 	$proto.suite.run;
 }
 
-method test_last() {
+our method test_last() {
 	my @a := <a b c d e f>;
 	my $x;
 
@@ -39,7 +39,7 @@ method test_last() {
 	fail_unless($x eq 'c', 'Last should leave $x = c');
 }
 
-method test_next() {
+our method test_next() {
 	my @a := <a b c d e f>;
 	my $x := 0;
 
@@ -54,7 +54,7 @@ method test_next() {
 	fail_unless($x == 0, 'Next should keep x from incrementint');
 }
 
-method test_redo() {
+our method test_redo() {
 	my @a := <a b c d e f>;
 	my $x := 0;
 	my $i := 0;
@@ -107,7 +107,7 @@ class C3 is C2 {
         }
 }
 
-method test_super() {
+our method test_super() {
 	my $obj := C3.new;
 	fail_unless($obj.m2 eq 'C2', 'Super should call C2::m2');
 	fail_unless($obj.m3 eq 'C1', 'Super should call C1::m3');

@@ -144,7 +144,7 @@ FIXME: This becomes a synonym for .new.
 
 =end
 
-method merge(*@hashes, :%into = self, :$priority = 'left') {
+our method merge(*@hashes, :%into = self, :$priority = 'left') {
 	
 	if ! pir::isa(self, 'P6protoobject') {
 		@hashes.unshift: self;

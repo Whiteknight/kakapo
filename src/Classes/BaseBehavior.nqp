@@ -34,13 +34,13 @@ sub _pre_initload() {
 	Class::NEW_CLASS('Class::BaseBehavior');
 }
 
-method _ABSTRACT_METHOD() {
+our method _ABSTRACT_METHOD() {
 	DIE("A subclass must override this abstract method.");
 }
 
-method _ATTR($name, @value)	{ self._ABSTRACT_METHOD(); }
+our method _ATTR($name, @value)	{ self._ABSTRACT_METHOD(); }
 
-method _ATTR_ARRAY($name, @value) {
+our method _ATTR_ARRAY($name, @value) {
 	my $result := self._ATTR($name, @value);
 	
 	if ! Opcode::defined($result) {
@@ -50,7 +50,7 @@ method _ATTR_ARRAY($name, @value) {
 	return $result;
 }
 
-method _ATTR_DEFAULT($name, @value, $default) {
+our method _ATTR_DEFAULT($name, @value, $default) {
 	my $result := self._ATTR($name, @value);
 	
 	if ! Opcode::defined($result) {
@@ -60,7 +60,7 @@ method _ATTR_DEFAULT($name, @value, $default) {
 	return $result;
 }
 
-method _ATTR_CONST($name, @value) {
+our method _ATTR_CONST($name, @value) {
 	if +@value && Opcode::defined(
 		self._ATTR($name, @No_args)) {
 		DIE("You cannot reset the value of the '", $name, "' attribute.");
@@ -69,7 +69,7 @@ method _ATTR_CONST($name, @value) {
 	return self._ATTR($name, @value);
 }
 
-method _ATTR_HASH($name, @value) {
+our method _ATTR_HASH($name, @value) {
 	my $result := self._ATTR($name, @value);
 	
 	if ! Opcode::defined($result) {
@@ -79,7 +79,7 @@ method _ATTR_HASH($name, @value) {
 	return $result;
 }
 
-method _ATTR_SETBY($name, $method_name) {
+our method _ATTR_SETBY($name, $method_name) {
 	my $result := self._ATTR($name, @No_args);
 	
 	if ! Opcode::defined($result) {
@@ -90,26 +90,26 @@ method _ATTR_SETBY($name, $method_name) {
 	return $result;
 }
 
-method get_bool() {
+our method get_bool() {
 	return 1;
 }
 
-method get_string() {
+our method get_string() {
 	return Class::name_of(self) ~ ' @' ~ Parrot::get_address_of(self);
 }
 
-method init(@children, %attributes) {
+our method init(@children, %attributes) {
 	for %attributes {
 		NOTE("Setting attribute: '", ~$_, "'");
 		Parrot::call_method(self, ~$_, %attributes{$_});
 	}
 }
 
-method isa($type) {
+our method isa($type) {
 	return self.HOW.isa(self, $type);
 }
 
-method new(*@children, *%attributes) {
+our method new(*@children, *%attributes) {
 	my $class := Opcode::getattribute(self.HOW, 'parrotclass');
 	my $new_object := Opcode::new($class);
 	

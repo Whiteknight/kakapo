@@ -25,7 +25,7 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method test_new() {
+our method test_new() {
 	my $sut := UnitTest::Suite.new;
 	
 	assert_instance_of( $sut, UnitTest::Suite,

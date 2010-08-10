@@ -26,7 +26,7 @@ sub MAIN() {
 	$proto.suite.run;
 }
 
-method set_up() {
+our method set_up() {
 	my $nsp := P6metaclass.get_parrotclass(self).get_namespace;
 	my $name := $nsp.get_name.pop;
 
@@ -37,7 +37,7 @@ method set_up() {
 	$!class := P6metaclass.get_proto($name);
 }
 
-method test_can() {
+our method test_can() {
 	verify_that( "A 'can' method exists, and returns known results" );
 	my $object := $!class.new;
 	
@@ -50,7 +50,7 @@ method test_can() {
 	}
 }
 
-method test_clone() {
+our method test_clone() {
 	verify_that( "Clone returns a different, valid object" );
 	my $object := $!class.new;		
 	my $other := $object.clone;
@@ -58,14 +58,14 @@ method test_clone() {
 	if $object =:= $other { fail( "Clone returns same object" ); }
 }
 
-method test_defined() {
+our method test_defined() {
 	verify_that( "Defined returns correct result" );
 	my $object := $!class.new;
 	
 	unless $object.defined { fail( "Object reports not defined" ); }
 }
 
-method test_isa() {
+our method test_isa() {
 	verify_that( "'isa' returns correct results" );
 	my $object := $!class.new;
 	
@@ -74,7 +74,7 @@ method test_isa() {
 	if $object.isa('No::Such::Class') { fail( "isa true for bogus class" ); }
 }
 
-method test_new() {
+our method test_new() {
 	verify_that( "'new' returns an object of the right type" );		
 	my $object := $!class.new;
 	

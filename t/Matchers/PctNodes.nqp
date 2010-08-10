@@ -44,7 +44,7 @@ sub check_past_matcher($node_type, $m) {
 	check_matcher($m, Matcher::PAST::Node, $node_type);
 }
 
-method test_factory() {
+our method test_factory() {
 	verify_that( "All the factory methods return the right configuration" );
 	
 	check_past_matcher(PAST::Block, block(1, 2, 3, :a<A>, :b<B>) );
@@ -56,7 +56,7 @@ method test_factory() {
 	check_past_matcher(PAST::VarList, varlist(1, 2, 3, :a<A>, :b<B>) );
 }
 
-method test_val() {
+our method test_val() {
 	my $past := PAST::Val.new: :name<one>, :value<1>;
 	
 	my $matcher := val( value => 1 );
@@ -72,7 +72,7 @@ method test_val() {
 		'PAST node should match {name=one, value=1} matcher');
 }
 
-method test_var() {
+our method test_var() {
 	my $past := PAST::Var.new: :name<foo>, :namespace<Foo>;
 	
 	my $matcher := var( :name<foo> );

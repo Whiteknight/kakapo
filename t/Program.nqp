@@ -14,7 +14,7 @@ class Test::Program
 
 UnitTest::Testcase::TEST_MAIN();
 
-method set_up() {
+our method set_up() {
 	# Set global-variable state to post-INIT{} condition.
 	pir::set_hll_global__vPSP( Key.new( <Program> ), '$_Instance', my $undef);
 }
@@ -30,7 +30,7 @@ class Test::Exit is Program {
 	}
 }
 
-method test_exit() {
+our method test_exit() {
 	verify_that( 'Calling global exit() immediately ends program' );
 
 	my $pgm := Test::Exit.new;
@@ -49,7 +49,7 @@ has $!c;
 	sub set_c($pgm) {	$pgm.c($pgm.a + 5); }
 }
 
-method test_start_queue() {
+our method test_start_queue() {
 	verify_that( 'Program calls the entries in the at_start queue correctly' );
 
 	my $pgm := Test::StartQueue.new;
@@ -68,7 +68,7 @@ method test_start_queue() {
 		'c should be set to 9');
 }
 
-method test_exit_queue() {
+our method test_exit_queue() {
 	verify_that( 'Program calls the entries in the at_exit queue correctly' );
 
 	my $pgm := Test::StartQueue.new;
@@ -92,7 +92,7 @@ method test_exit_queue() {
 		'c should be set to 9');
 }
 
-method test_from_parrot() {
+our method test_from_parrot() {
 	my $pgm := Program.new;
 
 	assert_equal( $pgm.program_name, '',
@@ -112,7 +112,7 @@ class Test::Global::AtFuncs is Program {
 	sub foo() { 1; }
 }
 
-method test_global_at_exit() {
+our method test_global_at_exit() {
 	my $pgm := Test::Global::AtFuncs.new;
 
 	assert_throws_nothing('Registered program should have no problems with at_exit global',
@@ -122,7 +122,7 @@ method test_global_at_exit() {
 	});
 }
 
-method test_global_at_exit_fails() {
+our method test_global_at_exit_fails() {
 	my $pgm := Test::Global::AtFuncs.new;
 
 	assert_throws(Control::Error, 'at_exit should throw exception if no program registered',
@@ -131,7 +131,7 @@ method test_global_at_exit_fails() {
 	});
 }
 
-method test_global_at_start() {
+our method test_global_at_start() {
 	my $pgm := Test::Global::AtFuncs.new;
 
 	assert_throws_nothing('Registered program should have no problems with at_start global',
@@ -141,7 +141,7 @@ method test_global_at_start() {
 	});
 }
 
-method test_global_at_start_fails() {
+our method test_global_at_start_fails() {
 	my $pgm := Test::Global::AtFuncs.new;
 
 	assert_throws(Control::Error, 'at_start should throw exception if no program registered',
@@ -154,7 +154,7 @@ class Dummy::SetMain is Program {
 	sub foo() { exit(27); }
 }
 
-method test_main_uses_set_main() {
+our method test_main_uses_set_main() {
 	my $pgm := Dummy::SetMain.new;
 
 	assert_not_defined( $pgm.get_main,
@@ -178,7 +178,7 @@ class Dummy::RunSetsArgs is Program {
 	}
 }
 
-method run_sets_args() {
+our method run_sets_args() {
 	my $dummy := Dummy::RunSetsArgs.new;
 
 	my $result := $dummy.run: argv => <a b c>;
@@ -193,7 +193,7 @@ class Dummy::ProgramSwapsStreams is Program {
 	}
 }
 
-method test_run_swaps_streams() {
+our method test_run_swaps_streams() {
 	my $string_out := Parrot::new('StringHandle');
 	$string_out.open('any value', 'w');
 

@@ -24,12 +24,12 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method set_up() {
+our method set_up() {
 	$!s1 := "Hello, ";
 	$!s2 := "world!";
 }
 
-method test_substr_positive_values() {
+our method test_substr_positive_values() {
 	assert_equal( "el", $!s1.substr(1, 2),
 		"Simple positive offsets 1,2 should get 'el'" );
 	
@@ -43,12 +43,12 @@ method test_substr_positive_values() {
 	});
 }
 
-method test_substr_default_limit() {
+our method test_substr_default_limit() {
 	assert_equal( "lo, ", $!s1.substr(3),
 		"Default limit is eos");
 }
 
-method test_substr_negative_start() {
+our method test_substr_negative_start() {
 	assert_equal( ',', $!s1.substr(-2, 1),
 		"Negative start -2,1 should get ','");
 
@@ -57,7 +57,7 @@ method test_substr_negative_start() {
 		{ $!s1.substr($bad_start, 2); });
 }
 
-method test_substr_negative_limit() {
+our method test_substr_negative_limit() {
 	assert_equal( 'rl', $!s2.substr(2, -2),
 		'Negative limit should remove chars from end of string: 2,-2 -> rl' );
 }

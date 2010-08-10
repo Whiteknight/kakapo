@@ -11,7 +11,7 @@ sub _pre_initload() {
 }
 
 # override abstract Class::BaseBehavior::_ATTR
-method _ATTR($name, @value) {
+our method _ATTR($name, @value) {
 	if +@value {
 		self{$name} := @value[0];
 	}
@@ -19,7 +19,7 @@ method _ATTR($name, @value) {
 	return self{$name};
 }
 
-method __dump($dumper, $label) {
+our method __dump($dumper, $label) {
 	my $subindent;
 	my $indent;
 

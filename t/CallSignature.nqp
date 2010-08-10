@@ -27,18 +27,18 @@ sub MAIN() {
 	$proto.suite.run;
 }
 
-method set_up() {
+our method set_up() {
 	$!sut := CallSignature.new;
 }
 
-method test_new() {
+our method test_new() {
 	verify_that( '.new creates right class.' );
 	
 	assert_isa( $!sut, 'CallSignature', 
 		'SUT should be populated with object of the right class.');
 }
 
-method test_empty() {
+our method test_empty() {
 	verify_that( 'An empty callsig has an empty pos array and empty named hash' );
 	
 	assert_isa( $!sut.positional, 'ResizablePMCArray',

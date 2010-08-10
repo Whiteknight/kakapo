@@ -44,7 +44,7 @@ my method already_added($name) {
 		|| self.added.contains($name);
 }
 
-method _init_obj(*@pos, *%named) {
+our method _init_obj(*@pos, *%named) {
 	self.locked(0);
 
 	while @pos {
@@ -84,7 +84,7 @@ our method reset() {
 	self.pending(Hash.new);
 }
 
-method tsort_queue() {
+our method tsort_queue() {
 	self.locked(1);
 	self.cycle_keys( [] );
 	self.cycle(Hash.new());

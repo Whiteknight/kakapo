@@ -20,13 +20,13 @@ INIT {
 
 TEST_MAIN();
 
-method test_match() {
+our method test_match() {
 	my $sut := Matcher::IsNumber.new: 7;
 	
 	assert_match( '7', $sut, "Literal string should match okay.");
 }
 
-method test_tonumber() {
+our method test_tonumber() {
 	my $sut := Matcher::IsNumber.new: 3;
 	my $dummy := <c a t>;
 	
@@ -34,13 +34,13 @@ method test_tonumber() {
 		'get_number() method should match, too.');
 }
 	
-method test_nonmatch() {
+our method test_nonmatch() {
 	my $sut := Matcher::IsNumber.new: 6;
 
 	assert_not_match( 'vi', $sut, 'String should not match');
 }
 
-method test_new() {
+our method test_new() {
 	my $sut := Matcher::IsNumber.new;
 	assert_isa($sut, 'Matcher::IsNumber', 'New should return the right type');
 }
@@ -55,7 +55,7 @@ class Dummy::TestSugar {
 	}
 }
 
-method test_sugar() {
+our method test_sugar() {
 	my $sut := Dummy::TestSugar.sugar: 1.3;
 	
 	assert_isa($sut, 'Matcher::IsNumber', 'Sugar should return the right type');

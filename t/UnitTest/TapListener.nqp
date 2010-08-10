@@ -31,7 +31,7 @@ class Dummy::Testcase is UnitTest::Testcase {
 	
 }
 
-method set_up() {
+our method set_up() {
 	my $class := cuckoo( Test::Builder );
 	my $tb := $class.new;
 	
@@ -40,7 +40,7 @@ method set_up() {
 	$!test := Dummy::Testcase.new;
 }
 
-method test_pass() {
+our method test_pass() {
 	$!test.name( 'passing test' );
 	
 	$!sut.plan_tests(1);
@@ -53,7 +53,7 @@ method test_pass() {
 	verify( $tb ).ok( 1, 'passing test' );
 }
 
-method test_error() {
+our method test_error() {
 	$!test.name( 'failing test' );
 	
 	$!sut.plan_tests: 1;
@@ -70,7 +70,7 @@ method test_error() {
 	verify( $tb ).diag( 'test failed' );
 }
 
-method test_fail() {
+our method test_fail() {
 	$!test.name( 'failing test' );
 	
 	$!sut.plan_tests: 1;
@@ -87,7 +87,7 @@ method test_fail() {
 	verify( $tb ).diag( 'test failed' );
 }
 
-method test_todo_fail() {
+our method test_todo_fail() {
 	verify_that( 'A failing todo-test is relayed to TODO() rather than OK()' );
 	$!test.name('todo failed');
 	$!test.todo('this is broken');
@@ -105,7 +105,7 @@ method test_todo_fail() {
 	verify_never( $tb ).ok( ETC() );
 }
 
-method test_todo_pass() {
+our method test_todo_pass() {
 	verify_that( 'A passing todo-test is relayed to TODO() rather than OK()' );
 	$!test.name('todo passed');
 	$!test.todo('this is broken');
@@ -121,7 +121,7 @@ method test_todo_pass() {
 	verify_never( $tb ).ok( ETC() );
 }
 
-method test_todo() {
+our method test_todo() {
 	todo("Maybe later");
 	fail("bang! (this test is two-due)");
 }

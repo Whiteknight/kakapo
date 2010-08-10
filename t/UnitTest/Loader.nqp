@@ -23,7 +23,7 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method set_up() {
+our method set_up() {
 	$!loader := UnitTest::Loader.new;
 }
 
@@ -39,7 +39,7 @@ class Dummy::UnitTest::Testcase
 	method test1()		{ 1; }
 }
 
-method test_load_tests_from_testcase() {
+our method test_load_tests_from_testcase() {
 	my $suite := $!loader.load_tests_from_testcase(
 		Dummy::UnitTest::Testcase
 	);
@@ -72,7 +72,7 @@ class Dummy::LoadOrder is UnitTest::Testcase {
 	method test_juliet() { 1; }
 }
 
-method test_ordering() {
+our method test_ordering() {
 	$!loader := Dummy::Loader.new;
 
 	my $suite := $!loader.load_tests_from_testcase(

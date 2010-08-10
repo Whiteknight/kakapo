@@ -10,12 +10,12 @@ sub _pre_initload() {
 
 # TODO: I'd like to add a 'new' that maps to make_namespace.
 
-method contains($name) {
+our method contains($name) {
 	! pir::isnull__ip( self.find_var: $name )
 	|| ! pir::isnull__ip( self.find_namespace: $name );
 }
 
-method __dump($dumper, $label) {
+our method __dump($dumper, $label) {
 	my @results		:= Parrot::call_tuple_method($dumper, 'newIndent');
 	my $subindent	:= "\n" ~ @results.shift;
 	my $indent		:= "\n" ~ @results.shift;
@@ -55,15 +55,15 @@ our sub export_methods_to($to_nsp_name, $from_nsp = Parrot::caller_namespace(), 
 	}
 }
 
-method export_methods_to($to_nsp_name, :@methods = $to_nsp_name) {
+our method export_methods_to($to_nsp_name, :@methods = $to_nsp_name) {
 	export_methods_to($to_nsp_name, self, :methods(@methods));
 }
 
-method export_method($name, :$as = $name, :@tags?) {
+our method export_method($name, :$as = $name, :@tags?) {
 	self.export_sub($name, :as($as), :lookup<get_method>, :tags(@tags));
 }
 
-method export_sub($name, :$as? = $name, :$lookup = 'find_sub', :@tags?) {
+our method export_sub($name, :$as? = $name, :$lookup = 'find_sub', :@tags?) {
 	if ! pir::does__ips(@tags, 'array') {
 		@tags := [ @tags ];
 	}
@@ -86,7 +86,7 @@ method export_sub($name, :$as? = $name, :$lookup = 'find_sub', :@tags?) {
 	&sub;
 }
 
-method fetch($name, :$relative = 0) {
+our method fetch($name, :$relative = 0) {
 	my @parts;
 	
 	die("Currently this only accepts String names")
@@ -118,7 +118,7 @@ method fetch($name, :$relative = 0) {
 	$namespace;
 }
 
-method get_method($name) {
+our method get_method($name) {
 	$name := ~ $name;
 	#say("Getting method $name from namespace " ~ self);
 	
@@ -146,7 +146,7 @@ sub _get_methods($nsp) {
 	%methods;
 }
 
-method get_methods() {
+our method get_methods() {
 	_get_methods(self);
 }
 
@@ -180,7 +180,7 @@ our method install_method($name, &method) {
 	}
 }
 
-method string_name(:$format, :$with_hll) {
+our method string_name(:$format, :$with_hll) {
 	$format := $format // 'perl6';
 	
 	my @parts := self.get_name;

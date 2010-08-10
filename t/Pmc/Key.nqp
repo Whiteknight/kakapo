@@ -21,7 +21,7 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method test_new() {
+our method test_new() {
 	my $key := Key.new(1, 2);
 	my $row := 0;
 	my $col := 0;

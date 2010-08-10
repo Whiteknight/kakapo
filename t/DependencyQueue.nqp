@@ -26,11 +26,11 @@ sub MAIN() {
 	$proto.suite.run;
 }
 
-method set_up() {
+our method set_up() {
 	self.queue(DependencyQueue.new);
 }
 	
-method test_add_entry_simple() {
+our method test_add_entry_simple() {
 	verify_that( 'add_entry puts new objects in queue' );
 	
 	self.queue.add_entry('apple', 1);
@@ -38,7 +38,7 @@ method test_add_entry_simple() {
 	fail_if(self.queue.is_empty, 'Queue with 1 entry is not empty');
 }
 
-method test_add_entry_done() {
+our method test_add_entry_done() {
 	verify_that( 'add entry does nothing when entry already marked done' );
 	
 	self.queue.mark_as_done('already_done');
@@ -56,7 +56,7 @@ method test_add_entry_done() {
 		'Expect dq exception');
 }
 
-method test_add_entry_pending() {
+our method test_add_entry_pending() {
 	verify_that( 'add entry does nothing when entry already pending' );
 	
 	self.queue.add_entry('addison', 1, 'baker');
@@ -66,13 +66,13 @@ method test_add_entry_pending() {
 		"Adding a second time should update dependencies");
 }
 
-method test_new_queue_is_empty() {
+our method test_new_queue_is_empty() {
 	my $dq := DependencyQueue.new();
 	fail_unless($dq.is_empty, 'New dq should be empty');
 	fail_if($dq.locked, 'New dq should be unlocked');
 }
 
-method test_ctor_args_marked_done() {	
+our method test_ctor_args_marked_done() {	
 	my $dq := DependencyQueue.new('alpha', 'beta');
 	fail_unless($dq.is_empty, 'New dq should be empty');
 	fail_if($dq.locked, 'New dq should be unlocked');
@@ -80,7 +80,7 @@ method test_ctor_args_marked_done() {
 		'Ctor should mark positional args as done');
 }
 
-method test_order() {
+our method test_order() {
 	verify_that( 'next() returns entries in dependency order' );
 
 	self.queue.add_entry('Alpha', 'apple');

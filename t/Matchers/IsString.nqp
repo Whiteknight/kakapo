@@ -20,7 +20,7 @@ INIT {
 
 TEST_MAIN();
 
-method test_match() {
+our method test_match() {
 	my $sut := Matcher::IsString.new: 'dog';
 	
 	assert_match( 'dog', $sut, "Literal string should match okay.");
@@ -38,7 +38,7 @@ class Dummy::ToString {
 	}
 }
 
-method test_tostring() {
+our method test_tostring() {
 	my $sut := Matcher::IsString.new: 'cat';
 	my $dummy := Dummy::ToString.new: :parts( <c a t> );
 	
@@ -46,13 +46,13 @@ method test_tostring() {
 		'get_string() method should match, too.');
 }
 	
-method test_nonmatch() {
+our method test_nonmatch() {
 	my $sut := Matcher::IsString.new: :string('frog');
 
 	assert_not_match( 1, $sut, 'Number should not match');
 }
 
-method test_new() {
+our method test_new() {
 	my $sut := Matcher::IsString.new;
 	assert_isa($sut, 'Matcher::IsString', 'New should return the right type');
 }
@@ -67,7 +67,7 @@ class Dummy::TestSugar {
 	}
 }
 
-method test_sugar() {
+our method test_sugar() {
 	my $sut := Dummy::TestSugar.sugar: 'foo';
 	
 	assert_isa($sut, 'Matcher::IsString', 'Sugar should return the right type');

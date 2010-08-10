@@ -4,16 +4,16 @@
 module Matcher::Empty;
 # Matches if target is an instance of a pre-specified class.
 
-method describe_failure($item, $description) {
+our method describe_failure($item, $description) {
 	return $description ~ 'had type: ' ~ Opcode::typeof($item);
 }
 
-method describe_self($description) {
+our method describe_self($description) {
 	return $description
 		~ "empty";
 }
 
-method matches_typesafe($item) {
+our method matches_typesafe($item) {
 	if Opcode::can($item, 'is_empty') {
 		return $item.is_empty();
 	}

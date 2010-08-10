@@ -4,7 +4,7 @@
 module Matcher::Equals;
 # TypeSafe matcher that matches if the target is the same as a preset value.
 
-method describe_self($description) {
+our method describe_self($description) {
 	return $description
 		~ "a(n) "
 		~ self.match_type
@@ -16,7 +16,7 @@ sub _factory_Integer($value)		{ factory(Matcher::Equals.new($value, :match_type(
 sub _factory_Matcher($matcher)		{ Matcher::DescribedAs.new('is', $matcher); }
 sub _factory_String($value)		{ factory(Matcher::Equals.new($value, :match_type('String'))); }
 
-method find_match_type($item) {
+our method find_match_type($item) {
 	for ('Float', 'Integer') {
 		if Opcode::isa($item, ~$_) {
 			self.match_type(~$_);
@@ -28,7 +28,7 @@ method find_match_type($item) {
 	}
 }
 
-method init(@args, %opts) {
+our method init(@args, %opts) {
 	Matcher::init(self, @args, %opts);
 
 	unless +@args {
@@ -39,13 +39,13 @@ method init(@args, %opts) {
 	self.find_match_type(self.value);
 }
 
-method _match_Float($item)		{ self.match_scalar($item); }
-method _match_Integer($item)		{ self.match_scalar($item); }
-method _match_String($item)		{ self.match_scalar($item); }
+our method _match_Float($item)		{ self.match_scalar($item); }
+our method _match_Integer($item)		{ self.match_scalar($item); }
+our method _match_String($item)		{ self.match_scalar($item); }
 
-method match_type(*@value)		{ self._ATTR('match_type', @value); }
+our method match_type(*@value)		{ self._ATTR('match_type', @value); }
 
-method match_scalar($item) {
+our method match_scalar($item) {
 	my $value := self.value;
 
 	unless self.match_type {
@@ -60,4 +60,4 @@ method match_scalar($item) {
 	}
 }
 
-method value(*@value)			{ self._ATTR('value', @value); }
+our method value(*@value)			{ self._ATTR('value', @value); }

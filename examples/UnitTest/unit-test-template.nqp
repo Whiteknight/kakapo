@@ -49,14 +49,14 @@ TEST_MAIN();
 # 7. Do any set-up you need. This method is called before every test method, so you can start with 
 # new data.
 
-method set_up() {
+our method set_up() {
 	$!sut := My::Class.new;
 }
 
 # 8. Write some (more) test methods. This one is pretty basic - it just validates that your class' new method 
 # actually creates and returns an object. It's good to start with a success. :)
 
-method test_new() {
+our method test_new() {
 	assert_instance_of( $!sut, My::Class,
 		'.new should return object of correct class');
 }

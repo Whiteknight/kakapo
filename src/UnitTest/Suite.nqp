@@ -1,18 +1,23 @@
 # Copyright (C) 2010, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
-class UnitTest::Suite;
+class UnitTest::Suite
+	is UnitTest::Standalone;
 
 has	@!members;
 has	$!num_tests;
 
-method add_test($test) {
+INIT {
+	auto_accessors( :private );
+}
+
+our method add_test($test) {
 	@!members.push($test);
 	$!num_tests := $!num_tests + $test.num_tests;
 	self;
 }
 
-method add_tests(*@tests) {
+our method add_tests(*@tests) {
 	for @tests {
 		self.add_test($_);
 	}
@@ -26,7 +31,7 @@ my method default_result() {
 	$result;
 }
 
-method run($result?) {
+our method run($result?) {
 	unless $result.defined {
 		$result := self.default_result;
 	}
@@ -46,11 +51,11 @@ sub sort_cmp($a, $b) {
 	$a.name lt $b.name ?? -1 !! 1;
 }
 
-method sort() {
+our method sort() {
 	self.members.sort(UnitTest::Suite::sort_cmp);
 	self;
 }
 
-method suite() {
+our method suite() {
 	self;
 }

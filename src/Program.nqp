@@ -73,7 +73,7 @@ our method exit_program($status = 0) {
 	$!exit_value := $status;
 }
 
-method set_main(&new_value) {
+our method set_main(&new_value) {
 	&!main := &new_value;
 }
 
@@ -85,7 +85,7 @@ sub global_at_start(*@pos, *%named) {
 	instance().at_start(|@pos, |%named);
 }
 
-method _init_obj(*@pos, *%named) {
+our method _init_obj(*@pos, *%named) {
 	@!argv := @!argv;
 	$!executable_name := $!executable_name;
 	$!exit_marshaller :=ComponentMarshaller.new(:name('exit'));
@@ -97,7 +97,7 @@ method _init_obj(*@pos, *%named) {
 	self._init_args(|@pos, |%named);
 }
 
-method from_parrot($ignored?) {
+our method from_parrot($ignored?) {
 	my $interp := pir::getinterp__P();
 
 	@!argv := $interp[2];		# IGLOBALS_ARGV_LIST = 2
@@ -105,7 +105,7 @@ method from_parrot($ignored?) {
 	$!program_name := @!argv.shift;
 }
 
-method get_main() {
+our method get_main() {
 	&!main;
 }
 
@@ -128,7 +128,7 @@ sub instance(*@new) {	# Use *@new to allow passing undef (simplifies testing)
 	}
 }
 
-method main(*@argv) {
+our method main(*@argv) {
 	my &main := self.get_main;
 
 	unless &main.defined {
@@ -144,7 +144,7 @@ method main(*@argv) {
 	&main(@argv);
 }
 
-method run( :@argv ) {
+our method run( :@argv ) {
 	if @argv {
 		self.program_name: @argv.shift;
 		self.argv: @argv;
@@ -184,7 +184,7 @@ method run( :@argv ) {
 	self.exit_program($!exit_value);
 }
 
-method save_std_handles() {
+our method save_std_handles() {
 	my %handles;
 
 	%handles<stderr>	:= pir::getstderr__P();
@@ -194,7 +194,7 @@ method save_std_handles() {
 	%handles;
 }
 
-method set_std_handles(%handles) {
+our method set_std_handles(%handles) {
 
 	pir::setstderr__vP(%handles<stderr>);
 	$*ERR := %handles<stderr>;
@@ -209,9 +209,9 @@ method set_std_handles(%handles) {
 }
 
 # NB: Use pir::defined because Handles are PMCs (and hard to wrap!)
-method stderr($value?)		{ pir::defined($value) ?? (%!handles<stderr> := $value) !! %!handles<stderr> }
-method stdin($value?)		{ pir::defined($value) ?? (%!handles<stdin> := $value) !! %!handles<stdin> }
-method stdout($value?)		{ pir::defined($value) ?? (%!handles<stdout> := $value) !! %!handles<stdout> }
+our method stderr($value?)		{ pir::defined($value) ?? (%!handles<stderr> := $value) !! %!handles<stderr> }
+our method stdin($value?)		{ pir::defined($value) ?? (%!handles<stdin> := $value) !! %!handles<stdin> }
+our method stdout($value?)		{ pir::defined($value) ?? (%!handles<stdout> := $value) !! %!handles<stdout> }
 
 sub swap_handles(*%handles) {
 	my %save_handles;

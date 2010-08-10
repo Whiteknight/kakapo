@@ -28,7 +28,7 @@ class Test::Abstract {
 	method abstr() { self.__ABSTRACT__; }
 }
 
-method test_abstract() {
+our method test_abstract() {
 	my $ta := Test::Abstract.new;
 	my $exception;
 	

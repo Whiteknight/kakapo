@@ -14,7 +14,7 @@ sub _initload() {
 	use(	'Cuculus::Canorus' );
 }
 
-method object_matches($actual) {
+our method object_matches($actual) {
 	my $exp := $!expecting.object;
 	my $act := $actual.object;
 
@@ -24,7 +24,7 @@ method object_matches($actual) {
 		&& Opcode::getattribute($exp, '$!CUCULUS_CANORUS') =:= Opcode::getattribute($act, '$!CUCULUS_CANORUS');
 }
 
-method positionals_match($actual) {
+our method positionals_match($actual) {
 	my @wanted := $!expecting.positional;
 	my @got := $actual.positional;
 

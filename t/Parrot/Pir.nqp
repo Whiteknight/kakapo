@@ -25,7 +25,7 @@ Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 	#~ self.test_compile;
 #~ }
 
-method test_compile() {
+our method test_compile() {
 	verify_that( 'compile($string) works' );
 
 	assert_throws( Exception::NullRegAccess, 'test_compiled_string should NOT be defined already',
@@ -58,7 +58,7 @@ class Dummy::CompileSub1 {
 	}
 }
 
-method test_compile_sub() {
+our method test_compile_sub() {
 	my $dummy := Dummy::CompileSub1.new;
 
 	assert_throws( Exception::GlobalNotFound, 'compiled_sub should NOT be defined already',
@@ -80,7 +80,7 @@ class Dummy::CompileSub2 {
 	}
 }
 
-method test_compile_method() {
+our method test_compile_method() {
 	my $dummy := Dummy::CompileSub2.new;
 
 	assert_throws( Exception::MethodNotFound, 'compiled method should NOT be defined already',
@@ -106,7 +106,7 @@ class Dummy::CompileSub3 {
 	}
 }
 
-method test_compile_vtable() {
+our method test_compile_vtable() {
 	verify_that( 'Compiling with :vtable produces a vtable override method' );
 	
 	my $dummy := Dummy::CompileSub3.new;
@@ -136,7 +136,7 @@ class Dummy::CompileSub4 {
 	}
 }
 
-method test_compile_vtable_labeled() {
+our method test_compile_vtable_labeled() {
 	verify_that( 'A sub with a name not related to vtable-ism can still be a vtable with a :vtable(label)' );
 	
 	my $dummy := Dummy::CompileSub4.new;
@@ -158,7 +158,7 @@ method test_compile_vtable_labeled() {
 		'get_string vtable should use value of $!attr');
 }
 
-method test_pir_namespace_string() {
+our method test_pir_namespace_string() {
 	assert_equal( Pir::pir_namespace('Foo::Bar'), "[ 'Foo'; 'Bar' ]",
 		'String rewrite Foo::Bar should be okay');
 	assert_equal( Pir::pir_namespace(''), '[ ]',
@@ -168,7 +168,7 @@ method test_pir_namespace_string() {
 module Foo::Baz {
 }
 
-method test_pir_namespace_nsp() {
+our method test_pir_namespace_nsp() {
 	assert_equal( Pir::pir_namespace( Foo::Baz ), "['Foo'; 'Baz']",
 		'Format of namespace name should be okay');
 }

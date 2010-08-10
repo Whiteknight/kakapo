@@ -6,11 +6,11 @@ module Matcher::IsNumber ;
 
 has $!number;
 
-method describe_self($description = '') {
+our method describe_self($description = '') {
 	$description ~ "number $!number";
 }
 
-method describe_failure($item, $description = '') {
+our method describe_failure($item, $description = '') {
 	$description ~ "was (number) " ~ pir::box__pi(pir::set__ip($item));
 }
 
@@ -18,7 +18,7 @@ sub factory($number) {
 	Matcher::IsNumber.new: :number($number);
 }
 
-method _init_obj($number?, *%named) {
+our method _init_obj($number?, *%named) {
 	$!number := pir::new__ps('Float');
 
 	if $number.defined {
@@ -29,7 +29,7 @@ method _init_obj($number?, *%named) {
 	}
 }
 
-method number($value?) {
+our method number($value?) {
 	if $value.defined {
 		pir::assign__vpn($!number, $value);
 	}
@@ -38,6 +38,6 @@ method number($value?) {
 	}
 }
 
-method matches($item) {
+our method matches($item) {
 	pir::iseq__inn($!number, $item);
 }

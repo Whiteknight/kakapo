@@ -29,11 +29,11 @@ sub MAIN() {
 	#$proto.test_cuckoo_match;
 }
 
-method set_up() {
+our method set_up() {
 	$!sut := Cuculus::SigMatcher.new;
 }
 
-method test_new() {
+our method test_new() {
 	verify_that( '.new creates right class.' );
 
 	_dumper($!sut);
@@ -45,7 +45,7 @@ method test_new() {
 
 }
 
-method test_cuckoo_match() {
+our method test_cuckoo_match() {
 	my $mc := Cuckoo::cuckoo('UnitTest::Testcase');
 	my $cuckoo := Opcode::getattribute($mc, '$!CUCULUS_CANORUS');
 	my $mc2 := $cuckoo.new_egg( :behavior(Cuculus::Canorus::mock_execute) );
@@ -58,7 +58,7 @@ method test_cuckoo_match() {
 		'SigMatcher should follow links when comparing objects');
 }
 
-method test_default_sig_matches_anything() {
+our method test_default_sig_matches_anything() {
 	my $want := CallSignature.new;
 	$!sut.expecting( $want );
 	
@@ -80,7 +80,7 @@ method test_default_sig_matches_anything() {
 		'Still matches' );
 }
 
-method test_matcher() {
+our method test_matcher() {
 	my $object := self;
 	my $method := 'foo';
 
@@ -103,7 +103,7 @@ method test_matcher() {
 		'Should match' );
 }
 
-method test_matcher_fails_method() {
+our method test_matcher_fails_method() {
 	my $want := CallSignature.new(:method('foo'));
 	$!sut.expecting($want);
 
@@ -113,7 +113,7 @@ method test_matcher_fails_method() {
 		'Should not match');
 }
 
-method test_matcher_fails_named() {
+our method test_matcher_fails_named() {
 	my $want := CallSignature.new();
 	$!sut.expecting($want);
 	
@@ -127,7 +127,7 @@ method test_matcher_fails_named() {
 		'Should not match due to :a() value');
 }
 
-method test_matcher_fails_object() {
+our method test_matcher_fails_object() {
 	my $other := Hash.new;
 	my $method := 'foo';
 
@@ -139,7 +139,7 @@ method test_matcher_fails_object() {
 		'Should not match');
 }
 
-method test_matcher_fails_pos() {
+our method test_matcher_fails_pos() {
 	my $want := CallSignature.new(:object(self), :method('foo'),
 		:positional(<a b c>));
 	my $got := CallSignature.new(:object(self), :method('bar'),

@@ -8,7 +8,7 @@ has $!method;
 has @!positional;
 has %!named;
 
-method _init_obj(*@pos, *%named) {
+our method _init_obj(*@pos, *%named) {
 	$!method	:= Matcher::CallSig::ANY();
 	%!named	:= %!named;
 	$!object	:= Matcher::CallSig::ANY();
@@ -16,7 +16,7 @@ method _init_obj(*@pos, *%named) {
 	self._init_args(|@pos, |%named);
 }
 
-method object(*@value)	{ @value ?? ($!object := @value.shift) !! $!object; }
-method method($value?)	{ pir::defined($value) ?? ($!method := $value) !! $!method; }
-method positional($value?)	{ pir::defined($value) ?? (@!positional := $value) !! @!positional; }
-method named($value?)	{ pir::defined($value) ?? (%!named := $value) !! %!named; }
+our method object(*@value)	{ @value ?? ($!object := @value.shift) !! $!object; }
+our method method($value?)	{ pir::defined($value) ?? ($!method := $value) !! $!method; }
+our method positional($value?)	{ pir::defined($value) ?? (@!positional := $value) !! @!positional; }
+our method named($value?)	{ pir::defined($value) ?? (%!named := $value) !! %!named; }

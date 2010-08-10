@@ -11,11 +11,11 @@ INIT {
 	);
 }
 
-method get_osname_map() {
+our method get_osname_map() {
 	our %_Osname_class_map;
 }
 
-method _init_obj(*@pos, *%named) {
+our method _init_obj(*@pos, *%named) {
 	my %map := self.get_osname_map();
 	my $osname := 'DEFAULT';
         try {

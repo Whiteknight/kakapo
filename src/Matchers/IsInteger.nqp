@@ -6,11 +6,11 @@ module Matcher::IsInteger ;
 
 has $!integer;
 
-method describe_self($description = '') {
+our method describe_self($description = '') {
 	$description ~ "integer $!integer";
 }
 
-method describe_failure($item, $description = '') {
+our method describe_failure($item, $description = '') {
 	$description ~ "was (integer) " ~ pir::box__pi(pir::set__ip($item));
 }
 
@@ -18,7 +18,7 @@ sub factory($integer) {
 	Matcher::IsInteger.new: :integer($integer);
 }
 
-method _init_obj($integer?, *%named) {
+our method _init_obj($integer?, *%named) {
 	$!integer := pir::new__ps('Integer');
 
 	if $integer.defined {
@@ -29,7 +29,7 @@ method _init_obj($integer?, *%named) {
 	}
 }
 
-method integer($value?) {
+our method integer($value?) {
 	if $value.defined {
 		pir::assign__vpi($!integer, $value);
 	}
@@ -38,6 +38,6 @@ method integer($value?) {
 	}
 }
 
-method matches($item) {
+our method matches($item) {
 	pir::iseq__iii($!integer, $item);
 }

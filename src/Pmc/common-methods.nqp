@@ -54,7 +54,7 @@ sub _pre_initload() {
 #	if $object.can( 'resize' ) { ... }
 # =end code
 
-method can($method) {
+our method can($method) {
 	pir::can(self, $method);
 }
 
@@ -74,7 +74,7 @@ method can($method) {
 #=end code
 #=end
 
-method clone() {
+our method clone() {
 	pir::clone(self);
 }
 
@@ -112,7 +112,7 @@ sub create_new_method($namespace) {
 #=end code
 #=end
 
-method defined() {
+our method defined() {
 	1;
 }
 
@@ -127,7 +127,7 @@ Returns C< false > otherwise.
 =end code
 =end
 
-method does($role)				{ pir::does(self, $role); }
+our method does($role)				{ pir::does(self, $role); }
 
 sub install_methods($namespace, @methods, :$skip_new?) {
 	my $from_nsp := pir::get_namespace__p();
@@ -157,10 +157,10 @@ sub install_methods($namespace, @methods, :$skip_new?) {
 	}
 }
 
-method isa($type) {
+our method isa($type) {
 	pir::isa(self, $type);
 }
 
-method is_equal($other) {
+our method is_equal($other) {
 	pir::iseq__IPP(self, $other);
 }

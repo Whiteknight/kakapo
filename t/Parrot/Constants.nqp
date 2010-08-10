@@ -21,7 +21,7 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method test_datatypes() {
+our method test_datatypes() {
 	assert_equal( 0,	Parrot::DATATYPE_UNDEF, 'Expect UNDEF to have value 0' );
 	assert_equal( -100,	Parrot::DATATYPE_INTVAL, 'Expect INTVAL to have value -100' );
 	assert_equal( -99,	Parrot::DATATYPE_FLOATVAL, 'Expect FLOATVAL to have value -99' );
@@ -61,7 +61,7 @@ method test_datatypes() {
 	assert_equal( -66,	Parrot::DATATYPE_SIZED, 'Expect SIZED to have value -66' );
 }
 
-method test_pmctypes() {
+our method test_pmctypes() {
 	assert_equal( 0,	Parrot::PMCTYPE_default, 'Expect default to have value 0' );
 	assert_equal( 1,	Parrot::PMCTYPE_Null, 'Expect Null to have value 1' );
 	assert_equal( 2,	Parrot::PMCTYPE_Env, 'Expect Env to have value 2' );

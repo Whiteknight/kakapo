@@ -20,7 +20,7 @@ Class::SUBCLASS('Kakapo::Test::ResizableStringArray',
 
 Global::use('Matcher::Factory');	# is(), not(), etc.
 
-method test_rsa_append() {
+our method test_rsa_append() {
 	
 	self.note("Testing RSA.append() method");
 	
@@ -49,7 +49,7 @@ method test_rsa_append() {
 	self.assert_that("The elements count", @strings.elems, is(5));
 }
 
-method test_rsa_clone() {
+our method test_rsa_clone() {
 	
 	self.note("Testing RSA.clone() method");
 	
@@ -67,7 +67,7 @@ method test_rsa_clone() {
 	self.assert_that("The elements count", @str2.elems, is(2));
 }
 
-method test_rsa_contains() {
+our method test_rsa_contains() {
 	
 	self.note("Testing RSA.contains() method");
 	
@@ -81,7 +81,7 @@ method test_rsa_contains() {
 	self.assert_that("The array contains ''", @strings.contains(''), is(false()));
 }
 
-method test_rsa_elements() {
+our method test_rsa_elements() {
 
 	self.note("Testing RSA.elems() method");
 	
@@ -96,7 +96,7 @@ method test_rsa_elements() {
 	
 }
 
-method test_rsa_join() {
+our method test_rsa_join() {
 	
 	self.note("Testing RSA.join() method");
 	
@@ -105,7 +105,7 @@ method test_rsa_join() {
 	self.assert_that('Joining with spaces', @strings.join(' '), is('foo 1 cow'));
 }
 
-method test_rsa_new() {
+our method test_rsa_new() {
 	
 	self.note("Testing RSA.new() class method");
 	

@@ -25,7 +25,7 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method test_TT_1414() {
+our method test_TT_1414() {
 	my @a := [ 3, 1, 2 ];
 	my @b := @a.sort;
 	

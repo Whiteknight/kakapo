@@ -20,27 +20,27 @@ INIT {
 
 TEST_MAIN();
 
-method test_match() {
+our method test_match() {
 	my $sut := Matcher::TrueFalse.new(:true);	
 	assert_match( 1, $sut, 'True value should match');
 }
 
-method test_nonmatch() {
+our method test_nonmatch() {
 	my $sut := Matcher::TrueFalse.new(:false);
 	want_fail( 'Boolean match should fail', { assert_match( 1, $sut, 'should fail'); });
 }
 
-method test_new() {
+our method test_new() {
 	my $sut := Matcher::TrueFalse.new();
 	assert_isa($sut, 'Matcher::TrueFalse', 'Matcher should be of correct type.' );
 }
 
-method test_describe_self_true() {
+our method test_describe_self_true() {
 	my $sut := Matcher::TrueFalse.new(:true);
 	assert_equal( $sut.describe_self, 'a true value', 'True matcher should have true message');
 }
 
-method test_describe_self_false() {
+our method test_describe_self_false() {
 	my $sut := Matcher::TrueFalse.new(:false);
 	assert_equal( $sut.describe_self, 'a false value', 'False matcher should have false message');
 }
@@ -59,7 +59,7 @@ class Test::TrueFalseFactory {
 	}
 }
 
-method test_factory_true() {
+our method test_factory_true() {
 	my $obj := Test::TrueFalseFactory.new;
 	
 	my $t := $obj.t;
@@ -67,7 +67,7 @@ method test_factory_true() {
 	fail('Should be configured true') unless $t.expected;
 }
 
-method test_factory_false() {
+our method test_factory_false() {
 	my $obj := Test::TrueFalseFactory.new;
 	
 	my $f := $obj.f;

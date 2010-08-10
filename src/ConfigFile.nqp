@@ -26,7 +26,7 @@ $config.store('Dump::Opcode::defined', 7);
 
 NOTE("ConfigFile::_onload: done");
 
-method file($filename?) {
+our method file($filename?) {
 # Gets or sets the file used by this object. If no C< $filename > is given, just 
 # returns the current filename. Else, if the specified filename is different from
 # the current one, the new file is read in, parsed, and replaces the current
@@ -44,7 +44,7 @@ method file($filename?) {
 	return self<_filename>;
 }
 
-method init(@args, %opts) {
+our method init(@args, %opts) {
 # New object initialization method, called by C< .new() >.
 
 	self<_filename> := '<no filename set>';
@@ -53,7 +53,7 @@ method init(@args, %opts) {
 	return self;
 }
 
-method parse_config($data) {
+our method parse_config($data) {
 # Parses a string C< $data > containing the 'config file' contents. Blank lines 
 # and lines beginning with '#' are ignored, other lines are processed as 
 # key = value pairs.
@@ -93,7 +93,7 @@ method parse_config($data) {
 	DUMP(self);
 }
 
-method query(*@keys) {
+our method query(*@keys) {
 # Looks up the entry indicated by joining the various C<@keys> with '::'. That 
 # is, C< query('A', 'B') > looks up the config entry stored as 'A::B'.
 
@@ -106,7 +106,7 @@ method query(*@keys) {
 	return $value;
 }
 
-method store($key, $value) {
+our method store($key, $value) {
 # Stores the given C< $value > for C< $key >.
 
 	NOTE("ConfigFile: Storing key '", $key, "' value: ", $value);

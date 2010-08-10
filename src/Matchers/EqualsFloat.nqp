@@ -21,19 +21,19 @@ sub _initload() {
 	Class::multi_method($class_name, 'matches_typesafe', :starting_with('_match_'));
 }
 
-method describe_failure($item, $description) {
+our method describe_failure($item, $description) {
 	return $description
 		~ $item
 		~ " differed by "
 		~ self.difference($item);
 }
 
-method describe_self($description) {
+our method describe_self($description) {
 	return $description 
 		~ "a Number equal to " ~ self.value;
 }
 
-method difference($item) {
+our method difference($item) {
 	my $difference := $item - self.value;
 	my $abs := Q:PIR {
 		$P0 = find_lex '$difference'
@@ -42,7 +42,7 @@ method difference($item) {
 	return $abs;
 }
 
-method init(@children, %attributes) {
+our method init(@children, %attributes) {
 	unless +@children {
 		DIE("You must provide at least a target value for is-close-to matcher");
 	}
@@ -62,12 +62,12 @@ method init(@children, %attributes) {
 	}
 }
 
-method _match_Float($item)		{ self.match_scalar($item); }
-method _match_Integer($item)		{ self.match_scalar($item); }
-method _match_String($item)		{ self.match_scalar($item); }
+our method _match_Float($item)		{ self.match_scalar($item); }
+our method _match_Integer($item)		{ self.match_scalar($item); }
+our method _match_String($item)		{ self.match_scalar($item); }
 
 # NB: cannot use _match_scalar because of mmd bug (TT#1133)
-method match_scalar($item) {
+our method match_scalar($item) {
 	if self.difference($item) <= self.within {
 		return 1;
 	}
@@ -75,5 +75,5 @@ method match_scalar($item) {
 	return 0;
 }
 
-method value(*@value)			{ self._ATTR('value', @value); }
-method within(*@value)			{ self._ATTR('within', @value); }
+our method value(*@value)			{ self._ATTR('value', @value); }
+our method within(*@value)			{ self._ATTR('within', @value); }

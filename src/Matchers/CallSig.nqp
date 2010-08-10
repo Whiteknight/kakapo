@@ -17,15 +17,15 @@ sub ETC() {
 	Matcher::CallSig::ETC;
 }
 
-method describe_failure($previous, $item) {
+our method describe_failure($previous, $item) {
 	$previous ~ "was a call to " ~ self.format_sig($item);
 }
 
-method describe_self($previous) {
+our method describe_self($previous) {
 	$previous ~ "a call matching " ~ self.format_sig($!expecting);
 }
 
-method format_sig($callsig) {
+our method format_sig($callsig) {
 	'CallSignature:{ ' ~ self.format_obj($callsig.object)
 		~ '.' ~ $callsig.method ~ '( '
 		~ $callsig.positional.map( -> $obj { self.format_obj($obj) }).join(', ')
@@ -33,7 +33,7 @@ method format_sig($callsig) {
 		~ ' ) }';
 }
 
-method format_obj($obj) {
+our method format_obj($obj) {
 	if pir::isa__IPS($obj, 'String') {
 		"String:'$obj'";
 	}
@@ -45,7 +45,7 @@ method format_obj($obj) {
 	}
 }
 
-method matches($actual) {
+our method matches($actual) {
 	! $!expecting.defined
 	|| self.method_matches($actual)
 		&& self.object_matches($actual)
@@ -53,12 +53,12 @@ method matches($actual) {
 		&& self.named_match($actual);
 }
 
-method method_matches($actual) {
+our method method_matches($actual) {
 	$!expecting.method eq $actual.method
 	|| $!expecting.method =:= ANY();
 }
 
-method named_match($actual) {
+our method named_match($actual) {
 	my %act := $actual.named;
 
 	for $!expecting.named -> $exp {
@@ -72,12 +72,12 @@ method named_match($actual) {
 	1;
 }
 
-method object_matches($actual) {
+our method object_matches($actual) {
 	$!expecting.object =:= $actual.object
 	|| $!expecting.object =:= ANY();
 }
 
-method positionals_match($actual) {
+our method positionals_match($actual) {
 	my $count := 0;
 	my $num_expecting := $!expecting.positional;
 	my @wanted := $!expecting.positional;

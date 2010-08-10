@@ -21,7 +21,7 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method test_new() {
+our method test_new() {
 	my $sut := Path.new;
 
 	assert_not_null( $sut,
@@ -30,7 +30,7 @@ method test_new() {
 		'.new should return correct type' );
 }
 
-method test_parse_rootdir() {
+our method test_parse_rootdir() {
 	my $sut := Path.new('/');
 
 	assert_true( $sut.is_absolute,
@@ -39,7 +39,7 @@ method test_parse_rootdir() {
 		'/ should re-stringify as /' );
 }
 
-method test_parse_strings_rooted() {
+our method test_parse_strings_rooted() {
 	my $sut := Path.new('/', 'x');
 
 	assert_equal('/x', ~$sut,
@@ -48,7 +48,7 @@ method test_parse_strings_rooted() {
 		'/x should be absolute' );
 }
 
-method test_parse_strings_unrooted() {
+our method test_parse_strings_unrooted() {
 	my $sut := Path.new( 'a/b', 'c/d');
 	
 	assert_equal( 'a/b/c/d', ~$sut,
@@ -58,7 +58,7 @@ method test_parse_strings_unrooted() {
 		'a/b/c/d should be relative' );
 }
 
-method test_parse_static_path() {
+our method test_parse_static_path() {
 	my $old := Path.new( '/x' );
 	my $sut := Path.new( $old, 'y');
 
@@ -68,7 +68,7 @@ method test_parse_static_path() {
 		'Should inherit absolute from old path' );
 }
 
-method test_parse_static_path_late() {
+our method test_parse_static_path_late() {
 	my $old := Path.new( 'x' );
 	my $sut := Path.new( 'w', $old, 'y' );
 	
@@ -78,7 +78,7 @@ method test_parse_static_path_late() {
 		'relative string + path should be relative' );
 }
 
-method test_parse_dynamic_first() {
+our method test_parse_dynamic_first() {
 	my $old := Path.new( 'x' );
 	my $sut := Path.new( $old, 'y', 'z', :dynamic);
 

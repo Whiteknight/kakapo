@@ -20,17 +20,17 @@ INIT {
 
 TEST_MAIN();
 
-method test_match() {
+our method test_match() {
 	my $sut := Matcher::IsNull.new;
 	assert_match(NoSuchSymbol, $sut, 'Null value should match');
 }
 
-method test_nonmatch() {
+our method test_nonmatch() {
 	my $sut := Matcher::IsNull.new;
 	want_fail('Valid value should not match null', { assert_match('foo', $sut, 'should not match'); });
 }
 
-method test_new() {
+our method test_new() {
 	my $sut := Matcher::IsNull.new;
 	assert_isa($sut, 'Matcher::IsNull', 'New should return the right type');
 }

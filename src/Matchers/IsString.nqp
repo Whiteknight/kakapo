@@ -22,11 +22,11 @@ sub _initload() {
 	Matcher::Factory::export_sub(Matcher::IsString::factory, :as('is_string'));
 }
 
-method describe_self($description = '') {
+our method describe_self($description = '') {
 	$description ~ "string '$!string'";
 }
 
-method describe_failure($item, $description = '') {
+our method describe_failure($item, $description = '') {
 	$description ~ "was (string) '$item'";
 }
 
@@ -34,7 +34,7 @@ sub factory($string) {
 	Matcher::IsString.new: :string($string);
 }
 
-method _init_obj($string?, *%named) {
+our method _init_obj($string?, *%named) {
 	if $string.defined {
 		super(:string($string), |%named);
 	}
@@ -43,6 +43,6 @@ method _init_obj($string?, *%named) {
 	}
 }
 
-method matches($item) {
+our method matches($item) {
 	$!string eq ~$item;
 }

@@ -17,7 +17,7 @@ sub get_dump_detail() {
 	return $Dump_detail;
 }
 
-method __dump($dumper, $label) {
+our method __dump($dumper, $label) {
 	my @results		:= Parrot::call_tuple_method($dumper, 'newIndent');
 	my $subindent	:= "\n" ~ @results.shift;
 	my $indent		:= "\n" ~ @results.shift;

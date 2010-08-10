@@ -5,10 +5,26 @@ class Exception::UnitTestFailure is Exception::Wrapper {
 	method severity() { Exception::Severity.ERROR; }
 }
 
-class UnitTest::Testcase is UnitTest::Standalone;
+class UnitTest::Testcase 
+	is UnitTest::Standalone;
 
 has $!todo;
 has $!verify;
+
+INIT {
+	auto_accessors( :private );
+	
+	export(<
+		fail
+		fail_if
+		fail_unless
+		TEST_MAIN
+		verify_that
+	>);
+	
+	export( UnitTest::Testcase::todo_test, :as('todo'));
+	Kakapo::initload_done();
+}
 
 my method default_loader() {
 	UnitTest::Loader.new;
@@ -16,7 +32,7 @@ my method default_loader() {
 
 my method default_result() {
 	my $result := UnitTest::Result.new;
-	$result.add_listener(UnitTest::Listener::TAP.new);
+	$result.add_listener: UnitTest::Listener::TAP.new;
 	return $result;
 }
 
@@ -25,24 +41,21 @@ our sub fail($why) {
 }
 
 # DEPRECATED
-sub fail_if($condition, $why) {
+our sub fail_if($condition, $why) {
 	fail($why) if $condition;
 }
 
 # DEPRECATED
-sub fail_unless($condition, $why) {
+our sub fail_unless($condition, $why) {
 	fail($why) unless $condition;
 }
 
 our method num_tests() {
-	return 1;
+	1;
 }
 
 # NOTE: Don't call this directly!! Call .suite.run instead.
-method run($result?) {
-	unless $result.defined {
-		$result := self.default_result;
-	}
+our method run($result = self.default_result) {
 
 	$result.start_test(self);
 	my $exception;
@@ -84,7 +97,7 @@ method run($result?) {
 	$result;
 }
 
-method run_test() {
+our method run_test() {
 	Parrot::call_method(self, self.name);
 }
 
@@ -103,10 +116,13 @@ our sub TEST_MAIN(:$namespace = Parrot::caller_namespace()) {
 	my $namespace_name := ~ $namespace;
 	my $proto_obj := $parent_nsp.get_sym: $namespace_name;
 
-	if ! Parrot::is_null( $proto_obj ) && Parrot::isa( $proto_obj, 'P6protoobject' ) {
+	# FIXME: This blind-calls obj.MAIN, which does not allow for a sub (not method)
+	# named MAIN in the namespace. Not sure if there are any other interactions with
+	# hidden methods change.
+	if ! is_null( $proto_obj ) && Parrot::isa( $proto_obj, 'P6protoobject' ) {
 		$proto_obj.MAIN();
 	}
-        elsif $namespace.contains: 'MAIN' {
+	elsif $namespace.contains: 'MAIN' {
 		if ! is_null( $proto_obj ) {
 			$namespace<MAIN>($proto_obj);
 		}

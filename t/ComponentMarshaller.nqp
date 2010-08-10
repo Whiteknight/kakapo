@@ -26,7 +26,7 @@ sub MAIN() {
 	$proto.suite.run;
 }
 
-method test_new() {
+our method test_new() {
 	verify_that( '.new() returns the correct class' );
 	
 	my $sut := ComponentMarshaller.new;

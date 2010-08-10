@@ -66,7 +66,7 @@ INIT {
 	P6metaclass.add_attribute(Exception::Wrapper, '$!exception');
 }
 
-method create_exception() {
+our method create_exception() {
 	#my $e := pir::new__PS('Exception');
 	my $e := Exception.new;
 	$e.type(self.type);
@@ -74,7 +74,7 @@ method create_exception() {
 	self.exception($e);
 }
 
-method exception(*@value) {
+our method exception(*@value) {
 	if @value {
 		pir::setattribute__vPSP(self, '$!exception', @value[0]);
 		self;
@@ -84,12 +84,12 @@ method exception(*@value) {
 	}
 }
 
-method exit_code(*@value)	{ self.exception._attr('exit_code', @value); }
-method handled(*@value)	{ self.exception._attr('handled', @value); }
-method message(*@value)	{ self.exception._attr('message', @value); }
-method payload(*@value)		{ self.exception._attr('payload', @value); }
+our method exit_code(*@value)	{ self.exception._attr('exit_code', @value); }
+our method handled(*@value)	{ self.exception._attr('handled', @value); }
+our method message(*@value)	{ self.exception._attr('message', @value); }
+our method payload(*@value)		{ self.exception._attr('payload', @value); }
 
-method new(*@pos, *%named) {
+our method new(*@pos, *%named) {
 	my $class := Opcode::getattribute(self.HOW, 'parrotclass');
 	my $new_object := pir::new__PP($class);
 
@@ -109,11 +109,11 @@ method new(*@pos, *%named) {
 	$new_object;
 }
 
-method rethrow()			{ self.exception.rethrow; }
-method severity() 			{ Exception::Severity.SEVERE; }
-method throw()			{ self.exception.throw; }
+our method rethrow()			{ self.exception.rethrow; }
+our method severity() 			{ Exception::Severity.SEVERE; }
+our method throw()			{ self.exception.throw; }
 
-method type() {
+our method type() {
 	my $class := P6metaclass.get_parrotclass(self);
 	my $type := pir::inspect__PPS($class, 'id');
 	return $type + 2000;

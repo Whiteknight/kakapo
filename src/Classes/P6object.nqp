@@ -57,7 +57,7 @@ our method __get_string() {
 # 
 #    Sugar. Throws an AbstractMethodCalled exception.
 
-method __ABSTRACT__() {
+our method __ABSTRACT__() {
 	my $name := ~ Parrot::caller();
 	Exception::AbstractMethodCalled.new(
 		:message("Invalid call to abstract method '$name'"),
@@ -103,23 +103,23 @@ protoobject C< Foo::Bar > (of type P6protoobject) that belongs to a
 I<namespace> (a different PMC type) also called C< Foo::Bar >.
 
 =end
-method BECAUSE() { "center field" }
-method IDONTGIVEADARN() { "shortstop" }
-method IDONTKNOW() { "third base" }
-method TODAY() { "catcher" }
-method TOMORROW() { "pitcher" }
-method WHY() { "left field" }
+our method BECAUSE() { "center field" }
+our method IDONTGIVEADARN() { "shortstop" }
+our method IDONTKNOW() { "third base" }
+our method TODAY() { "catcher" }
+our method TOMORROW() { "pitcher" }
+our method WHY() { "left field" }
 
-method clone() {
+our method clone() {
 	pir::clone__PP(self);
 }
 
-method defined() {
+our method defined() {
 # returns true. (Overridden for the Undef PMC type.)
 	return 1;
 }
 
-method __dump($dumper, $label) {
+our method __dump($dumper, $label) {
 	my @results		:= Parrot::call_tuple_method($dumper, 'newIndent');
 	my $subindent	:= "\n" ~ @results.shift;
 	my $indent		:= "\n" ~ @results.shift;
@@ -170,20 +170,20 @@ method __dump($dumper, $label) {
 	$dumper.deleteIndent();
 }
 
-method get_bool() {
+our method get_bool() {
 	1;
 }
 
-method get_string() {
+our method get_string() {
 # Returns a perl5-style object class+address.
 	Opcode::typeof(self) ~ ' @' ~ self.WHERE;
 }
 
-method _init_obj(*@pos, *%named) {
+our method _init_obj(*@pos, *%named) {
 	self._init_args(|@pos, |%named);
 }
 
-method _init_args(*@pos, *%named) {
+our method _init_args(*@pos, *%named) {
 	die("Default _init_obj cannot handle positional parameters.")
 		if @pos.elems;
 	
@@ -202,11 +202,11 @@ method _init_args(*@pos, *%named) {
 	self;
 }
 
-method isa($type) {
+our method isa($type) {
 	return self.HOW.isa(self, $type);
 }
 
-method new(*@pos, *%named) {
+our method new(*@pos, *%named) {
 	my $class := pir::getattribute__PPS(self.HOW, 'parrotclass');
 	my $new_object := pir::new__PP($class);
 

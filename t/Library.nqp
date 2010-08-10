@@ -36,7 +36,7 @@ class Test::Queue
 	sub set_c($lib) {	$lib.c($lib.a + 5); }
 }
 
-method test_init_queue() {
+our method test_init_queue() {
 	verify_that( 'Library calls the entries in the init_queue correctly' );
 
 	my $lib := Test::Queue.new(:a(0), :b(0), :c(0));
@@ -51,7 +51,7 @@ method test_init_queue() {
 		'Subs should run in correct order.' );
 }
 
-method test_load_queue() {
+our method test_load_queue() {
 	verify_that( 'Library calls the entries in the load_queue correctly' );
 
 	my $lib := Test::Queue.new(:a(0), :b(0), :c(0));

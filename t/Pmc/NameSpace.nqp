@@ -26,7 +26,7 @@ sub MAIN() {
 	$proto.suite.run;
 }
 
-method test_string_name() {
+our method test_string_name() {
 	my $sut := pir::get_namespace__P();
 
 	fail_unless( $sut.WHO.can( 'string_name' ),
@@ -39,7 +39,7 @@ method test_string_name() {
 		':format(pir) should use [ ; ; ] style');
 }
 
-method test_fetch_basic() {
+our method test_fetch_basic() {
 	my $nsp := NameSpace.fetch: 'No::Such::Namespace'; 
 	
 	assert_isa( $nsp, 'NameSpace',

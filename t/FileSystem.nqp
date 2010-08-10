@@ -23,11 +23,11 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method set_up() {
+our method set_up() {
 	$!sut := FileSystem.instance;
 }
 
-method test_cwd() {
+our method test_cwd() {
 	my $cwd := $!sut.cwd;	
 	my @parts := $cwd.split( $!sut.directory_separator );
 
@@ -36,7 +36,7 @@ method test_cwd() {
 		'cwd should end with "kakapo"' );
 }
 
-method test_exists() {
+our method test_exists() {
 
 	assert_false( $!sut.exists('/tmp/this-PrOBAbly-doesnt-eXXXI$+'),
 		"File really shouldn't exist." );
@@ -45,7 +45,7 @@ method test_exists() {
 		"Current directory had better exist.");
 }
 	
-method test_instance() {
+our method test_instance() {
 	
 	assert_not_null( $!sut,
 		'FileSystem.instance should never return null' );
@@ -54,7 +54,7 @@ method test_instance() {
 		'FileSystem.instance should return an object of the right type' );
 }
 
-method test_new() {
+our method test_new() {
 	my $sut := FileSystem.new;
 	
 	assert_isa( $sut, FileSystem,
@@ -62,7 +62,7 @@ method test_new() {
 }
 
 # NB: Assumes this is run from $KAKAPO root dir.
-method test_get_contents_file() {
+our method test_get_contents_file() {
 	my $t1 := $!sut.get_contents( 't/test-data/text-file-1' );
 	
 	assert_not_equal( -1, $t1.index( 'text file 1.'),
@@ -78,7 +78,7 @@ method test_get_contents_file() {
 		'File 2 should have 4 lines');
 }
 
-method test_get_contents_dir() {
+our method test_get_contents_dir() {
 	my @d1 := $!sut.get_contents( 't' );
 	
 	my %dir := Hash.new;
@@ -88,7 +88,7 @@ method test_get_contents_dir() {
 		't/ directory should have a test-data child' );
 }
 
-method test_is_file() {
+our method test_is_file() {
 	assert_true( $!sut.is_file( '/etc/passwd' ),
 		'/etc/passwd should be a file' );
 	assert_false( $!sut.is_file( '/etc' ),

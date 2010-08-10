@@ -217,7 +217,7 @@ my method declare_class($class, :$parent) {
 # passed `@attrs,` `%methods,` or `@roles` are added to the new role. Returns
 # the new role.
 
-method declare_role($name = caller_namespace(), :@attrs, :%methods, :@roles) {
+our method declare_role($name = caller_namespace(), :@attrs, :%methods, :@roles) {
 	my %init;
 
 	%init<attributes> := @attrs;
@@ -245,7 +245,7 @@ method declare_role($name = caller_namespace(), :@attrs, :%methods, :@roles) {
 	$role;
 }
 
-method does($obj, $role) {
+our method does($obj, $role) {
 	my $role_pmc := self.get_parrotclass($role);
 	pir::does__IPP(pir::class__PP($obj), $role_pmc);
 }

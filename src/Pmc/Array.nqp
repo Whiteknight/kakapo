@@ -73,7 +73,7 @@ sub _pre_initload() {
 	}
 }
 
-method append(@other) {
+our method append(@other) {
 	for @other {
 	        self.push($_);
 	}
@@ -122,7 +122,7 @@ method append(@other) {
 #	}
 #=end code
 
-method bsearch($value, *%opts) {
+our method bsearch($value, *%opts) {
 	our %Bsearch_compare_func;
 
 	my $cmp	:= %opts<cmp> ?? %opts<cmp> !! '<=>';
@@ -196,7 +196,7 @@ sub cat(*@sources) {
 	@cat;
 }
 
-method contains($item) {
+our method contains($item) {
 	for self {
 	        if pir::iseq__IPP($item, $_) {
 		    return 1;
@@ -206,12 +206,12 @@ method contains($item) {
 	0;
 }
 
-method delete($key) {
+our method delete($key) {
 	Opcode::delete(self, $key);	# NB: Needs special key reference
 	self;
 }
 
-method distinct(:&cmp = Pmc::Array::cmp_string) {
+our method distinct(:&cmp = Pmc::Array::cmp_string) {
 	my $elems := self.elems;
 	my $i := 0;
 	my $j;
@@ -230,11 +230,11 @@ method distinct(:&cmp = Pmc::Array::cmp_string) {
 	self;
 }
 
-method elements() {
+our method elements() {
 	die("No more elements! Use .elems");
 }
 
-method elems() {
+our method elems() {
 	pir::elements__IP(self);
 }
 
@@ -242,7 +242,7 @@ sub grep_args(&match, *@values) {
 	@values.grep: &match;
 }
 
-method grep(&match) {
+our method grep(&match) {
 	my @matches;
 
 	for self {
@@ -253,7 +253,7 @@ method grep(&match) {
 	@matches;
 }
 
-method is_sorted(:&cmp = Pmc::Array::cmp_string) {
+our method is_sorted(:&cmp = Pmc::Array::cmp_string) {
 	my $index := 0;
 	my $limit := self.elems - 1;
 
@@ -272,7 +272,7 @@ sub join_args( $delim, *@args ) {
 	@args.join($delim);
 }
 
-method keys() {
+our method keys() {
 	my @result;
 
 	my $i := 0;
@@ -289,7 +289,7 @@ method keys() {
 	@result;
 }
 
-method kv() {
+our method kv() {
 	my @result;
 
 	my $i := 0;
@@ -302,7 +302,7 @@ method kv() {
 	@result;
 }
 
-method join($delim? = '') {
+our method join($delim? = '') {
 	pir::join__SSP($delim, self);
 }
 
@@ -310,7 +310,7 @@ sub map_args(&func, *@args) {
 	@args.map: &func;
 }
 
-method map(&func) {
+our method map(&func) {
 	my @result;
 
 	for self {
@@ -335,7 +335,7 @@ sub reduce_args(&expression, *@values) {
 	@values.reduce(&expression);
 }
 
-method reduce(&expression) {
+our method reduce(&expression) {
 	my $result;
 	my $first := 1;
 
@@ -354,7 +354,7 @@ method reduce(&expression) {
 	$result;
 }
 
-method reverse(:$from = 0, :$to) {
+our method reverse(:$from = 0, :$to) {
 	$to := self.elems - 1 unless $to.defined;
 	my $temp;
 
@@ -396,12 +396,12 @@ sub roundrobin(*@sources) {
 	@result;
 }
 
-method set_size($size) {
+our method set_size($size) {
 	pir::assign__vPI(self, $size);
 	self;
 }
 
-method slice(:$from = 0, :$to) {
+our method slice(:$from = 0, :$to) {
 	my $elems := self.elems;
 	$to := $elems unless $to.defined;
 
@@ -423,26 +423,18 @@ method slice(:$from = 0, :$to) {
 	@slice;
 }
 
-method splice(@value, :$from = 0, :$replacing = 0) {
+our method splice(@value, :$from = 0, :$replacing = 0) {
 	pir::splice__vPPII(self, @value, $from, $replacing);
 	self;
 }
 
-method unsort() {
-	our &Parrot_range_rand;
-
-	if ! pir::defined( &Parrot_range_rand ) {
-	        #$_Math_lib := pir::loadlib__PS('math_ops');
-	        my $lib := pir::loadlib__PS(pir::null__S);
-	        &Parrot_range_rand := pir::dlfunc__PPSS($lib, 'Parrot_range_rand', 'iiii');
-	}
-
+our method unsort() {
 	my $bound := self.elems - 1;
 	my $swap;
 	my $temp;
 
 	while $bound > 0 {
-	        $swap := &Parrot_range_rand(0, $bound + 1, 0);	# +1: see TT#1479
+	        $swap := pir::rand__iiii(0, $bound);
 	        $swap-- if $swap > $bound;	# Rare but possible
 	        $temp := self[$bound];
 	        self[$bound] := self[$swap];

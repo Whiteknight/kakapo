@@ -11,22 +11,19 @@ sub compare_methods($a, $b) {
 	pir::cmp__ISS(~$a, ~$b);
 }
 
-our method configure_suite(@tests, :$suite, *%named) {
-	unless $suite.defined {
-		$suite := self.default_suite;
-	}
-
-	my $proto := pir::getprop__PSP('metaclass', $!class).WHAT();
-
+our method configure_suite(@tests, :$suite = self.default_suite, *%named) {
+	my $metaclass := pir::getprop__psp('metaclass', $!class);
+	my $protoobject := pir::getattribute__pps($metaclass, 'protoobject');
+	
 	for @tests -> $test {
-		$suite.add_test: $proto.new(:name($test));
+		$suite.add_test: $protoobject.new(:name($test));
 	}
 
 	$suite;
 }
 
 our method default_suite() {
-	return UnitTest::Suite.new();
+	UnitTest::Suite.new();
 }
 
 our method get_test_methods() {
@@ -58,23 +55,21 @@ our method _init_obj(*@pos, *%named) {
 
 # Returns true for "test_foo" and "testFoo" names
 our method is_test_method($name) {
+	my $result := 0;
+
 	if $name.length > 4
 		&& $name.substr(0, 4) eq 'test' {
 
-		if $name[4] eq '_' {
-			return 1;
-		}
-
-		if String::is_cclass('UPPERCASE', $name, :offset(4)) {
-			return 1;
-		}
-
-		if String::is_cclass('NUMERIC', $name, :offset(4)) {
-			return 1;
+		my $ch4 := $name[4];
+		
+		if $ch4 eq '_' 
+			|| $ch4.is_cclass(String::CharacterClass::UPPERCASE)
+			|| $ch4.is_cclass(String::CharacterClass::NUMERIC) {
+			$result := 1;
 		}
 	}
 
-	return 0;
+	$result;
 }
 
 our method load_tests_from_testcase($class, *%named) {

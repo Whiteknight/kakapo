@@ -25,7 +25,7 @@ sub MAIN() {
 	$proto.suite.run;
 }
 
-method test_elems() {
+our method test_elems() {
 	my @a1;
 	
 	fail_unless( @a1.elems == 0,
@@ -36,7 +36,7 @@ method test_elems() {
 		'One element test');
 }
 
-method test_set_size() {
+our method test_set_size() {
 	
 	my @a1 := (1, 2, 3);
 	
@@ -55,7 +55,7 @@ method test_set_size() {
 	};
 }
 
-method test_grep() {
+our method test_grep() {
 	my @a1 := grep( -> $x { $x > 3 }, 1, 2, 3, 4, 5 ,6, 7, 8, 9);
 	fail_unless( @a1.elems == 6,
 		'Grep should remove first 3 elements');
@@ -65,7 +65,7 @@ method test_grep() {
 		'Grep odd should have 3 elements');
 }
 
-method test_map() {
+our method test_map() {
 	
 	my @a1 := map( -> $x { $x * 2; }, 1, 2, 3, 4);
 	fail_unless( @a1.elems == 4,
@@ -81,7 +81,7 @@ method test_map() {
 		'Map should append _foo');
 }	
 
-method test_new() {
+our method test_new() {
 	my @a1;
 	
 	fail_unless( @a1.isa('ResizablePMCArray'),
@@ -100,7 +100,7 @@ method test_new() {
 		'New should create an array from its args');
 }
 
-method test_reduce() {
+our method test_reduce() {
 	my &min := -> $a, $b { $a > $b ?? $b !! $a };
 	my &max := -> $a, $b { $a <  $b ?? $b !! $a };
 	
@@ -119,7 +119,7 @@ method test_reduce() {
 		'Cat should reduce to join');	
 }
 
-method test_reverse() {
+our method test_reverse() {
 	my @a1 := <A B C D E F>;
 	
 	my $s := @a1.reverse.join('|');
@@ -150,7 +150,7 @@ method test_reverse() {
 		'Reverse empty array is empty');
 }
 
-method test_slice() {
+our method test_slice() {
 	my @a1 := (1, 2, 3, 4, 5);
 	
 	my $s := @a1.slice(:to(2)).join;
@@ -166,7 +166,7 @@ method test_slice() {
 		'Slice from [-3 .. -1] should be 34');
 }
 
-method test_splice() {
+our method test_splice() {
 	my @a1 := (1, 2, 3, 4, 5);
 	my @a2 := <A B C D E>;
 	
@@ -187,7 +187,7 @@ method test_splice() {
 		'Replacing first 2 elements');
 }
 
-method test_unsort() {
+our method test_unsort() {
 	my @array := [ 'a', 'b', 'c', 'd' ];
 	my @yaarr := @array.clone.unsort;
 
@@ -208,7 +208,7 @@ method test_unsort() {
 		
 }
 
-method test_zip() {
+our method test_zip() {
 	my @a1 := (1, 2, 3);
 	my @a2 := <a b c>;
 	

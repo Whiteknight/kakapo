@@ -24,7 +24,7 @@ sub MAIN() {
 	$proto.suite.run;
 }
 
-method test_new() {
+our method test_new() {
 	verify_that( 'SUT is created okay, right class.' );
 	
 	my $sut := Matcher::InstanceOf.new();
@@ -32,28 +32,28 @@ method test_new() {
 		'Matcher should be of correct type.' );
 }
 
-method test_match() {
+our method test_match() {
 	my $sut := Matcher::InstanceOf.new(:type('String'));
 	
 	fail_unless( $sut.matches('foo'),
 		'Should match string constant as String');
 }
 
-method test_nonmatch() {
+our method test_nonmatch() {
 	my $sut := Matcher::InstanceOf.new(:type('Matcher'));
 	
 	fail_if( $sut.matches('bar'),
 		'Should not match string');
 }
 
-method test_null_type() {
+our method test_null_type() {
 	my $sut := Matcher::InstanceOf.new();
 	
 	fail_if( $sut.matches('baz'),
 		'Should not match any type' );
 }
 
-method test_null_match() {
+our method test_null_match() {
 	my $sut := Matcher::InstanceOf.new(:type('String'));
 	
 	fail_if( $sut.matches(NoSuchAnimal),
@@ -68,7 +68,7 @@ class Test::Factory::InstanceOf {
 	}
 }
 
-method test_instance_of() {
+our method test_instance_of() {
 	verify_that( 'The Factory namespace includes an instance_of sub that returns M::IO objects' );
 	
 	my $sut := Test::Factory::InstanceOf.new();

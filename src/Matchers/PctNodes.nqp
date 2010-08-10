@@ -7,7 +7,7 @@ has	%!attrs;
 has	@!children;
 has	$!node_type;
 
-method bad_attrs($item) {
+our method bad_attrs($item) {
 	my @bad;
 
 	for %!attrs -> $attr {
@@ -24,7 +24,7 @@ method bad_attrs($item) {
 	@bad;
 }
 
-method describe_children(@children = [ ]) {
+our method describe_children(@children = [ ]) {
 	@children.map: -> $kid {
 		if pir::isa($kid, 'Matcher') {
 			$kid.describe_self('');
@@ -40,13 +40,13 @@ method describe_children(@children = [ ]) {
 
 # Return a string suitable for use in an expression like:
 # Match failed. Expected [describe_self] but [describe_failure].
-method describe_failure($previous, $item) {
+our method describe_failure($previous, $item) {
 	my $descr := $previous ~ "was " ~ self.describe_node($item);
 
 	$descr;
 }
 
-method describe_hash(%hash) {
+our method describe_hash(%hash) {
 	%hash.keys.sort.map: -> $key {
 		my $value := %hash{$key};
 
@@ -64,7 +64,7 @@ method describe_hash(%hash) {
 	};
 }
 
-method describe_node($node) {
+our method describe_node($node) {
 	self.describe_type( pir::typeof__SP($node) )
 	~ '( '
 	~ cat(
@@ -76,7 +76,7 @@ method describe_node($node) {
 
 # Return a string suitable for use in an expression like:
 # Match failed. Expected [describe_self] but [describe_failure].
-method describe_self($previous) {
+our method describe_self($previous) {
 	my $descr := $previous ~ self.describe_type( ~$!node_type )
 	~ '( '
 	~ cat(
@@ -88,19 +88,19 @@ method describe_self($previous) {
 	$descr;
 }
 
-method describe_type($type) {
+our method describe_type($type) {
 	$type := $type.split('(')[0].split(';').pop.split('::').pop;
 	$type := pir::downcase__SS($type);
 }
 
-method _init_obj(*@children, *%attrs) {
+our method _init_obj(*@children, *%attrs) {
 	@!children := @children;
 	%!attrs := %attrs;
 	$!node_type := 'PCT::Node';
 	super();
 }
 
-method matches($item) {
+our method matches($item) {
 
 	if ! $item.isa: $!node_type
 		|| pir::elements__IP($item) < @!children.elems
@@ -119,7 +119,7 @@ method matches($item) {
 	1;
 }
 
-method node_type(*@value)	{ @value ?? ($!node_type := @value.shift) !! $!node_type; }
+our method node_type(*@value)	{ @value ?? ($!node_type := @value.shift) !! $!node_type; }
 
 module Matcher::PAST::Node;
 

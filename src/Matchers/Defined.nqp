@@ -17,7 +17,7 @@ sub _initload() {
 	Matcher::Factory::export_sub(Matcher::Defined::factory, :as('defined'));
 }
 
-method describe_self($description = '') {
+our method describe_self($description = '') {
 	$description ~ "a defined object";
 }
 
@@ -25,7 +25,7 @@ sub factory() {
 	Matcher::Defined.new;
 }
 
-method matches(*@value) {
+our method matches(*@value) {
 	unless +@value {
 		die('A value must be passed to matches($item)');
 	}

@@ -41,11 +41,11 @@ class Test::Mock::Parent {
 	method attr($value?) { $value.defined ?? ($!attr := $value) !! $!attr; }
 }
 
-method set_up() {
+our method set_up() {
 	$!sut := cuckoo( Test::Mock::Parent );
 }
 
-method test_calling() {
+our method test_calling() {
 	my $egg := $!sut.new;
 	my $aegg := calling($egg);
 
@@ -55,7 +55,7 @@ method test_calling() {
 		'A calling() egg should link to the same cuckoo as the original egg');
 }
 
-method test_calling_configures_antiphons() {
+our method test_calling_configures_antiphons() {
 	verify_that( 'Using a calling() egg sets up antiphons on the cuckoo' );
 	
 	my $egg := $!sut.new;
@@ -74,13 +74,13 @@ method test_calling_configures_antiphons() {
 		'foo(1) should return 1 even after other calls' );
 }
 
-method test_cuckoo() {
+our method test_cuckoo() {
 	assert_not_null( $!sut, 'cuckoo returns an object' );
 	assert_isa( $!sut, Cuculus::Canorus::Ovum, 'cuckoo returns an egg' );
 	assert_isa( $!sut, P6protoobject, 'the egg is a protoobject' );
 }
 
-method test_mock_class() {
+our method test_mock_class() {
 	my $obj := $!sut.new;
 	
 	assert_not_null( $obj,
@@ -91,7 +91,7 @@ method test_mock_class() {
 		'New object is a child class of mocked parent' );
 }
 
-method test_mock_objects_differ() {
+our method test_mock_objects_differ() {
 	verify_that( 'Two calls to .new produce separate cuckoo objects' );
 	
 	my $o1 := $!sut.new;
@@ -107,7 +107,7 @@ method test_mock_objects_differ() {
 		'Two .new objects should point to different cuckoos.' );	
 }
 
-method test_verify() {
+our method test_verify() {
 	my $egg := $!sut.new;
 	my $vegg := verify($egg);
 
@@ -117,7 +117,7 @@ method test_verify() {
 		'A verify() egg should link to the same cuckoo as the original egg');
 }
 
-method test_verify_configures_call_counter() {
+our method test_verify_configures_call_counter() {
 	my $egg := $!sut.new;
 	
 	$egg.foo('a');
@@ -125,7 +125,7 @@ method test_verify_configures_call_counter() {
 	verify( $egg ).foo('a');
 }
 
-method test_verify_never() {
+our method test_verify_never() {
 	my $egg := $!sut.new;
 	
 	$egg.foo(1);
@@ -137,7 +137,7 @@ method test_verify_never() {
 		{ verify( $egg, :never ).foo(2); });
 }
 
-method test_verify_was_called() {
+our method test_verify_was_called() {
 	my $egg := $!sut.new;
 	
 	$egg.foo(1);
@@ -150,7 +150,7 @@ method test_verify_was_called() {
 	verify( $egg ).foo(1).was_called: :thrice;
 }
 
-method test_verify_fails_never() {
+our method test_verify_fails_never() {
 	my $egg := $!sut.new;
 	
 	$egg.never_called;
@@ -159,7 +159,7 @@ method test_verify_fails_never() {
 		{ verify( $egg, :never ).never_called; });
 }
 
-method test_verify_never_fails() {
+our method test_verify_never_fails() {
 	my $egg := $!sut.new;
 	
 	$egg.never_called;
@@ -168,12 +168,12 @@ method test_verify_never_fails() {
 		{ verify_never( $egg ).never_called; });
 }
 
-method test_verify_once() {
+our method test_verify_once() {
 	$!sut.new;
 	verify( $!sut, :once ).new;
 }
 
-method test_verify_twice() {
+our method test_verify_twice() {
 	my $egg := $!sut.new;
 	
 	$egg.called_twice('a');
@@ -184,7 +184,7 @@ method test_verify_twice() {
 	verify( $egg ).called_twice('a').was_called: :twice;
 }
 
-method test_verify_thrice() {
+our method test_verify_thrice() {
 	my $egg := $!sut.new;
 	
 	my $count := 0;
@@ -206,7 +206,7 @@ class Test::VtableInits {
 	}
 }
 
-method test_vtable_init() {
+our method test_vtable_init() {
 	verify_that( 'A class with init:vtable method counts calls made inside the init' );
 	
 	$!sut := cuckoo( Test::VtableInits );

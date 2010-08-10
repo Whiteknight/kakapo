@@ -6,7 +6,7 @@ module Matcher::TrueFalse;
 
 has $!expected;
 
-method describe_self($previous? = '') {
+our method describe_self($previous? = '') {
 	$previous ~ ($!expected
 		?? 'a true value'
 		!! 'a false value');
@@ -15,16 +15,16 @@ method describe_self($previous? = '') {
 sub factory_false()			{ Matcher::TrueFalse.new(:false); }
 sub factory_true()			{ Matcher::TrueFalse.new(:true); }
 
-method false($ignored?) {
+our method false($ignored?) {
 	$!expected := 0;
 }
 
-method matches($item) {
+our method matches($item) {
 	$item
 		?? $!expected
 		!! !$!expected;
 }
 
-method true($ignored?) {
+our method true($ignored?) {
 	$!expected := 1;
 }

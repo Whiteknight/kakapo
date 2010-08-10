@@ -20,7 +20,7 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method suite() {
+our method suite() {
 	my @sub_suites := <
 		Assertions
 		Loader

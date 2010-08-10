@@ -20,7 +20,7 @@ INIT {
 
 TEST_MAIN();
 
-method test_match() {
+our method test_match() {
 	my $sut := Matcher::Defined.new;
 
 	my $x := 1;
@@ -33,7 +33,7 @@ method test_match() {
 	assert_match( $x, $sut, 'RPA should be defined' );
 }
 
-method test_nonmatch() {
+our method test_nonmatch() {
 	my $sut := Matcher::Defined.new;
 
 	my $x := pir::new__ps('Undef');
@@ -41,7 +41,7 @@ method test_nonmatch() {
 	assert_not_match( $x, $sut, 'Undef should not match');
 }
 
-method test_new() {
+our method test_new() {
 	my $sut := Matcher::Defined.new;
 	assert_isa($sut, 'Matcher::Defined', 'New should return the right type');
 }

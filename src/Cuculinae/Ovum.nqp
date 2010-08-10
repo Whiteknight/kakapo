@@ -20,7 +20,7 @@ module Cuculus::Canorus::Ovum::_;
 # this is NOT REALLY A METHOD on this class - it is a method on the Cuculus::Egg 
 # class, and C< self > reflects that, as do the attributes.
 # 
-method VTABLE_find_method($name) {
+our method VTABLE_find_method($name) {
 	has &!CUCULUS_BEHAVIOR;
 	has $!CUCULUS_CANORUS;
 
@@ -52,7 +52,7 @@ method VTABLE_find_method($name) {
 	&closure;
 }
 
-method pop_inits() {
+our method pop_inits() {
 	has	&!CUCULUS_BEHAVIOR;
 	has	$!CUCULUS_CANORUS;
 	

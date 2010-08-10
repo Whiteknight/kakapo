@@ -29,7 +29,7 @@ our method main() {
 
 our method name($value?)	{ $value.defined ?? ($!name := $value) !! $!name; }
 
-method run($result?) {
+our method run($result?) {
 	unless $result.defined {
 		$result := self.default_result;
 	}
@@ -49,11 +49,11 @@ sub sort_cmp($a, $b) {
 	$a.name lt $b.name ?? -1 !! 1;
 }
 	
-method sort() {
+our method sort() {
 	self.members.sort(UnitTest::Suite::sort_cmp);
 	self;
 }
 
-method suite() {
+our method suite() {
 	self;
 }

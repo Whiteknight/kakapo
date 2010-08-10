@@ -23,19 +23,19 @@ sub _initload() {
 	Class::multi_method($class_name, 'matches_typesafe', :starting_with('_match_'));
 }
 
-method describe_failure_typesafe($item, $description) {
+our method describe_failure_typesafe($item, $description) {
 	return $description 
 		~ $item.elems ~ " elements";
 }
 
-method describe_self($description) {
+our method describe_self($description) {
 	return $description 
 		~ self.value ~ " elements";
 }
 	
 sub factory($count)					{ Matcher::Elements.new($count); }
 
-method init(@children, %attributes) {
+our method init(@children, %attributes) {
 	Matcher::init(self, @children, %attributes);
 	
 	unless +@children {
@@ -45,14 +45,14 @@ method init(@children, %attributes) {
 	self.value(0 + @children.shift);
 }
 
-method match_array($item) {
+our method match_array($item) {
 	return $item.elems == self.value;
 }
 
-method _match_FixedPMCArray($item)		{ self.match_array($item); }
-method _match_FixedStringArray($item)		{ self.match_array($item); }
-method _match_Hash($item)			{ self.match_array($item); }
-method _match_ResizablePMCArray($item)	{ self.match_array($item); }
-method _match_ResizableStringArray($item)	{ self.match_array($item); }
+our method _match_FixedPMCArray($item)		{ self.match_array($item); }
+our method _match_FixedStringArray($item)		{ self.match_array($item); }
+our method _match_Hash($item)			{ self.match_array($item); }
+our method _match_ResizablePMCArray($item)	{ self.match_array($item); }
+our method _match_ResizableStringArray($item)	{ self.match_array($item); }
 
-method value(*@value)				{ self._ATTR('value', @value); }
+our method value(*@value)				{ self._ATTR('value', @value); }

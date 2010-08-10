@@ -25,7 +25,7 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method test_is_equal() {
+our method test_is_equal() {
 	verify_that( "'is_equal' performs correctly" );
 
 	my $h1 := $!class.new;
@@ -45,7 +45,7 @@ method test_is_equal() {
 	assert_true(%h3.is_equal($h1), 'Float 1.0 equals 1');
 }
 
-method test_merge() {
+our method test_merge() {
 	my %a := Hash.new(	:a(1),	:b(1),	:c(1) );
 	my %b := Hash.new( :a(2),	:d(2),	:e(2) );
 	my %c := Hash.new( :b(3),	:d(3),	:f(3) );
@@ -69,7 +69,7 @@ method test_merge() {
 		'Leftmost value takes precedence' );
 }
 
-method test_merge_into() {
+our method test_merge_into() {
 
 	my %a := Hash.new(	:a(1),	:b(1),	:c(1) );
 	my %b := Hash.new( :a(2),	:d(2),	:e(2) );
@@ -94,7 +94,7 @@ method test_merge_into() {
 		'Leftmost value takes precedence' );
 }
 
-method test_merge_right() {
+our method test_merge_right() {
 	my %a := Hash.new(	:a(1),	:b(1),	:c(1) );
 	my %b := Hash.new( :a(2),	:d(2),	:e(2) );
 	my %c := Hash.new( :b(3),	:d(3),	:f(3) );
@@ -118,7 +118,7 @@ method test_merge_right() {
 		'Rightmost value takes precedence' );
 }
 
-method test_new() {
+our method test_new() {
 	verify_that( "'new' returns an object of the right type" );
 	my $object := $!class.new;
 

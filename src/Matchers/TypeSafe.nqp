@@ -12,7 +12,7 @@ sub _initload() {
 	extends( 'Matcher' );	
 }
 
-method describe_failure($item, $description) {
+our method describe_failure($item, $description) {
 	my $failure;
 	
 	if Opcode::isnull($item) {
@@ -28,11 +28,11 @@ method describe_failure($item, $description) {
 	return $description ~ $failure;
 }
 
-method describe_failure_typesafe($item, $description) {
+our method describe_failure_typesafe($item, $description) {
 	return $description ~ "was: " ~ $item;
 }
 	
-method matches($item) {
+our method matches($item) {
 	self.wrong_type(0);
 	
 	if ! Opcode::isnull($item) {
@@ -42,9 +42,9 @@ method matches($item) {
 	return 0;
 }	
 
-method matches_typesafe($item) {
+our method matches_typesafe($item) {
 	self.wrong_type(1);
 	return 0;
 }
 
-method wrong_type(*@value)		{ self._ATTR('wrong_type', @value); }
+our method wrong_type(*@value)		{ self._ATTR('wrong_type', @value); }

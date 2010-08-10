@@ -20,7 +20,7 @@ INIT {
 
 TEST_MAIN();
 
-method test_match() {
+our method test_match() {
 	my $sut := Matcher::AnyOne.new;
 
 	$sut.children(
@@ -31,7 +31,7 @@ method test_match() {
 	assert_match('string', $sut, "Should match the is-string child, but not both");
 }
 
-method test_nonmatch() {
+our method test_nonmatch() {
 	my $sut := Matcher::AnyOne.new;
 
 	$sut.children(
@@ -42,7 +42,7 @@ method test_nonmatch() {
 	want_fail('Valid value should not match either is-null child', { assert_match('foo', $sut, 'should not match'); });
 }
 
-method test_new() {
+our method test_new() {
 	my $sut := Matcher::AnyOne.new;
 	assert_isa($sut, 'Matcher::AnyOne', 'New should return the right type');
 }

@@ -15,9 +15,9 @@ sub _initload() {
 	use( UnitTest::Assertions );
 }
 
-method conditions($value?)	{ %!conditions := $value.defined ?? $value !! %!conditions; }
+our method conditions($value?)	{ %!conditions := $value.defined ?? $value !! %!conditions; }
 
-method verify($cuckoo) {
+our method verify($cuckoo) {
 	my $matcher := $!sig_matcher;
 	my $count := $!match_count := 0;
 
@@ -28,9 +28,9 @@ method verify($cuckoo) {
 	self.was_called;
 }
 
-method sig_matcher($value?)	{ $value.defined ?? ($!sig_matcher := $value) !! $!sig_matcher; }
+our method sig_matcher($value?)	{ $value.defined ?? ($!sig_matcher := $value) !! $!sig_matcher; }
 
-method was_called(*%named) {
+our method was_called(*%named) {
 	my %match := Hash::merge(%!conditions, %named);
 	
 	unless %match.contains: <times> {

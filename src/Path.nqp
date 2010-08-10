@@ -11,11 +11,11 @@ INIT {
 	);
 }
 
-method get_osname_map() {
+our method get_osname_map() {
 	our %_Osname_class_map;
 }
 
-method _init_obj(*@pos, *%named) {
+our method _init_obj(*@pos, *%named) {
 	my %map := self.get_osname_map();
 	my $osname := 'DEFAULT';
         try {
@@ -120,7 +120,7 @@ our method elements() {
 our method exists()			{ $!filesystem.exists(self); }
 
 # NB: This is called by the 'get_string' vtable provided by P6object
-method get_string() {
+our method get_string() {
 	my $slash := self.directory_separator;
 
 	self.is_absolute

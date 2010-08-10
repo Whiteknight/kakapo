@@ -20,13 +20,13 @@ INIT {
 
 TEST_MAIN();
 
-method test_describe_failure() {
+our method test_describe_failure() {
 	my $sut := Matcher::Type.new( :class(Boolean) );
 	assert_equal( $sut.describe_failure('', 'a string'), "had type 'String'",
 		'Type matcher should describe failures okay');
 }
 
-method test_describe_self() {
+our method test_describe_self() {
 	my $sut := Matcher::Type.new( :class(Boolean) );
 	assert_equal( $sut.describe_self, 'an object with type Boolean', 
 		'Type matcher should describe-self okay');
@@ -37,14 +37,14 @@ method test_describe_self() {
 	
 }
 
-method test_match() {
+our method test_match() {
 	my $sut := Matcher::Type.new( :class( 'Boolean' ) );
 	my $obj := pir::new__ps('Boolean');
 	
 	assert_match( $obj, $sut, 'Boolean value should match :class(Boolean)');
 }
 
-method test_nonmatch() {
+our method test_nonmatch() {
 	my $sut := Matcher::Type.new( :class( 'Boolean' ) );
 	my $obj := 'a string';
 	
@@ -52,7 +52,7 @@ method test_nonmatch() {
 		{ assert_match( $obj, $sut, 'should fail'); });
 }
 
-method test_new() {
+our method test_new() {
 	my $sut := Matcher::Type.new();
 	assert_isa($sut, 'Matcher::Type', 'Matcher should be of correct type.' );
 }
@@ -67,7 +67,7 @@ class Test::TypeFactory {
 	}
 }
 
-method test_factory() {
+our method test_factory() {
 	my $obj := Test::TypeFactory.new;
 
 	assert_isa( $obj.foo, Matcher::Type, 'Should return a configured Type matcher.' );

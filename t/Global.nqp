@@ -26,14 +26,14 @@ sub MAIN() {
 	$proto.suite.run;
 }
 
-method set_up() {
+our method set_up() {
 	self.namespace(pir::get_namespace__P());
 }
 
 # NOTE: While Testcase runs these tests with a new object, the namespace is persistent. So
 # be sure to allow for sub-namespaces, symbols, and names carrying over from test to test.
 
-method test_export_adds_shared_object_to_correct_subnamespace() {
+our method test_export_adds_shared_object_to_correct_subnamespace() {
 	my $id := 'test1';
 	my $nsp := self.namespace;
 
@@ -54,7 +54,7 @@ method test_export_adds_shared_object_to_correct_subnamespace() {
 	}
 }
 
-method test_export_gets_correct_object() {
+our method test_export_gets_correct_object() {
 	my $id := 'test2';
 	my $nsp := self.namespace;
 	
@@ -70,7 +70,7 @@ method test_export_gets_correct_object() {
 	}	
 }
 
-method test_export_to_default_tag() {
+our method test_export_to_default_tag() {
 	my $nsp := self.namespace;
 	
 	fail_if( $nsp<EXPORT><DEFAULT><bear>.defined,
@@ -83,7 +83,7 @@ method test_export_to_default_tag() {
 		"Symbol not exported to correct name in DEFAULT");
 }
 
-method test_multiple_export_to_tag() {
+our method test_multiple_export_to_tag() {
 	my $id := 'test3';
 	my $nsp := self.namespace;
 
@@ -102,7 +102,7 @@ method test_multiple_export_to_tag() {
 	}
 }
 
-method test_exports_go_to_all() {
+our method test_exports_go_to_all() {
 	my $nsp := self.namespace;
 	
 	our $v41 := 41;
@@ -117,14 +117,14 @@ method test_exports_go_to_all() {
 		"Tagged export not installed in all");
 }
 
-method test_registering_global_from_constant() {
+our method test_registering_global_from_constant() {
 	Global::register_global('ONE', 1);
 	
 	fail_unless(Global::ONE == 1,
 		"Constant 1 not globally registered");
 }
 
-method test_registering_global_from_var() {
+our method test_registering_global_from_var() {
 	my $x := 2;
 
 	Global::register_global('TWO', $x);
@@ -135,7 +135,7 @@ method test_registering_global_from_var() {
 		"Variable not globally registered");
 }
 
-method test_using_registered_global() {
+our method test_using_registered_global() {
 	my $eleven := 10;
 	
 	Global::register_global('$X', $eleven);
@@ -154,7 +154,7 @@ method test_using_registered_global() {
 		"Global variable no longer original pmc");
 }
 
-method test_registering_in_other_namespace() {
+our method test_registering_in_other_namespace() {
 	our $y := 'wye';
 	Global::register_global('Y', $y, :namespace('OtherGlobal'));
 	
@@ -183,14 +183,14 @@ module Dummy {
 	}
 }
 
-method test_use_with_tag() {
+our method test_use_with_tag() {
 	use( 'Dummy', :tags('BEAR'));
 	
 	fail_unless(edward() eq 'oh, bother',
 		"Use w/ tag gets wrong symbol");
 }
 
-method test_use_default() {
+our method test_use_default() {
 	our $MMX;
 	
 	use('Dummy');
@@ -202,7 +202,7 @@ method test_use_default() {
 		'Plain use did not import foo() correctly');
 }
 
-method test_use_by_name() {
+our method test_use_by_name() {
 	use('Dummy', :symbols('lucifer'));
 	fail_unless(lucifer() eq 'smoking!',
 		'Use by name of lucifer did not work correctly');

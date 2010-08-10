@@ -28,7 +28,7 @@ class Dummy::ParseMultisig {
 	method f3__bar__Dummy_ParseMultisig() { 1 }
 }
 
-method test_parse_multisig() {
+our method test_parse_multisig() {
 	my @methods := P6metaclass.get_parrotclass( Dummy::ParseMultisig ).inspect('methods').keys.sort;
 
 	my %expected;
@@ -51,7 +51,7 @@ class Dummy::DefineMultisub {
 	sub b() { 2 }
 }
 
-method test_define_multisub_sub() {
+our method test_define_multisub_sub() {
 	verify_that( 'Plain old define_multisub creates a multi-sub' );
 	
 	Parrot::define_multisub('msub', 
@@ -83,7 +83,7 @@ class Dummy::DefineMultimethod {
 	}
 }
 
-method test_define_multisub_method() {
+our method test_define_multisub_method() {
 	verify_that( 'define_multisub with :method creates a multi-method' );
 	Parrot::define_multisub('attr',
 		[ 
@@ -126,7 +126,7 @@ class Dummy::MultiSignatureDecoding {
 	}
 }
 
-method test_multi_signature_decode() {
+our method test_multi_signature_decode() {
 	Parrot::define_multisub('matter', :method,
 		:namespace(Dummy::MultiSignatureDecoding),
 		[
@@ -166,7 +166,7 @@ class Dummy::MultiStartingWith {
 	}
 }
 
-method test_multi_starting_with() {
+our method test_multi_starting_with() {
 	my $obj := Dummy::MultiStartingWith.new;
 
 	$obj.mutt( 1 );

@@ -20,19 +20,19 @@ INIT {
 
 TEST_MAIN();
 
-method test_match() {
+our method test_match() {
 	my $sut := Matcher::IsAType.new: :class('String');
 	
 	assert_match( 'foo', $sut, 
 		'Literal string should match isatype String');
 }
 
-method test_new() {
+our method test_new() {
 	my $sut := Matcher::IsAType.new;
 	assert_isa($sut, 'Matcher::IsAType', 'New should return the right type');
 }
 
-method test_nonmatch() {
+our method test_nonmatch() {
 	my $sut := Matcher::IsAType.new: :class('Boolean');
 	
 	want_fail('String should not match type Boolean',
@@ -49,7 +49,7 @@ class Dummy::TestSugar {
 	}
 }
 
-method test_sugar() {
+our method test_sugar() {
 	my $dummy := Dummy::TestSugar.new;
 	
 	my $sut := $dummy.sugar;

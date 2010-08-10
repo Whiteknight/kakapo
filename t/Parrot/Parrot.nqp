@@ -35,7 +35,7 @@ class Test::Caller {
 	method with_arg($depth) { Parrot::caller($depth); }
 }
 
-method test_caller() {
+our method test_caller() {
 	my $tc := Test::Caller.new;
 	
 	assert_same( Test::Caller::with_arg, $tc.with_arg(0),
@@ -54,7 +54,7 @@ method test_caller() {
 class Test::New {
 }
 
-method test_new() {
+our method test_new() {
 	my $test := Parrot::new('Test::New');
 
 	assert_not_null( $test,  'Parrot::new should return new object' );
@@ -67,7 +67,7 @@ sub get_global_testSetGlobal() {
 	};
 }
 
-method test_set_hll_global() {
+our method test_set_hll_global() {
 	assert_null( get_global_testSetGlobal(),
 		'Global should not be set yet' );
 	

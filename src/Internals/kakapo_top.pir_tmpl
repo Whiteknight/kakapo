@@ -2,6 +2,8 @@
 
 .loadlib 'debug_ops'
 .loadlib 'io_ops'
+.loadlib 'math_ops'
+
 .include 'iglobals.pasm'
 .include 'interpinfo.pasm'
 .include 'sysinfo.pasm'

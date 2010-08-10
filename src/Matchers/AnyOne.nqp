@@ -18,11 +18,11 @@ sub _initload() {
 }
 
 
-method describe_failure($item, $description = '') {
+our method describe_failure($item, $description = '') {
 	$description ~ "was $item";
 }
 
-method describe_self($description) {
+our method describe_self($description) {
 	if @!children {
 		my @list := @!children.map( -> $kid { $kid.describe_self; });
 		my $last := @list.pop;

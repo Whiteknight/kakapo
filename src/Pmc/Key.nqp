@@ -25,7 +25,7 @@ sub _pre_initload() {
 	#$from_nsp.export_to: $to_nsp, [<merge_keys> ];
 }
 
-method __dump($dumper, $label) {
+our method __dump($dumper, $label) {
 	print( pir::get_repr__SP(self) );
 }
 
@@ -65,11 +65,11 @@ sub create_key(*@parts, *%opts) {
 	$key;
 }
 
-method new(*@parts, *%named) {
+our method new(*@parts, *%named) {
 	create_key(|@parts, |%named);
 }
 
-method push($obj) {
+our method push($obj) {
 	pir::push__vPP(self, $obj);
 	self;
 }

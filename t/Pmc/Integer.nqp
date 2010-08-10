@@ -19,14 +19,14 @@ INIT {
 
 TEST_MAIN();
 
-method test_int_array() {
+our method test_int_array() {
 	my $x := [1, 2, 3];
 	
 	assert_equal( 3, int($x),
 		'int(3-elt array) should be 3');
 }
 
-method test_int_hash() {
+our method test_int_hash() {
 	my $x := hash( :a<1>, :b<2>, :c<3>, :d<4>);
 	
 	assert_equal( 4, int($x),

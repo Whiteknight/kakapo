@@ -4,7 +4,7 @@
 # Matcher that matches null values. Renamed to IsNull due to TT#1492
 module Matcher::IsNull;
 
-method describe_self($description = '') {
+our method describe_self($description = '') {
 	$description ~ "a null value";
 }
 
@@ -12,7 +12,7 @@ sub factory() {
 	Matcher::IsNull.new;
 }
 
-method matches(*@args) {
+our method matches(*@args) {
 
 	# NB: Be CAREFUL! It's *hard* to get NQP to leave the nulls alone. Double-check the
 	# generated pir if you change this.

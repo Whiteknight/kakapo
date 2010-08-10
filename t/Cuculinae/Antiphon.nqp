@@ -26,7 +26,7 @@ sub MAIN() {
 	$proto.suite.run;
 }
 
-method test_new() {
+our method test_new() {
 	verify_that( 'SUT is created okay, right class.' );
 	
 	my $sut := Cuculus::Antiphon.new;
@@ -35,7 +35,7 @@ method test_new() {
 		'SUT should be populated with object of the right class.');
 }
 
-method test_match() {
+our method test_match() {
 	my $sut := Cuculus::Antiphon.new(:sig_matcher(pass()));	
 	my $sig := CallSignature.new(:object('obj'), :method('meth'));
 	
@@ -43,7 +43,7 @@ method test_match() {
 		'Should match any signature');
 }
 
-method test_match_fails() {
+our method test_match_fails() {
 	my $sut := Cuculus::Antiphon.new(:sig_matcher(fail()));
 	my $sig := CallSignature.new(:object('obj'), :method('meth'));
 	
@@ -51,7 +51,7 @@ method test_match_fails() {
 		'Should always fail');
 }
 
-method test_invoke_returns() {
+our method test_invoke_returns() {
 	my $sut := Cuculus::Antiphon.new(:sig_matcher(pass()));
 	
 	$sut.will_return('abc');
@@ -63,7 +63,7 @@ method test_invoke_returns() {
 class Exception::TestInvoke is Exception::Wrapper {
 }
 
-method test_invoke_throws() {
+our method test_invoke_throws() {
 	my $sut := Cuculus::Antiphon.new(:sig_matcher(pass()));
 	
 	$sut.will_throw(Exception::TestInvoke.new);
@@ -72,7 +72,7 @@ method test_invoke_throws() {
 		{ $sut.invoke(CallSignature.new); });
 }
 
-method test_invoke_side_effects() {
+our method test_invoke_side_effects() {
 	my $sut := Cuculus::Antiphon.new;
 	
 	my $x := 0;

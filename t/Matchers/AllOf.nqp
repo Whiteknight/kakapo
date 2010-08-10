@@ -20,7 +20,7 @@ INIT {
 
 TEST_MAIN();
 
-method test_match() {
+our method test_match() {
 	my $sut := Matcher::AllOf.new;
 
 	$sut.children(
@@ -31,7 +31,7 @@ method test_match() {
 	assert_match(NoSuchSymbol, $sut, "Should match both is-null children");
 }
 
-method test_nonmatch() {
+our method test_nonmatch() {
 	my $sut := Matcher::AllOf.new;
 
 	$sut.children(
@@ -42,7 +42,7 @@ method test_nonmatch() {
 	want_fail('Valid value should not match either is-null child', { assert_match('foo', $sut, 'should not match'); });
 }
 
-method test_new() {
+our method test_new() {
 	my $sut := Matcher::AllOf.new;
 	assert_isa($sut, 'Matcher::AllOf', 'New should return the right type');
 }

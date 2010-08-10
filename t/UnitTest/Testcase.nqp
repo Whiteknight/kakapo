@@ -22,7 +22,7 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method main() {
+our method main() {
 	my @tests := [
 		'test_error', 
 		'test_error_and_teardown_fails',
@@ -59,7 +59,7 @@ class Test::UnitTest::Error
 	}
 }
 
-method test_error() {
+our method test_error() {
 	verify_that("A thrown exception (an error) bumps both test-count and error-count");
 	
 	self.verify_error(Test::UnitTest::Error.new);
@@ -83,7 +83,7 @@ class Test::UnitTest::ErrorAndTeardownFails
 	}
 }
 
-method test_error_and_teardown_fails() {
+our method test_error_and_teardown_fails() {
 	verify_that("When test *and* teardown code both throw exceptions, error-count only bumps +1");
 	
 	my $test := Test::UnitTest::ErrorAndTeardownFails.new;
@@ -105,7 +105,7 @@ class Test::UnitTest::Failure
 	}
 }
 
-method test_failure() {
+our method test_failure() {
 	verify_that("When a failure occurs, test-count and failure-count bump");
 	
 	self.verify_failure(Test::UnitTest::Failure.new);
@@ -119,7 +119,7 @@ class Test::UnitTest::Success
 	}
 }
 
-method test_success() {
+our method test_success() {
 	verify_that("Success bumps test-count and nothing more.");
 	
 	self.verify_success(Test::UnitTest::Success.new);
@@ -133,7 +133,7 @@ class Test::UnitTest::SetupFails
 	}
 }
 
-method test_setup_fails() {
+our method test_setup_fails() {
 	verify_that("Setup error bumps test-count, error-count");
 	
 	self.verify_error(Test::UnitTest::SetupFails.new);
@@ -149,7 +149,7 @@ class Test::UnitTest::DummySuite
 	method test() { 5; }
 }
 
-method test_suite() {
+our method test_suite() {
 	verify_that(".suite method returns a populated suite");
 	
 	my $suite := Test::UnitTest::DummySuite.suite();
@@ -167,13 +167,13 @@ class Test::UnitTest::TeardownFails
 	}
 }
 
-method test_teardown_fails() {
+our method test_teardown_fails() {
 	verify_that("Teardown error bumps test-count, error-count");
 	
 	self.verify_error(Test::UnitTest::TeardownFails.new);
 }
 	
-method verify_error($test) {
+our method verify_error($test) {
 	my $result := $test.run();
 	
 	unless $result.run_count		== 1 { fail("Expected 1 tests run"); }
@@ -181,7 +181,7 @@ method verify_error($test) {
 	unless $result.failure_count	== 0 { fail("Expected 0 failures"); }
 }
 		
-method verify_failure($test) {
+our method verify_failure($test) {
 	my $result := $test.run();
 	
 	unless $result.run_count		== 1 { fail("Expected 1 tests run"); }
@@ -189,7 +189,7 @@ method verify_failure($test) {
 	unless $result.failure_count	== 1 { fail("Expected 1 failures"); }
 }
 		
-method verify_success($test) {
+our method verify_success($test) {
 	my $result := $test.run();
 	
 	unless $result.run_count		== 1 { fail("Expected 1 tests run"); }

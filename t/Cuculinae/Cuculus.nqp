@@ -40,7 +40,7 @@ sub MAIN() {
 
 
 # For named mocks, check the mock is installed correctly.
-method check_class_namespace($class, $namespace) {
+our method check_class_namespace($class, $namespace) {
 	my $parrot_class := P6metaclass.get_parrotclass($class);
 
 	my $proto_obj := Parrot::get_hll_global($namespace);
@@ -52,7 +52,7 @@ method check_class_namespace($class, $namespace) {
 		'Class should be linked to $namespace namespace' );
 }
 
-method check_created_class($class, :@parents) {
+our method check_created_class($class, :@parents) {
 	my $parrot_class := P6metaclass.get_parrotclass($class);
 
 	# Check parents against specified list. Stringify to get name, transform "A;B" style into A::B, and sort.
@@ -76,25 +76,25 @@ method check_created_class($class, :@parents) {
 		'$!CUCULUS_CANORUS should point back to cuckoo object that generated the class');
 }
 
-method set_up() {
+our method set_up() {
 	$!sut := Cuculus::Canorus.new;
 }
 
-method test_new() {
+our method test_new() {
 	verify_that( 'SUT is created okay, right class.' );
 
 	assert_isa( $!sut, 'Cuculus::Canorus',
 		'SUT should be populated with object of the right class.');
 }
 
-method test_mock_class() {
+our method test_mock_class() {
 	verify_that( 'mock_class() creates an anonymous class based on P6object' );
 
 	my $class := $!sut.mock_class();
 	self.check_created_class($class, :parents( [ 'Cuculus::Canorus::Ovum' ] ));
 }
 
-method test_mock_class_named() {
+our method test_mock_class_named() {
 	verify_that( 'mock_class(:named("Foo::Bar") creates a class in the right namespace' );
 
 	my $class := $!sut.mock_class(:named('Foo::Bar'));
@@ -103,7 +103,7 @@ method test_mock_class_named() {
 	self.check_class_namespace($class, 'Foo::Bar');
 }
 
-method test_mock_object_isa_parent() {
+our method test_mock_object_isa_parent() {
 	my $class := $!sut.mock_class('Test::Mock::Parent');
 	my $obj := $class.new;
 	
@@ -113,14 +113,14 @@ method test_mock_object_isa_parent() {
 		'Mock objects should be isa parent class');		
 }
 
-method test_mock_subclass() {
+our method test_mock_subclass() {
 	verify_that( 'mock_class(parent_class) creates an anonymous class with the right parents' );
 
 	my $class := $!sut.mock_class('Test::Mock::Parent');
 	self.check_created_class($class, :parents(<Cuculus::Canorus::Ovum Test::Mock::Parent>));
 }
 
-method test_mock_subclass_named() {
+our method test_mock_subclass_named() {
 	verify_that( 'mock_class(parent_class, :named("Foo::Baz")) has right parents, right namespace' );
 	
 	my $class := $!sut.mock_class('Test::Mock::Parent', :named('Foo::Baz'));
@@ -128,7 +128,7 @@ method test_mock_subclass_named() {
 	self.check_class_namespace($class, 'Foo::Baz');
 }
 
-method test_new_egg() {
+our method test_new_egg() {
 	$!sut.class('Cuculus::Canorus::Ovum');
 	my $egg := $!sut.new_egg();
 

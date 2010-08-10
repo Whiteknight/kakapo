@@ -5,7 +5,7 @@ module Class;
 # Methods for PMC class C< Class >. Note that NPQ classes are built using the P6object
 # library, which wraps C< Class > in considerable layers. 
 
-method __dump($dumper, $label) {
+our method __dump($dumper, $label) {
 	my @results		:= Parrot::call_tuple_method($dumper, 'newIndent');
 	my $subindent	:= "\n" ~ @results.shift;
 	my $indent		:= "\n" ~ @results.shift;

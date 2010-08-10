@@ -16,32 +16,32 @@ Q:PIR {
 
 #method stdhandle($fileno, $newhandle?)		- built-in
 
-method argv_list() {
+our method argv_list() {
 	my $result := Q:PIR { %r = self[ .IGLOBALS_ARGV_LIST ] };
 	return $result;
 }
 
-method classname_hash() {
+our method classname_hash() {
 	my $result := Q:PIR { %r = self[ .IGLOBALS_CLASSNAME_HASH ] };
 	return $result;
 }
 
-method compreg_hash() {
+our method compreg_hash() {
 	my $result := Q:PIR { %r = self[ .IGLOBALS_COMPREG_HASH ] };
 	return $result;
 }
 
-method config_hash() {
+our method config_hash() {
 	my $result := Q:PIR { %r = self[ .IGLOBALS_CONFIG_HASH ] };
 	return $result;
 }
 
-method dyn_libs() {
+our method dyn_libs() {
 	my $result := Q:PIR { %r = self[ .IGLOBALS_DYN_LIBS ] };
 	return $result;
 }
 
-method executable() {
+our method executable() {
 	my $result := Q:PIR { %r = self[ .IGLOBALS_EXECUTABLE ] };
 	return $result;
 }
@@ -50,22 +50,22 @@ sub get_interp() {
 	return Opcode::getinterp();
 }
 
-method lib_paths() {
+our method lib_paths() {
 	my $result := Q:PIR { %r = self[ .IGLOBALS_LIB_PATHS ] };
 	return $result;
 }
 
-method nci_funcs() {
+our method nci_funcs() {
 	my $result := Q:PIR { %r = self[ .IGLOBALS_NCI_FUNCS ] };
 	return $result;
 }
 
-method pbc_libs() {
+our method pbc_libs() {
 	my $result := Q:PIR { %r = self[ .IGLOBALS_PBC_LIBS ] };
 	return $result;
 }
 
-method iglobals_size() {
+our method iglobals_size() {
 	my $result := Q:PIR { %r = box .IGLOBALS_SIZE] };
 	return $result;
 }

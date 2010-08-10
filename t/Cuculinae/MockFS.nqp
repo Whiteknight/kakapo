@@ -23,11 +23,11 @@ INIT {
 # Run the MAIN for this class.
 Opcode::get_root_global(pir::get_namespace__P().get_name).MAIN;
 
-method set_up() {
+our method set_up() {
 	$!sut := Cuculus::MockFS.new;
 }
 
-method test_new() {
+our method test_new() {
 	assert_not_null( $!sut,
 		'.new should return a valid object' );
 
@@ -41,7 +41,7 @@ method test_new() {
 		'Cwd path should point to /' );
 }
 
-method test_mkpath() {
+our method test_mkpath() {
 	assert_false( $!sut.exists( '/tmp/xxx' ),
 		'/tmp/xxx should not exist on new mockfs' );
 	
@@ -51,7 +51,7 @@ method test_mkpath() {
 		'/tmp/xxx should exist after mkpath' );
 }
 
-method test_add_entry() {
+our method test_add_entry() {
 	my $path_str := '/tmp/xxx/foo.txt';
 	
 	$!sut.add_entry($path_str, :contents("Howdy\n"), :type(<file>));
@@ -60,7 +60,7 @@ method test_add_entry() {
 		"$path_str should exist after add_entry" );
 }
 
-method test_add_entry_relative() {
+our method test_add_entry_relative() {
 	my $path_str := 'file.c=';
 	
 	# Confirm that relative paths work.
@@ -69,7 +69,7 @@ method test_add_entry_relative() {
 		"$path_str should exist after add_entry" );	
 }
 
-method test_add_entry_defaults() {
+our method test_add_entry_defaults() {
 	verify_that( 'Add_entry uses some sane default values' );
 
 	my $path_str := 'new_entry';
@@ -82,7 +82,7 @@ method test_add_entry_defaults() {
 		'Entry should be empty by default' );
 }
 
-method test_has_type() {
+our method test_has_type() {
 	$!sut.add_entry: '/etc/motd', type => 'file';
 	$!sut.add_entry: '/dev/null', type => 'device';
 	$!sut.add_entry: '/usr/bin', type => 'link';
@@ -101,7 +101,7 @@ method test_has_type() {
 	
 }
 
-method test_get_contents() {
+our method test_get_contents() {
 	$!sut.add_entry: '/etc/motd', type => 'file', contents => "Hello, world\n";
 	$!sut.add_entry: '/dev/null', type => 'device';
 	$!sut.add_entry: '/usr/bin', type => 'link';

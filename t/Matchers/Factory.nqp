@@ -38,7 +38,7 @@ sub foo() {
 	'Pass!'
 }
 
-method test_export_sub() {
+our method test_export_sub() {
 	my $sut := Test::ExportSub.new();
 	
 	try {

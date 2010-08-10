@@ -6,7 +6,7 @@ module Matcher::PassFail;
 
 has $!returning;
 
-method describe_self($previous? = '') {
+our method describe_self($previous? = '') {
 	$previous ~ ($!returning
 		?? 'a "pass," always'
 		!! 'a "fail," always');
@@ -14,7 +14,7 @@ method describe_self($previous? = '') {
 
 sub factory_fail()		{ Matcher::PassFail.new(:fail); }
 sub factory_pass()		{ Matcher::PassFail.new(:pass); }
-method matches($item)	{ $!returning; }
+our method matches($item)	{ $!returning; }
 
-method pass($ignore)	{ $!returning := 1; }
-method fail($ignore)		{ $!returning := 0; }
+our method pass($ignore)	{ $!returning := 1; }
+our method fail($ignore)		{ $!returning := 0; }

@@ -31,7 +31,7 @@ class Dummy::Accessors {
 	}
 }
 
-method test_accessors() {
+our method test_accessors() {
 	my $dummy := Dummy::Accessors.new;
 
 	assert_throws_nothing( 'Accessor functions should be defined for public by default',
@@ -50,7 +50,7 @@ class Dummy::Private {
 	INIT { auto_accessors(:private); }
 }
 
-method test_auto_accessors_private() {
+our method test_auto_accessors_private() {
 	my $dummy := Dummy::Private.new;
 
 	assert_throws_nothing( 'Accessor functions should be defined for public by default',
@@ -65,7 +65,7 @@ class Dummy::Backwards {
 	INIT { auto_accessors(:private, :public(0)); }
 }
 
-method test_auto_accessors_nopublic() {
+our method test_auto_accessors_nopublic() {
 	my $dummy := Dummy::Backwards.new;
 
 	assert_throws( Exception::MethodNotFound, 'Accessor functions should NOT exist for public attrs',
@@ -82,7 +82,7 @@ module Dummy::DeclareRole {
 
 }
 
-method test_declare_role() {
+our method test_declare_role() {
 	my $role := P6metaclass.declare_role('Dummy::Role');
 
 	assert_isa( $role, 'Role',
@@ -104,7 +104,7 @@ module Dummy::RoleWithAttrs {
 	}
 }
 
-method test_get_role() {
+our method test_get_role() {
 	my $role_obj := Dummy::RoleWithAttrs;
 	
 	assert_same( $role_obj, P6metaclass.get_parrotrole('Dummy::RoleWithAttrs'),
@@ -124,7 +124,7 @@ class Dummy::ClassWithRoleAttrs {
 	}
 }
 
-method test_role_attributes() {
+our method test_role_attributes() {
 	#todo("This doesn't work at the Parrot level. See TT#1527");
 	
 	Dummy::ClassWithRoleAttrs::init();
@@ -138,7 +138,7 @@ method test_role_attributes() {
 }
 #method main() { self.set_up; self.test_role_attributes; }
 
-method test_role_creation() {
+our method test_role_creation() {
 	my $role := Q:PIR {
 		%r = get_hll_global [ 'Dummy' ], 'RoleWithAttrs'
 	};
@@ -163,7 +163,7 @@ class Dummy::ClassWithRoleMethods {
 	}
 }
 
-method test_role_methods() {
+our method test_role_methods() {
 	Dummy::ClassWithRoleMethods::init();
 
 	my $class := P6metaclass.get_parrotclass( Dummy::ClassWithRoleMethods );

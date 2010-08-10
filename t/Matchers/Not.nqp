@@ -20,17 +20,17 @@ INIT {
 
 TEST_MAIN();
 
-method test_match() {
+our method test_match() {
 	my $sut := Matcher::Not.new(Matcher::TrueFalse.new(:true));
 	assert_match(0, $sut, 'False should match not(true)');
 }
 
-method test_new() {
+our method test_new() {
 	my $sut := Matcher::Not.new(Matcher::TrueFalse.new(:true));
 	assert_isa($sut, 'Matcher::Not', 'New should return the right type');
 }
 
-method test_nonmatch() {
+our method test_nonmatch() {
 	my $sut := Matcher::Not.new(Matcher::TrueFalse.new(:true));
 	want_fail('True should not match not(true)', { 
 		assert_match(1, $sut, 'should not match'); });
@@ -59,7 +59,7 @@ class Dummy::NotFactoryTest {
 	}
 }
 		
-method test_factory_methods() {
+our method test_factory_methods() {
 	my $dummy := Dummy::NotFactoryTest.new;
 	todo( "There's something amok with multisub dispatch in the factory sub");
 	

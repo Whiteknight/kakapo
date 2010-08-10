@@ -2,10 +2,10 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 class UnitTest::Listener {
-	method add_error($failure)	{ }
-	method add_failure($failure)	{ }
-	method end_test($test)		{ }
-	method start_test($test)		{ }
+	our method add_error($failure)	{ }
+	our method add_failure($failure)	{ }
+	our method end_test($test)		{ }
+	our method start_test($test)		{ }
 }
 
 class UnitTest::Listener::TAP 
@@ -17,11 +17,11 @@ INIT {
 	pir::load_bytecode('Test/Builder.pbc');
 }
 
-method add_error($failure) {
+our method add_error($failure) {
 	self.add_failure($failure);	# Same for our purposes
 }
 
-method add_failure($failure) {
+our method add_failure($failure) {
 	my $test := $failure.test_case;
 	my $label := self.get_test_label($test);
 	
@@ -36,7 +36,7 @@ method add_failure($failure) {
 	self;
 }
 
-method end_test($test) {
+our method end_test($test) {
 	my $label := self.get_test_label($test);
 	
 	if $test.todo {
@@ -49,22 +49,22 @@ method end_test($test) {
 	self;
 }
 
-method get_test_label($test) {
+our method get_test_label($test) {
 	$test.verify || $test.name || '';
 }
 
-method _init_obj(*@pos, *%named) {
+our method _init_obj(*@pos, *%named) {
 	%named<test_builder> := Parrot::new('Test::Builder')
 		unless %named.contains(<test_builder>);
 
 	self._init_args(|@pos, |%named);
 }
 
-method plan_tests($num_tests) {
+our method plan_tests($num_tests) {
 	$!test_builder.plan($num_tests);
 }
 
-method test_builder($tb?) {
+our method test_builder($tb?) {
 	if pir::defined($tb) {
 		$!test_builder := $tb;
 		self;

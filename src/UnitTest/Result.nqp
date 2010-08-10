@@ -2,8 +2,12 @@
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 class UnitTest::Failure {
-    has $!fault;
-    has $!test_case;
+	has $!fault;
+	has $!test_case;
+	
+	INIT {
+		auto_accessors( :private );
+	}
 }
 
 class UnitTest::Result;
@@ -15,12 +19,15 @@ has $!should_stop;
 has $!num_tests;
 has $!planned_tests;
 
+INIT {
+	auto_accessors( :private );
+}
 
-method add_error($test, $error) {
+our method add_error($test, $error) {
 	self.add_fault($test, $error, :notify('add_error'), :queue(self.errors));
 }
 
-method add_failure($test, $failure) {
+our method add_failure($test, $failure) {
 	self.add_fault($test, $failure, :notify('add_failure'), :queue(self.failures));
 }
 
@@ -34,20 +41,20 @@ my method add_fault($test, $exception, :$notify, :$queue) {
 	self.notify_listeners($notify, $failure);
 }
 
-method add_listener($listener) {
+our method add_listener($listener) {
 	self.listeners.push($listener);
 	self;
 }
 
-method end_test($test) {
+our method end_test($test) {
 	self.notify_listeners('end_test', $test);
 }
 
-method error_count() {
+our method error_count() {
 	self.errors.elems;
 }
 
-method failure_count() {
+our method failure_count() {
 	self.failures.elems;
 }
 
@@ -59,7 +66,7 @@ my method notify_listeners($method, *@pos, *%named) {
 	self;
 }
 
-method plan_tests($num_tests) {
+our method plan_tests($num_tests) {
 	# Ignore repeats in hierarchy of suites.
 	unless self.planned_tests {
 		self.planned_tests: $num_tests;
@@ -67,7 +74,7 @@ method plan_tests($num_tests) {
 	}
 }
 
-method remove_listener($listener) {
+our method remove_listener($listener) {
 	my $index := 0;
 
 	while $index < self.listeners.elems {
@@ -82,20 +89,20 @@ method remove_listener($listener) {
 	self;
 }
 
-method run_count() {
+our method run_count() {
 	self.num_tests;
 }
 
-method start_test($test) {
+our method start_test($test) {
 	self.num_tests(self.num_tests + $test.num_tests);
 	self.notify_listeners('start_test', $test);
 }
 
-method stop() {
+our method stop() {
 	self.should_stop(1);
 	self;
 }
 
-method was_successful() {
+our method was_successful() {
 	self.error_count == 0 && self.failure_count == 0;
 }

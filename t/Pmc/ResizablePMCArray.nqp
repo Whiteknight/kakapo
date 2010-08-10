@@ -21,7 +21,7 @@ Class::SUBCLASS('Kakapo::Test::ResizablePMCArray',
 Global::use('Matcher::Factory');	# is(), not(), etc.
 
 
-method test_rpa_append() {
+our method test_rpa_append() {
 	
 	self.note("Testing RPA.append() method");
 	
@@ -33,7 +33,7 @@ method test_rpa_append() {
 	self.assert_that("The elements count", @a1.elems, is(4));
 }
 
-method test_rpa_clone() {
+our method test_rpa_clone() {
 	
 	self.note("Testing RPA.clone() method");
 	
@@ -51,7 +51,7 @@ method test_rpa_clone() {
 	self.assert_that("The elements count", @str2.elems, is(2));
 }
 
-method test_rpa_contains() {
+our method test_rpa_contains() {
 	
 	self.note("Testing RPA.contains() method");
 	
@@ -65,7 +65,7 @@ method test_rpa_contains() {
 	self.assert_that("The array contains ''", @strings.contains(''), is(false()));
 }
 
-method test_rpa_elements() {
+our method test_rpa_elements() {
 
 	self.note("Testing RPA.elems() method");
 	
@@ -80,7 +80,7 @@ method test_rpa_elements() {
 	
 }
 
-method test_rpa_join() {
+our method test_rpa_join() {
 	
 	self.note("Testing RPA.join() method");
 	
@@ -89,7 +89,7 @@ method test_rpa_join() {
 	self.assert_that('Joining with spaces', @strings.join(' '), is('foo 1 cow'));
 }
 
-method test_rpa_new() {
+our method test_rpa_new() {
 	
 	self.note("Testing RPA.new() class method");
 	

@@ -9,18 +9,18 @@ has $!throw;
 has $!return;
 has $!invoke_count;
 
-method matches($call_sig) {
+our method matches($call_sig) {
 	$!sig_matcher.matches($call_sig);
 }
 
-method _init_obj(*@pos, *%named) {
+our method _init_obj(*@pos, *%named) {
 	$!invoke_count := 0;
 	@!side_effects := [ ];
 	
 	self._init_args(|@pos, |%named);
 }
 
-method invoke($callsig) {
+our method invoke($callsig) {
 	$!invoke_count++;
 	my $object := $callsig.object;	# Pass this to &do, or not?
 	my $result := $object;
@@ -43,9 +43,9 @@ method invoke($callsig) {
 	$result;
 }
 
-method sig_matcher($value?)	{ $value.defined ?? ($!sig_matcher := $value) !! $!sig_matcher; }
+our method sig_matcher($value?)	{ $value.defined ?? ($!sig_matcher := $value) !! $!sig_matcher; }
 
-method will( :&do, :$return, :$throw ) {
+our method will( :&do, :$return, :$throw ) {
 	self.will_do(&do) if &do.defined;
 	self.will_return($return) if $return.defined;
 	self.will_throw($throw) if $throw.defined;
@@ -53,17 +53,17 @@ method will( :&do, :$return, :$throw ) {
 	self;
 }
 
-method will_do(&closure) {
+our method will_do(&closure) {
 	@!side_effects.push: &closure;
 	self;
 }
 
-method will_return($result) {
+our method will_return($result) {
 	$!return := $result;
 	self;
 }
 
-method will_throw($exception) {
+our method will_throw($exception) {
 	$!throw := $exception;
 	self;
 }

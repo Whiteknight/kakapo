@@ -20,19 +20,19 @@ INIT {
 
 TEST_MAIN();
 
-method test_match() {
+our method test_match() {
 	my $sut := Matcher::PassFail.new: :pass;
 	
 	assert_match( my $undef, $sut, "Everything should match okay.");
 }
 
-method test_nonmatch() {
+our method test_nonmatch() {
 	my $sut := Matcher::PassFail.new: :fail;
 
 	assert_not_match( 'vi', $sut, 'Nothing should match');
 }
 
-method test_new() {
+our method test_new() {
 	my $sut := Matcher::PassFail.new;
 	assert_isa($sut, 'Matcher::PassFail', 'New should return the right type');
 }
@@ -47,7 +47,7 @@ class Dummy::TestSugar {
 	}
 }
 
-method test_sugar() {
+our method test_sugar() {
 	my $pass := Dummy::TestSugar.sugar: 1;
 	assert_isa($pass, 'Matcher::PassFail', 'Sugar should return the right type');
 	assert_match( 0, $pass, 'Sugar should return correctly configured matcher');
