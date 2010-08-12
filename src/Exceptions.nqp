@@ -1,8 +1,8 @@
-# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or 
+# Copyright (C) 2009, Austin Hastings. See accompanying LICENSE file, or
 # http://www.opensource.org/licenses/artistic-license-2.0.php for license.
 
 # # Exceptions #
-# 
+#
 # ## Built-in Exceptions ##
 #
 
@@ -110,172 +110,168 @@ class Exception::InterpError is Exception::Wrapper {
 	method type()	{ 25; }
 }
 
-class Exception::PrederefLoadError is Exception::Wrapper {
+class Exception::ParrotUsageError is Exception::Wrapper {
 	method type()	{ 26; }
 }
 
-class Exception::ParrotUsageError is Exception::Wrapper {
+class Exception::PioError is Exception::Wrapper {
 	method type()	{ 27; }
 }
 
-class Exception::PioError is Exception::Wrapper {
+class Exception::ParrotPointerError is Exception::Wrapper {
 	method type()	{ 28; }
 }
 
-class Exception::ParrotPointerError is Exception::Wrapper {
+class Exception::DivByZero is Exception::Wrapper {
 	method type()	{ 29; }
 }
 
-class Exception::DivByZero is Exception::Wrapper {
+class Exception::PioNotImplemented is Exception::Wrapper {
 	method type()	{ 30; }
 }
 
-class Exception::PioNotImplemented is Exception::Wrapper {
+class Exception::AllocationError is Exception::Wrapper {
 	method type()	{ 31; }
 }
 
-class Exception::AllocationError is Exception::Wrapper {
+class Exception::InternalPanic is Exception::Wrapper {
 	method type()	{ 32; }
 }
 
-class Exception::InternalPanic is Exception::Wrapper {
+class Exception::OutOfBounds is Exception::Wrapper {
 	method type()	{ 33; }
 }
 
-class Exception::OutOfBounds is Exception::Wrapper {
+class Exception::JitError is Exception::Wrapper {
 	method type()	{ 34; }
 }
 
-class Exception::JitError is Exception::Wrapper {
+class Exception::ExecError is Exception::Wrapper {
 	method type()	{ 35; }
 }
 
-class Exception::ExecError is Exception::Wrapper {
+class Exception::IllInherit is Exception::Wrapper {
 	method type()	{ 36; }
 }
 
-class Exception::IllInherit is Exception::Wrapper {
+class Exception::NoPrevCs is Exception::Wrapper {
 	method type()	{ 37; }
 }
 
-class Exception::NoPrevCs is Exception::Wrapper {
+class Exception::NoClass is Exception::Wrapper {
 	method type()	{ 38; }
 }
 
-class Exception::NoClass is Exception::Wrapper {
+class Exception::LexNotFound is Exception::Wrapper {
 	method type()	{ 39; }
 }
 
-class Exception::LexNotFound is Exception::Wrapper {
+class Exception::PadNotFound is Exception::Wrapper {
 	method type()	{ 40; }
 }
 
-class Exception::PadNotFound is Exception::Wrapper {
+class Exception::AttribNotFound is Exception::Wrapper {
 	method type()	{ 41; }
 }
 
-class Exception::AttribNotFound is Exception::Wrapper {
+class Exception::GlobalNotFound is Exception::Wrapper {
 	method type()	{ 42; }
 }
 
-class Exception::GlobalNotFound is Exception::Wrapper {
+class Exception::ExternalError is Exception::Wrapper {
 	method type()	{ 43; }
 }
 
-class Exception::ExternalError is Exception::Wrapper {
+class Exception::MethodNotFound is Exception::Wrapper {
 	method type()	{ 44; }
 }
 
-class Exception::MethodNotFound is Exception::Wrapper {
+class Exception::VtableNotFound is Exception::Wrapper {
 	method type()	{ 45; }
 }
 
-class Exception::VtableNotFound is Exception::Wrapper {
+class Exception::WriteToConstclass is Exception::Wrapper {
 	method type()	{ 46; }
 }
 
-class Exception::WriteToConstclass is Exception::Wrapper {
+class Exception::Nospawn is Exception::Wrapper {
 	method type()	{ 47; }
 }
 
-class Exception::Nospawn is Exception::Wrapper {
+class Exception::InternalNotImplemented is Exception::Wrapper {
 	method type()	{ 48; }
 }
 
-class Exception::InternalNotImplemented is Exception::Wrapper {
+class Exception::ErrOverflow is Exception::Wrapper {
 	method type()	{ 49; }
 }
 
-class Exception::ErrOverflow is Exception::Wrapper {
+class Exception::LossyConversion is Exception::Wrapper {
 	method type()	{ 50; }
 }
 
-class Exception::LossyConversion is Exception::Wrapper {
+class Exception::RoleCompositionMethodConflict is Exception::Wrapper {
 	method type()	{ 51; }
 }
 
-class Exception::RoleCompositionMethodConflict is Exception::Wrapper {
+class Exception::UnexpectedNull is Exception::Wrapper {
 	method type()	{ 52; }
 }
 
-class Exception::UnexpectedNull is Exception::Wrapper {
+class Exception::LibraryError is Exception::Wrapper {
 	method type()	{ 53; }
 }
 
-class Exception::LibraryError is Exception::Wrapper {
+class Exception::LibraryNotLoaded is Exception::Wrapper {
 	method type()	{ 54; }
 }
 
-class Exception::LibraryNotLoaded is Exception::Wrapper {
+class Exception::SyntaxError is Exception::Wrapper {
 	method type()	{ 55; }
 }
 
-class Exception::SyntaxError is Exception::Wrapper {
+class Exception::MalformedPackfile is Exception::Wrapper {
 	method type()	{ 56; }
 }
 
-class Exception::MalformedPackfile is Exception::Wrapper {
+class Control::Return is Exception::Wrapper {
 	method type()	{ 57; }
 }
 
-class Control::Return is Exception::Wrapper {
+class Control::Ok is Exception::Wrapper {
 	method type()	{ 58; }
 }
 
-class Control::Ok is Exception::Wrapper {
+class Control::Break is Exception::Wrapper {
 	method type()	{ 59; }
 }
 
-class Control::Break is Exception::Wrapper {
+class Control::Continue is Exception::Wrapper {
 	method type()	{ 60; }
 }
 
-class Control::Continue is Exception::Wrapper {
+class Control::Error is Exception::Wrapper {
 	method type()	{ 61; }
 }
 
-class Control::Error is Exception::Wrapper {
+class Control::Take is Exception::Wrapper {
 	method type()	{ 62; }
 }
 
-class Control::Take is Exception::Wrapper {
+class Control::Leave is Exception::Wrapper {
 	method type()	{ 63; }
 }
 
-class Control::Leave is Exception::Wrapper {
+class Control::LoopNext is Exception::Wrapper {
 	method type()	{ 64; }
 }
 
-class Control::LoopNext is Exception::Wrapper {
+class Control::LoopLast is Exception::Wrapper {
 	method type()	{ 65; }
 }
 
-class Control::LoopLast is Exception::Wrapper {
-	method type()	{ 66; }
-}
-
 class Control::LoopRedo is Exception::Wrapper {
-	method type()	{ 67; }
+	method type()	{ 66; }
 }
 #
 # ## Kakapo Exceptions ##
