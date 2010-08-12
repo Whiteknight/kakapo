@@ -7,7 +7,9 @@ INIT {
 	Kakapo::depends_on( <UnitTest::Testcase> );
 }
 
-our sub _initload() {
+our sub _initload() { }
+
+INIT {
 	use( <UnitTest::Testcase> );
 
 	export(<
