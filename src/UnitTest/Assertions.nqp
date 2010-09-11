@@ -74,7 +74,7 @@ our sub assert_does_not($obj, $role, $message) {
 }
 
 our sub assert_equal($o1, $o2, $message) {
-	Testcase::fail($message) unless pir::iseq__IPP($o2, $o1);
+	UnitTest::Testcase::fail($message) unless pir::iseq__IPP($o2, $o1);
 }
 
 our sub assert_not_equal($o1, $o2, $message) {
