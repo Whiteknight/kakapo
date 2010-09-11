@@ -42,35 +42,35 @@ INIT {
 }
 
 our sub assert_block($message, &block) {
-	Testcase::fail($message) unless &block();
+	UnitTest::Testcase::fail($message) unless &block();
 }
 
 our sub assert_block_false($message, &block) {
-	Testcase::fail($message) if &block();
+	UnitTest::Testcase::fail($message) if &block();
 }
 
 our sub assert_can($obj, $method, $message) {
-	Testcase::fail($message) unless pir::can($obj, $method);
+	UnitTest::Testcase::fail($message) unless pir::can($obj, $method);
 }
 
 our sub assert_can_not($obj, $method, $message) {
-	Testcase::fail($message) if pir::can($obj, $method);
+	UnitTest::Testcase::fail($message) if pir::can($obj, $method);
 }
 
 our sub assert_defined($obj, $message) {
-    Testcase::fail($message) unless pir::defined($obj);
+    UnitTest::Testcase::fail($message) unless pir::defined($obj);
 }
 
 our sub assert_not_defined($obj, $message) {
-    Testcase::fail($message) if pir::defined($obj);
+    UnitTest::Testcase::fail($message) if pir::defined($obj);
 }
 
 our sub assert_does($obj, $role, $message) {
-	Testcase::fail($message) unless pir::class__PP($obj).does($role);
+	UnitTest::Testcase::fail($message) unless pir::class__PP($obj).does($role);
 }
 
 our sub assert_does_not($obj, $role, $message) {
-	Testcase::fail($message) if pir::class__PP($obj).does($role);
+	UnitTest::Testcase::fail($message) if pir::class__PP($obj).does($role);
 }
 
 our sub assert_equal($o1, $o2, $message) {
@@ -78,53 +78,53 @@ our sub assert_equal($o1, $o2, $message) {
 }
 
 our sub assert_not_equal($o1, $o2, $message) {
-	Testcase::fail($message) if pir::iseq__IPP($o2, $o1);
+	UnitTest::Testcase::fail($message) if pir::iseq__IPP($o2, $o1);
 }
 
 our sub assert_instance_of($obj, $class, $message) {
-	Testcase::fail($message) unless pir::class__PP($obj) =:= P6metaclass.get_parrotclass($class);
+	UnitTest::Testcase::fail($message) unless pir::class__PP($obj) =:= P6metaclass.get_parrotclass($class);
 }
 
 our sub assert_not_instance_of($obj, $class, $message) {
-	Testcase::fail($message) if pir::class__PP($obj) =:= P6metaclass.get_parrotclass($class);
+	UnitTest::Testcase::fail($message) if pir::class__PP($obj) =:= P6metaclass.get_parrotclass($class);
 }
 
 our sub assert_isa($obj, $class, $message) {
-	Testcase::fail($message) unless pir::isa__iPP($obj, P6metaclass.get_parrotclass($class));
+	UnitTest::Testcase::fail($message) unless pir::isa__iPP($obj, P6metaclass.get_parrotclass($class));
 }
 
 our sub assert_not_isa($obj, $class, $message) {
-	Testcase::fail($message) if pir::isa__iPP($obj, P6metaclass.get_parrotclass($class));
+	UnitTest::Testcase::fail($message) if pir::isa__iPP($obj, P6metaclass.get_parrotclass($class));
 }
 
 our sub assert_match($obj, $matcher, $message) {
 	unless $matcher.matches($obj) {
 		my $explain := $matcher.describe_self("\nExpected ")
 			~ $matcher.describe_failure("\nbut ", $obj);
-		Testcase::fail($message ~ $explain);
+		UnitTest::Testcase::fail($message ~ $explain);
 	}
 }
 
 our sub assert_not_match($obj, $matcher, $message) {
 	if $matcher.matches($obj) {
-		Testcase::fail($message);
+		UnitTest::Testcase::fail($message);
 	}
 }
 
 our sub assert_null($obj, $message) {
-	Testcase::fail($message) unless pir::isnull($obj);
+	UnitTest::Testcase::fail($message) unless pir::isnull($obj);
 }
 
 our sub assert_not_null($obj, $message) {
-	Testcase::fail($message) if pir::isnull($obj);
+	UnitTest::Testcase::fail($message) if pir::isnull($obj);
 }
 
 our sub assert_same($o1, $o2, $message) {
-	Testcase::fail($message) unless $o1 =:= $o2;
+	UnitTest::Testcase::fail($message) unless $o1 =:= $o2;
 }
 
 our sub assert_not_same($o1, $o2, $message) {
-	Testcase::fail($message) if $o1 =:= $o2;
+	UnitTest::Testcase::fail($message) if $o1 =:= $o2;
 }
 
 our sub assert_throws($e_class, $message, &block) {
@@ -138,7 +138,7 @@ our sub assert_throws($e_class, $message, &block) {
 	};
 
 	unless $exception.defined && $exception.type == $e_class.type {
-		Testcase::fail($message);
+		UnitTest::Testcase::fail($message);
 	}
 }
 
@@ -150,21 +150,21 @@ our sub assert_throws_nothing($message, &block) {
 		CATCH { $ok := 0; }
 	};
 
-	Testcase::fail($message) unless $ok;
+	UnitTest::Testcase::fail($message) unless $ok;
 }
 
 our sub assert_true($bool, $message) {
-	Testcase::fail($message) unless $bool;
+	UnitTest::Testcase::fail($message) unless $bool;
 }
 
 our sub assert_false($bool, $message) {
-	Testcase::fail($message) if $bool;
+	UnitTest::Testcase::fail($message) if $bool;
 }
 
 our sub assert_within_delta($o1, $o2, $delta, $message) {
 	my $difference := $o1 - $o2;
 	$difference := - $difference if $difference < 0;
-	Testcase::fail($message) unless $difference < $delta;
+	UnitTest::Testcase::fail($message) unless $difference < $delta;
 }
 
 #~ assert_like(obj, regex, message)
