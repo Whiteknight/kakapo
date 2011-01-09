@@ -22,8 +22,8 @@
 	unless null $P0 goto notify
 
 	$S0 = "Could not locate 'Kakapo::"
-	concat $S0, sub_name
-	concat $S0, "' function"
+	concat $S0, $S0, sub_name
+	concat $S0, $S0, "' function"
 	die $S0
 
 notify:
